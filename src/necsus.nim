@@ -1,3 +1,3 @@
-import necsus / [entity, query]
-export entity, query
+import necsus / [entity, query, world]
+export entity, query, world
 
