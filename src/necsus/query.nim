@@ -26,7 +26,8 @@ iterator items*[T](query: RealQuery[T]): T =
     for entityId in items(query.entities):
         yield query.create(EntityId(entityId))
 
-proc newQuery*[T](create: proc (entityId: EntityId): T): RealQuery[T] =
+proc newQuery*[T](entities: EntitySet, create: proc (
+        entityId: EntityId): T): RealQuery[T] =
     ## Creates a new query instance
-    RealQuery[T](entities: newEntitySet(), create: create)
+    RealQuery[T](entities: entities, create: create)
 

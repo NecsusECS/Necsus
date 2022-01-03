@@ -40,8 +40,8 @@ type
         age: seq[Age]
 
     MyAppQueries = object
-        personName: RealQuery[(Person, Name)]
-        age: RealQuery[(Age, )]
+        personName: EntitySet
+        age: EntitySet
 
 proc spawn(
     world: var World[MyAppComponents, MyAppComponentData, MyAppQueries],
@@ -52,6 +52,7 @@ proc spawn(
             world.components.person, components[0])
     associateComponent(world, result, MyAppComponents.Name,
             world.components.name, components[1])
+    evaluateEntityForQuery(world, result, world.queries.personName)
 
 proc spawn(
     world: var World[MyAppComponents, MyAppComponentData, MyAppQueries],
@@ -60,6 +61,7 @@ proc spawn(
     result = world.createEntity()
     associateComponent(world, result, MyAppComponents.Age,
             world.components.age, components[0])
+    evaluateEntityForQuery(world, result, world.queries.age)
 
 proc myApp[initialSize: static int]() =
 
@@ -69,15 +71,21 @@ proc myApp[initialSize: static int]() =
             person: newSeq[Person](initialSize),
             name: newSeq[Name](initialSize),
             age: newSeq[Age](initialSize),
+        ),
+        queries: MyAppQueries(
+            personName: newEntitySet(),
+            age: newEntitySet(),
         )
     )
 
     let personNameQuery = newQuery[(Person, Name)](
+        world.queries.personName,
         proc (entityId: EntityId): auto =
         (world.components.person[entityId], world.components.name[entityId])
     )
 
     let ageQuery = newQuery[(Age, )](
+        world.queries.age,
         proc (entityId: EntityId): auto = (world.components.age[entityId], )
     )
 
