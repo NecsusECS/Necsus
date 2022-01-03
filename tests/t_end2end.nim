@@ -25,6 +25,9 @@ proc mySystem(
     for (age, ) in ages:
         echo "age ", age.age
 
+proc runner(tick: proc(): void) =
+    tick()
+
 
 # === Generated code
 
@@ -80,7 +83,10 @@ proc myApp[initialSize: static int]() =
 
     setupSystem(world, world)
 
-    mySystem(personNameQuery, ageQuery)
+    proc eachTick() =
+        mySystem(personNameQuery, ageQuery)
+
+    runner(eachTick)
 
 
 # === End generated code
