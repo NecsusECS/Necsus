@@ -1,5 +1,3 @@
-import intsets
-
 import entity
 
 type
@@ -20,7 +18,7 @@ type
             entity is T
 
     RealQuery*[T] = object
-        entities: IntSet
+        entities: EntitySet
         create: proc (entityId: EntityId): T
 
 iterator items*[T](query: RealQuery[T]): T =
@@ -30,5 +28,5 @@ iterator items*[T](query: RealQuery[T]): T =
 
 proc newQuery*[T](create: proc (entityId: EntityId): T): RealQuery[T] =
     ## Creates a new query instance
-    RealQuery[T](entities: initIntSet(), create: create)
+    RealQuery[T](entities: newEntitySet(), create: create)
 
