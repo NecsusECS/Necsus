@@ -31,15 +31,17 @@ proc mySystem(
 type
     MyAppComponents {.pure.} = enum Person, Name, Age
 
-    PersonNameQuery = object
-
     MyAppComponentData = object
         person: seq[Person]
         name: seq[Name]
         age: seq[Age]
 
+    MyAppQueries = object
+        personName: RealQuery[(Person, Name)]
+        age: RealQuery[(Age, )]
+
 proc spawn(
-    world: var World[MyAppComponents, MyAppComponentData],
+    world: var World[MyAppComponents, MyAppComponentData, MyAppQueries],
     components: sink (Person, Name)
 ): EntityId =
     result = world.createEntity()
@@ -49,7 +51,7 @@ proc spawn(
             world.components.name, components[1])
 
 proc spawn(
-    world: var World[MyAppComponents, MyAppComponentData],
+    world: var World[MyAppComponents, MyAppComponentData, MyAppQueries],
     components: sink (Age, )
 ): EntityId =
     result = world.createEntity()
@@ -58,7 +60,7 @@ proc spawn(
 
 proc myApp[initialSize: static int]() =
 
-    var world = World[MyAppComponents, MyAppComponentData](
+    var world = World[MyAppComponents, MyAppComponentData, MyAppQueries](
         entities: newSeq[EntityMetadata[MyAppComponents]](initialSize),
         components: MyAppComponentData(
             person: newSeq[Person](initialSize),
@@ -67,12 +69,12 @@ proc myApp[initialSize: static int]() =
         )
     )
 
-    let personNameQuery = newQuery(
+    let personNameQuery = newQuery[(Person, Name)](
         proc (entityId: EntityId): auto =
         (world.components.person[entityId], world.components.name[entityId])
     )
 
-    let ageQuery = newQuery(
+    let ageQuery = newQuery[(Age, )](
         proc (entityId: EntityId): auto = (world.components.age[entityId], )
     )
 

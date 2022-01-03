@@ -3,13 +3,15 @@ import intsets
 import entity
 
 type
-    QueryFilterKind = enum All
+    QueryFilterKind = enum All, Matching
         ## The various kinds of filters that can be set
 
     QueryFilter*[C: enum] {.shallow.} = object
         ## Defines the rules for including an entity in a component
         case kind: QueryFilterKind
         of All:
+            discard
+        of Matching:
             components: set[C]
 
     Query*[T: tuple] = concept q
@@ -17,7 +19,7 @@ type
         for entity in q:
             entity is T
 
-    RealQuery[T] = object
+    RealQuery*[T] = object
         entities: IntSet
         create: proc (entityId: EntityId): T
 
