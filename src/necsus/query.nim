@@ -17,17 +17,24 @@ type
         for entity in q:
             entity is T
 
-    RealQuery*[T] = object
+    RealQuery*[C: enum, T: tuple] = object
+        filter: QueryFilter[C]
         entities: EntitySet
         create: proc (entityId: EntityId): T
 
-iterator items*[T](query: RealQuery[T]): T =
+iterator items*[C: enum, T: tuple](query: RealQuery[C, T]): T =
     ## Iterates through the entities in a query
     for entityId in items(query.entities):
         yield query.create(EntityId(entityId))
 
-proc newQuery*[T](entities: EntitySet, create: proc (
-        entityId: EntityId): T): RealQuery[T] =
+proc newQuery*[C: enum, T: tuple](
+    entities: EntitySet,
+    create: proc (entityId: EntityId): T
+): RealQuery[C, T] =
     ## Creates a new query instance
-    RealQuery[T](entities: entities, create: create)
+    RealQuery[C, T](
+        filter: QueryFilter[C](kind: QueryFilterKind.All),
+        entities: entities,
+        create: create
+    )
 

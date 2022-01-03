@@ -78,13 +78,13 @@ proc myApp[initialSize: static int]() =
         )
     )
 
-    let personNameQuery = newQuery[(Person, Name)](
+    let personNameQuery = newQuery[MyAppComponents, (Person, Name)](
         world.queries.personName,
         proc (entityId: EntityId): auto =
         (world.components.person[entityId], world.components.name[entityId])
     )
 
-    let ageQuery = newQuery[(Age, )](
+    let ageQuery = newQuery[MyAppComponents, (Age, )](
         world.queries.age,
         proc (entityId: EntityId): auto = (world.components.age[entityId], )
     )
