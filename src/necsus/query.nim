@@ -12,31 +12,27 @@ type
         of Matching:
             components: set[C]
 
-    Query*[T: tuple] = concept q
+    Query*[T: tuple] = object
         ## Allows systems to query for entities with specific components
-        for entity in q:
-            entity is T
+        entities: EntitySet
+        create: proc (entityId: EntityId): T
 
     QueryMembers*[C: enum] = object
         ## Contains membership information about a query
         filter: QueryFilter[C]
         entities: EntitySet
 
-    RealQuery*[C: enum, T: tuple] = object
-        members: ptr QueryMembers[C]
-        create: proc (entityId: EntityId): T
-
-iterator items*[C: enum, T: tuple](query: RealQuery[C, T]): T =
+iterator items*[T: tuple](query: Query[T]): T =
     ## Iterates through the entities in a query
-    for entityId in items(query.members.entities):
+    for entityId in items(query.entities):
         yield query.create(EntityId(entityId))
 
 func newQuery*[C: enum, T: tuple](
-    members: ptr QueryMembers[C],
+    members: QueryMembers[C],
     create: proc (entityId: EntityId): T
-): RealQuery[C, T] =
+): Query[T] =
     ## Creates a new query instance
-    RealQuery[C, T](members: members, create: create)
+    Query[T](entities: members.entities, create: create)
 
 func newQueryMembers*[C: enum](filter: sink QueryFilter[C]): QueryMembers[C] =
     ## Creates a new query member instance
