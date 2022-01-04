@@ -9,9 +9,8 @@ type
         queries*: Q
         nextEntityId: int
 
-    Spawn*[C: tuple] = concept s
+    Spawn*[C: tuple] = proc(components: sink C): EntityId
         ## Describes a type that is able to create new entities
-        s.spawn(C) is EntityId
 
 proc createEntity*[C, D, Q](world: var World[C, D, Q]): EntityId =
     ## Create a new entity in the given world
