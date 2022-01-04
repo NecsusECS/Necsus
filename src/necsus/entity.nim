@@ -6,7 +6,7 @@ type
 
     EntityMetadata*[C: enum] = object
         ## General data about an entity
-        components: set[C]
+        components*: set[C]
 
     EntitySet* = distinct IntSet
         ## A set of entity IDs
@@ -27,3 +27,7 @@ iterator items*(entities: EntitySet): EntityId =
 proc newEntitySet*(): EntitySet =
     ## Create a new entity set
     EntitySet(initIntSet())
+
+proc `+=`*(entities: var EntitySet, entityId: EntityId) =
+    ## Create a new entity set
+    incl(IntSet(entities), int(entityId))
