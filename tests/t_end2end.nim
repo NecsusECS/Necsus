@@ -32,6 +32,13 @@ proc mySystem(
 proc runner(tick: proc(): void) =
     tick()
 
+necsus(
+    name = myApp,
+    runner = runner,
+    startupSystems = [setupSystem],
+    systems = [mySystem]
+)
+
 
 # === Generated code
 
