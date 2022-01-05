@@ -55,7 +55,9 @@ type
         age: QueryMembers[MyAppComponents]
         personNameAge: QueryMembers[MyAppComponents]
 
-proc myApp[initialSize: static int]() =
+proc myApp() =
+
+    const initialSize = 100
 
     var world = World[MyAppComponents, MyAppComponentData, MyAppQueries](
         entities: newSeq[EntityMetadata[MyAppComponents]](initialSize),
@@ -133,5 +135,5 @@ proc myApp[initialSize: static int]() =
 # === End generated code
 
 test "Basic system":
-    myApp[100]()
+    myApp()
 
