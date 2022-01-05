@@ -1,6 +1,8 @@
 import macros, sequtils, strutils
 
 type
+    ComponentDef* = distinct NimNode
+
     SystemArgKind* {.pure.} = enum Spawn, Query
         ## The kind of arg within a system proc
 
@@ -8,7 +10,7 @@ type
         ## A single arg within a system proc
         case kind: SystemArgKind
         of SystemArgKind.Spawn, SystemArgKind.Query:
-            components: seq[NimNode]
+            components: seq[ComponentDef]
 
     ParsedSystem* = object
         ## Parsed information about a system proc
@@ -23,12 +25,12 @@ proc parseArgKind(symbol: NimNode): SystemArgKind =
     of "Spawn": return SystemArgKind.Spawn
     else: error("Unrecognized ECS interface type: " & symbol.repr, symbol)
 
-proc parseComponentsFromTuple(tupleArg: NimNode): seq[NimNode] =
+proc parseComponentsFromTuple(tupleArg: NimNode): seq[ComponentDef] =
     ## Parses the symbols out of a tuple definition
     tupleArg.expectKind(nnkTupleConstr)
     for child in tupleArg.children:
         child.expectKind(nnkSym)
-        result.add(child)
+        result.add(ComponentDef(child))
 
 proc parseSystemArg(ident: NimNode): SystemArg =
     ## Parses a SystemArg from a proc argument
