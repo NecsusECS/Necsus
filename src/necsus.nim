@@ -1,4 +1,4 @@
-import necsus / [entity, query, world, parse, codegen]
+import necsus / [entity, query, world, parse, codegen, componentSet]
 export entity, query, world
 
 import sequtils, macros
@@ -18,8 +18,10 @@ macro necsus*(
 
     name.expectKind(nnkIdent)
 
+    let allComponents = parsed.componentSet(name.strVal)
+
     result = nnkStmtList.newTree(
-        createComponentEnum(name.strVal, parsed.componentDefs))
+        allComponents.createComponentEnum)
 
     echo result.repr
 

@@ -1,9 +1,6 @@
-import macros, componentDef
+import macros, componentDef, componentSet
 
-proc createComponentEnum*(
-    baseName: string,
-    components: ComponentSet
-): NimNode =
+proc createComponentEnum*(components: ComponentSet): NimNode =
     ## Creates an enum with an item for every available component
     let enumType = nnkEnumTy.newTree(newEmptyNode())
 
@@ -13,7 +10,7 @@ proc createComponentEnum*(
     result = nnkTypeSection.newTree(
         nnkTypeDef.newTree(
             nnkPragmaExpr.newTree(
-                ident(baseName & "Components"),
+                components.symbol,
                 nnkPragma.newTree(ident("pure"))),
             newEmptyNode(),
             enumType))
