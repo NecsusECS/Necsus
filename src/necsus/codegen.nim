@@ -1,16 +1,13 @@
-import macros, componentDef, componentSet
+import macros, componentDef, componentSet, sequtils
 
 proc createComponentEnum*(components: ComponentSet): NimNode =
     ## Creates an enum with an item for every available component
-    let enumType = nnkEnumTy.newTree(newEmptyNode())
-
-    for component in components:
-        enumType.add(component.ident)
-
-    let enumName = components.enumSymbol
-
-    result = quote:
-        type `enumName` {.pure.} = `enumType`
+    result = newEnum(
+        components.enumSymbol,
+        toSeq(components).mapIt(it.ident),
+        public = false,
+        pure = true
+    )
 
 proc createComponentObj*(components: ComponentSet): NimNode =
     ## Defines an object for storing component data
