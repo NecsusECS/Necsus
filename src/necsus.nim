@@ -1,7 +1,7 @@
-import necsus / [entity, query, world, parse]
+import necsus / [entity, query, world, parse, codegen]
 export entity, query, world
 
-import sequtils
+import sequtils, macros
 
 macro necsus*(
     name: untyped{ident},
@@ -16,5 +16,11 @@ macro necsus*(
         systems.parseSystemList(isStartup = false)
     )
 
-    echo parsed
+    name.expectKind(nnkIdent)
+
+    result = nnkStmtList.newTree(
+        createComponentEnum(name.strVal, parsed.componentDefs))
+
+    echo result.repr
+
 
