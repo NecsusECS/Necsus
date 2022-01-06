@@ -21,7 +21,8 @@ macro necsus*(
     let allComponents = parsed.componentSet(name.strVal)
 
     result = nnkStmtList.newTree(
-        allComponents.createComponentEnum)
+        allComponents.createComponentEnum,
+        allComponents.createComponentObj)
 
     echo result.repr
 

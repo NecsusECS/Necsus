@@ -3,10 +3,13 @@ import componentDef, parse, algorithm, sequtils, macros
 type
     ComponentSet* = object
         ## A group of components
-        symbol: NimNode
+        enumSymbol: NimNode
+        objSymbol: NimNode
         components: seq[ComponentDef]
 
-proc symbol*(components: ComponentSet): auto = components.symbol
+proc enumSymbol*(components: ComponentSet): auto = components.enumSymbol
+
+proc objSymbol*(components: ComponentSet): auto = components.objSymbol
 
 proc uniqueComponents(systems: openarray[ParsedSystem]): seq[ComponentDef] =
     ## Pulls any component definitions from an arg
@@ -18,7 +21,8 @@ proc componentSet*(
 ): ComponentSet =
     ## Pulls all unique components from a set of parsed systems
     ComponentSet(
-        symbol: ident(prefix & "Components"),
+        enumSymbol: ident(prefix & "Components"),
+        objSymbol: ident(prefix & "ComponentData"),
         components: systems.uniqueComponents
     )
 

@@ -7,10 +7,25 @@ proc createComponentEnum*(components: ComponentSet): NimNode =
     for component in components:
         enumType.add(component.ident)
 
-    result = nnkTypeSection.newTree(
-        nnkTypeDef.newTree(
-            nnkPragmaExpr.newTree(
-                components.symbol,
-                nnkPragma.newTree(ident("pure"))),
-            newEmptyNode(),
-            enumType))
+    let enumName = components.enumSymbol
+
+    result = quote:
+        type `enumName` {.pure.} = `enumType`
+
+proc createComponentObj*(components: ComponentSet): NimNode =
+    ## Defines an object for storing component data
+    let props = nnkRecList.newTree()
+
+    for component in components:
+        props.add(
+            nnkIdentDefs.newTree(
+                component.ident,
+                nnkBracketExpr.newTree(ident("seq"), component.ident),
+                newEmptyNode()))
+
+    let obj = nnkObjectTy.newTree(newEmptyNode(), newEmptyNode(), props)
+
+    let objName = components.objSymbol
+
+    result = quote:
+        type `objName` = `obj`
