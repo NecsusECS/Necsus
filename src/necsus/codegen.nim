@@ -9,20 +9,28 @@ proc createComponentEnum*(components: ComponentSet): NimNode =
         pure = true
     )
 
-proc createComponentObj*(components: ComponentSet): NimNode =
-    ## Defines an object for storing component data
-    let props = nnkRecList.newTree()
+proc seqType(innerType: NimNode): NimNode =
+    ## Creates a type wrapped in a seq
+    nnkBracketExpr.newTree(ident("seq"), innerType)
 
-    for component in components:
-        props.add(
-            nnkIdentDefs.newTree(
-                component.ident,
-                nnkBracketExpr.newTree(ident("seq"), component.ident),
-                newEmptyNode()))
+proc newObject(
+    name: NimNode,
+    props: openarray[tuple[propName: NimNode, propType: NimNode]]
+): NimNode =
+    ## Defines an object with a set of properties
+    let propNodes = nnkRecList.newTree()
 
-    let obj = nnkObjectTy.newTree(newEmptyNode(), newEmptyNode(), props)
+    for (propName, propType) in props:
+        propNodes.add(nnkIdentDefs.newTree(propName, propType, newEmptyNode()))
 
-    let objName = components.objSymbol
+    let obj = nnkObjectTy.newTree(newEmptyNode(), newEmptyNode(), propNodes)
 
     result = quote:
-        type `objName` = `obj`
+        type `name` = `obj`
+
+proc createComponentObj*(components: ComponentSet): NimNode =
+    ## Defines an object for storing component data
+    result = newObject(
+        components.objSymbol,
+        components.toSeq.mapIt((it.ident, seqType(it.ident)))
+    )
