@@ -34,3 +34,6 @@ proc createComponentObj*(components: ComponentSet): NimNode =
         components.objSymbol,
         components.toSeq.mapIt((it.ident, seqType(it.ident)))
     )
+
+proc createQueryObj*() =
+    discard

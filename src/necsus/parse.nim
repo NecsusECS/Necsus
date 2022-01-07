@@ -1,4 +1,4 @@
-import macros, sequtils, componentDef
+import macros, sequtils, componentDef, queryDef
 
 type
     SystemArgKind* {.pure.} = enum Spawn, Query
@@ -7,8 +7,10 @@ type
     SystemArg* = object
         ## A single arg within a system proc
         case kind: SystemArgKind
-        of SystemArgKind.Spawn, SystemArgKind.Query:
+        of SystemArgKind.Spawn:
             components: seq[ComponentDef]
+        of SystemArgKind.Query:
+            query: QueryDef
 
     ParsedSystem* = object
         ## Parsed information about a system proc
@@ -38,7 +40,11 @@ proc parseSystemArg(ident: NimNode): SystemArg =
     case argType.kind
     of nnkBracketExpr:
         result.kind = argType[0].parseArgKind
-        result.components = argType[1].parseComponentsFromTuple
+        case result.kind
+        of SystemArgKind.Spawn:
+            result.components = argType[1].parseComponentsFromTuple
+        of SystemArgKind.Query:
+            result.query = newQueryDef(argType[1].parseComponentsFromTuple)
     else:
         error("Expecting an ECS interface type, but got: " & argType.repr, argType)
 
@@ -60,7 +66,10 @@ iterator components*(systems: openarray[ParsedSystem]): ComponentDef =
     for system in systems:
         for arg in system.args:
             case arg.kind
-            of SystemArgKind.Spawn, SystemArgKind.Query:
+            of SystemArgKind.Spawn:
                 for component in arg.components:
+                    yield component
+            of SystemArgKind.Query:
+                for component in arg.query:
                     yield component
 
