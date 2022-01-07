@@ -8,8 +8,9 @@ type
         ## General data about an entity
         components*: set[C]
 
-    EntitySet* = distinct IntSet
+    EntitySet* = ref object
         ## A set of entity IDs
+        entities: IntSet
 
 proc `[]`*[T](s: openarray[T], id: EntityId): T =
     ## Allows indexing into an openarray by directly using an entity id
@@ -21,13 +22,13 @@ proc `$`*(entityId: EntityId): string =
 
 iterator items*(entities: EntitySet): EntityId =
     ## Produces all entities in this set
-    for id in IntSet(entities):
+    for id in IntSet(entities.entities):
         yield EntityId(id)
 
 proc newEntitySet*(): EntitySet =
     ## Create a new entity set
-    EntitySet(initIntSet())
+    EntitySet(entities: initIntSet())
 
 proc `+=`*(entities: var EntitySet, entityId: EntityId) =
     ## Create a new entity set
-    incl(IntSet(entities), int(entityId))
+    incl(IntSet(entities.entities), int(entityId))
