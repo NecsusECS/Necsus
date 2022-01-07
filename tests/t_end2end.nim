@@ -1,6 +1,4 @@
-import unittest
-
-import necsus
+import unittest, necsus, sequtils
 
 type
     Person = object
@@ -26,14 +24,10 @@ proc mySystem(
     all: Query[(Person, Name, Age)]
 ) =
     echo "starting mySystem"
-    for (person, name) in people:
-        echo "Person named ", name.name
 
-    for (age, ) in ages:
-        echo "age ", age.age
-
-    for (person, name, age) in all:
-        echo "Person named ", name.name, " of age ", age.age
+    check(toSeq(people).mapIt(it[1].name) == @["Jack", "Jill"])
+    check(toSeq(ages).mapIt(it[0].age) == @[39])
+    check(toSeq(all).len == 0)
 
 proc runner(tick: proc(): void) =
     tick()
