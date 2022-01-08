@@ -1,4 +1,4 @@
-import macros
+import macros, hashes
 
 type
     ComponentDef* = distinct NimNode
@@ -15,7 +15,12 @@ proc `$`*(def: ComponentDef): string =
     ## Stringify a ComponentDef
     $(NimNode(def))
 
+proc name*(def: ComponentDef): string =
+    ## Returns the name of a component
+    NimNode(def).strVal
+
 proc ident*(def: ComponentDef): NimNode =
     ## Stringify a ComponentDef
-    ident(NimNode(def).strVal)
+    ident(def.name)
 
+proc hash*(def: ComponentDef): auto = hash(def.name)

@@ -1,4 +1,4 @@
-import necsus / [entity, query, world, parse, codegen, componentSet]
+import necsus / [entity, query, world, parse, codegen, componentSet, queryDef]
 export entity, query, world
 
 import sequtils, macros
@@ -20,9 +20,12 @@ macro necsus*(
 
     let allComponents = parsed.componentSet(name.strVal)
 
+    let allQueries = newQuerySet(name.strVal, parsed.queries.toSeq)
+
     result = nnkStmtList.newTree(
         allComponents.createComponentEnum,
-        allComponents.createComponentObj)
+        allComponents.createComponentObj,
+        allComponents.createQueryObj(allQueries))
 
     echo result.repr
 

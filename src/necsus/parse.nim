@@ -73,3 +73,13 @@ iterator components*(systems: openarray[ParsedSystem]): ComponentDef =
                 for component in arg.query:
                     yield component
 
+iterator queries*(systems: openarray[ParsedSystem]): QueryDef =
+    ## Pulls all queries from the given parsed systems
+    for system in systems:
+        for arg in system.args:
+            case arg.kind
+            of SystemArgKind.Spawn:
+                discard
+            of SystemArgKind.Query:
+                yield arg.query
+
