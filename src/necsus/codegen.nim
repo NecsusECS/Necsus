@@ -9,9 +9,13 @@ proc createComponentEnum*(components: ComponentSet): NimNode =
         pure = true
     )
 
+proc bracket(name: string, bracketed: NimNode): NimNode =
+    ## Creates a bracketed expression
+    nnkBracketExpr.newTree(ident(name), bracketed)
+
 proc seqType(innerType: NimNode): NimNode =
     ## Creates a type wrapped in a seq
-    nnkBracketExpr.newTree(ident("seq"), innerType)
+    bracket("seq", innerType)
 
 proc newObject(
     name: NimNode,
@@ -37,11 +41,59 @@ proc createComponentObj*(components: ComponentSet): NimNode =
 
 proc createQueryObj*(components: ComponentSet, queries: QuerySet): NimNode =
     ## Defines a type for holding all possible queries
-    let queryType = nnkBracketExpr.newTree(
-        ident("QueryMembers"),
-        components.enumSymbol)
+    let queryType = bracket("QueryMembers", components.enumSymbol)
     result = newObject(
         ident(queries.objSymbol),
         queries.toSeq.mapIt((propName: ident(it.name), propType: queryType))
+    )
+
+proc construct(
+    typeName: NimNode,
+    properties: openarray[tuple[name: string, expression: NimNode]]
+): NimNode =
+    ## Creates an instance of a type
+    result = nnkObjConstr.newTree(typeName)
+    for (name, expression) in properties:
+        result.add(nnkExprColonExpr.newTree(ident(name), expression))
+
+proc createWorldInstance*(
+    components: ComponentSet,
+    queries: QuerySet
+): NimNode =
+    let componentEnum = components.enumSymbol
+    let componentObj = components.objSymbol
+    let queryObj = ident(queries.objSymbol)
+    let world = ident("world")
+
+    let componentInstance = construct(
+        componentObj,
+        toSeq(components).mapIt((it.name, newCall(bracket("newSeq", it.ident))))
+    )
+
+    result = quote:
+        let initialSize = 100
+        var `world` = World[`componentEnum`, `componentObj`, `queryObj`](
+            entities: newSeq[EntityMetadata[`componentEnum`]](initialSize),
+            components: `componentInstance`
+        )
+
+
+dumptree:
+    var world = World[MyAppComponents, MyAppComponentData, MyAppQueries](
+        entities: newSeq[EntityMetadata[MyAppComponents]](initialSize),
+        components: MyAppComponentData(
+            person: newSeq[Person](initialSize),
+            name: newSeq[Name](initialSize),
+            age: newSeq[Age](initialSize),
+        ),
+        queries: MyAppQueries(
+            personName: newQueryMembers[MyAppComponents](
+                filterMatching({MyAppComponents.Person, MyAppComponents.Name})),
+            age: newQueryMembers[MyAppComponents](
+                filterMatching({MyAppComponents.Age})),
+            personNameAge: newQueryMembers[MyAppComponents](
+                filterMatching({MyAppComponents.Person, MyAppComponents.Name,
+                        MyAppComponents.Age})),
+        )
     )
 

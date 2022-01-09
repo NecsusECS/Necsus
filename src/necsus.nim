@@ -25,7 +25,9 @@ macro necsus*(
     result = nnkStmtList.newTree(
         allComponents.createComponentEnum,
         allComponents.createComponentObj,
-        allComponents.createQueryObj(allQueries))
+        allComponents.createQueryObj(allQueries),
+        createWorldInstance(allComponents, allQueries)
+    )
 
     echo result.repr
 
