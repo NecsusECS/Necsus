@@ -56,6 +56,18 @@ proc construct(
     for (name, expression) in properties:
         result.add(nnkExprColonExpr.newTree(ident(name), expression))
 
+proc createQueryMembersInstance(
+    query: QueryDef,
+    components: ComponentSet
+): NimNode =
+    ## Creates code to instantiate a QueryMembers instance
+    let componentEnum = components.enumSymbol
+    let componentList = nnkCurly.newTree(
+        toSeq(query).mapIt(nnkDotExpr.newTree(componentEnum, it.ident))
+    )
+    result = quote:
+        newQueryMembers[`componentEnum`](filterMatching[`componentEnum`](`componentList`))
+
 proc createWorldInstance*(
     components: ComponentSet,
     queries: QuerySet
@@ -70,30 +82,16 @@ proc createWorldInstance*(
         toSeq(components).mapIt((it.name, newCall(bracket("newSeq", it.ident))))
     )
 
+    let queryInstance = construct(
+        queryObj,
+        toSeq(queries).mapIt((it.name, createQueryMembersInstance(it.query, components)))
+    )
+
     result = quote:
         let initialSize = 100
         var `world` = World[`componentEnum`, `componentObj`, `queryObj`](
             entities: newSeq[EntityMetadata[`componentEnum`]](initialSize),
-            components: `componentInstance`
+            components: `componentInstance`,
+            queries: `queryInstance`
         )
-
-
-dumptree:
-    var world = World[MyAppComponents, MyAppComponentData, MyAppQueries](
-        entities: newSeq[EntityMetadata[MyAppComponents]](initialSize),
-        components: MyAppComponentData(
-            person: newSeq[Person](initialSize),
-            name: newSeq[Name](initialSize),
-            age: newSeq[Age](initialSize),
-        ),
-        queries: MyAppQueries(
-            personName: newQueryMembers[MyAppComponents](
-                filterMatching({MyAppComponents.Person, MyAppComponents.Name})),
-            age: newQueryMembers[MyAppComponents](
-                filterMatching({MyAppComponents.Age})),
-            personNameAge: newQueryMembers[MyAppComponents](
-                filterMatching({MyAppComponents.Person, MyAppComponents.Name,
-                        MyAppComponents.Age})),
-        )
-    )
 
