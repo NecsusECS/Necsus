@@ -26,7 +26,8 @@ macro necsus*(
         allComponents.createComponentEnum,
         allComponents.createComponentObj,
         allComponents.createQueryObj(allQueries),
-        createWorldInstance(allComponents, allQueries)
+        createWorldInstance(allComponents, allQueries),
+        createQueryVars(allComponents, allQueries)
     )
 
     echo result.repr

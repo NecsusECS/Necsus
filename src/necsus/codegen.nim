@@ -95,3 +95,30 @@ proc createWorldInstance*(
             queries: `queryInstance`
         )
 
+proc createQueryVars*(components: ComponentSet, queries: QuerySet): NimNode =
+    result = newStmtList()
+
+    let componentEnum = components.enumSymbol
+
+    for (name, query) in queries:
+        let varName = ident(name)
+
+        let tupleType = nnkTupleConstr.newTree(toSeq(query).mapIt(it.ident))
+
+        let entityVar = ident("entityId")
+
+        let tupleConstruction = nnkTupleConstr.newTree()
+        for component in query:
+            let componentIdent = component.ident
+            tupleConstruction.add(
+                block: quote: world.components.`componentIdent`[`entityVar`]
+            )
+
+        let queryVar = quote:
+            let `varName` = newQuery[`componentEnum`, `tupleType`](
+                world.queries.`varName`,
+                proc (`entityVar`: EntityId): `tupleType` = `tupleConstruction`
+            )
+
+        result.add(queryVar)
+
