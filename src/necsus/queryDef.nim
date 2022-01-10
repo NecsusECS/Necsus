@@ -1,4 +1,4 @@
-import componentDef, tables, sequtils, strutils
+import componentDef, tables, sequtils, strutils, util
 
 type
     QueryDef* = object
@@ -21,19 +21,11 @@ iterator items*(query: QueryDef): ComponentDef =
     ## Produce all components in a query
     for component in query.components: yield component
 
-proc rootName(query: QueryDef): string =
-    query.components.mapIt(it.name).join()
-
 proc newQuerySet*(prefix: string, queries: openarray[QueryDef]): QuerySet =
     ## Create a set of all queries in a set of systems
     result.objSymbol = prefix & "Queries"
-    result.queries = initOrderedTable[QueryDef, string]()
-    var suffixes = initTable[string, int]()
-    for query in queries.toSeq.deduplicate:
-        let name = query.rootName
-        let suffix = suffixes.mgetOrPut(name, 0)
-        suffixes[name] = suffix + 1
-        result.queries[query] = name & $suffix
+    result.queries = queries.nameTable do (query: QueryDef) -> auto:
+        query.components.generateName
 
 iterator items*(queries: QuerySet): tuple[name: string, query: QueryDef] =
     ## Produce all queries and their property names

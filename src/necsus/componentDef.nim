@@ -1,4 +1,4 @@
-import macros, hashes
+import macros, hashes, sequtils, strutils
 
 type
     ComponentDef* = distinct NimNode
@@ -24,3 +24,7 @@ proc ident*(def: ComponentDef): NimNode =
     ident(def.name)
 
 proc hash*(def: ComponentDef): auto = hash(def.name)
+
+proc generateName*(components: openarray[ComponentDef]): string =
+    ## Creates a name to describe the given components
+    components.mapIt(it.name).join()
