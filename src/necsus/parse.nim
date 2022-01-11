@@ -8,7 +8,7 @@ type
         ## A single arg within a system proc
         case kind: SystemArgKind
         of SystemArgKind.Spawn:
-            components: seq[ComponentDef]
+            spawn: SpawnDef
         of SystemArgKind.Query:
             query: QueryDef
 
@@ -42,7 +42,7 @@ proc parseSystemArg(ident: NimNode): SystemArg =
         result.kind = argType[0].parseArgKind
         case result.kind
         of SystemArgKind.Spawn:
-            result.components = argType[1].parseComponentsFromTuple
+            result.spawn = newSpawnDef(argType[1].parseComponentsFromTuple)
         of SystemArgKind.Query:
             result.query = newQueryDef(argType[1].parseComponentsFromTuple)
     else:
@@ -67,19 +67,21 @@ iterator components*(systems: openarray[ParsedSystem]): ComponentDef =
         for arg in system.args:
             case arg.kind
             of SystemArgKind.Spawn:
-                for component in arg.components:
-                    yield component
+                for component in arg.spawn: yield component
             of SystemArgKind.Query:
-                for component in arg.query:
-                    yield component
+                for component in arg.query: yield component
+
+iterator args*(systems: openarray[ParsedSystem]): SystemArg =
+    ## Yields all args in a system
+    for system in systems:
+        for arg in system.args:
+            yield arg
 
 iterator queries*(systems: openarray[ParsedSystem]): QueryDef =
     ## Pulls all queries from the given parsed systems
-    for system in systems:
-        for arg in system.args:
-            case arg.kind
-            of SystemArgKind.Spawn:
-                discard
-            of SystemArgKind.Query:
-                yield arg.query
+    for arg in systems.args.toSeq.filterIt(it.kind == SystemArgKind.Query): yield arg.query
+
+iterator spawns*(systems: openarray[ParsedSystem]): SpawnDef =
+    ## Pulls all spawns from the given parsed systems
+    for arg in systems.args.toSeq.filterIt(it.kind == SystemArgKind.Spawn): yield arg.spawn
 

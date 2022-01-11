@@ -22,12 +22,15 @@ macro necsus*(
 
     let allQueries = newDirectiveSet[QueryDef](name.strVal, parsed.queries.toSeq)
 
+    let allSpawns = newDirectiveSet[SpawnDef](name.strVal, parsed.spawns.toSeq)
+
     result = nnkStmtList.newTree(
         allComponents.createComponentEnum,
         allComponents.createComponentObj,
         allComponents.createQueryObj(allQueries),
         createWorldInstance(allComponents, allQueries),
-        createQueryVars(allComponents, allQueries)
+        createQueryVars(allComponents, allQueries),
+        createSpawnFunc(allComponents, allSpawns, allQueries),
     )
 
     echo result.repr

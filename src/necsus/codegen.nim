@@ -59,15 +59,16 @@ proc construct(
     for (name, expression) in properties:
         result.add(nnkExprColonExpr.newTree(ident(name), expression))
 
+proc ident(components: ComponentSet, component: ComponentDef): NimNode =
+    nnkDotExpr.newTree(components.enumSymbol, component.ident)
+
 proc createQueryMembersInstance(
     query: QueryDef,
     components: ComponentSet
 ): NimNode =
     ## Creates code to instantiate a QueryMembers instance
     let componentEnum = components.enumSymbol
-    let componentList = nnkCurly.newTree(
-        toSeq(query).mapIt(nnkDotExpr.newTree(componentEnum, it.ident))
-    )
+    let componentList = nnkCurly.newTree(toSeq(query).mapIt(components.ident(it)))
     result = quote:
         newQueryMembers[`componentEnum`](filterMatching[`componentEnum`](`componentList`))
 
@@ -98,6 +99,10 @@ proc createWorldInstance*(
             queries: `queryInstance`
         )
 
+proc asTupleType(components: seq[ComponentDef]): NimNode =
+    ## Creates a tuple type from a list of components
+    nnkTupleConstr.newTree(components.mapIt(it.ident))
+
 proc createQueryVars*(components: ComponentSet, queries: DirectiveSet[QueryDef]): NimNode =
     result = newStmtList()
 
@@ -106,7 +111,7 @@ proc createQueryVars*(components: ComponentSet, queries: DirectiveSet[QueryDef])
     for (name, query) in queries:
         let varName = ident(name)
 
-        let tupleType = nnkTupleConstr.newTree(toSeq(query).mapIt(it.ident))
+        let tupleType = toSeq(query).asTupleType
 
         let entityVar = ident("entityId")
 
@@ -117,11 +122,52 @@ proc createQueryVars*(components: ComponentSet, queries: DirectiveSet[QueryDef])
                 block: quote: world.components.`componentIdent`[`entityVar`]
             )
 
-        let queryVar = quote:
+        result.add quote do:
             let `varName` = newQuery[`componentEnum`, `tupleType`](
                 world.queries.`varName`,
                 proc (`entityVar`: EntityId): `tupleType` = `tupleConstruction`
             )
 
-        result.add(queryVar)
+proc associateComponentsWithEntity(allComponents: ComponentSet, components: seq[ComponentDef]): NimNode =
+    ## Generates code to associate an entity with all applicable components
+    result = newStmtList()
+    for (idx, component) in components.pairs:
+        let componentIdent = component.ident
+        let enumIdent = allComponents.ident(component)
+        result.add quote do:
+            associateComponent(world, result, `enumIdent`, world.components.`componentIdent`, components[`idx`])
+
+proc evaluateQueries(
+    components: ComponentSet,
+    spawn: SpawnDef,
+    queries: DirectiveSet[QueryDef]
+): NimNode =
+    ## Generates code to evaluate an entity against the appropriate queries
+    result = newStmtList()
+    for (name, _) in queries.containing(spawn.toSeq):
+        let ident = ident(name)
+        result.add quote do:
+            evaluateEntityForQuery(world, result, world.queries.`ident`, `name`)
+
+proc createSpawnFunc*(
+    components: ComponentSet,
+    spawns: DirectiveSet[SpawnDef],
+    queries: DirectiveSet[QueryDef]
+): NimNode =
+    ## Generates all the procs for spawning new entities
+    result = newStmtList()
+    for (name, spawn) in spawns:
+
+        let spawnProcName = ident(name)
+        let componentTuple = toSeq(spawn).asTupleType
+        let componentsIdent = ident("components")
+
+        let associateComponents = associateComponentsWithEntity(components, toSeq(spawn))
+        let evaluateQueries = evaluateQueries(components, spawn, queries)
+
+        result.add quote do:
+            proc `spawnProcName`(`componentsIdent`: sink `componentTuple`): EntityId =
+                result = world.createEntity()
+                `associateComponents`
+                `evaluateQueries`
 

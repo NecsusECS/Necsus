@@ -21,5 +21,5 @@ template createDirective(typ: untyped) =
     proc hash*(directive: typ): Hash = hash(directive.components)
 
 createDirective(QueryDef)
-
+createDirective(SpawnDef)
 

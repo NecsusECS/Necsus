@@ -1,4 +1,4 @@
-import tables, componentDef, sequtils
+import tables, componentDef, directive, sequtils, strutils, sets
 
 type
     DirectiveSet*[T] = object
@@ -14,7 +14,7 @@ proc newDirectiveSet*[T](prefix: string, values: openarray[T]): DirectiveSet[T] 
     var suffixes = initTable[string, int]()
 
     for value in values.toSeq.deduplicate:
-        let name = value.toSeq.generateName
+        let name = toLowerAscii($T) & value.toSeq.generateName
         let suffix = suffixes.mgetOrPut(name, 0)
         suffixes[name] = suffix + 1
         result.values[value] = name & $suffix
@@ -26,3 +26,13 @@ iterator items*[T](directives: DirectiveSet[T]): tuple[name: string, value: T] =
 proc symbol*[T](directives: DirectiveSet[T]): string =
     ## Returns the name of this query set
     directives.symbol
+
+iterator containing*(
+    queries: DirectiveSet[QueryDef],
+    components: openarray[ComponentDef]
+): tuple[name: string, value: QueryDef] =
+    ## Yields all queries that reference the given components
+    let compSet = components.toHashSet
+    for (query, name) in queries.values.pairs:
+        if query.toSeq.allIt(it in compSet):
+            yield (name: name, value: query)
