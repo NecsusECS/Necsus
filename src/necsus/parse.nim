@@ -1,4 +1,4 @@
-import macros, sequtils, componentDef, queryDef
+import macros, sequtils, componentDef, directive
 
 type
     SystemArgKind* {.pure.} = enum Spawn, Query

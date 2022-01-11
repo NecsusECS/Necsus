@@ -1,4 +1,4 @@
-import necsus / [entity, query, world, parse, codegen, componentSet, queryDef, directiveSet, componentDef]
+import necsus / [entity, query, world, parse, codegen, componentSet, directive, directiveSet, componentDef]
 export entity, query, world
 
 import sequtils, macros
