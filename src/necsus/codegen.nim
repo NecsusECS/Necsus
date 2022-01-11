@@ -1,4 +1,4 @@
-import macros, componentDef, componentSet, sequtils, queryDef
+import macros, componentDef, componentSet, sequtils, queryDef, directiveSet
 
 proc createComponentEnum*(components: ComponentSet): NimNode =
     ## Creates an enum with an item for every available component
@@ -39,11 +39,14 @@ proc createComponentObj*(components: ComponentSet): NimNode =
         components.toSeq.mapIt((it.ident, seqType(it.ident)))
     )
 
-proc createQueryObj*(components: ComponentSet, queries: QuerySet): NimNode =
+proc createQueryObj*(
+    components: ComponentSet,
+    queries: DirectiveSet[QueryDef]
+): NimNode =
     ## Defines a type for holding all possible queries
     let queryType = bracket("QueryMembers", components.enumSymbol)
     result = newObject(
-        ident(queries.objSymbol),
+        ident(queries.symbol),
         queries.toSeq.mapIt((propName: ident(it.name), propType: queryType))
     )
 
@@ -70,11 +73,11 @@ proc createQueryMembersInstance(
 
 proc createWorldInstance*(
     components: ComponentSet,
-    queries: QuerySet
+    queries: DirectiveSet[QueryDef]
 ): NimNode =
     let componentEnum = components.enumSymbol
     let componentObj = components.objSymbol
-    let queryObj = ident(queries.objSymbol)
+    let queryObj = ident(queries.symbol)
     let world = ident("world")
 
     let componentInstance = construct(
@@ -84,7 +87,7 @@ proc createWorldInstance*(
 
     let queryInstance = construct(
         queryObj,
-        toSeq(queries).mapIt((it.name, createQueryMembersInstance(it.query, components)))
+        toSeq(queries).mapIt((it.name, createQueryMembersInstance(it.value, components)))
     )
 
     result = quote:
@@ -95,7 +98,7 @@ proc createWorldInstance*(
             queries: `queryInstance`
         )
 
-proc createQueryVars*(components: ComponentSet, queries: QuerySet): NimNode =
+proc createQueryVars*(components: ComponentSet, queries: DirectiveSet[QueryDef]): NimNode =
     result = newStmtList()
 
     let componentEnum = components.enumSymbol

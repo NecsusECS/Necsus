@@ -23,7 +23,7 @@ proc ident*(def: ComponentDef): NimNode =
     ## Stringify a ComponentDef
     ident(def.name)
 
-proc hash*(def: ComponentDef): auto = hash(def.name)
+proc hash*(def: ComponentDef): Hash = hash(def.name)
 
 proc generateName*(components: openarray[ComponentDef]): string =
     ## Creates a name to describe the given components

@@ -1,4 +1,4 @@
-import necsus / [entity, query, world, parse, codegen, componentSet, queryDef]
+import necsus / [entity, query, world, parse, codegen, componentSet, queryDef, directiveSet, componentDef]
 export entity, query, world
 
 import sequtils, macros
@@ -20,7 +20,7 @@ macro necsus*(
 
     let allComponents = parsed.componentSet(name.strVal)
 
-    let allQueries = newQuerySet(name.strVal, parsed.queries.toSeq)
+    let allQueries = newDirectiveSet[QueryDef](name.strVal, parsed.queries.toSeq)
 
     result = nnkStmtList.newTree(
         allComponents.createComponentEnum,
