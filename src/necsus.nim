@@ -4,10 +4,10 @@ export entity, query, world
 import sequtils, macros
 
 macro necsus*(
-    name: untyped{ident},
     runner: typed{sym},
     startupSystems: typed,
     systems: typed,
+    pragmaProc: untyped
 ) =
     ## Creates an ECS world
 
@@ -16,7 +16,9 @@ macro necsus*(
         systems.parseSystemList(isStartup = false)
     )
 
-    name.expectKind(nnkIdent)
+    pragmaProc.expectKind(nnkProcDef)
+
+    let name = pragmaProc.name
 
     let allComponents = parsed.componentSet(name.strVal)
 
@@ -24,19 +26,20 @@ macro necsus*(
 
     let allSpawns = newDirectiveSet[SpawnDef](name.strVal, parsed.spawns.toSeq)
 
-    result = nnkStmtList.newTree(
+    let execSystems = callSystems(parsed.filterIt(not it.isStartup), allComponents, allSpawns, allQueries)
+
+    pragmaProc.body = newStmtList(
         allComponents.createComponentEnum,
         allComponents.createComponentObj,
         allComponents.createQueryObj(allQueries),
         createWorldInstance(allComponents, allQueries),
         createQueryVars(allComponents, allQueries),
         createSpawnFunc(allComponents, allSpawns, allQueries),
-        callSystems(parsed.filterIt(it.isStartup), allComponents, allSpawns, allQueries)
+        callSystems(parsed.filterIt(it.isStartup), allComponents, allSpawns, allQueries),
+        newCall(runner, execSystems)
     )
 
-    let execSystems = callSystems(parsed.filterIt(not it.isStartup), allComponents, allSpawns, allQueries)
-    result.add(newCall(runner, execSystems))
-
+    result = pragmaProc
     echo result.repr
 
 

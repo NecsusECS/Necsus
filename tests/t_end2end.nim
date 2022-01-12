@@ -32,13 +32,8 @@ proc mySystem(
 proc runner(tick: proc(): void) =
     tick()
 
-necsus(
-    name = myApp,
-    runner = runner,
-    startupSystems = [setupSystem],
-    systems = [mySystem]
-)
+proc myApp() {.necsus(runner, [setupSystem], [mySystem]).}
 
-#test "Basic system":
-#    myApp()
+test "Basic system":
+    myApp()
 
