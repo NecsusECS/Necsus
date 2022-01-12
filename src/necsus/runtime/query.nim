@@ -25,7 +25,12 @@ type
 iterator items*[T: tuple](query: Query[T]): T =
     ## Iterates through the entities in a query
     for entityId in items(query.entities):
-        yield query.create(EntityId(entityId))
+        yield query.create(entityId)
+
+iterator pairs*[T: tuple](query: Query[T]): tuple[entityId: EntityId, components: T] =
+    ## Iterates through the entities in a query and their components
+    for entityId in query.entities:
+        yield (entityId, query.create(entityId))
 
 func newQuery*[C: enum, T: tuple](
     members: QueryMembers[C],

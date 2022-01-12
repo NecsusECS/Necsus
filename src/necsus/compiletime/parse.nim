@@ -1,7 +1,7 @@
 import macros, sequtils, componentDef, directive
 
 type
-    SystemArgKind* {.pure.} = enum Spawn, Query
+    SystemArgKind* {.pure.} = enum Spawn, Query, Update
         ## The kind of arg within a system proc
 
     SystemArg* = object
@@ -11,6 +11,8 @@ type
             spawn: SpawnDef
         of SystemArgKind.Query:
             query: QueryDef
+        of SystemArgKind.Update:
+            update: UpdateDef
 
     ParsedSystem* = object
         ## Parsed information about a system proc
@@ -28,12 +30,15 @@ proc spawn*(arg: SystemArg): auto = arg.spawn
 
 proc query*(arg: SystemArg): auto = arg.query
 
+proc update*(arg: SystemArg): auto = arg.update
+
 proc parseArgKind(symbol: NimNode): SystemArgKind =
     ## Parses a type symbol to a SystemArgKind
     symbol.expectKind(nnkSym)
     case symbol.strVal
     of "Query": return SystemArgKind.Query
     of "Spawn": return SystemArgKind.Spawn
+    of "Update": return SystemArgKind.Update
     else: error("Unrecognized ECS interface type: " & symbol.repr, symbol)
 
 proc parseComponentsFromTuple(tupleArg: NimNode): seq[ComponentDef] =
@@ -56,6 +61,8 @@ proc parseSystemArg(ident: NimNode): SystemArg =
             result.spawn = newSpawnDef(argType[1].parseComponentsFromTuple)
         of SystemArgKind.Query:
             result.query = newQueryDef(argType[1].parseComponentsFromTuple)
+        of SystemArgKind.Update:
+            result.update = newUpdateDef(argType[1].parseComponentsFromTuple)
     else:
         error("Expecting an ECS interface type, but got: " & argType.repr, argType)
 
@@ -83,6 +90,8 @@ iterator components*(systems: openarray[ParsedSystem]): ComponentDef =
                 for component in arg.spawn: yield component
             of SystemArgKind.Query:
                 for component in arg.query: yield component
+            of SystemArgKind.Update:
+                for component in arg.update: yield component
 
 iterator args*(system: ParsedSystem): SystemArg =
     ## Yields all args in a system
@@ -101,4 +110,8 @@ iterator queries*(systems: openarray[ParsedSystem]): QueryDef =
 iterator spawns*(systems: openarray[ParsedSystem]): SpawnDef =
     ## Pulls all spawns from the given parsed systems
     for arg in systems.args.toSeq.filterIt(it.kind == SystemArgKind.Spawn): yield arg.spawn
+
+iterator updates*(systems: openarray[ParsedSystem]): UpdateDef =
+    ## Pulls all spawns from the given parsed systems
+    for arg in systems.args.toSeq.filterIt(it.kind == SystemArgKind.Update): yield arg.update
 

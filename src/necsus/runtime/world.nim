@@ -12,6 +12,9 @@ type
     Spawn*[C: tuple] = proc(components: sink C): EntityId
         ## Describes a type that is able to create new entities
 
+    Update*[C: tuple] = proc(entityId: EntityId, components: sink C)
+        ## Describes a type that is able to update existing entities new entities
+
 proc createEntity*[C, D, Q](world: var World[C, D, Q]): EntityId =
     ## Create a new entity in the given world
     result = EntityId(world.nextEntityId.atomicInc)

@@ -130,26 +130,30 @@ proc createQueryVars*(components: ComponentSet, queries: DirectiveSet[QueryDef])
                 proc (`entityVar`: EntityId): `tupleType` = `tupleConstruction`
             )
 
-proc associateComponentsWithEntity(allComponents: ComponentSet, components: seq[ComponentDef]): NimNode =
+proc associateComponentsWithEntity(
+    components: seq[ComponentDef],
+    allComponents: ComponentSet,
+    entityId: NimNode
+): NimNode =
     ## Generates code to associate an entity with all applicable components
     result = newStmtList()
     for (idx, component) in components.pairs:
         let componentIdent = component.ident
         let enumIdent = allComponents.ident(component)
         result.add quote do:
-            associateComponent(world, result, `enumIdent`, world.components.`componentIdent`, comps[`idx`])
+            associateComponent(world, `entityId`, `enumIdent`, world.components.`componentIdent`, comps[`idx`])
 
 proc evaluateQueries(
-    components: ComponentSet,
-    spawn: SpawnDef,
-    queries: DirectiveSet[QueryDef]
+    components: seq[ComponentDef],
+    queries: DirectiveSet[QueryDef],
+    entityId: NimNode
 ): NimNode =
     ## Generates code to evaluate an entity against the appropriate queries
     result = newStmtList()
-    for (name, _) in queries.containing(spawn.toSeq):
+    for (name, _) in queries.containing(components):
         let ident = ident(name)
         result.add quote do:
-            evaluateEntityForQuery(world, result, world.queries.`ident`, `name`)
+            evaluateEntityForQuery(world, `entityId`, world.queries.`ident`, `name`)
 
 proc createSpawnFunc*(
     components: ComponentSet,
@@ -164,8 +168,8 @@ proc createSpawnFunc*(
         let componentTuple = toSeq(spawn).asTupleType
         let componentsIdent = ident("comps")
 
-        let associateComponents = associateComponentsWithEntity(components, toSeq(spawn))
-        let evaluateQueries = evaluateQueries(components, spawn, queries)
+        let associateComponents = spawn.toSeq.associateComponentsWithEntity(components, ident("result"))
+        let evaluateQueries = spawn.toSeq.evaluateQueries(queries, ident("result"))
 
         result.add quote do:
             proc `spawnProcName`(components: sink `componentTuple`): EntityId =
@@ -174,11 +178,35 @@ proc createSpawnFunc*(
                 `associateComponents`
                 `evaluateQueries`
 
+proc createUpdateProcs*(
+    components: ComponentSet,
+    updates: DirectiveSet[UpdateDef],
+    queries: DirectiveSet[QueryDef]
+): NimNode =
+    ## Generates all the procs for updating entities
+    result = newStmtList()
+    for (name, update) in updates:
+
+        let updateProcName = ident(name)
+        let componentTuple = toSeq(update).asTupleType
+        let componentsIdent = ident("comps")
+        let entityIdent = ident("entity")
+
+        let associateComponents = update.toSeq.associateComponentsWithEntity(components, entityIdent)
+        let evaluateQueries = update.toSeq.evaluateQueries(queries, entityIdent)
+
+        result.add quote do:
+            proc `updateProcName`(`entityIdent`: EntityId, components: sink `componentTuple`) =
+                let `componentsIdent` = components
+                `associateComponents`
+                `evaluateQueries`
+
 proc callSystems*(
     systems: openarray[ParsedSystem],
     components: ComponentSet,
     spawns: DirectiveSet[SpawnDef],
-    queries: DirectiveSet[QueryDef]
+    queries: DirectiveSet[QueryDef],
+    updates: DirectiveSet[UpdateDef]
 ): NimNode =
     result = newStmtList()
     for system in systems:
@@ -188,6 +216,8 @@ proc callSystems*(
                 ident(spawns.nameOf(arg.spawn))
             of SystemArgKind.Query:
                 ident(queries.nameOf(arg.query))
+            of SystemArgKind.Update:
+                ident(updates.nameOf(arg.update))
 
         result.add(newCall(ident(system.symbol), props))
 

@@ -33,7 +33,9 @@ macro necsus*(
 
     let allSpawns = newDirectiveSet[SpawnDef](name.strVal, parsed.spawns.toSeq)
 
-    let execSystems = callSystems(parsed.filterIt(not it.isStartup), allComponents, allSpawns, allQueries)
+    let allUpdates = newDirectiveSet[UpdateDef](name.strVal, parsed.updates.toSeq)
+
+    let execSystems = callSystems(parsed.filterIt(not it.isStartup), allComponents, allSpawns, allQueries, allUpdates)
 
     result = newStmtList(
         allComponents.createComponentEnum,
@@ -46,7 +48,8 @@ macro necsus*(
         createWorldInstance(allComponents, allQueries),
         createQueryVars(allComponents, allQueries),
         createSpawnFunc(allComponents, allSpawns, allQueries),
-        callSystems(parsed.filterIt(it.isStartup), allComponents, allSpawns, allQueries),
+        createUpdateProcs(allComponents, allUpdates, allQueries),
+        callSystems(parsed.filterIt(it.isStartup), allComponents, allSpawns, allQueries, allUpdates),
         newCall(runner, execSystems)
     )
 
