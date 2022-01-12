@@ -18,7 +18,7 @@ type
 proc createEntity*[C, D, Q](world: var World[C, D, Q]): EntityId =
     ## Create a new entity in the given world
     result = EntityId(world.nextEntityId.atomicInc)
-    echo "Spawning ", result
+    # echo "Spawning ", result
 
 proc evaluateEntityForQuery*[C, D, Q](
     world: World[C, D, Q],
@@ -29,7 +29,7 @@ proc evaluateEntityForQuery*[C, D, Q](
     ## Adds an entity to a query, if it has the necessary components
     if query.evaluate(world.entities[int(entityId)].components):
         query += entityId
-        echo entityId, ": Adding to query ", queryName
+        # echo entityId, ": Adding to query ", queryName
 
 proc associateComponent*[C, D, Q, T](
     world: var World[C, D, Q],
@@ -39,7 +39,7 @@ proc associateComponent*[C, D, Q, T](
     componentValue: T
 ) =
     ## Associates a component
-    echo entityId, ": Adding component ", componentFlag
+    # echo entityId, ": Adding component ", componentFlag
     incl(world.entities[int(entityId)].components, componentFlag)
     componentSeq[int(entityId)] = componentValue
 

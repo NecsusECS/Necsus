@@ -48,21 +48,28 @@ proc parseComponentsFromTuple(tupleArg: NimNode): seq[ComponentDef] =
         child.expectKind(nnkSym)
         result.add(ComponentDef(child))
 
-proc parseSystemArg(ident: NimNode): SystemArg =
+proc parseSystemArg(directiveSymbol: NimNode, directiveTuple: NimNode): SystemArg =
+    ## Parses a system arg given a specific symbol and tuple
+    result.kind = directiveSymbol.parseArgKind
+    case result.kind
+    of SystemArgKind.Spawn:
+        result.spawn = newSpawnDef(directiveTuple.parseComponentsFromTuple)
+    of SystemArgKind.Query:
+        result.query = newQueryDef(directiveTuple.parseComponentsFromTuple)
+    of SystemArgKind.Update:
+        result.update = newUpdateDef(directiveTuple.parseComponentsFromTuple)
+
+proc parseSystemArg(identDef: NimNode): SystemArg =
     ## Parses a SystemArg from a proc argument
-    ident.expectKind(nnkIdentDefs)
-    let argType = ident[1]
+    identDef.expectKind(nnkIdentDefs)
+    let argType = identDef[1]
 
     case argType.kind
     of nnkBracketExpr:
-        result.kind = argType[0].parseArgKind
-        case result.kind
-        of SystemArgKind.Spawn:
-            result.spawn = newSpawnDef(argType[1].parseComponentsFromTuple)
-        of SystemArgKind.Query:
-            result.query = newQueryDef(argType[1].parseComponentsFromTuple)
-        of SystemArgKind.Update:
-            result.update = newUpdateDef(argType[1].parseComponentsFromTuple)
+        result = parseSystemArg(argType[0], argType[1])
+    of nnkCall:
+        identDef[0].expectKind(nnkSym)
+        result = parseSystemArg(argType[1], argType[2])
     else:
         error("Expecting an ECS interface type, but got: " & argType.repr, argType)
 

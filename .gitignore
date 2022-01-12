@@ -4,4 +4,6 @@ tests/t_*
 # Unignore all with extensions
 !tests/t_*.*
 
+*.js
+
 .DS_Store

@@ -54,6 +54,6 @@ macro necsus*(
         newCall(runner, execSystems)
     )
 
-    echo result.repr
+    # echo result.repr
 
 

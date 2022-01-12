@@ -173,8 +173,7 @@ proc createSpawnFunc*(
         let evaluateQueries = spawn.toSeq.evaluateQueries(queries, ident("result"))
 
         result.add quote do:
-            proc `spawnProcName`(components: `componentTuple`): EntityId =
-                let `componentsIdent` = components
+            proc `spawnProcName`(`componentsIdent`: `componentTuple`): EntityId =
                 result = world.createEntity()
                 `associateComponents`
                 `evaluateQueries`
@@ -197,8 +196,7 @@ proc createUpdateProcs*(
         let evaluateQueries = update.toSeq.evaluateQueries(queries, entityIdent)
 
         result.add quote do:
-            proc `updateProcName`(`entityIdent`: EntityId, components: `componentTuple`) =
-                let `componentsIdent` = components
+            proc `updateProcName`(`entityIdent`: EntityId, `componentsIdent`: `componentTuple`) =
                 `associateComponents`
                 `evaluateQueries`
 

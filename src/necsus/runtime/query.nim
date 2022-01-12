@@ -12,7 +12,7 @@ type
         of Matching:
             components: set[C]
 
-    Query*[T: tuple] = object
+    Query*[T: tuple] {.byref.} = object
         ## Allows systems to query for entities with specific components
         entities: EntitySet
         create: proc (entityId: EntityId): T
