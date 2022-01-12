@@ -137,7 +137,7 @@ proc associateComponentsWithEntity(allComponents: ComponentSet, components: seq[
         let componentIdent = component.ident
         let enumIdent = allComponents.ident(component)
         result.add quote do:
-            associateComponent(world, result, `enumIdent`, world.components.`componentIdent`, components[`idx`])
+            associateComponent(world, result, `enumIdent`, world.components.`componentIdent`, comps[`idx`])
 
 proc evaluateQueries(
     components: ComponentSet,
@@ -162,13 +162,14 @@ proc createSpawnFunc*(
 
         let spawnProcName = ident(name)
         let componentTuple = toSeq(spawn).asTupleType
-        let componentsIdent = ident("components")
+        let componentsIdent = ident("comps")
 
         let associateComponents = associateComponentsWithEntity(components, toSeq(spawn))
         let evaluateQueries = evaluateQueries(components, spawn, queries)
 
         result.add quote do:
-            proc `spawnProcName`(`componentsIdent`: sink `componentTuple`): EntityId =
+            proc `spawnProcName`(components: sink `componentTuple`): EntityId =
+                let `componentsIdent` = components
                 result = world.createEntity()
                 `associateComponents`
                 `evaluateQueries`
