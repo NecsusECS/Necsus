@@ -1,10 +1,7 @@
 # Ignore all
-*
+tests/t_*
 
 # Unignore all with extensions
-!*.*
-
-# Unignore all dirs
-!*/
+tests/!t_.*
 
 .DS_Store
