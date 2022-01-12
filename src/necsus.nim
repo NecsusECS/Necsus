@@ -34,6 +34,9 @@ macro necsus*(
         callSystems(parsed.filterIt(it.isStartup), allComponents, allSpawns, allQueries)
     )
 
+    let execSystems = callSystems(parsed.filterIt(not it.isStartup), allComponents, allSpawns, allQueries)
+    result.add(newCall(runner, execSystems))
+
     echo result.repr
 
 
