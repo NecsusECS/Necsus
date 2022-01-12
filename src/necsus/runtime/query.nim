@@ -39,7 +39,7 @@ func newQuery*[C: enum, T: tuple](
     ## Creates a new query instance
     Query[T](entities: members.entities, create: create)
 
-func newQueryMembers*[C: enum](filter: sink QueryFilter[C]): QueryMembers[C] =
+func newQueryMembers*[C: enum](filter: QueryFilter[C]): QueryMembers[C] =
     ## Creates a new query member instance
     QueryMembers[C](filter: filter, entities: newEntitySet())
 

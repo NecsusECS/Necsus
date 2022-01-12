@@ -9,10 +9,10 @@ type
         queries*: Q
         nextEntityId: int
 
-    Spawn*[C: tuple] = proc(components: sink C): EntityId
+    Spawn*[C: tuple] = proc(components: C): EntityId
         ## Describes a type that is able to create new entities
 
-    Update*[C: tuple] = proc(entityId: EntityId, components: sink C)
+    Update*[C: tuple] = proc(entityId: EntityId, components: C)
         ## Describes a type that is able to update existing entities new entities
 
 proc createEntity*[C, D, Q](world: var World[C, D, Q]): EntityId =
@@ -36,7 +36,7 @@ proc associateComponent*[C, D, Q, T](
     entityId: EntityId,
     componentFlag: C,
     componentSeq: var seq[T],
-    componentValue: sink T
+    componentValue: T
 ) =
     ## Associates a component
     echo entityId, ": Adding component ", componentFlag
