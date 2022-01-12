@@ -7,32 +7,33 @@ type
     Age = object
         age*: int
 
-proc setupSystem(
-    spawn1: Spawn[(Person, Name)],
-    spawn2: Spawn[(Age, )],
-    spawn3: Spawn[(Person, )]
-) =
-    discard spawn1((Person(), Name(name: "Jack")))
-    discard spawn1((Person(), Name(name: "Jill")))
-    discard spawn2((Age(age: 39), ))
-    discard spawn3((Person(), ))
-    discard spawn3((Person(), ))
+proc setup1(spawn: Spawn[(Person, Name)]) =
+    discard spawn((Person(), Name(name: "Jack")))
+    discard spawn((Person(), Name(name: "Jill")))
 
-proc mySystem(
+proc setup2(spawnAge: Spawn[(Age, )], spawnPerson: Spawn[(Person, )]) =
+    discard spawnAge((Age(age: 39), ))
+    discard spawnPerson((Person(), ))
+    discard spawnPerson((Person(), ))
+
+proc spawnMore(spawn: Spawn[(Person, Name)]) =
+    discard spawn((Person(), Name(name: "Joe")))
+
+proc assertion(
     people: Query[(Person, Name)],
     ages: Query[(Age, )],
     all: Query[(Person, Name, Age)]
 ) =
-    echo "starting mySystem"
+    echo "starting assertion"
 
-    check(toSeq(people).mapIt(it[1].name) == @["Jack", "Jill"])
+    check(toSeq(people).mapIt(it[1].name) == @["Jack", "Jill", "Joe"])
     check(toSeq(ages).mapIt(it[0].age) == @[39])
     check(toSeq(all).len == 0)
 
 proc runner(tick: proc(): void) =
     tick()
 
-proc myApp() {.necsus(runner, [setupSystem], [mySystem]).}
+proc myApp() {.necsus(runner, [~setup1, ~setup2], [~spawnMore, ~assertion]).}
 
 test "Basic system":
     myApp()

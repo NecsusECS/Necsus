@@ -4,10 +4,16 @@ import sequtils, macros
 
 export entity, query, world
 
+type SystemFlag* = object
+    ## Fixes type checking errors when passing system procs into the necsus macro
+
+proc `~`*(system: proc): SystemFlag = SystemFlag()
+    ## Ensures that system macros with various arguments are able to be massed in to the necsus macro
+
 macro necsus*(
     runner: typed{sym},
-    startupSystems: typed,
-    systems: typed,
+    startupSystems: openarray[SystemFlag],
+    systems: openarray[SystemFlag],
     pragmaProc: untyped
 ) =
     ## Creates an ECS world

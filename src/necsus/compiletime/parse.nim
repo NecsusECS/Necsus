@@ -70,7 +70,9 @@ proc parseSystem(ident: NimNode, isStartup: bool): ParsedSystem =
 proc parseSystemList*(list: NimNode, isStartup: bool): seq[ParsedSystem] =
     # Parses an inputted list of system procs into a digesteable format
     list.expectKind(nnkBracket)
-    return list.children.toSeq.mapIt(it.parseSystem(isStartup))
+    for wrappedArg in list.children:
+        wrappedArg.expectKind(nnkPrefix)
+        result.add(wrappedArg[1].parseSystem(isStartup))
 
 iterator components*(systems: openarray[ParsedSystem]): ComponentDef =
     ## Pulls all components from a list of parsed systems
