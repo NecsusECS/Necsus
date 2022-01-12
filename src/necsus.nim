@@ -1,7 +1,8 @@
-import necsus / [entity, query, world, parse, codegen, componentSet, directive, directiveSet, componentDef]
-export entity, query, world
-
+import necsus / runtime / [entity, query, world]
+import necsus / compiletime / [parse, codegen, componentSet, directive, directiveSet, componentDef]
 import sequtils, macros
+
+export entity, query, world
 
 macro necsus*(
     runner: typed{sym},
