@@ -2,6 +2,6 @@
 tests/t_*
 
 # Unignore all with extensions
-tests/!t_.*
+!tests/t_*.*
 
 .DS_Store
