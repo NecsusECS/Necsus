@@ -15,7 +15,18 @@ type
     ParsedSystem* = object
         ## Parsed information about a system proc
         isStartup: bool
+        symbol: string
         args: seq[SystemArg]
+
+proc isStartup*(system: ParsedSystem): auto = system.isStartup
+
+proc symbol*(system: ParsedSystem): auto = system.symbol
+
+proc kind*(arg: SystemArg): auto = arg.kind
+
+proc spawn*(arg: SystemArg): auto = arg.spawn
+
+proc query*(arg: SystemArg): auto = arg.query
 
 proc parseArgKind(symbol: NimNode): SystemArgKind =
     ## Parses a type symbol to a SystemArgKind
@@ -54,7 +65,7 @@ proc parseSystem(ident: NimNode, isStartup: bool): ParsedSystem =
     let args = ident.getImpl.params.toSeq
         .filterIt(it.kind == nnkIdentDefs)
         .mapIt(it.parseSystemArg)
-    return ParsedSystem(isStartup: isStartup, args: args)
+    return ParsedSystem(isStartup: isStartup, symbol: ident.strVal, args: args)
 
 proc parseSystemList*(list: NimNode, isStartup: bool): seq[ParsedSystem] =
     # Parses an inputted list of system procs into a digesteable format
@@ -70,6 +81,10 @@ iterator components*(systems: openarray[ParsedSystem]): ComponentDef =
                 for component in arg.spawn: yield component
             of SystemArgKind.Query:
                 for component in arg.query: yield component
+
+iterator args*(system: ParsedSystem): SystemArg =
+    ## Yields all args in a system
+    for arg in system.args: yield arg
 
 iterator args*(systems: openarray[ParsedSystem]): SystemArg =
     ## Yields all args in a system

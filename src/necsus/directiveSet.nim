@@ -36,3 +36,7 @@ iterator containing*(
     for (query, name) in queries.values.pairs:
         if query.toSeq.allIt(it in compSet):
             yield (name: name, value: query)
+
+proc nameOf*[T](directives: DirectiveSet[T], value: T): string =
+    ## Returns the name of a directive
+    directives.values[value]

@@ -31,6 +31,7 @@ macro necsus*(
         createWorldInstance(allComponents, allQueries),
         createQueryVars(allComponents, allQueries),
         createSpawnFunc(allComponents, allSpawns, allQueries),
+        callSystems(parsed.filterIt(it.isStartup), allComponents, allSpawns, allQueries)
     )
 
     echo result.repr

@@ -1,4 +1,4 @@
-import macros, componentDef, componentSet, sequtils, directive, directiveSet
+import macros, componentDef, componentSet, sequtils, directive, directiveSet, parse
 
 proc createComponentEnum*(components: ComponentSet): NimNode =
     ## Creates an enum with an item for every available component
@@ -80,10 +80,12 @@ proc createWorldInstance*(
     let componentObj = components.objSymbol
     let queryObj = ident(queries.symbol)
     let world = ident("world")
+    let initialSize = ident("initialSize")
 
     let componentInstance = construct(
         componentObj,
-        toSeq(components).mapIt((it.name, newCall(bracket("newSeq", it.ident))))
+        components.toSeq.map do (pair: auto) -> auto:
+        (pair.name, newCall(bracket("newSeq", pair.ident), ident("initialSize")))
     )
 
     let queryInstance = construct(
@@ -92,9 +94,9 @@ proc createWorldInstance*(
     )
 
     result = quote:
-        let initialSize = 100
+        let `initialSize` = 100
         var `world` = World[`componentEnum`, `componentObj`, `queryObj`](
-            entities: newSeq[EntityMetadata[`componentEnum`]](initialSize),
+            entities: newSeq[EntityMetadata[`componentEnum`]](`initialSize`),
             components: `componentInstance`,
             queries: `queryInstance`
         )
@@ -170,4 +172,21 @@ proc createSpawnFunc*(
                 result = world.createEntity()
                 `associateComponents`
                 `evaluateQueries`
+
+proc callSystems*(
+    systems: openarray[ParsedSystem],
+    components: ComponentSet,
+    spawns: DirectiveSet[SpawnDef],
+    queries: DirectiveSet[QueryDef]
+): NimNode =
+    result = newStmtList()
+    for system in systems:
+        let props = system.args.toSeq.map do (arg: SystemArg) -> NimNode:
+            case arg.kind
+            of SystemArgKind.Spawn:
+                ident(spawns.nameOf(arg.spawn))
+            of SystemArgKind.Query:
+                ident(queries.nameOf(arg.query))
+
+        result.add(newCall(ident(system.symbol), props))
 
