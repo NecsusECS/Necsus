@@ -28,7 +28,7 @@ proc assertions(all: Query[(Name, Age, Mood)]) =
 proc runner(tick: proc(): void) =
     tick()
 
-proc myApp() {.necsus(runner, [~setup], [~modify, ~assertions]).}
+proc myApp() {.necsus(runner, [~setup], [~modify, ~assertions], initialSize = 100).}
 
 test "Updating entities":
     myApp()

@@ -73,6 +73,7 @@ proc createQueryMembersInstance(
         newQueryMembers[`componentEnum`](filterMatching[`componentEnum`](`componentList`))
 
 proc createWorldInstance*(
+    initialSize: BiggestInt,
     components: ComponentSet,
     queries: DirectiveSet[QueryDef]
 ): NimNode =
@@ -80,12 +81,12 @@ proc createWorldInstance*(
     let componentObj = components.objSymbol
     let queryObj = ident(queries.symbol)
     let world = ident("world")
-    let initialSize = ident("initialSize")
+    let initialSizeIdent = ident("initialSize")
 
     let componentInstance = construct(
         componentObj,
         components.toSeq.map do (pair: auto) -> auto:
-        (pair.name, newCall(bracket("newSeq", pair.ident), ident("initialSize")))
+        (pair.name, newCall(bracket("newSeq", pair.ident), initialSizeIdent))
     )
 
     let queryInstance = construct(
@@ -94,9 +95,9 @@ proc createWorldInstance*(
     )
 
     result = quote:
-        let `initialSize` = 100
+        let `initialSizeIdent` = `initialSize`
         var `world` = World[`componentEnum`, `componentObj`, `queryObj`](
-            entities: newSeq[EntityMetadata[`componentEnum`]](`initialSize`),
+            entities: newSeq[EntityMetadata[`componentEnum`]](`initialSizeIdent`),
             components: `componentInstance`,
             queries: `queryInstance`
         )

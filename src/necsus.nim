@@ -14,6 +14,7 @@ macro necsus*(
     runner: typed{sym},
     startupSystems: openarray[SystemFlag],
     systems: openarray[SystemFlag],
+    initialSize: int,
     pragmaProc: untyped
 ) =
     ## Creates an ECS world
@@ -45,7 +46,7 @@ macro necsus*(
     )
 
     pragmaProc.body = newStmtList(
-        createWorldInstance(allComponents, allQueries),
+        createWorldInstance(initialSize.intVal, allComponents, allQueries),
         createQueryVars(allComponents, allQueries),
         createSpawnFunc(allComponents, allSpawns, allQueries),
         createUpdateProcs(allComponents, allUpdates, allQueries),
