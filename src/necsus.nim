@@ -28,10 +28,14 @@ macro necsus*(
 
     let execSystems = callSystems(parsed.filterIt(not it.isStartup), allComponents, allSpawns, allQueries)
 
-    pragmaProc.body = newStmtList(
+    result = newStmtList(
         allComponents.createComponentEnum,
         allComponents.createComponentObj,
         allComponents.createQueryObj(allQueries),
+        pragmaProc
+    )
+
+    pragmaProc.body = newStmtList(
         createWorldInstance(allComponents, allQueries),
         createQueryVars(allComponents, allQueries),
         createSpawnFunc(allComponents, allSpawns, allQueries),
@@ -39,7 +43,6 @@ macro necsus*(
         newCall(runner, execSystems)
     )
 
-    result = pragmaProc
     echo result.repr
 
 
