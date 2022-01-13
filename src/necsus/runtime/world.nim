@@ -15,6 +15,9 @@ type
     Update*[C: tuple] = proc(entityId: EntityId, components: C)
         ## Describes a type that is able to update existing entities new entities
 
+    TimeDelta* = float
+        ## Tracks the amount of time since the last execution of a system
+
 proc createEntity*[C, D, Q](world: var World[C, D, Q]): EntityId =
     ## Create a new entity in the given world
     result = EntityId(world.nextEntityId.atomicInc)

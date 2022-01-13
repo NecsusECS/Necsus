@@ -1,4 +1,4 @@
-import macros, componentDef, componentSet, sequtils, directive, directiveSet, parse
+import macros, componentDef, componentSet, sequtils, directive, directiveSet, parse, times
 
 proc createComponentEnum*(components: ComponentSet): NimNode =
     ## Creates an enum with an item for every available component
@@ -217,6 +217,34 @@ proc callSystems*(
                 ident(queries.nameOf(arg.query))
             of SystemArgKind.Update:
                 ident(updates.nameOf(arg.update))
+            of SystemArgKind.TimeDelta:
+                ident("timeDelta")
 
         result.add(newCall(ident(system.symbol), props))
+
+proc createTickRunner*(
+    runner: NimNode,
+    systems: openarray[ParsedSystem],
+    components: ComponentSet,
+    spawns: DirectiveSet[SpawnDef],
+    queries: DirectiveSet[QueryDef],
+    updates: DirectiveSet[UpdateDef]
+): NimNode =
+    ## Creates the code required to execute a single tick within the world
+
+    let startups = callSystems(systems.filterIt(it.isStartup), components, spawns, queries, updates)
+    let execSystems = callSystems(systems.filterIt(not it.isStartup), components, spawns, queries, updates)
+
+    let timeDelta = ident("timeDelta")
+    let epochTimeIdent = bindSym("epochTime")
+
+    result = quote do:
+        var lastTime: float = `epochTimeIdent`()
+        var `timeDelta`: float = 0
+        `startups`
+        `runner` do:
+            let thisTime = `epochTimeIdent`()
+            `timeDelta` = thisTime - lastTime
+            `execSystems`
+            lastTime = thisTime
 

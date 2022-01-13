@@ -36,8 +36,6 @@ macro necsus*(
 
     let allUpdates = newDirectiveSet[UpdateDef](name.strVal, parsed.updates.toSeq)
 
-    let execSystems = callSystems(parsed.filterIt(not it.isStartup), allComponents, allSpawns, allQueries, allUpdates)
-
     result = newStmtList(
         allComponents.createComponentEnum,
         allComponents.createComponentObj,
@@ -50,8 +48,7 @@ macro necsus*(
         createQueryVars(allComponents, allQueries),
         createSpawnFunc(allComponents, allSpawns, allQueries),
         createUpdateProcs(allComponents, allUpdates, allQueries),
-        callSystems(parsed.filterIt(it.isStartup), allComponents, allSpawns, allQueries, allUpdates),
-        newCall(runner, execSystems)
+        createTickRunner(runner, parsed, allComponents, allSpawns, allQueries, allUpdates)
     )
 
     # echo result.repr

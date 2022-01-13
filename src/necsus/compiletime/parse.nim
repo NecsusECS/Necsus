@@ -1,7 +1,7 @@
 import macros, sequtils, componentDef, directive
 
 type
-    SystemArgKind* {.pure.} = enum Spawn, Query, Update
+    SystemArgKind* {.pure.} = enum Spawn, Query, Update, TimeDelta
         ## The kind of arg within a system proc
 
     SystemArg* = object
@@ -13,6 +13,8 @@ type
             query: QueryDef
         of SystemArgKind.Update:
             update: UpdateDef
+        of SystemArgKind.TimeDelta:
+            discard
 
     ParsedSystem* = object
         ## Parsed information about a system proc
@@ -39,6 +41,7 @@ proc parseArgKind(symbol: NimNode): SystemArgKind =
     of "Query": return SystemArgKind.Query
     of "Spawn": return SystemArgKind.Spawn
     of "Update": return SystemArgKind.Update
+    of "TimeDelta": return SystemArgKind.TimeDelta
     else: error("Unrecognized ECS interface type: " & symbol.repr, symbol)
 
 proc parseComponentsFromTuple(tupleArg: NimNode): seq[ComponentDef] =
@@ -51,7 +54,7 @@ proc parseComponentsFromTuple(tupleArg: NimNode): seq[ComponentDef] =
         of nnkIdentDefs: result.add(ComponentDef(child[1]))
         else: error("Unexpected node kind: " & child.treeRepr)
 
-proc parseSystemArg(directiveSymbol: NimNode, directiveTuple: NimNode): SystemArg =
+proc parseTupleSystemArg(directiveSymbol: NimNode, directiveTuple: NimNode): SystemArg =
     ## Parses a system arg given a specific symbol and tuple
     result.kind = directiveSymbol.parseArgKind
     case result.kind
@@ -61,6 +64,17 @@ proc parseSystemArg(directiveSymbol: NimNode, directiveTuple: NimNode): SystemAr
         result.query = newQueryDef(directiveTuple.parseComponentsFromTuple)
     of SystemArgKind.Update:
         result.update = newUpdateDef(directiveTuple.parseComponentsFromTuple)
+    of SystemArgKind.TimeDelta:
+        error("System argument does not support tuple parameters: " & $result.kind)
+
+proc parseFlagSystemArg(directiveSymbol: NimNode): SystemArg =
+    ## Parses unparameterized system args
+    result.kind = directiveSymbol.parseArgKind
+    case result.kind
+    of SystemArgKind.Spawn, SystemArgKind.Query, SystemArgKind.Update:
+        error("System argument is not flag based: " & $result.kind)
+    of SystemArgKind.TimeDelta:
+        discard
 
 proc parseSystemArg(identDef: NimNode): SystemArg =
     ## Parses a SystemArg from a proc argument
@@ -69,10 +83,12 @@ proc parseSystemArg(identDef: NimNode): SystemArg =
 
     case argType.kind
     of nnkBracketExpr:
-        result = parseSystemArg(argType[0], argType[1])
+        result = parseTupleSystemArg(argType[0], argType[1])
     of nnkCall:
         identDef[0].expectKind(nnkSym)
-        result = parseSystemArg(argType[1], argType[2])
+        result = parseTupleSystemArg(argType[1], argType[2])
+    of nnkSym:
+        result = parseFlagSystemArg(argType)
     else:
         error("Expecting an ECS interface type, but got: " & argType.repr, argType)
 
@@ -102,6 +118,8 @@ iterator components*(systems: openarray[ParsedSystem]): ComponentDef =
                 for component in arg.query: yield component
             of SystemArgKind.Update:
                 for component in arg.update: yield component
+            of SystemArgKind.TimeDelta:
+                discard
 
 iterator args*(system: ParsedSystem): SystemArg =
     ## Yields all args in a system
