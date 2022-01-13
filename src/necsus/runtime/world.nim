@@ -20,7 +20,7 @@ type
 
 proc createEntity*[C, D, Q](world: var World[C, D, Q]): EntityId =
     ## Create a new entity in the given world
-    result = EntityId(world.nextEntityId.atomicInc)
+    result = EntityId(world.nextEntityId.atomicInc - 1)
     # echo "Spawning ", result
 
 proc evaluateEntityForQuery*[C, D, Q](
