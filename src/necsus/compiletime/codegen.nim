@@ -73,7 +73,7 @@ proc createQueryMembersInstance(
         newQueryMembers[`componentEnum`](filterMatching[`componentEnum`](`componentList`))
 
 proc createWorldInstance*(
-    initialSize: BiggestInt,
+    initialSize: NimNode,
     components: ComponentSet,
     queries: DirectiveSet[QueryDef]
 ): NimNode =

@@ -44,7 +44,7 @@ macro necsus*(
     )
 
     pragmaProc.body = newStmtList(
-        createWorldInstance(initialSize.intVal, allComponents, allQueries),
+        createWorldInstance(initialSize, allComponents, allQueries),
         createQueryVars(allComponents, allQueries),
         createSpawnFunc(allComponents, allSpawns, allQueries),
         createUpdateProcs(allComponents, allUpdates, allQueries),
