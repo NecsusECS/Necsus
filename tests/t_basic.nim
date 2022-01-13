@@ -20,9 +20,9 @@ proc spawnMore(spawn: Spawn[(Person, Name)]) =
     discard spawn((Person(), Name(name: "Joe")))
 
 proc assertion(
-    people: Query[(Person, Name)],
-    ages: Query[(Age, )],
-    all: Query[(Person, Name, Age)]
+    people: Query[tuple[person: Person, name: Name]],
+    ages: Query[tuple[age: Age, ]],
+    all: Query[tuple[person: Person, name: Name, age: Age]]
 ) =
     echo "starting assertion"
 

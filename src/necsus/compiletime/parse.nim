@@ -43,10 +43,13 @@ proc parseArgKind(symbol: NimNode): SystemArgKind =
 
 proc parseComponentsFromTuple(tupleArg: NimNode): seq[ComponentDef] =
     ## Parses the symbols out of a tuple definition
-    tupleArg.expectKind(nnkTupleConstr)
+    tupleArg.expectKind({nnkTupleConstr, nnkTupleTy})
     for child in tupleArg.children:
-        child.expectKind(nnkSym)
-        result.add(ComponentDef(child))
+        child.expectKind({nnkSym, nnkIdentDefs})
+        case child.kind
+        of nnkSym: result.add(ComponentDef(child))
+        of nnkIdentDefs: result.add(ComponentDef(child[1]))
+        else: error("Unexpected node kind: " & child.treeRepr)
 
 proc parseSystemArg(directiveSymbol: NimNode, directiveTuple: NimNode): SystemArg =
     ## Parses a system arg given a specific symbol and tuple
