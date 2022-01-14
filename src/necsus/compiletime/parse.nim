@@ -44,14 +44,19 @@ proc parseArgKind(symbol: NimNode): SystemArgKind =
     of "TimeDelta": return SystemArgKind.TimeDelta
     else: error("Unrecognized ECS interface type: " & symbol.repr, symbol)
 
+proc parseComponentDef(node: NimNode): ComponentDef =
+    case node.kind
+    of nnkSym: return ComponentDef(node)
+    else: node.expectKind(nnkSym)
+
 proc parseComponentsFromTuple(tupleArg: NimNode): seq[ComponentDef] =
     ## Parses the symbols out of a tuple definition
     tupleArg.expectKind({nnkTupleConstr, nnkTupleTy})
     for child in tupleArg.children:
         child.expectKind({nnkSym, nnkIdentDefs})
         case child.kind
-        of nnkSym: result.add(ComponentDef(child))
-        of nnkIdentDefs: result.add(ComponentDef(child[1]))
+        of nnkSym: result.add(parseComponentDef(child))
+        of nnkIdentDefs: result.add(parseComponentDef(child[1]))
         else: error("Unexpected node kind: " & child.treeRepr)
 
 proc parseTupleSystemArg(directiveSymbol: NimNode, directiveTuple: NimNode): SystemArg =
