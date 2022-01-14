@@ -1,8 +1,10 @@
 # Ignore all
 tests/t_*
+benchmarks/*
 
 # Unignore all with extensions
 !tests/t_*.*
+!benchmarks/*.*
 
 *.js
 

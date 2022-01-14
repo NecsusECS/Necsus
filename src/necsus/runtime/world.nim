@@ -21,6 +21,10 @@ type
 proc createEntity*[C, D, Q](world: var World[C, D, Q]): EntityId =
     ## Create a new entity in the given world
     result = EntityId(world.nextEntityId.atomicInc - 1)
+    assert(
+        int(result) < world.entities.len,
+        "Trying to spawn an entity (" & $result & ") beyond the max entity size: " & $world.entities.len
+    )
     # echo "Spawning ", result
 
 proc evaluateEntityForQuery*[C, D, Q](

@@ -11,5 +11,5 @@ srcDir = "src"
 requires "nim >= 1.6.0"
 
 task benchmark, "Executes a suite of benchmarks":
-    exec("nim r -d:release --verbosity:0 --hints:off ./benchmarks/packed1.nim")
-    exec("nim r -d:release --verbosity:0 --hints:off ./benchmarks/packed5.nim")
+    for script in ["packed1", "packed5", "updates"]:
+        exec("nim r -d:release --verbosity:0 --hints:off ./benchmarks/" & script & ".nim")
