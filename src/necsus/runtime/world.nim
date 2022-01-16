@@ -7,6 +7,7 @@ type
         entities*: seq[EntityMetadata[C]]
         components*: D
         queries*: Q
+        deleted*: EntitySet
         nextEntityId: int
 
     Spawn*[C: tuple] = proc(components: C): EntityId
@@ -14,6 +15,9 @@ type
 
     Update*[C: tuple] = proc(entityId: EntityId, components: C)
         ## Describes a type that is able to update existing entities new entities
+
+    Delete* = proc(entityId: EntityId)
+        ## Deletes an entity
 
     TimeDelta* = float
         ## Tracks the amount of time since the last execution of a system
@@ -26,6 +30,9 @@ proc createEntity*[C, D, Q](world: var World[C, D, Q]): EntityId =
         "Trying to spawn an entity (" & $result & ") beyond the max entity size: " & $world.entities.len
     )
     # echo "Spawning ", result
+
+proc deleteEntity*[C, D, Q](world: var World[C, D, Q], entityId: EntityId) =
+    world.deleted += entityId
 
 proc evaluateEntityForQuery*[C, D, Q](
     world: World[C, D, Q],

@@ -32,3 +32,6 @@ proc newEntitySet*(): EntitySet =
 proc `+=`*(entities: var EntitySet, entityId: EntityId) =
     ## Create a new entity set
     incl(IntSet(entities.entities), int(entityId))
+
+func contains*(entities: EntitySet, entityId: EntityId): bool =
+    entities.entities.contains(int(entityId))

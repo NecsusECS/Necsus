@@ -1,7 +1,7 @@
 import macros, sequtils, componentDef, directive
 
 type
-    SystemArgKind* {.pure.} = enum Spawn, Query, Update, TimeDelta
+    SystemArgKind* {.pure.} = enum Spawn, Query, Update, TimeDelta, Delete
         ## The kind of arg within a system proc
 
     SystemArg* = object
@@ -13,7 +13,7 @@ type
             query: QueryDef
         of SystemArgKind.Update:
             update: UpdateDef
-        of SystemArgKind.TimeDelta:
+        of SystemArgKind.TimeDelta, SystemArgKind.Delete:
             discard
 
     ParsedSystem* = object
@@ -42,6 +42,7 @@ proc parseArgKind(symbol: NimNode): SystemArgKind =
     of "Spawn": return SystemArgKind.Spawn
     of "Update": return SystemArgKind.Update
     of "TimeDelta": return SystemArgKind.TimeDelta
+    of "Delete": return SystemArgKind.Delete
     else: error("Unrecognized ECS interface type: " & symbol.repr, symbol)
 
 proc parseComponentDef(node: NimNode): ComponentDef =
@@ -69,7 +70,7 @@ proc parseTupleSystemArg(directiveSymbol: NimNode, directiveTuple: NimNode): Sys
         result.query = newQueryDef(directiveTuple.parseComponentsFromTuple)
     of SystemArgKind.Update:
         result.update = newUpdateDef(directiveTuple.parseComponentsFromTuple)
-    of SystemArgKind.TimeDelta:
+    of SystemArgKind.TimeDelta, SystemArgKind.Delete:
         error("System argument does not support tuple parameters: " & $result.kind)
 
 proc parseFlagSystemArg(directiveSymbol: NimNode): SystemArg =
@@ -78,7 +79,7 @@ proc parseFlagSystemArg(directiveSymbol: NimNode): SystemArg =
     case result.kind
     of SystemArgKind.Spawn, SystemArgKind.Query, SystemArgKind.Update:
         error("System argument is not flag based: " & $result.kind)
-    of SystemArgKind.TimeDelta:
+    of SystemArgKind.TimeDelta, SystemArgKind.Delete:
         discard
 
 proc parseSystemArg(identDef: NimNode): SystemArg =
@@ -123,7 +124,7 @@ iterator components*(systems: openarray[ParsedSystem]): ComponentDef =
                 for component in arg.query: yield component
             of SystemArgKind.Update:
                 for component in arg.update: yield component
-            of SystemArgKind.TimeDelta:
+            of SystemArgKind.TimeDelta, SystemArgKind.Delete:
                 discard
 
 iterator args*(system: ParsedSystem): SystemArg =

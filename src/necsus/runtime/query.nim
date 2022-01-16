@@ -15,6 +15,7 @@ type
     Query*[T: tuple] {.byref.} = object
         ## Allows systems to query for entities with specific components
         entities: EntitySet
+        deleted: EntitySet
         create: proc (entityId: EntityId): T
 
     QueryMembers*[C: enum] = object
@@ -24,20 +25,22 @@ type
 
 iterator items*[T: tuple](query: Query[T]): T =
     ## Iterates through the entities in a query
-    for entityId in items(query.entities):
-        yield query.create(entityId)
+    for (_, components) in query.pairs:
+        yield components
 
 iterator pairs*[T: tuple](query: Query[T]): tuple[entityId: EntityId, components: T] =
     ## Iterates through the entities in a query and their components
     for entityId in query.entities:
-        yield (entityId, query.create(entityId))
+        if entityId notin query.deleted:
+            yield (entityId, query.create(entityId))
 
 func newQuery*[C: enum, T: tuple](
     members: QueryMembers[C],
+    deleted: EntitySet,
     create: proc (entityId: EntityId): T
 ): Query[T] =
     ## Creates a new query instance
-    Query[T](entities: members.entities, create: create)
+    Query[T](entities: members.entities, deleted: deleted, create: create)
 
 func newQueryMembers*[C: enum](filter: QueryFilter[C]): QueryMembers[C] =
     ## Creates a new query member instance

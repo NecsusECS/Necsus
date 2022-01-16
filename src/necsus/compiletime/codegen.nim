@@ -99,7 +99,8 @@ proc createWorldInstance*(
         var `world` = World[`componentEnum`, `componentObj`, `queryObj`](
             entities: newSeq[EntityMetadata[`componentEnum`]](`initialSizeIdent`),
             components: `componentInstance`,
-            queries: `queryInstance`
+            queries: `queryInstance`,
+            deleted: newEntitySet()
         )
 
 proc asTupleType(components: seq[ComponentDef]): NimNode =
@@ -128,6 +129,7 @@ proc createQueryVars*(components: ComponentSet, queries: DirectiveSet[QueryDef])
         result.add quote do:
             let `varName` = newQuery[`componentEnum`, `tupleType`](
                 world.queries.`varName`,
+                world.deleted,
                 proc (`entityVar`: EntityId): `tupleType` = `tupleConstruction`
             )
 
@@ -200,6 +202,13 @@ proc createUpdateProcs*(
                 `associateComponents`
                 `evaluateQueries`
 
+proc createDeleteProc*(): NimNode =
+    ## Generates all the procs for updating entities
+    let deleteProc = ident("deleteEntity")
+    result = quote do:
+        proc `deleteProc`(entity: EntityId) =
+            world.deleteEntity(entity)
+
 proc callSystems*(
     systems: openarray[ParsedSystem],
     components: ComponentSet,
@@ -219,6 +228,8 @@ proc callSystems*(
                 ident(updates.nameOf(arg.update))
             of SystemArgKind.TimeDelta:
                 ident("timeDelta")
+            of SystemArgKind.Delete:
+                ident("deleteEntity")
 
         result.add(newCall(ident(system.symbol), props))
 

@@ -48,6 +48,7 @@ macro necsus*(
         createQueryVars(allComponents, allQueries),
         createSpawnFunc(allComponents, allSpawns, allQueries),
         createUpdateProcs(allComponents, allUpdates, allQueries),
+        createDeleteProc(),
         createTickRunner(runner, parsed, allComponents, allSpawns, allQueries, allUpdates)
     )
 
