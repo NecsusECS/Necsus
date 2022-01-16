@@ -1,4 +1,4 @@
-import entity, atomics, query, macros
+import entity, atomics, query, macros, entitySet
 
 type
 
@@ -74,6 +74,6 @@ proc associateComponent*[C, D, Q, T](
 
 proc clearDeletedEntities*[C, D, Q](world: var World[C, D, Q]) =
     ## Resets the list of deleted entities
-    for entity in world.deleted:
+    for entity in world.deleted.items:
         world.recycleEntityIds.add entity
     world.deleted.clear()

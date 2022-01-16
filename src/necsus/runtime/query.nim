@@ -1,4 +1,4 @@
-import entity
+import entitySet, entity
 
 type
     QueryFilterKind {.pure.} = enum All, Matching
@@ -30,7 +30,7 @@ iterator items*[T: tuple](query: Query[T]): T =
 
 iterator pairs*[T: tuple](query: Query[T]): tuple[entityId: EntityId, components: T] =
     ## Iterates through the entities in a query and their components
-    for entityId in query.entities:
+    for entityId in query.entities.items:
         if entityId notin query.deleted:
             yield (entityId, query.create(entityId))
 
