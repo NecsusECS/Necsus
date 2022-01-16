@@ -4,7 +4,7 @@ type
 
     World*[C: enum, D: object, Q: object] = ref object
         ## Contains the data describing the entire world
-        entities*: seq[EntityMetadata[C]]
+        entities: seq[EntityMetadata[C]]
         components*: D
         queries*: Q
         deleted*: EntitySet
@@ -21,6 +21,16 @@ type
 
     TimeDelta* = float
         ## Tracks the amount of time since the last execution of a system
+
+proc newWorld*[C, D, Q](initialSize: int, components: sink D, queries: sink Q): World[C, D, Q] =
+    ## Creates a new world
+    World[C, D, Q](
+        entities: newSeq[EntityMetadata[C]](initialSize),
+        components: components,
+        queries: queries,
+        deleted: newEntitySet(),
+        nextEntityId: 0
+    )
 
 proc createEntity*[C, D, Q](world: var World[C, D, Q]): EntityId =
     ## Create a new entity in the given world

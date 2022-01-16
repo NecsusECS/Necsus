@@ -96,11 +96,10 @@ proc createWorldInstance*(
 
     result = quote:
         let `initialSizeIdent` = `initialSize`
-        var `world` = World[`componentEnum`, `componentObj`, `queryObj`](
-            entities: newSeq[EntityMetadata[`componentEnum`]](`initialSizeIdent`),
-            components: `componentInstance`,
-            queries: `queryInstance`,
-            deleted: newEntitySet()
+        var `world` = newWorld[`componentEnum`, `componentObj`, `queryObj`](
+            `initialSize`,
+            `componentInstance`,
+            `queryInstance`
         )
 
 proc asTupleType(components: seq[ComponentDef]): NimNode =
