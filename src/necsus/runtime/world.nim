@@ -1,4 +1,4 @@
-import entity, atomics, query, macros, entitySet
+import entity, atomics, query, macros, entitySet, deques
 
 type
 
@@ -9,7 +9,7 @@ type
         queries*: Q
         deleted*: EntitySet
         nextEntityId: int
-        recycleEntityIds: seq[EntityId]
+        recycleEntityIds: Deque[EntityId]
 
     Spawn*[C: tuple] = proc(components: C): EntityId
         ## Describes a type that is able to create new entities
@@ -31,13 +31,13 @@ proc newWorld*[C, D, Q](initialSize: int, components: sink D, queries: sink Q): 
         queries: queries,
         deleted: newEntitySet(),
         nextEntityId: 0,
-        recycleEntityIds: newSeq[EntityId]()
+        recycleEntityIds: initDeque[EntityId]()
     )
 
 proc createEntity*[C, D, Q](world: var World[C, D, Q]): EntityId =
     ## Create a new entity in the given world
     if world.recycleEntityIds.len > 0:
-        result = world.recycleEntityIds.pop
+        result = world.recycleEntityIds.popFirst
     else:
         result = EntityId(world.nextEntityId.atomicInc - 1)
         assert(
@@ -75,5 +75,5 @@ proc associateComponent*[C, D, Q, T](
 proc clearDeletedEntities*[C, D, Q](world: var World[C, D, Q]) =
     ## Resets the list of deleted entities
     for entity in world.deleted.items:
-        world.recycleEntityIds.add entity
+        world.recycleEntityIds.addLast entity
     world.deleted.clear()
