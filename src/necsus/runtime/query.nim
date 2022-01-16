@@ -61,4 +61,8 @@ proc `+=`*[C: enum](members: var QueryMembers[C], entityId: EntityId) =
 func filterMatching*[C: enum](components: set[C]): auto =
     QueryFilter[C](kind: QueryFilterKind.Matching, components: components)
 
+proc finalizeDeletes*[T](query: var Query[T]) =
+    ## Removes any entities that are pending deletion from this query
+    query.entities -= query.deleted
+
 

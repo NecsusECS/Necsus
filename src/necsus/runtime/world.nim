@@ -9,6 +9,7 @@ type
         queries*: Q
         deleted*: EntitySet
         nextEntityId: int
+        recycleEntityIds: seq[EntityId]
 
     Spawn*[C: tuple] = proc(components: C): EntityId
         ## Describes a type that is able to create new entities
@@ -29,16 +30,20 @@ proc newWorld*[C, D, Q](initialSize: int, components: sink D, queries: sink Q): 
         components: components,
         queries: queries,
         deleted: newEntitySet(),
-        nextEntityId: 0
+        nextEntityId: 0,
+        recycleEntityIds: newSeq[EntityId]()
     )
 
 proc createEntity*[C, D, Q](world: var World[C, D, Q]): EntityId =
     ## Create a new entity in the given world
-    result = EntityId(world.nextEntityId.atomicInc - 1)
-    assert(
-        int(result) < world.entities.len,
-        "Trying to spawn an entity (" & $result & ") beyond the max entity size: " & $world.entities.len
-    )
+    if world.recycleEntityIds.len > 0:
+        result = world.recycleEntityIds.pop
+    else:
+        result = EntityId(world.nextEntityId.atomicInc - 1)
+        assert(
+            int(result) < world.entities.len,
+            "Trying to spawn an entity (" & $result & ") beyond the max entity size: " & $world.entities.len
+        )
     # echo "Spawning ", result
 
 proc deleteEntity*[C, D, Q](world: var World[C, D, Q], entityId: EntityId) =
@@ -67,3 +72,8 @@ proc associateComponent*[C, D, Q, T](
     incl(world.entities[int(entityId)].components, componentFlag)
     componentSeq[int(entityId)] = componentValue
 
+proc clearDeletedEntities*[C, D, Q](world: var World[C, D, Q]) =
+    ## Resets the list of deleted entities
+    for entity in world.deleted:
+        world.recycleEntityIds.add entity
+    world.deleted.clear()

@@ -35,3 +35,15 @@ proc `+=`*(entities: var EntitySet, entityId: EntityId) =
 
 func contains*(entities: EntitySet, entityId: EntityId): bool =
     entities.entities.contains(int(entityId))
+
+func `-=`*(entities: var EntitySet, toRemove: EntitySet) =
+    ## Removes a set of entities from this instance
+    entities.entities.excl(toRemove.entities)
+
+func `$`*(entities: EntitySet): string =
+    ## Stringify
+    $(entities.entities)
+
+func clear*(entities: var EntitySet) =
+    ## Removes all values
+    entities.entities.clear

@@ -126,7 +126,7 @@ proc createQueryVars*(components: ComponentSet, queries: DirectiveSet[QueryDef])
             )
 
         result.add quote do:
-            let `varName` = newQuery[`componentEnum`, `tupleType`](
+            var `varName` = newQuery[`componentEnum`, `tupleType`](
                 world.queries.`varName`,
                 world.deleted,
                 proc (`entityVar`: EntityId): `tupleType` = `tupleConstruction`
@@ -232,6 +232,12 @@ proc callSystems*(
 
         result.add(newCall(ident(system.symbol), props))
 
+proc createDelteFinalizers(queries: DirectiveSet[QueryDef]): NimNode =
+    ## Creates method calls to process deleted entities
+    result = newStmtList()
+    for (name, _) in queries:
+        result.add(newCall(ident("finalizeDeletes"), ident(name)))
+
 proc createTickRunner*(
     runner: NimNode,
     systems: openarray[ParsedSystem],
@@ -244,6 +250,7 @@ proc createTickRunner*(
 
     let startups = callSystems(systems.filterIt(it.isStartup), components, spawns, queries, updates)
     let execSystems = callSystems(systems.filterIt(not it.isStartup), components, spawns, queries, updates)
+    let deleteFinalizers = createDelteFinalizers(queries)
 
     let timeDelta = ident("timeDelta")
     let epochTimeIdent = bindSym("epochTime")
@@ -257,4 +264,6 @@ proc createTickRunner*(
             `timeDelta` = thisTime - lastTime
             `execSystems`
             lastTime = thisTime
+            `deleteFinalizers`
+            world.clearDeletedEntities()
 
