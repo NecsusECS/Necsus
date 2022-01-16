@@ -2,12 +2,10 @@ import macros, componentDef, componentSet, sequtils, directive, directiveSet, pa
 
 proc createComponentEnum*(components: ComponentSet): NimNode =
     ## Creates an enum with an item for every available component
-    result = newEnum(
-        components.enumSymbol,
-        toSeq(components).mapIt(it.ident),
-        public = false,
-        pure = true
-    )
+    var componentList = toSeq(components).mapIt(it.ident)
+    if componentList.len == 0:
+        componentList.add ident("Dummy")
+    result = newEnum(components.enumSymbol, componentList, public = false, pure = true)
 
 proc bracket(name: string, bracketed: NimNode): NimNode =
     ## Creates a bracketed expression
