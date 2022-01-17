@@ -1,0 +1,70 @@
+import unittest, necsus/runtime/intTable, sequtils
+
+suite "IntTable":
+
+    var table = newIntTable[string](5)
+    table[1] = "one"
+    table[2] = "two"
+    table[3] = "three"
+
+    test "Debug string":
+        check($table == "{1: one, 2: two, 3: three}")
+
+    test "Setting and reading values":
+        check(table[1] == "one")
+        check(table[2] == "two")
+        check(table[3] == "three")
+        expect(KeyError):
+            discard table[4]
+        expect(KeyError):
+            discard table[0]
+
+    test "Value iteration":
+        check(table.toSeq == @["one", "two", "three"])
+
+    test "Pair iteration":
+        check(table.pairs.toSeq == @[(1, "one"), (2, "two"), (3, "three")])
+
+    test "Contains":
+        check(1 in table)
+        check(5 notin table)
+
+    test "Sparse keys":
+        var sparseTable = newIntTable[string](100)
+        sparseTable[0] = "zero"
+        sparseTable[10] = "ten"
+        sparseTable[20] = "twenty"
+        sparseTable[30] = "thirty"
+        check(sparseTable.toSeq == @["zero", "ten", "twenty", "thirty"])
+
+    test "Deleting keys":
+        var deletable = newIntTable[string](5)
+        deletable[1] = "one"
+        deletable[2] = "two"
+        deletable[3] = "three"
+
+        expect(KeyError):
+            deletable.del 4
+
+        deletable.del 2
+        check(deletable.pairs.toSeq == @[(1, "one"), (3, "three")])
+        check(deletable[1] == "one")
+        check(deletable[3] == "three")
+
+        deletable.del 1
+        check(deletable.pairs.toSeq == @[(3, "three")])
+        check(deletable[3] == "three")
+
+        deletable.del 3
+        check(deletable.pairs.toSeq.len == 0)
+
+        expect(KeyError):
+            deletable.del 3
+
+    test "Filling the table beyond capacity":
+        var fill = newIntTable[int](5)
+        for i in 0..1000:
+            fill[i] = i
+        check(fill.toSeq == (0..1000).toSeq)
+
+
