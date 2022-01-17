@@ -67,4 +67,32 @@ suite "IntTable":
             fill[i] = i
         check(fill.toSeq == (0..1000).toSeq)
 
+    test "Take address of a key":
+        let ref1 = table.reference(1)
+        let ref2 = table.reference(2)
+        let ref3 = table.reference(3)
 
+        check(table[ref1] == "one")
+        check(table[ref2] == "two")
+        check(table[ref3] == "three")
+
+        table.del(1)
+        expect(KeyError):
+            discard table[ref1]
+        check(table[ref2] == "two")
+        check(table[ref3] == "three")
+
+        table.del(3)
+        expect(KeyError):
+            discard table[ref1]
+        expect(KeyError):
+            discard table[ref3]
+        check(table[ref2] == "two")
+
+        table.del(2)
+        expect(KeyError):
+            discard table[ref1]
+        expect(KeyError):
+            discard table[ref3]
+        expect(KeyError):
+            discard table[ref2]

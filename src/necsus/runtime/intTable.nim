@@ -3,6 +3,11 @@ import tables, atomics, math, sequtils, strutils
 type
     Entry*[T] = tuple[key: int, value: T]
 
+    IntTableValue*[T] = object
+        ## A direct pointer to an entry
+        entry: ptr Entry[T]
+        expectKey: int
+
     IntTable*[T] {.byref.} = object
         ## A packed tabled where the key is always an int
         keyMap: Table[int, int]
@@ -59,8 +64,25 @@ proc del*[T](table: var IntTable[T], key: int) =
     let idx = table.keyMap[key]
     table.keyMap.del(key)
     table.maxIndex -= 1
+
+    ## To keep the table packed, move the last element into the deleted slot
     if table.maxIndex > 0:
+
         let toCopy = table.entries[table.maxIndex]
         table.entries[idx] = toCopy
         table.keyMap[toCopy.key] = idx
+
+        # Change the key of the moved value so that lookups will fail
+        table.entries[table.maxIndex].key += 1
+
+proc reference*[T](table: IntTable[T], key: int): IntTableValue[T] =
+    ## Returns a direct reference to an entry in the table
+    IntTableValue[T](entry: unsafeAddr table.entries[table.keyMap[key]], expectKey: key)
+
+proc `[]`*[T](table: IntTable[T], reference: IntTableValue[T]): lent T =
+    ## Fetch a value
+    if reference.entry.key == reference.expectKey:
+        result = reference.entry.value
+    else:
+        result = table[reference.expectKey]
 
