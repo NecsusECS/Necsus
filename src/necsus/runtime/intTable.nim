@@ -25,14 +25,22 @@ proc `[]`*[T](table: IntTable[T], key: int): lent T =
     ## Fetch a value
     table.entries[table.keyMap[key]].value
 
+proc setValue[T](table: var IntTable[T], key: int, value: sink T): int {.inline.} =
+    ## Sets a value in the table and returns the generated index
+    result = table.maxIndex
+    table.maxIndex += 1
+    if result >= table.entries.len:
+        table.entries.setLen(ceilDiv(result * 3, 2))
+    table.entries[result] = (key, value)
+    table.keyMap[key] = result
+
 proc `[]=`*[T](table: var IntTable[T], key: int, value: sink T) =
     ## Add a value
-    let nextIndex = table.maxIndex
-    table.maxIndex += 1
-    if nextIndex >= table.entries.len:
-        table.entries.setLen(ceilDiv(nextIndex * 3, 2))
-    table.entries[nextIndex] = (key, value)
-    table.keyMap[key] = nextIndex
+    discard table.setValue(key, value)
+
+proc setAndRef*[T](table: var IntTable[T], key: int, value: sink T): IntTableValue[T] =
+    ## Add a value and return a value reference to it
+    IntTableValue[T](entry: addr table.entries[table.setValue(key, value)], expectKey: key)
 
 proc contains*[T](table: IntTable[T], key: int): bool =
     ## Determine whether a key exists in this table

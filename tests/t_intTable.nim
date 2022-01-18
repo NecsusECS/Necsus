@@ -96,3 +96,10 @@ suite "IntTable":
             discard table[ref3]
         expect(KeyError):
             discard table[ref2]
+
+    test "Set key and take reference":
+        var refTable = newIntTable[string](5)
+        check(refTable[refTable.setAndRef(50, "foo")] == "foo")
+        check(refTable[refTable.setAndRef(1000, "bar")] == "bar")
+        check(refTable[refTable.setAndRef(10000, "baz")] == "baz")
+        check(refTable.toSeq == @["foo", "bar", "baz"])
