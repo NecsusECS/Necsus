@@ -3,29 +3,29 @@ import tables, atomics, math, sequtils, strutils
 type
     Entry*[T] = tuple[key: int, value: T]
 
-    IntTableValue*[T] = object
+    PackedIntTableValue*[T] = object
         ## A direct pointer to an entry
         entry: ptr Entry[T]
         expectKey: int
 
-    IntTable*[T] {.byref.} = object
+    PackedIntTable*[T] {.byref.} = object
         ## A packed tabled where the key is always an int
         keyMap: Table[int, int]
         entries: seq[Entry[T]]
         maxIndex: int
 
-proc newIntTable*[T](initialSize: int): IntTable[T] =
-    ## Create a new IntTable
-    result = IntTable[T](
+proc newPackedIntTable*[T](initialSize: int): PackedIntTable[T] =
+    ## Create a new PackedIntTable
+    result = PackedIntTable[T](
         keyMap: initTable[int, int](initialSize),
         entries: newSeq[Entry[T]](initialSize)
     )
 
-proc `[]`*[T](table: IntTable[T], key: int): lent T =
+proc `[]`*[T](table: PackedIntTable[T], key: int): lent T =
     ## Fetch a value
     table.entries[table.keyMap[key]].value
 
-proc setValue[T](table: var IntTable[T], key: int, value: sink T): int {.inline.} =
+proc setValue[T](table: var PackedIntTable[T], key: int, value: sink T): int {.inline.} =
     ## Sets a value in the table and returns the generated index
     result = table.maxIndex
     table.maxIndex += 1
@@ -34,29 +34,29 @@ proc setValue[T](table: var IntTable[T], key: int, value: sink T): int {.inline.
     table.entries[result] = (key, value)
     table.keyMap[key] = result
 
-proc `[]=`*[T](table: var IntTable[T], key: int, value: sink T) =
+proc `[]=`*[T](table: var PackedIntTable[T], key: int, value: sink T) =
     ## Add a value
     discard table.setValue(key, value)
 
-proc setAndRef*[T](table: var IntTable[T], key: int, value: sink T): IntTableValue[T] =
+proc setAndRef*[T](table: var PackedIntTable[T], key: int, value: sink T): PackedIntTableValue[T] =
     ## Add a value and return a value reference to it
-    IntTableValue[T](entry: addr table.entries[table.setValue(key, value)], expectKey: key)
+    PackedIntTableValue[T](entry: addr table.entries[table.setValue(key, value)], expectKey: key)
 
-proc contains*[T](table: IntTable[T], key: int): bool =
+proc contains*[T](table: PackedIntTable[T], key: int): bool =
     ## Determine whether a key exists in this table
     key in table.keyMap
 
-iterator items*[T](table: IntTable[T]): lent T =
+iterator items*[T](table: PackedIntTable[T]): lent T =
     ## Iterate through all values
     for i in 0..<table.maxIndex:
         yield table.entries[i].value
 
-iterator pairs*[T](table: IntTable[T]): lent Entry[T] =
+iterator pairs*[T](table: PackedIntTable[T]): lent Entry[T] =
     ## Iterate through all values
     for i in 0..<table.maxIndex:
         yield table.entries[i]
 
-proc `$`*[T](table: IntTable[T]): string =
+proc `$`*[T](table: PackedIntTable[T]): string =
     ## Debug string generation
     result = "{"
     var first = true
@@ -67,7 +67,7 @@ proc `$`*[T](table: IntTable[T]): string =
         result.add $value
     result.add "}"
 
-proc del*[T](table: var IntTable[T], key: int) =
+proc del*[T](table: var PackedIntTable[T], key: int) =
     ## Removes a key from this table
     let idx = table.keyMap[key]
     table.keyMap.del(key)
@@ -83,11 +83,11 @@ proc del*[T](table: var IntTable[T], key: int) =
         # Change the key of the moved value so that lookups will fail
         table.entries[table.maxIndex].key += 1
 
-proc reference*[T](table: IntTable[T], key: int): IntTableValue[T] =
+proc reference*[T](table: PackedIntTable[T], key: int): PackedIntTableValue[T] =
     ## Returns a direct reference to an entry in the table
-    IntTableValue[T](entry: unsafeAddr table.entries[table.keyMap[key]], expectKey: key)
+    PackedIntTableValue[T](entry: unsafeAddr table.entries[table.keyMap[key]], expectKey: key)
 
-proc `[]`*[T](table: IntTable[T], reference: IntTableValue[T]): lent T =
+proc `[]`*[T](table: PackedIntTable[T], reference: PackedIntTableValue[T]): lent T =
     ## Fetch a value
     if reference.entry.key == reference.expectKey:
         result = reference.entry.value

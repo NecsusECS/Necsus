@@ -1,8 +1,8 @@
-import unittest, necsus/runtime/intTable, sequtils
+import unittest, necsus/runtime/packedIntTable, sequtils
 
-suite "IntTable":
+suite "PackedIntTable":
 
-    var table = newIntTable[string](5)
+    var table = newPackedIntTable[string](5)
     table[1] = "one"
     table[2] = "two"
     table[3] = "three"
@@ -30,7 +30,7 @@ suite "IntTable":
         check(5 notin table)
 
     test "Sparse keys":
-        var sparseTable = newIntTable[string](100)
+        var sparseTable = newPackedIntTable[string](100)
         sparseTable[0] = "zero"
         sparseTable[10] = "ten"
         sparseTable[20] = "twenty"
@@ -38,7 +38,7 @@ suite "IntTable":
         check(sparseTable.toSeq == @["zero", "ten", "twenty", "thirty"])
 
     test "Deleting keys":
-        var deletable = newIntTable[string](5)
+        var deletable = newPackedIntTable[string](5)
         deletable[1] = "one"
         deletable[2] = "two"
         deletable[3] = "three"
@@ -62,7 +62,7 @@ suite "IntTable":
             deletable.del 3
 
     test "Filling the table beyond capacity":
-        var fill = newIntTable[int](5)
+        var fill = newPackedIntTable[int](5)
         for i in 0..1000:
             fill[i] = i
         check(fill.toSeq == (0..1000).toSeq)
@@ -98,7 +98,7 @@ suite "IntTable":
             discard table[ref2]
 
     test "Set key and take reference":
-        var refTable = newIntTable[string](5)
+        var refTable = newPackedIntTable[string](5)
         check(refTable[refTable.setAndRef(50, "foo")] == "foo")
         check(refTable[refTable.setAndRef(1000, "bar")] == "bar")
         check(refTable[refTable.setAndRef(10000, "baz")] == "baz")
