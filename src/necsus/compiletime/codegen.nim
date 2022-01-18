@@ -1,4 +1,4 @@
-import macros, componentDef, componentSet, sequtils, directive, directiveSet, parse, times
+import macros, componentDef, componentSet, sequtils, directive, directiveSet, parse, times, ../runtime/queryFilter
 
 proc createComponentEnum*(components: ComponentSet): NimNode =
     ## Creates an enum with an item for every available component

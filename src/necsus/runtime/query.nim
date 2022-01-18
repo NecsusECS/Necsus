@@ -1,17 +1,6 @@
-import entitySet, entity
+import entitySet, entity, queryFilter
 
 type
-    QueryFilterKind {.pure.} = enum All, Matching
-        ## The various kinds of filters that can be set
-
-    QueryFilter*[C: enum] {.shallow.} = object
-        ## Defines the rules for including an entity in a component
-        case kind: QueryFilterKind
-        of All:
-            discard
-        of Matching:
-            components: set[C]
-
     Query*[T: tuple] {.byref.} = object
         ## Allows systems to query for entities with specific components
         entities: EntitySet
@@ -48,18 +37,11 @@ func newQueryMembers*[C: enum](filter: QueryFilter[C]): QueryMembers[C] =
 
 func evaluate*[C](members: QueryMembers[C], components: set[C]): bool =
     ## Evaluates whether a set of components matches a query filter
-    case members.filter.kind
-    of QueryFilterKind.All:
-        true
-    of QueryFilterKind.Matching:
-        card(members.filter.components - components) == 0
+    members.filter.evaluate(components)
 
 proc `+=`*[C: enum](members: var QueryMembers[C], entityId: EntityId) =
     ## Adds an entity to a query membership
     members.entities += entityId
-
-func filterMatching*[C: enum](components: set[C]): auto =
-    QueryFilter[C](kind: QueryFilterKind.Matching, components: components)
 
 proc finalizeDeletes*[T](query: var Query[T]) =
     ## Removes any entities that are pending deletion from this query
