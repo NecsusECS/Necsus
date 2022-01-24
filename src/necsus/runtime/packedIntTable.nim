@@ -1,31 +1,31 @@
-import tables, atomics, math, sequtils, strutils
+import atomics, math, sequtils, strutils, openAddrTable
 
 type
-    Entry*[T] = tuple[key: int, value: T]
+    Entry*[T] = tuple[key: int32, value: T]
 
     PackedIntTableValue*[T] = object
         ## A direct pointer to an entry
         entry: ptr Entry[T]
-        expectKey: int
+        expectKey: int32
 
     PackedIntTable*[T] {.byref.} = object
         ## A packed tabled where the key is always an int
-        keyMap: Table[int, int]
+        keyMap: OpenAddrTable[int32, int32]
         entries: seq[Entry[T]]
-        maxIndex: int
+        maxIndex: int32
 
 proc newPackedIntTable*[T](initialSize: int): PackedIntTable[T] =
     ## Create a new PackedIntTable
     result = PackedIntTable[T](
-        keyMap: initTable[int, int](initialSize),
+        keyMap: newOpenAddrTable[int32, int32](initialSize),
         entries: newSeq[Entry[T]](initialSize)
     )
 
-proc `[]`*[T](table: PackedIntTable[T], key: int): lent T =
+proc `[]`*[T](table: var PackedIntTable[T], key: int32): lent T =
     ## Fetch a value
     table.entries[table.keyMap[key]].value
 
-proc setValue[T](table: var PackedIntTable[T], key: int, value: sink T): int {.inline.} =
+proc setValue[T](table: var PackedIntTable[T], key: int32, value: sink T): int32 {.inline.} =
     ## Sets a value in the table and returns the generated index
     result = table.maxIndex
     table.maxIndex += 1
@@ -34,15 +34,15 @@ proc setValue[T](table: var PackedIntTable[T], key: int, value: sink T): int {.i
     table.entries[result] = (key, value)
     table.keyMap[key] = result
 
-proc `[]=`*[T](table: var PackedIntTable[T], key: int, value: sink T) =
+proc `[]=`*[T](table: var PackedIntTable[T], key: int32, value: sink T) =
     ## Add a value
     discard table.setValue(key, value)
 
-proc setAndRef*[T](table: var PackedIntTable[T], key: int, value: sink T): PackedIntTableValue[T] =
+proc setAndRef*[T](table: var PackedIntTable[T], key: int32, value: sink T): PackedIntTableValue[T] =
     ## Add a value and return a value reference to it
     PackedIntTableValue[T](entry: addr table.entries[table.setValue(key, value)], expectKey: key)
 
-proc contains*[T](table: PackedIntTable[T], key: int): bool =
+proc contains*[T](table: var PackedIntTable[T], key: int32): bool =
     ## Determine whether a key exists in this table
     key in table.keyMap
 
@@ -67,7 +67,7 @@ proc `$`*[T](table: PackedIntTable[T]): string =
         result.add $value
     result.add "}"
 
-proc del*[T](table: var PackedIntTable[T], key: int) =
+proc del*[T](table: var PackedIntTable[T], key: int32) =
     ## Removes a key from this table
     let idx = table.keyMap[key]
     table.keyMap.del(key)
@@ -83,14 +83,13 @@ proc del*[T](table: var PackedIntTable[T], key: int) =
         # Change the key of the moved value so that lookups will fail
         table.entries[table.maxIndex].key += 1
 
-proc reference*[T](table: PackedIntTable[T], key: int): PackedIntTableValue[T] =
+proc reference*[T](table: var PackedIntTable[T], key: int32): PackedIntTableValue[T] =
     ## Returns a direct reference to an entry in the table
     PackedIntTableValue[T](entry: unsafeAddr table.entries[table.keyMap[key]], expectKey: key)
 
-proc `[]`*[T](table: PackedIntTable[T], reference: PackedIntTableValue[T]): lent T =
+proc `[]`*[T](table: var PackedIntTable[T], reference: PackedIntTableValue[T]): lent T =
     ## Fetch a value
     if reference.entry.key == reference.expectKey:
         result = reference.entry.value
     else:
         result = table[reference.expectKey]
-

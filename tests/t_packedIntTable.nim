@@ -23,7 +23,7 @@ suite "PackedIntTable":
         check(table.toSeq == @["one", "two", "three"])
 
     test "Pair iteration":
-        check(table.pairs.toSeq == @[(1, "one"), (2, "two"), (3, "three")])
+        check(table.pairs.toSeq == @[(1'i32, "one"), (2'i32, "two"), (3'i32, "three")])
 
     test "Contains":
         check(1 in table)
@@ -44,15 +44,15 @@ suite "PackedIntTable":
         deletable[3] = "three"
 
         expect(KeyError):
-            deletable.del 4
+            deletable.del 4'i32
 
         deletable.del 2
-        check(deletable.pairs.toSeq == @[(1, "one"), (3, "three")])
+        check(deletable.pairs.toSeq == @[(1'i32, "one"), (3'i32, "three")])
         check(deletable[1] == "one")
         check(deletable[3] == "three")
 
         deletable.del 1
-        check(deletable.pairs.toSeq == @[(3, "three")])
+        check(deletable.pairs.toSeq == @[(3'i32, "three")])
         check(deletable[3] == "three")
 
         deletable.del 3
@@ -63,7 +63,7 @@ suite "PackedIntTable":
 
     test "Filling the table beyond capacity":
         var fill = newPackedIntTable[int](5)
-        for i in 0..1000:
+        for i in 0'i32..1000:
             fill[i] = i
         check(fill.toSeq == (0..1000).toSeq)
 
