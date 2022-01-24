@@ -1,4 +1,5 @@
-import macros, componentDef, componentSet, sequtils, directive, directiveSet, parse, times, ../runtime/queryFilter
+import macros, componentDef, componentSet, sequtils, directive, directiveSet, parse, times
+import ../runtime/queryFilter, ../runtime/packedIntTable
 
 proc createComponentEnum*(components: ComponentSet): NimNode =
     ## Creates an enum with an item for every available component
@@ -10,10 +11,6 @@ proc createComponentEnum*(components: ComponentSet): NimNode =
 proc bracket(name: string, bracketed: NimNode): NimNode =
     ## Creates a bracketed expression
     nnkBracketExpr.newTree(ident(name), bracketed)
-
-proc seqType(innerType: NimNode): NimNode =
-    ## Creates a type wrapped in a seq
-    bracket("seq", innerType)
 
 proc newObject(
     name: NimNode,
@@ -32,9 +29,10 @@ proc newObject(
 
 proc createComponentObj*(components: ComponentSet): NimNode =
     ## Defines an object for storing component data
+    let tableType: NimNode = bindSym("PackedIntTable")
     result = newObject(
         components.objSymbol,
-        components.toSeq.mapIt((it.ident, seqType(it.ident)))
+        components.toSeq.mapIt((it.ident, nnkBracketExpr.newTree(tableType, it.ident)))
     )
 
 proc createQueryObj*(
@@ -80,11 +78,12 @@ proc createWorldInstance*(
     let queryObj = ident(queries.symbol)
     let world = ident("world")
     let initialSizeIdent = ident("initialSize")
+    let newTable: NimNode = bindSym("newPackedIntTable")
 
     let componentInstance = construct(
         componentObj,
         components.toSeq.map do (pair: auto) -> auto:
-        (pair.name, newCall(bracket("newSeq", pair.ident), initialSizeIdent))
+        (pair.name, newCall(nnkBracketExpr.newTree(newTable, pair.ident), initialSizeIdent))
     )
 
     let queryInstance = construct(
@@ -120,7 +119,7 @@ proc createQueryVars*(components: ComponentSet, queries: DirectiveSet[QueryDef])
         for component in query:
             let componentIdent = component.ident
             tupleConstruction.add(
-                block: quote: world.components.`componentIdent`[`entityVar`]
+                block: quote: world.components.`componentIdent`[`entityVar`.int32]
             )
 
         result.add quote do:
@@ -264,4 +263,3 @@ proc createTickRunner*(
             lastTime = thisTime
             `deleteFinalizers`
             world.clearDeletedEntities()
-

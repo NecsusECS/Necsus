@@ -18,5 +18,3 @@ proc run(initialSize: int) =
 suite "Many entities":
     run(1_000_000)
     run(5_000_000)
-    run(10_000_000)
-

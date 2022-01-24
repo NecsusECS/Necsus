@@ -1,4 +1,4 @@
-import entity, atomics, query, macros, entitySet, deques
+import entity, atomics, query, macros, entitySet, deques, packedIntTable
 
 type
 
@@ -64,13 +64,13 @@ proc associateComponent*[C, D, Q, T](
     world: var World[C, D, Q],
     entityId: EntityId,
     componentFlag: C,
-    componentSeq: var seq[T],
+    componentSeq: var PackedIntTable[T],
     componentValue: T
 ) =
     ## Associates a component
     # echo entityId, ": Adding component ", componentFlag
     incl(world.entities[int(entityId)].components, componentFlag)
-    componentSeq[int(entityId)] = componentValue
+    componentSeq[int32(entityId)] = componentValue
 
 proc clearDeletedEntities*[C, D, Q](world: var World[C, D, Q]) =
     ## Resets the list of deleted entities

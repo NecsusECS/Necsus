@@ -1,6 +1,6 @@
 
 type
-    EntityId* = distinct int
+    EntityId* = distinct int32
         ## Identity of an entity
 
     EntityMetadata*[C: enum] = object
@@ -14,4 +14,3 @@ proc `[]`*[T](s: openarray[T], id: EntityId): T =
 proc `$`*(entityId: EntityId): string =
     ## Stringify an EntityId
     "EntityId(" & $int(entityId) & ")"
-
