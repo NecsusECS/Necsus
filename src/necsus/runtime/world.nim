@@ -2,11 +2,8 @@ import entity, atomics, query, macros, entitySet, deques, packedIntTable
 
 type
 
-    World*[C: enum, D: object, Q: object] = ref object
+    World*[C: enum] = ref object
         ## Contains the data describing the entire world
-        entities: seq[EntityMetadata[C]]
-        components*: D
-        queries*: Q
         deleted*: EntitySet
         nextEntityId: int
         recycleEntityIds: Deque[EntityId]
@@ -23,56 +20,31 @@ type
     TimeDelta* = float
         ## Tracks the amount of time since the last execution of a system
 
-proc newWorld*[C, D, Q](initialSize: int, components: sink D, queries: sink Q): World[C, D, Q] =
+proc newWorld*[C](initialSize: int): World[C] =
     ## Creates a new world
-    World[C, D, Q](
-        entities: newSeq[EntityMetadata[C]](initialSize),
-        components: components,
-        queries: queries,
+    World[C](
         deleted: newEntitySet(),
         nextEntityId: 0,
         recycleEntityIds: initDeque[EntityId]()
     )
 
-proc createEntity*[C, D, Q](world: var World[C, D, Q]): EntityId =
+proc createEntity*[C](world: var World[C]): EntityId =
     ## Create a new entity in the given world
     if world.recycleEntityIds.len > 0:
         result = world.recycleEntityIds.popFirst
     else:
         result = EntityId(world.nextEntityId.atomicInc - 1)
-        assert(
-            int(result) < world.entities.len,
-            "Trying to spawn an entity (" & $result & ") beyond the max entity size: " & $world.entities.len
-        )
     # echo "Spawning ", result
 
-proc deleteEntity*[C, D, Q](world: var World[C, D, Q], entityId: EntityId) =
+proc deleteEntity*[C](world: var World[C], entityId: EntityId) =
     world.deleted += entityId
 
-proc evaluateEntityForQuery*[C, D, Q](
-    world: World[C, D, Q],
-    entityId: EntityId,
-    query: var QueryMembers[C],
-    queryName: string
-) =
-    ## Adds an entity to a query, if it has the necessary components
-    if query.evaluate(world.entities[int(entityId)].components):
-        query += entityId
-        # echo entityId, ": Adding to query ", queryName
+proc deleteComponents*[C, T](world: World[C], components: var PackedIntTable[T]) =
+    ## Removes deleted entities from a component table
+    for entityId in world.deleted.items:
+        components.del entityId.int32
 
-proc associateComponent*[C, D, Q, T](
-    world: var World[C, D, Q],
-    entityId: EntityId,
-    componentFlag: C,
-    componentSeq: var PackedIntTable[T],
-    componentValue: T
-) =
-    ## Associates a component
-    # echo entityId, ": Adding component ", componentFlag
-    incl(world.entities[int(entityId)].components, componentFlag)
-    componentSeq[int32(entityId)] = componentValue
-
-proc clearDeletedEntities*[C, D, Q](world: var World[C, D, Q]) =
+proc clearDeletedEntities*[C](world: var World[C]) =
     ## Resets the list of deleted entities
     for entity in world.deleted.items:
         world.recycleEntityIds.addLast entity

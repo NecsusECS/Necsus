@@ -13,7 +13,7 @@ proc setup(spawn: Spawn[(A, B, C, D, E)]) =
 
 template setupSystem(typ: typedesc) =
     proc `modify typ`(query: Query[(typ, )], update: Update[(typ, )]) =
-        for (entity, comp) in query.pairs:
+        for (entity, comp) in query:
             update(entity, (typ(int(comp[0]) * 2), ))
 
 setupSystem(A)
@@ -29,4 +29,3 @@ proc runner(tick: proc(): void) =
 proc myApp() {.necsus(runner, [~setup], [~modifyA, ~modifyB, ~modifyC, ~modifyD, ~modifyE], initialSize = 10_000).}
 
 myApp()
-

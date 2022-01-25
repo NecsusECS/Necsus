@@ -1,5 +1,5 @@
 import necsus / runtime / [entity, query, world]
-import necsus / compiletime / [parse, codegen, componentSet, directive, directiveSet, componentDef]
+import necsus / compiletime / [ parse, codegen, componentSet, codeGenInfo, queryGen, spawnGen, tickGen ]
 import sequtils, macros
 
 export entity, query, world
@@ -27,31 +27,23 @@ macro necsus*(
     pragmaProc.expectKind(nnkProcDef)
 
     let name = pragmaProc.name
-
+    let codeGenInfo = newCodeGenInfo(name, initialSize, parsed)
     let allComponents = parsed.componentSet(name.strVal)
-
-    let allQueries = newDirectiveSet[QueryDef](name.strVal, parsed.queries.toSeq)
-
-    let allSpawns = newDirectiveSet[SpawnDef](name.strVal, parsed.spawns.toSeq)
-
-    let allUpdates = newDirectiveSet[UpdateDef](name.strVal, parsed.updates.toSeq)
 
     result = newStmtList(
         allComponents.createComponentEnum,
         allComponents.createComponentObj,
-        allComponents.createQueryObj(allQueries),
         pragmaProc
     )
 
     pragmaProc.body = newStmtList(
-        createWorldInstance(initialSize, allComponents, allQueries),
-        createQueryVars(allComponents, allQueries),
-        createSpawnFunc(allComponents, allSpawns, allQueries),
-        createUpdateProcs(allComponents, allUpdates, allQueries),
+        createWorldInstance(initialSize, allComponents),
+        codeGenInfo.createComponentInstance(),
+        codeGenInfo.createQueries(),
+        codeGenInfo.createSpawns(),
+        codeGenInfo.createUpdates(),
         createDeleteProc(),
-        createTickRunner(runner, parsed, allComponents, allSpawns, allQueries, allUpdates)
+        codeGenInfo.createTickRunner(runner)
     )
 
     # echo result.repr
-
-

@@ -21,31 +21,6 @@ proc newPackedIntTable*[T](initialSize: int): PackedIntTable[T] =
         entries: newSeq[Entry[T]](initialSize)
     )
 
-proc `[]`*[T](table: var PackedIntTable[T], key: int32): lent T =
-    ## Fetch a value
-    table.entries[table.keyMap[key]].value
-
-proc setValue[T](table: var PackedIntTable[T], key: int32, value: sink T): int32 {.inline.} =
-    ## Sets a value in the table and returns the generated index
-    result = table.maxIndex
-    table.maxIndex += 1
-    if result >= table.entries.len:
-        table.entries.setLen(ceilDiv(result * 3, 2))
-    table.entries[result] = (key, value)
-    table.keyMap[key] = result
-
-proc `[]=`*[T](table: var PackedIntTable[T], key: int32, value: sink T) =
-    ## Add a value
-    discard table.setValue(key, value)
-
-proc setAndRef*[T](table: var PackedIntTable[T], key: int32, value: sink T): PackedIntTableValue[T] =
-    ## Add a value and return a value reference to it
-    PackedIntTableValue[T](entry: addr table.entries[table.setValue(key, value)], expectKey: key)
-
-proc contains*[T](table: var PackedIntTable[T], key: int32): bool =
-    ## Determine whether a key exists in this table
-    key in table.keyMap
-
 iterator items*[T](table: PackedIntTable[T]): lent T =
     ## Iterate through all values
     for i in 0..<table.maxIndex:
@@ -66,6 +41,34 @@ proc `$`*[T](table: PackedIntTable[T]): string =
         result.add ": "
         result.add $value
     result.add "}"
+
+proc `[]`*[T](table: var PackedIntTable[T], key: int32): lent T =
+    ## Fetch a value
+    table.entries[table.keyMap[key]].value
+
+proc setValue[T](table: var PackedIntTable[T], key: int32, value: sink T): int32 {.inline.} =
+    ## Sets a value in the table and returns the generated index
+    if key in table.keyMap:
+        result = table.keyMap[key]
+    else:
+        result = table.maxIndex
+        table.maxIndex += 1
+        if result >= table.entries.len:
+            table.entries.setLen(ceilDiv(result * 3, 2))
+        table.keyMap[key] = result
+    table.entries[result] = (key, value)
+
+proc `[]=`*[T](table: var PackedIntTable[T], key: int32, value: sink T) =
+    ## Add a value
+    discard table.setValue(key, value)
+
+proc setAndRef*[T](table: var PackedIntTable[T], key: int32, value: sink T): PackedIntTableValue[T] =
+    ## Add a value and return a value reference to it
+    PackedIntTableValue[T](entry: addr table.entries[table.setValue(key, value)], expectKey: key)
+
+proc contains*[T](table: var PackedIntTable[T], key: int32): bool =
+    ## Determine whether a key exists in this table
+    key in table.keyMap
 
 proc del*[T](table: var PackedIntTable[T], key: int32) =
     ## Removes a key from this table

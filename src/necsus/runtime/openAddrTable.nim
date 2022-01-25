@@ -288,6 +288,7 @@ proc `[]=`*[K, V](table: var OpenAddrTable[K, V], key: K, value: V) =
 proc del*[K, V](table: var OpenAddrTable[K, V], key: K) =
     ## Deletes a value
     table.primaryChunk.load.del(key)
+    assert(key notin table.primaryChunk.load)
 
 proc `[]`*[K, V](table: var OpenAddrTable[K, V], key: K): V =
     ## Fetch a value

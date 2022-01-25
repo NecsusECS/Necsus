@@ -16,5 +16,5 @@ proc run(initialSize: int) =
         myApp()
 
 suite "Many entities":
+    run(100_000)
     run(1_000_000)
-    run(5_000_000)

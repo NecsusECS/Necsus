@@ -12,7 +12,7 @@ proc setup(spawn: Spawn[(A, B, C, D, E)]) =
         discard spawn((A(i), B(i), C(i), D(i), E(i)))
 
 proc modify(a: Query[(A, )], update: Update[(A, )]) =
-    for (entity, comp) in a.pairs:
+    for (entity, comp) in a:
         update(entity, (A(int(comp[0]) * 2), ))
 
 proc runner(tick: proc(): void) =

@@ -8,7 +8,7 @@ type
 
 iterator items*(entities: EntitySet): EntityId =
     ## Produces all entities in this set
-    for id in IntSet(entities.entities):
+    for id in entities.entities:
         yield EntityId(id)
 
 proc newEntitySet*(): EntitySet =
@@ -17,7 +17,7 @@ proc newEntitySet*(): EntitySet =
 
 proc `+=`*(entities: var EntitySet, entityId: EntityId) =
     ## Create a new entity set
-    incl(IntSet(entities.entities), int(entityId))
+    incl(entities.entities, int(entityId))
 
 func contains*(entities: EntitySet, entityId: EntityId): bool =
     entities.entities.contains(int(entityId))

@@ -26,9 +26,9 @@ proc assertion(
 ) =
     echo "starting assertion"
 
-    check(toSeq(people).mapIt(it[1].name) == @["Jack", "Jill", "Joe"])
-    check(toSeq(ages).mapIt(it[0].age) == @[39])
-    check(toSeq(all).len == 0)
+    check(toSeq(people.components).mapIt(it.name.name) == @["Jack", "Jill", "Joe"])
+    check(toSeq(ages.components).mapIt(it.age.age) == @[39])
+    check(toSeq(all.components).len == 0)
 
 proc runner(tick: proc(): void) =
     tick()
@@ -37,4 +37,3 @@ proc myApp() {.necsus(runner, [~setup1, ~setup2], [~spawnMore, ~assertion], init
 
 test "Basic system":
     myApp()
-
