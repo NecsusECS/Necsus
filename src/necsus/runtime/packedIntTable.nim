@@ -97,7 +97,7 @@ proc `[]`*[T](table: var PackedIntTable[T], reference: PackedIntTableValue[T]): 
     else:
         result = table[reference.expectKey]
 
-proc point*[T](table: var PackedIntTable[T], reference: PackedIntTableValue[T]): ptr T =
+proc getPointer*[T](table: var PackedIntTable[T], reference: PackedIntTableValue[T]): ptr T =
     ## Returns a pointer to the given value instead of the value itself. Allows for in place updates
     if reference.entry.key == reference.expectKey:
         result = addr reference.entry.value

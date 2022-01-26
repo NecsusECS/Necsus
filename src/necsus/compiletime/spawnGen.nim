@@ -27,7 +27,7 @@ proc storeAndRegisterComponents(
 proc createSpawnProc(codeGenInfo: CodeGenInfo, name: string, spawn: SpawnDef): NimNode =
     ## Creates a proc for spawning a new entity
     let procName = ident(name)
-    let componentTuple = spawn.toSeq.asTupleType
+    let componentTuple = spawn.args.toSeq.asTupleType
     let updateComponents = codeGenInfo.storeAndRegisterComponents(ident("result"), spawn.toSeq)
     result = quote:
         proc `procName`(`comps`: `componentTuple`): EntityId =
@@ -44,7 +44,7 @@ proc createUpdateProc(codeGenInfo: CodeGenInfo, name: string, update: UpdateDef)
     ## Generates a proc to update components for an entity
     let procName = ident(name)
     let entityId = ident("entityId")
-    let componentTuple = update.toSeq.asTupleType
+    let componentTuple = update.args.toSeq.asTupleType
     let updateComponents = codeGenInfo.storeAndRegisterComponents(entityId, update.toSeq)
     result = quote:
         proc `procName`(`entityId`: EntityId, `comps`: `componentTuple`) =

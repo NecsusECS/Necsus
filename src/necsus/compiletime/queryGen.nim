@@ -34,15 +34,18 @@ proc createQueryStorageInstance(codeGenInfo: CodeGenInfo, queryName: string, que
 proc createQueryIterator(codeGenInfo: CodeGenInfo, queryName: string, query: QueryDef): NimNode =
     ## Creates the iterator needed to execute a query
     let procName = ident(queryName)
-    let queryTupleType = query.toSeq.asTupleType
+    let queryTupleType = query.args.toSeq.asTupleType
     let queryStorageName = queryName.queryStorageIdent
     let eid = ident("eid")
     let members = ident("members")
 
     var instantiateTuple = nnkTupleConstr.newTree()
-    for (i, component) in query.toSeq.pairs:
-        instantiateTuple.add quote do:
-            `componentsIdent`.`component`[`members`[`i`]]
+    for (i, arg) in query.args.toSeq.pairs:
+        let component = arg.component
+        if arg.isPointer:
+            instantiateTuple.add quote do: getPointer(`componentsIdent`.`component`, `members`[`i`])
+        else:
+            instantiateTuple.add quote do: `componentsIdent`.`component`[`members`[`i`]]
 
     return quote:
         proc `procName`(): auto =

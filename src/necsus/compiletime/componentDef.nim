@@ -21,7 +21,8 @@ proc name*(def: ComponentDef): string =
 
 proc ident*(def: ComponentDef): NimNode =
     ## Stringify a ComponentDef
-    ident(def.name)
+    result = ident(def.name)
+    result.copyLineInfo(NimNode(def))
 
 proc hash*(def: ComponentDef): Hash = hash(def.name)
 

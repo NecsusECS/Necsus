@@ -24,9 +24,11 @@ proc componentEnumVal*(components: ComponentSet, component: ComponentDef): NimNo
     ## Creates a reference to a component enum value
     nnkDotExpr.newTree(components.enumSymbol, component.ident)
 
-proc asTupleType*(components: seq[ComponentDef]): NimNode =
+proc asTupleType*(args: openarray[DirectiveArg]): NimNode =
     ## Creates a tuple type from a list of components
-    nnkTupleConstr.newTree(components.mapIt(it.ident))
+    result = nnkTupleConstr.newTree()
+    for arg in args:
+        result.add(if arg.isPointer: nnkPtrTy.newTree(arg.component.ident) else: arg.component.ident)
 
 ## Returns the identity needed to access the components field
 let componentsIdent* {.compileTime.} = ident("components")

@@ -45,31 +45,29 @@ proc parseArgKind(symbol: NimNode): SystemArgKind =
     of "Delete": return SystemArgKind.Delete
     else: error("Unrecognized ECS interface type: " & symbol.repr, symbol)
 
-proc parseComponentDef(node: NimNode): ComponentDef =
-    case node.kind
-    of nnkSym: return ComponentDef(node)
-    else: node.expectKind(nnkSym)
+proc parseDirectiveArg(symbol: NimNode, isPointer: bool = false): DirectiveArg =
+    case symbol.kind
+    of nnkSym: return newDirectiveArg(ComponentDef(symbol), isPointer)
+    of nnkIdentDefs: return parseDirectiveArg(symbol[1], isPointer)
+    of nnkPtrTy: return parseDirectiveArg(symbol[0], true)
+    else: symbol.expectKind({nnkSym, nnkIdentDefs, nnkPtrTy})
 
-proc parseComponentsFromTuple(tupleArg: NimNode): seq[ComponentDef] =
+proc parseDirectiveArgsFromTuple(tupleArg: NimNode): seq[DirectiveArg] =
     ## Parses the symbols out of a tuple definition
     tupleArg.expectKind({nnkTupleConstr, nnkTupleTy})
     for child in tupleArg.children:
-        child.expectKind({nnkSym, nnkIdentDefs})
-        case child.kind
-        of nnkSym: result.add(parseComponentDef(child))
-        of nnkIdentDefs: result.add(parseComponentDef(child[1]))
-        else: error("Unexpected node kind: " & child.treeRepr)
+        result.add(parseDirectiveArg(child, false))
 
 proc parseTupleSystemArg(directiveSymbol: NimNode, directiveTuple: NimNode): SystemArg =
     ## Parses a system arg given a specific symbol and tuple
     result.kind = directiveSymbol.parseArgKind
     case result.kind
     of SystemArgKind.Spawn:
-        result.spawn = newSpawnDef(directiveTuple.parseComponentsFromTuple)
+        result.spawn = newSpawnDef(directiveTuple.parseDirectiveArgsFromTuple)
     of SystemArgKind.Query:
-        result.query = newQueryDef(directiveTuple.parseComponentsFromTuple)
+        result.query = newQueryDef(directiveTuple.parseDirectiveArgsFromTuple)
     of SystemArgKind.Update:
-        result.update = newUpdateDef(directiveTuple.parseComponentsFromTuple)
+        result.update = newUpdateDef(directiveTuple.parseDirectiveArgsFromTuple)
     of SystemArgKind.TimeDelta, SystemArgKind.Delete:
         error("System argument does not support tuple parameters: " & $result.kind)
 
@@ -148,4 +146,3 @@ iterator spawns*(systems: openarray[ParsedSystem]): SpawnDef =
 iterator updates*(systems: openarray[ParsedSystem]): UpdateDef =
     ## Pulls all spawns from the given parsed systems
     for arg in systems.args.toSeq.filterIt(it.kind == SystemArgKind.Update): yield arg.update
-
