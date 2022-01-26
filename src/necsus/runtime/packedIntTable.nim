@@ -1,4 +1,4 @@
-import atomics, math, sequtils, strutils, openAddrTable
+import atomics, math, sequtils, strutils, openAddrTable, strformat
 
 type
     Entry*[T] = tuple[key: int32, value: T]
@@ -21,6 +21,8 @@ proc newPackedIntTable*[T](initialSize: int): PackedIntTable[T] =
         entries: newSeq[Entry[T]](initialSize)
     )
 
+proc `=copy`*[T](dest: var PackedIntTable[T], src: PackedIntTable[T]) {.error.}
+
 iterator items*[T](table: PackedIntTable[T]): lent T =
     ## Iterate through all values
     for i in 0..<table.maxIndex:
@@ -37,9 +39,7 @@ proc `$`*[T](table: PackedIntTable[T]): string =
     var first = true
     for (key, value) in table.pairs:
         if first: first = false else: result.add ", "
-        result.add $key
-        result.add ": "
-        result.add $value
+        result.add($key & ": " & $value)
     result.add "}"
 
 proc `[]`*[T](table: var PackedIntTable[T], key: int32): lent T =
@@ -77,7 +77,7 @@ proc del*[T](table: var PackedIntTable[T], key: int32) =
     table.maxIndex -= 1
 
     ## To keep the table packed, move the last element into the deleted slot
-    if table.maxIndex > 0:
+    if table.maxIndex > 0 and table.maxIndex != idx:
 
         let toCopy = table.entries[table.maxIndex]
         table.entries[idx] = toCopy

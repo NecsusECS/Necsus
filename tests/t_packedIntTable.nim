@@ -61,6 +61,14 @@ suite "PackedIntTable":
         expect(KeyError):
             deletable.del 3
 
+    test "Deleting the last key":
+        var deletable = newPackedIntTable[string](5)
+        deletable[1] = "one"
+        deletable[2] = "two"
+
+        deletable.del 2
+        check(2 notin deletable)
+
     test "Filling the table beyond capacity":
         var fill = newPackedIntTable[int](5)
         for i in 0'i32..1000:
