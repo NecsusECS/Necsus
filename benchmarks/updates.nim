@@ -38,7 +38,12 @@ proc exec(entityCount: int) =
         benchmark "Updating " & $entityCount & " components: https://github.com/abeimler/ecs_benchmark", entityCount:
             tick()
 
-    proc myApp() {.necsus(runner, [~setup], [~movement, ~comflab], initialSize = entityCount + 100).}
+    proc myApp() {.necsus(
+        runner,
+        [~setup],
+        [~movement, ~comflab],
+        conf = newNecsusConf(entityCount + 100, entityCount + 100)
+    ).}
 
     myApp()
 

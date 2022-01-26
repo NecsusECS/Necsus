@@ -10,8 +10,7 @@ proc runner(tick: proc(): void) =
 
 let initialSize = 100 + 1 * 2
 
-proc myApp() {.necsus(runner, [], [~system], initialSize).}
+proc myApp() {.necsus(runner, [], [~system], newNecsusConf(initialSize)).}
 
 test "Loading initial size from a variable declaration":
     myApp()
-

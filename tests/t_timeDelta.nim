@@ -1,4 +1,4 @@
-import unittest, necsus, sequtils, os
+import unittest, necsus, os
 
 type Dummy = object
 
@@ -18,8 +18,7 @@ proc runner(tick: proc(): void) =
     for i in 1..10:
         tick()
 
-proc myApp() {.necsus(runner, [~setup], [~checkTime], initialSize = 100).}
+proc myApp() {.necsus(runner, [~setup], [~checkTime], conf = newNecsusConf()).}
 
 test "Time delta tracking":
     myApp()
-

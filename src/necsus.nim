@@ -1,8 +1,8 @@
 import necsus / runtime / [entity, query, world]
-import necsus / compiletime / [ parse, codegen, componentSet, codeGenInfo, queryGen, spawnGen, tickGen ]
+import necsus / compiletime / [ parse, codegen, componentSet, codeGenInfo, queryGen, spawnGen, tickGen, necsusConf ]
 import sequtils, macros
 
-export entity, query, world
+export entity, query, world, necsusConf
 
 type SystemFlag* = object
     ## Fixes type checking errors when passing system procs into the necsus macro
@@ -14,7 +14,7 @@ macro necsus*(
     runner: typed{sym},
     startupSystems: openarray[SystemFlag],
     systems: openarray[SystemFlag],
-    initialSize: int,
+    conf: NecsusConf,
     pragmaProc: untyped
 ) =
     ## Creates an ECS world
@@ -27,7 +27,7 @@ macro necsus*(
     pragmaProc.expectKind(nnkProcDef)
 
     let name = pragmaProc.name
-    let codeGenInfo = newCodeGenInfo(name, initialSize, parsed)
+    let codeGenInfo = newCodeGenInfo(name, conf, parsed)
     let allComponents = parsed.componentSet(name.strVal)
 
     result = newStmtList(
@@ -37,7 +37,8 @@ macro necsus*(
     )
 
     pragmaProc.body = newStmtList(
-        createWorldInstance(initialSize, allComponents),
+        codeGenInfo.createConfig(),
+        codeGenInfo.createWorldInstance(),
         codeGenInfo.createComponentInstance(),
         codeGenInfo.createQueries(),
         codeGenInfo.createSpawns(),

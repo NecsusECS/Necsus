@@ -2,17 +2,17 @@ import macros, componentSet, parse, directiveSet, directive, sequtils, component
 
 type CodeGenInfo* = object
     ## Contains all the information needed to do high level code gen
-    initialSize: NimNode
+    config*: NimNode
     systems*: seq[ParsedSystem]
     components*: ComponentSet
     queries*: DirectiveSet[QueryDef]
     spawns*: DirectiveSet[SpawnDef]
     updates*: DirectiveSet[UpdateDef]
 
-proc newCodeGenInfo*(name: NimNode, initialSize: NimNode, allSystems: openarray[ParsedSystem]): CodeGenInfo =
+proc newCodeGenInfo*(name: NimNode, config: NimNode, allSystems: openarray[ParsedSystem]): CodeGenInfo =
     ## Collects data needed for code gen from all the parsed systems
     CodeGenInfo(
-        initialSize: initialSize,
+        config: config,
         systems: allSystems.toSeq,
         components: allSystems.componentSet(name.strVal),
         queries: newDirectiveSet[QueryDef](name.strVal, allSystems.queries.toSeq),
@@ -32,7 +32,7 @@ proc asTupleType*(components: seq[ComponentDef]): NimNode =
 let componentsIdent* {.compileTime.} = ident("components")
 
 ## The variable used to reference the initial size of any structs
-let initialSizeIdent* {.compileTime.} = ident("initialSize")
+let confIdent* {.compileTime.} = ident("config")
 
 ## The variable for identifying the local world
 let worldIdent* {.compileTime.} = ident("world")

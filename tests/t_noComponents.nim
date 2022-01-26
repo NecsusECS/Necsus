@@ -5,8 +5,7 @@ proc someSystem() =
 
 proc runner(tick: proc(): void) = tick()
 
-proc myApp() {.necsus(runner, [], [~someSystem], initialSize = 100).}
+proc myApp() {.necsus(runner, [], [~someSystem], conf = newNecsusConf()).}
 
 test "Creating a world without components":
     myApp()
-

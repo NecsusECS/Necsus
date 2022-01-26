@@ -23,9 +23,14 @@ setupSystem(D)
 setupSystem(E)
 
 proc runner(tick: proc(): void) =
-    benchmark "Packed iteration with 1 query", 5000:
+    benchmark "Packed iteration with 1 query and 5 systems", 5000:
         tick()
 
-proc myApp() {.necsus(runner, [~setup], [~modifyA, ~modifyB, ~modifyC, ~modifyD, ~modifyE], initialSize = 10_000).}
+proc myApp() {.necsus(
+    runner,
+    [~setup],
+    [~modifyA, ~modifyB, ~modifyC, ~modifyD, ~modifyE],
+    conf = newNecsusConf(10_000)
+).}
 
 myApp()

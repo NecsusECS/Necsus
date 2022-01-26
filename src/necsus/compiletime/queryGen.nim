@@ -26,7 +26,7 @@ proc createQueryStorageInstance(codeGenInfo: CodeGenInfo, queryName: string, que
 
     return quote:
         var `varName` = newQueryStorage[`componentEnum`, `tupleType`](
-            `initialSizeIdent`,
+            `confIdent`.componentSize,
             `worldIdent`.deleted,
             filterMatching[`componentEnum`](`componentSet`)
         )

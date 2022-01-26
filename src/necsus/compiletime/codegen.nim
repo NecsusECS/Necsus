@@ -1,4 +1,4 @@
-import macros, componentDef, componentSet, sequtils, codeGenInfo, math
+import macros, componentDef, componentSet, sequtils, codeGenInfo
 import ../runtime/packedIntTable
 
 proc createComponentEnum*(components: ComponentSet): NimNode =
@@ -48,21 +48,20 @@ proc createComponentInstance*(genInfo: CodeGenInfo): NimNode =
         componentObj,
         genInfo.components.toSeq.map do (pair: auto) -> (string, NimNode):
             let componentType = pair.ident
-            let call = quote: newPackedIntTable[`componentType`](ceilDiv(`initialSizeIdent`, 3))
+            let call = quote: newPackedIntTable[`componentType`](`confIdent`.componentSize)
             (pair.name, call)
     )
 
     result = quote:
         var `componentsIdent` = `componentInstance`
 
-proc createWorldInstance*(
-    initialSize: NimNode,
-    components: ComponentSet
-): NimNode =
-    let componentEnum = components.enumSymbol
+proc createConfig*(genInfo: CodeGenInfo): NimNode =
+    nnkLetSection.newTree(nnkIdentDefs.newTree(`confIdent`, newEmptyNode(), genInfo.config))
+
+proc createWorldInstance*(genInfo: CodeGenInfo): NimNode =
+    let componentEnum = genInfo.components.enumSymbol
     result = quote:
-        let `initialSizeIdent` = `initialSize`
-        var `worldIdent` = newWorld[`componentEnum`](`initialSize`)
+        var `worldIdent` = newWorld[`componentEnum`](`confIdent`.entitySize)
 
 proc createDeleteProc*(): NimNode =
     ## Generates all the procs for updating entities
