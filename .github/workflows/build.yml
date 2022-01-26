@@ -8,4 +8,5 @@ jobs:
     - uses: actions/checkout@v1
     - name: Build project
       run: |
-        nimble build -y
+        nimble test -y
+        nimble -y -d:release benchmark
