@@ -96,3 +96,10 @@ proc `[]`*[T](table: var PackedIntTable[T], reference: PackedIntTableValue[T]): 
         result = reference.entry.value
     else:
         result = table[reference.expectKey]
+
+proc point*[T](table: var PackedIntTable[T], reference: PackedIntTableValue[T]): ptr T =
+    ## Returns a pointer to the given value instead of the value itself. Allows for in place updates
+    if reference.entry.key == reference.expectKey:
+        result = addr reference.entry.value
+    else:
+        result = unsafeAddr table.entries[table.keyMap[reference.expectKey]].value

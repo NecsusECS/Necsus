@@ -111,3 +111,15 @@ suite "PackedIntTable":
         check(refTable[refTable.setAndRef(1000, "bar")] == "bar")
         check(refTable[refTable.setAndRef(10000, "baz")] == "baz")
         check(refTable.toSeq == @["foo", "bar", "baz"])
+
+    test "Referencing by pointer":
+        var refTable = newPackedIntTable[string](5)
+        refTable[1] = "one"
+        refTable[2] = "two"
+        let byRef = refTable.setAndRef(3, "three")
+
+        check(refTable.getPointer(byRef)[] == "three")
+
+        # If the key moves, we should still get a pointer
+        refTable.del(1)
+        check(refTable.getPointer(byRef)[] == "three")
