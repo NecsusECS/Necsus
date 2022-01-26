@@ -47,4 +47,5 @@ macro necsus*(
         codeGenInfo.createTickRunner(runner)
     )
 
-    # echo result.repr
+    when defined(dump):
+        echo result.repr
