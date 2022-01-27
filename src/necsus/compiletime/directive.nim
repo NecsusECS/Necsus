@@ -45,4 +45,4 @@ template createDirective(typ: untyped) =
 
 createDirective(QueryDef)
 createDirective(SpawnDef)
-createDirective(UpdateDef)
+createDirective(AttachDef)

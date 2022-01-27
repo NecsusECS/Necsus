@@ -10,16 +10,16 @@ proc setup(spawn: Spawn[(A, B)]) =
     for i in 1..5:
         discard spawn((A(), B()))
 
-proc addC(query: Query[(A, B)], update: Update[(C, )]) =
+proc addC(query: Query[(A, B)], attach: Attach[(C, )]) =
     for (eid, comps) in query:
-        eid.update((C(), ))
+        eid.attach((C(), ))
 
 proc assertABC(query: Query[(A, B, C)]) =
     check(toSeq(query.components).len == 5)
 
-proc addD(query: Query[(A, B)], update: Update[(D, )]) =
+proc addD(query: Query[(A, B)], attach: Attach[(D, )]) =
     for (eid, comps) in query:
-        eid.update((D(), ))
+        eid.attach((D(), ))
 
 proc assertABCD(query: Query[(A, B, C, D)]) =
     check(toSeq(query.components).len == 5)
@@ -27,7 +27,7 @@ proc assertABCD(query: Query[(A, B, C, D)]) =
 proc runner(tick: proc(): void) =
     tick()
 
-proc updateQuery() {.necsus(runner, [~setup], [~addC, ~assertABC, ~addD, ~assertABCD], conf = newNecsusConf()).}
+proc attachQuery() {.necsus(runner, [~setup], [~addC, ~assertABC, ~addD, ~assertABCD], conf = newNecsusConf()).}
 
-test "Update query when new entities are added":
-    updateQuery()
+test "Update query when new components are attached":
+    attachQuery()

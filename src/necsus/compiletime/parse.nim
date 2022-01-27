@@ -1,7 +1,7 @@
 import macros, sequtils, componentDef, directive
 
 type
-    SystemArgKind* {.pure.} = enum Spawn, Query, Update, TimeDelta, Delete
+    SystemArgKind* {.pure.} = enum Spawn, Query, Attach, TimeDelta, Delete
         ## The kind of arg within a system proc
 
     SystemArg* = object
@@ -11,8 +11,8 @@ type
             spawn: SpawnDef
         of SystemArgKind.Query:
             query: QueryDef
-        of SystemArgKind.Update:
-            update: UpdateDef
+        of SystemArgKind.Attach:
+            attach: AttachDef
         of SystemArgKind.TimeDelta, SystemArgKind.Delete:
             discard
 
@@ -32,7 +32,7 @@ proc spawn*(arg: SystemArg): auto = arg.spawn
 
 proc query*(arg: SystemArg): auto = arg.query
 
-proc update*(arg: SystemArg): auto = arg.update
+proc attach*(arg: SystemArg): auto = arg.attach
 
 proc parseArgKind(symbol: NimNode): SystemArgKind =
     ## Parses a type symbol to a SystemArgKind
@@ -40,7 +40,7 @@ proc parseArgKind(symbol: NimNode): SystemArgKind =
     case symbol.strVal
     of "Query": return SystemArgKind.Query
     of "Spawn": return SystemArgKind.Spawn
-    of "Update": return SystemArgKind.Update
+    of "Attach": return SystemArgKind.Attach
     of "TimeDelta": return SystemArgKind.TimeDelta
     of "Delete": return SystemArgKind.Delete
     else: error("Unrecognized ECS interface type: " & symbol.repr, symbol)
@@ -66,8 +66,8 @@ proc parseTupleSystemArg(directiveSymbol: NimNode, directiveTuple: NimNode): Sys
         result.spawn = newSpawnDef(directiveTuple.parseDirectiveArgsFromTuple)
     of SystemArgKind.Query:
         result.query = newQueryDef(directiveTuple.parseDirectiveArgsFromTuple)
-    of SystemArgKind.Update:
-        result.update = newUpdateDef(directiveTuple.parseDirectiveArgsFromTuple)
+    of SystemArgKind.Attach:
+        result.attach = newAttachDef(directiveTuple.parseDirectiveArgsFromTuple)
     of SystemArgKind.TimeDelta, SystemArgKind.Delete:
         error("System argument does not support tuple parameters: " & $result.kind)
 
@@ -75,7 +75,7 @@ proc parseFlagSystemArg(directiveSymbol: NimNode): SystemArg =
     ## Parses unparameterized system args
     result.kind = directiveSymbol.parseArgKind
     case result.kind
-    of SystemArgKind.Spawn, SystemArgKind.Query, SystemArgKind.Update:
+    of SystemArgKind.Spawn, SystemArgKind.Query, SystemArgKind.Attach:
         error("System argument is not flag based: " & $result.kind)
     of SystemArgKind.TimeDelta, SystemArgKind.Delete:
         discard
@@ -120,8 +120,8 @@ iterator components*(systems: openarray[ParsedSystem]): ComponentDef =
                 for component in arg.spawn: yield component
             of SystemArgKind.Query:
                 for component in arg.query: yield component
-            of SystemArgKind.Update:
-                for component in arg.update: yield component
+            of SystemArgKind.Attach:
+                for component in arg.attach: yield component
             of SystemArgKind.TimeDelta, SystemArgKind.Delete:
                 discard
 
@@ -143,6 +143,6 @@ iterator spawns*(systems: openarray[ParsedSystem]): SpawnDef =
     ## Pulls all spawns from the given parsed systems
     for arg in systems.args.toSeq.filterIt(it.kind == SystemArgKind.Spawn): yield arg.spawn
 
-iterator updates*(systems: openarray[ParsedSystem]): UpdateDef =
+iterator attaches*(systems: openarray[ParsedSystem]): AttachDef =
     ## Pulls all spawns from the given parsed systems
-    for arg in systems.args.toSeq.filterIt(it.kind == SystemArgKind.Update): yield arg.update
+    for arg in systems.args.toSeq.filterIt(it.kind == SystemArgKind.Attach): yield arg.attach

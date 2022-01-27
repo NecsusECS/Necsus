@@ -12,9 +12,9 @@ proc setup(spawn: Spawn[(A, B, C, D, E)]) =
         discard spawn((A(i), B(i), C(i), D(i), E(i)))
 
 template setupSystem(typ: typedesc) =
-    proc `modify typ`(query: Query[(typ, )], update: Update[(typ, )]) =
+    proc `modify typ`(query: Query[(typ, )], attach: Attach[(typ, )]) =
         for (entity, comp) in query:
-            update(entity, (typ(int(comp[0]) * 2), ))
+            attach(entity, (typ(int(comp[0]) * 2), ))
 
 setupSystem(A)
 setupSystem(B)

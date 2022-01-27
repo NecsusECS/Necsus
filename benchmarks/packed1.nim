@@ -11,9 +11,9 @@ proc setup(spawn: Spawn[(A, B, C, D, E)]) =
     for i in 1..1000:
         discard spawn((A(i), B(i), C(i), D(i), E(i)))
 
-proc modify(a: Query[(A, )], update: Update[(A, )]) =
+proc modify(a: Query[(A, )], attach: Attach[(A, )]) =
     for (entity, comp) in a:
-        update(entity, (A(int(comp[0]) * 2), ))
+        attach(entity, (A(int(comp[0]) * 2), ))
 
 proc runner(tick: proc(): void) =
     benchmark "Packed iteration with 1 query and 1 system", 1000:

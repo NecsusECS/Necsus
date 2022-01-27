@@ -55,16 +55,16 @@ proc createSpawns*(codeGenInfo: CodeGenInfo): NimNode =
     for (name, spawn) in codeGenInfo.spawns:
         result.add(codeGenInfo.createSpawnProc(name, spawn))
 
-proc registerUpdateComponents(
+proc registerAttachComponents(
     codeGenInfo: CodeGenInfo,
     entityId: NimNode,
     componentSet: NimNode,
-    update: UpdateDef
+    attach: AttachDef
 ): NimNode =
     # Create code to register these components with the queries
     result = newStmtList()
-    let knownComponents = update.toSeq.toHashSet
-    for query in codeGenInfo.queries.mentioning(update.toSeq):
+    let knownComponents = attach.toSeq.toHashSet
+    for query in codeGenInfo.queries.mentioning(attach.toSeq):
         let queryIdent = codeGenInfo.queries.nameOf(query).queryStorageIdent
         let componentTuple = query.createLocalComponentTuple()
 
@@ -82,23 +82,23 @@ proc registerUpdateComponents(
                 `getExtraComponents`
                 addToQuery(`queryIdent`, `entityId`, `componentTuple`)
 
-proc createUpdateProc(codeGenInfo: CodeGenInfo, name: string, update: UpdateDef): NimNode =
+proc createAttachProc(codeGenInfo: CodeGenInfo, name: string, attach: AttachDef): NimNode =
     ## Generates a proc to update components for an entity
     let procName = ident(name)
     let entityId = ident("entityId")
     let allComponents = ident("allComponents")
-    let componentTuple = update.args.toSeq.asTupleType
-    let store = codeGenInfo.storeComponents(entityId, update.toSeq)
-    let register = codeGenInfo.registerUpdateComponents(entityId, allComponents, update)
-    let componentSet = codeGenInfo.createComponentSet(update.toSeq)
+    let componentTuple = attach.args.toSeq.asTupleType
+    let store = codeGenInfo.storeComponents(entityId, attach.toSeq)
+    let register = codeGenInfo.registerAttachComponents(entityId, allComponents, attach)
+    let componentSet = codeGenInfo.createComponentSet(attach.toSeq)
     result = quote:
         proc `procName`(`entityId`: EntityId, `comps`: `componentTuple`) =
             let `allComponents` = associateComponents(`worldIdent`, `entityId`, `componentSet`)
             `store`
             `register`
 
-proc createUpdates*(codeGenInfo: CodeGenInfo): NimNode =
+proc createAttaches*(codeGenInfo: CodeGenInfo): NimNode =
     ## Generates all the procs for updating entities
     result = newStmtList()
-    for (name, update) in codeGenInfo.updates:
-        result.add(codeGenInfo.createUpdateProc(name, update))
+    for (name, attach) in codeGenInfo.attaches:
+        result.add(codeGenInfo.createAttachProc(name, attach))

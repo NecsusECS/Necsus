@@ -12,7 +12,7 @@ type
     Spawn*[C: tuple] = proc(components: C): EntityId
         ## Describes a type that is able to create new entities
 
-    Update*[C: tuple] = proc(entityId: EntityId, components: C)
+    Attach*[C: tuple] = proc(entityId: EntityId, components: C)
         ## Describes a type that is able to update existing entities new entities
 
     Delete* = proc(entityId: EntityId)

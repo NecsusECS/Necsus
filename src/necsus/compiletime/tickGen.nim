@@ -11,8 +11,8 @@ proc callSystems(codeGenInfo: CodeGenInfo, systems: openarray[ParsedSystem]): Ni
                 ident(codeGenInfo.spawns.nameOf(arg.spawn))
             of SystemArgKind.Query:
                 ident(codeGenInfo.queries.nameOf(arg.query))
-            of SystemArgKind.Update:
-                ident(codeGenInfo.updates.nameOf(arg.update))
+            of SystemArgKind.Attach:
+                ident(codeGenInfo.attaches.nameOf(arg.attach))
             of SystemArgKind.TimeDelta:
                 timeDelta
             of SystemArgKind.Delete:

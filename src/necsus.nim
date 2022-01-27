@@ -42,7 +42,7 @@ macro necsus*(
         codeGenInfo.createComponentInstance(),
         codeGenInfo.createQueries(),
         codeGenInfo.createSpawns(),
-        codeGenInfo.createUpdates(),
+        codeGenInfo.createAttaches(),
         createDeleteProc(),
         codeGenInfo.createTickRunner(runner)
     )

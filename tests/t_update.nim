@@ -12,11 +12,11 @@ proc setup(spawn: Spawn[(Name, Age, Mood)]) =
     discard spawn((Name(name: "Foo"), Age(age: 20), Mood(mood: "Happy")))
     discard spawn((Name(name: "Bar"), Age(age: 30), Mood(mood: "Sad")))
 
-proc modify(all: Query[(Age, Mood)], update: Update[(Age, Mood)]) =
+proc modify(all: Query[(Age, Mood)], attach: Attach[(Age, Mood)]) =
     for (entityId, info) in all:
         let newAge = Age(age: info[0].age + 1)
         let newMood = Mood(mood: "Very " & info[1].mood)
-        entityId.update((newAge, newMood))
+        entityId.attach((newAge, newMood))
 
 proc assertions(all: Query[(Name, Age, Mood)]) =
     check(toSeq(all.components).mapIt(it[0].name) == @["Foo", "Bar"])
@@ -26,7 +26,7 @@ proc assertions(all: Query[(Name, Age, Mood)]) =
 proc runner(tick: proc(): void) =
     tick()
 
-proc testUpdates() {.necsus(runner, [~setup], [~modify, ~assertions], conf = newNecsusConf()).}
+proc testAttaches() {.necsus(runner, [~setup], [~modify, ~assertions], conf = newNecsusConf()).}
 
-test "Updating entities":
-    testUpdates()
+test "Attaching components":
+    testAttaches()
