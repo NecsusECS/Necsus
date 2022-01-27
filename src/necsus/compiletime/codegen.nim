@@ -62,10 +62,3 @@ proc createWorldInstance*(genInfo: CodeGenInfo): NimNode =
     let componentEnum = genInfo.components.enumSymbol
     result = quote:
         var `worldIdent` = newWorld[`componentEnum`](`confIdent`.entitySize)
-
-proc createDeleteProc*(): NimNode =
-    ## Generates all the procs for updating entities
-    let entity = ident("entity")
-    result = quote do:
-        proc `deleteProc`(`entity`: EntityId) =
-            `worldIdent`.deleteEntity(`entity`)

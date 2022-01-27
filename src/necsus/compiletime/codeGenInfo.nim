@@ -8,6 +8,7 @@ type CodeGenInfo* = object
     queries*: DirectiveSet[QueryDef]
     spawns*: DirectiveSet[SpawnDef]
     attaches*: DirectiveSet[AttachDef]
+    detaches*: DirectiveSet[DetachDef]
 
 proc newCodeGenInfo*(name: NimNode, config: NimNode, allSystems: openarray[ParsedSystem]): CodeGenInfo =
     ## Collects data needed for code gen from all the parsed systems
@@ -17,7 +18,8 @@ proc newCodeGenInfo*(name: NimNode, config: NimNode, allSystems: openarray[Parse
         components: allSystems.componentSet(name.strVal),
         queries: newDirectiveSet[QueryDef](name.strVal, allSystems.queries.toSeq),
         spawns: newDirectiveSet[SpawnDef](name.strVal, allSystems.spawns.toSeq),
-        attaches: newDirectiveSet[AttachDef](name.strVal, allSystems.attaches.toSeq)
+        attaches: newDirectiveSet[AttachDef](name.strVal, allSystems.attaches.toSeq),
+        detaches: newDirectiveSet[DetachDef](name.strVal, allSystems.detaches.toSeq),
     )
 
 proc componentEnumVal*(components: ComponentSet, component: ComponentDef): NimNode =

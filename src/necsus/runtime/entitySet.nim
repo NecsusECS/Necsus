@@ -26,6 +26,10 @@ func `-=`*(entities: var EntitySet, toRemove: EntitySet) =
     ## Removes a set of entities from this instance
     entities.entities.excl(toRemove.entities)
 
+func `-=`*(entities: var EntitySet, toRemove: EntityId) =
+    ## Removes a set of entities from this instance
+    entities.entities.excl(int(toRemove))
+
 func `$`*(entities: EntitySet): string =
     ## Stringify
     $(entities.entities)

@@ -1,7 +1,7 @@
 import macros, sequtils, componentDef, directive
 
 type
-    SystemArgKind* {.pure.} = enum Spawn, Query, Attach, TimeDelta, Delete
+    SystemArgKind* {.pure.} = enum Spawn, Query, Attach, Detach, TimeDelta, Delete
         ## The kind of arg within a system proc
 
     SystemArg* = object
@@ -13,6 +13,8 @@ type
             query: QueryDef
         of SystemArgKind.Attach:
             attach: AttachDef
+        of SystemArgKind.Detach:
+            detach: DetachDef
         of SystemArgKind.TimeDelta, SystemArgKind.Delete:
             discard
 
@@ -28,12 +30,6 @@ proc symbol*(system: ParsedSystem): auto = system.symbol
 
 proc kind*(arg: SystemArg): auto = arg.kind
 
-proc spawn*(arg: SystemArg): auto = arg.spawn
-
-proc query*(arg: SystemArg): auto = arg.query
-
-proc attach*(arg: SystemArg): auto = arg.attach
-
 proc parseArgKind(symbol: NimNode): SystemArgKind =
     ## Parses a type symbol to a SystemArgKind
     symbol.expectKind(nnkSym)
@@ -41,6 +37,7 @@ proc parseArgKind(symbol: NimNode): SystemArgKind =
     of "Query": return SystemArgKind.Query
     of "Spawn": return SystemArgKind.Spawn
     of "Attach": return SystemArgKind.Attach
+    of "Detach": return SystemArgKind.Detach
     of "TimeDelta": return SystemArgKind.TimeDelta
     of "Delete": return SystemArgKind.Delete
     else: error("Unrecognized ECS interface type: " & symbol.repr, symbol)
@@ -68,6 +65,8 @@ proc parseTupleSystemArg(directiveSymbol: NimNode, directiveTuple: NimNode): Sys
         result.query = newQueryDef(directiveTuple.parseDirectiveArgsFromTuple)
     of SystemArgKind.Attach:
         result.attach = newAttachDef(directiveTuple.parseDirectiveArgsFromTuple)
+    of SystemArgKind.Detach:
+        result.detach = newDetachDef(directiveTuple.parseDirectiveArgsFromTuple)
     of SystemArgKind.TimeDelta, SystemArgKind.Delete:
         error("System argument does not support tuple parameters: " & $result.kind)
 
@@ -75,7 +74,7 @@ proc parseFlagSystemArg(directiveSymbol: NimNode): SystemArg =
     ## Parses unparameterized system args
     result.kind = directiveSymbol.parseArgKind
     case result.kind
-    of SystemArgKind.Spawn, SystemArgKind.Query, SystemArgKind.Attach:
+    of SystemArgKind.Spawn, SystemArgKind.Query, SystemArgKind.Attach, SystemArgKind.Detach:
         error("System argument is not flag based: " & $result.kind)
     of SystemArgKind.TimeDelta, SystemArgKind.Delete:
         discard
@@ -122,6 +121,8 @@ iterator components*(systems: openarray[ParsedSystem]): ComponentDef =
                 for component in arg.query: yield component
             of SystemArgKind.Attach:
                 for component in arg.attach: yield component
+            of SystemArgKind.Detach:
+                for component in arg.detach: yield component
             of SystemArgKind.TimeDelta, SystemArgKind.Delete:
                 discard
 
@@ -135,14 +136,15 @@ iterator args*(systems: openarray[ParsedSystem]): SystemArg =
         for arg in system.args:
             yield arg
 
-iterator queries*(systems: openarray[ParsedSystem]): QueryDef =
-    ## Pulls all queries from the given parsed systems
-    for arg in systems.args.toSeq.filterIt(it.kind == SystemArgKind.Query): yield arg.query
+template generateReaders(plural, propName, flagName, directiveType: untyped) =
 
-iterator spawns*(systems: openarray[ParsedSystem]): SpawnDef =
-    ## Pulls all spawns from the given parsed systems
-    for arg in systems.args.toSeq.filterIt(it.kind == SystemArgKind.Spawn): yield arg.spawn
+    proc `propName`*(arg: SystemArg): auto = arg.`propName`
 
-iterator attaches*(systems: openarray[ParsedSystem]): AttachDef =
-    ## Pulls all spawns from the given parsed systems
-    for arg in systems.args.toSeq.filterIt(it.kind == SystemArgKind.Attach): yield arg.attach
+    iterator `plural`*(systems: openarray[ParsedSystem]): `directiveType` =
+        ## Pulls all queries from the given parsed systems
+        for arg in systems.args.toSeq.filterIt(it.kind == SystemArgKind.`flagName`): yield arg.`propName`
+
+generateReaders(queries, query, Query, QueryDef)
+generateReaders(attaches, attach, Attach, AttachDef)
+generateReaders(detaches, detach, Detach, DetachDef)
+generateReaders(spawns, spawn, Spawn, SpawnDef)

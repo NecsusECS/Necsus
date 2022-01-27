@@ -23,6 +23,10 @@ proc incl*[C](metadata: var EntityMetadata[C], components: set[C]) =
     ## Adds components to entity metadata
     metadata.components.incl(components)
 
+proc excl*[C](metadata: var EntityMetadata[C], components: set[C]) =
+    ## Removes components to entity metadata
+    metadata.components.excl(components)
+
 proc components*[C](metadata: EntityMetadata[C]): set[C] =
     ## Return components in an entity
     metadata.components

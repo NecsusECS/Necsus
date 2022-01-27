@@ -19,6 +19,10 @@ proc newDirectiveSet*[T](prefix: string, values: openarray[T]): DirectiveSet[T] 
         suffixes[name] = suffix + 1
         result.values[value] = name & $suffix
 
+proc directives*[T](directives: DirectiveSet[T]): seq[T] =
+    ## Produce all directives
+    directives.values.keys.toSeq
+
 iterator items*[T](directives: DirectiveSet[T]): tuple[name: string, value: T] =
     ## Produce all directives and their property names
     for (value, name) in directives.values.pairs: yield (name, value)

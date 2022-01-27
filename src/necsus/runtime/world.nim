@@ -12,11 +12,14 @@ type
     Spawn*[C: tuple] = proc(components: C): EntityId
         ## Describes a type that is able to create new entities
 
+    Delete* = proc(entityId: EntityId)
+        ## Deletes an entity
+
     Attach*[C: tuple] = proc(entityId: EntityId, components: C)
         ## Describes a type that is able to update existing entities new entities
 
-    Delete* = proc(entityId: EntityId)
-        ## Deletes an entity
+    Detach*[C: tuple] = proc(entityId: EntityId)
+        ## Detaches a set of components from an entity
 
     TimeDelta* = float
         ## Tracks the amount of time since the last execution of a system
@@ -33,7 +36,11 @@ proc newWorld*[C](initialSize: int): World[C] =
 proc associateComponents*[C](world: var World[C], entity: EntityId, components: set[C]): set[C] =
     ## Associates a given set of entities with a component
     world.entities[entity.int32].incl(components)
-    return world.entities[entity.int32].components
+    result = world.entities[entity.int32].components
+
+proc detachComponents*[C](world: var World[C], entity: EntityId, components: set[C]) =
+    ## Associates a given set of entities with a component
+    world.entities[entity.int32].excl(components)
 
 proc createEntity*[C](world: var World[C], initialComponents: set[C]): EntityId =
     ## Create a new entity in the given world

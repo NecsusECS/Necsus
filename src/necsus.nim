@@ -1,5 +1,7 @@
 import necsus / runtime / [entity, query, world]
-import necsus / compiletime / [ parse, codegen, componentSet, codeGenInfo, queryGen, spawnGen, tickGen, necsusConf ]
+import necsus / compiletime / [
+    parse, codegen, componentSet, codeGenInfo, queryGen, spawnGen, tickGen, necsusConf, detachGen
+]
 import sequtils, macros
 
 export entity, query, world, necsusConf
@@ -43,7 +45,8 @@ macro necsus*(
         codeGenInfo.createQueries(),
         codeGenInfo.createSpawns(),
         codeGenInfo.createAttaches(),
-        createDeleteProc(),
+        codeGenInfo.createDetaches(),
+        codeGenInfo.createDeleteProc(),
         codeGenInfo.createTickRunner(runner)
     )
 

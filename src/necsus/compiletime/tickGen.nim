@@ -13,6 +13,8 @@ proc callSystems(codeGenInfo: CodeGenInfo, systems: openarray[ParsedSystem]): Ni
                 ident(codeGenInfo.queries.nameOf(arg.query))
             of SystemArgKind.Attach:
                 ident(codeGenInfo.attaches.nameOf(arg.attach))
+            of SystemArgKind.Detach:
+                ident(codeGenInfo.detaches.nameOf(arg.detach))
             of SystemArgKind.TimeDelta:
                 timeDelta
             of SystemArgKind.Delete:
