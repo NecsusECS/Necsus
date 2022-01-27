@@ -1,4 +1,4 @@
-import macros, componentSet, parse, directiveSet, tupleDirective, sequtils, componentDef, localDef
+import macros, componentSet, parse, directiveSet, tupleDirective, monoDirective, sequtils, componentDef, localDef
 
 type CodeGenInfo* = object
     ## Contains all the information needed to do high level code gen
@@ -10,6 +10,7 @@ type CodeGenInfo* = object
     attaches*: DirectiveSet[AttachDef]
     detaches*: DirectiveSet[DetachDef]
     locals*: DirectiveSet[LocalDef]
+    shared*: DirectiveSet[SharedDef]
 
 proc newCodeGenInfo*(name: NimNode, config: NimNode, allSystems: openarray[ParsedSystem]): CodeGenInfo =
     ## Collects data needed for code gen from all the parsed systems
@@ -22,6 +23,7 @@ proc newCodeGenInfo*(name: NimNode, config: NimNode, allSystems: openarray[Parse
         attaches: newDirectiveSet[AttachDef](name.strVal, allSystems.attaches.toSeq),
         detaches: newDirectiveSet[DetachDef](name.strVal, allSystems.detaches.toSeq),
         locals: newDirectiveSet[LocalDef](name.strVal, allSystems.locals.toSeq),
+        shared: newDirectiveSet[SharedDef](name.strVal, allSystems.shared.toSeq),
     )
 
 proc componentEnumVal*(components: ComponentSet, component: ComponentDef): NimNode =

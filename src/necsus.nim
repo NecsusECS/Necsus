@@ -47,6 +47,7 @@ macro necsus*(
         codeGenInfo.createAttaches(),
         codeGenInfo.createDetaches(),
         codeGenInfo.createDeleteProc(),
+        codeGenInfo.createSharedVars(),
         codeGenInfo.createLocalVars(),
         codeGenInfo.createTickRunner(runner)
     )

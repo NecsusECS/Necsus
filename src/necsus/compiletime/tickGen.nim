@@ -1,4 +1,5 @@
-import macros, times, codeGenInfo, parse, directiveSet, tupleDirective, sequtils, queryGen, componentSet, localDef
+import macros, times, sequtils
+import codeGenInfo, parse, directiveSet, tupleDirective, monoDirective, queryGen, componentSet, localDef
 
 let timeDelta {.compileTime.} = ident("timeDelta")
 
@@ -21,6 +22,8 @@ proc callSystems(codeGenInfo: CodeGenInfo, systems: openarray[ParsedSystem]): Ni
                 deleteProc
             of SystemArgKind.Local:
                 ident(codeGenInfo.locals.nameOf(arg.local))
+            of SystemArgKind.Shared:
+                ident(codeGenInfo.shared.nameOf(arg.shared))
 
         result.add(newCall(ident(system.symbol), props))
 

@@ -25,3 +25,4 @@ template defineSystemVar(typ: untyped) =
         discard
 
 defineSystemVar(Local)
+defineSystemVar(Shared)

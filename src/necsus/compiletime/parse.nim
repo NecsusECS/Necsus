@@ -1,7 +1,7 @@
-import macros, sequtils, componentDef, tupleDirective, localDef
+import macros, sequtils, componentDef, tupleDirective, localDef, monoDirective
 
 type
-    SystemArgKind* {.pure.} = enum Spawn, Query, Attach, Detach, TimeDelta, Delete, Local
+    SystemArgKind* {.pure.} = enum Spawn, Query, Attach, Detach, TimeDelta, Delete, Local, Shared
         ## The kind of arg within a system proc
 
     SystemArg* = object
@@ -17,6 +17,8 @@ type
             detach: DetachDef
         of SystemArgKind.Local:
             local: LocalDef
+        of SystemArgKind.Shared:
+            shared: SharedDef
         of SystemArgKind.TimeDelta, SystemArgKind.Delete:
             discard
 
@@ -43,6 +45,7 @@ proc parseArgKind(symbol: NimNode): SystemArgKind =
     of "TimeDelta": return SystemArgKind.TimeDelta
     of "Delete": return SystemArgKind.Delete
     of "Local": return SystemArgKind.Local
+    of "Shared": return SystemArgKind.Shared
     else: error("Unrecognized ECS interface type: " & symbol.repr, symbol)
 
 proc parseDirectiveArg(symbol: NimNode, isPointer: bool = false): DirectiveArg =
@@ -72,6 +75,8 @@ proc parseParametricArg(argName: string, directiveSymbol: NimNode, directivePara
         result.detach = newDetachDef(directiveParametric.parseDirectiveArgsFromTuple)
     of SystemArgKind.Local:
         result.local = newLocalDef(argName, directiveParametric)
+    of SystemArgKind.Shared:
+        result.shared = newSharedDef(directiveParametric)
     of SystemArgKind.TimeDelta, SystemArgKind.Delete:
         error("System argument does not support tuple parameters: " & $result.kind)
 
@@ -79,7 +84,8 @@ proc parseFlagSystemArg(directiveSymbol: NimNode): SystemArg =
     ## Parses unparameterized system args
     result.kind = directiveSymbol.parseArgKind
     case result.kind
-    of SystemArgKind.Spawn, SystemArgKind.Query, SystemArgKind.Attach, SystemArgKind.Detach, SystemArgKind.Local:
+    of SystemArgKind.Spawn, SystemArgKind.Query, SystemArgKind.Attach, SystemArgKind.Detach,
+        SystemArgKind.Local, SystemArgKind.Shared:
         error("System argument is not flag based: " & $result.kind)
     of SystemArgKind.TimeDelta, SystemArgKind.Delete:
         discard
@@ -129,7 +135,7 @@ iterator components*(systems: openarray[ParsedSystem]): ComponentDef =
                 for component in arg.attach: yield component
             of SystemArgKind.Detach:
                 for component in arg.detach: yield component
-            of SystemArgKind.TimeDelta, SystemArgKind.Delete, SystemArgKind.Local:
+            of SystemArgKind.TimeDelta, SystemArgKind.Delete, SystemArgKind.Local, SystemArgKind.Shared:
                 discard
 
 iterator args*(system: ParsedSystem): SystemArg =
@@ -155,3 +161,4 @@ generateReaders(attaches, attach, Attach, AttachDef)
 generateReaders(detaches, detach, Detach, DetachDef)
 generateReaders(spawns, spawn, Spawn, SpawnDef)
 generateReaders(locals, local, Local, LocalDef)
+generateReaders(shared, shared, Shared, SharedDef)
