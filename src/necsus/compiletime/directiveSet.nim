@@ -1,4 +1,4 @@
-import tables, componentDef, directive, sequtils, strutils, sets
+import tables, componentDef, directive, sequtils, strutils, sets, strformat
 
 type
     DirectiveSet*[T] = object
@@ -14,10 +14,10 @@ proc newDirectiveSet*[T](prefix: string, values: openarray[T]): DirectiveSet[T] 
     var suffixes = initTable[string, int]()
 
     for value in values.toSeq.deduplicate:
-        let name = toLowerAscii($T) & value.toSeq.generateName
+        let name = toLowerAscii($T) & "_" & value.generateName
         let suffix = suffixes.mgetOrPut(name, 0)
         suffixes[name] = suffix + 1
-        result.values[value] = name & $suffix
+        result.values[value] = name & "_" & $suffix
 
 proc directives*[T](directives: DirectiveSet[T]): seq[T] =
     ## Produce all directives
@@ -30,6 +30,10 @@ iterator items*[T](directives: DirectiveSet[T]): tuple[name: string, value: T] =
 proc symbol*[T](directives: DirectiveSet[T]): string =
     ## Returns the name of this query set
     directives.symbol
+
+proc `$`*[T](directives: DirectiveSet[T]): string =
+    ## Returns the name of this query set
+    &"{directives.symbol}({directives.directives})"
 
 proc containing*(queries: DirectiveSet[QueryDef], components: openarray[ComponentDef]): seq[QueryDef] =
     ## Yields all queries that reference the given components
@@ -47,4 +51,5 @@ proc mentioning*(queries: DirectiveSet[QueryDef], components: openarray[Componen
 
 proc nameOf*[T](directives: DirectiveSet[T], value: T): string =
     ## Returns the name of a directive
+    assert(value in directives.values, &"Directive {value} was not in directiveSet: {directives}")
     directives.values[value]

@@ -1,10 +1,10 @@
-import necsus / runtime / [entity, query, world]
+import necsus / runtime / [entity, query, world, systemVar]
 import necsus / compiletime / [
-    parse, codegen, componentSet, codeGenInfo, queryGen, spawnGen, tickGen, necsusConf, detachGen
+    parse, codegen, componentSet, codeGenInfo, queryGen, spawnGen, tickGen, necsusConf, detachGen, sysVarGen
 ]
 import sequtils, macros
 
-export entity, query, world, necsusConf
+export entity, query, world, necsusConf, systemVar
 
 type SystemFlag* = object
     ## Fixes type checking errors when passing system procs into the necsus macro
@@ -47,6 +47,7 @@ macro necsus*(
         codeGenInfo.createAttaches(),
         codeGenInfo.createDetaches(),
         codeGenInfo.createDeleteProc(),
+        codeGenInfo.createLocalVars(),
         codeGenInfo.createTickRunner(runner)
     )
 

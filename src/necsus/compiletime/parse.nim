@@ -1,7 +1,7 @@
-import macros, sequtils, componentDef, directive
+import macros, sequtils, componentDef, directive, localDef
 
 type
-    SystemArgKind* {.pure.} = enum Spawn, Query, Attach, Detach, TimeDelta, Delete
+    SystemArgKind* {.pure.} = enum Spawn, Query, Attach, Detach, TimeDelta, Delete, Local
         ## The kind of arg within a system proc
 
     SystemArg* = object
@@ -15,6 +15,8 @@ type
             attach: AttachDef
         of SystemArgKind.Detach:
             detach: DetachDef
+        of SystemArgKind.Local:
+            local: LocalDef
         of SystemArgKind.TimeDelta, SystemArgKind.Delete:
             discard
 
@@ -40,6 +42,7 @@ proc parseArgKind(symbol: NimNode): SystemArgKind =
     of "Detach": return SystemArgKind.Detach
     of "TimeDelta": return SystemArgKind.TimeDelta
     of "Delete": return SystemArgKind.Delete
+    of "Local": return SystemArgKind.Local
     else: error("Unrecognized ECS interface type: " & symbol.repr, symbol)
 
 proc parseDirectiveArg(symbol: NimNode, isPointer: bool = false): DirectiveArg =
@@ -55,18 +58,20 @@ proc parseDirectiveArgsFromTuple(tupleArg: NimNode): seq[DirectiveArg] =
     for child in tupleArg.children:
         result.add(parseDirectiveArg(child, false))
 
-proc parseTupleSystemArg(directiveSymbol: NimNode, directiveTuple: NimNode): SystemArg =
+proc parseParametricArg(argName: string, directiveSymbol: NimNode, directiveParametric: NimNode): SystemArg =
     ## Parses a system arg given a specific symbol and tuple
     result.kind = directiveSymbol.parseArgKind
     case result.kind
     of SystemArgKind.Spawn:
-        result.spawn = newSpawnDef(directiveTuple.parseDirectiveArgsFromTuple)
+        result.spawn = newSpawnDef(directiveParametric.parseDirectiveArgsFromTuple)
     of SystemArgKind.Query:
-        result.query = newQueryDef(directiveTuple.parseDirectiveArgsFromTuple)
+        result.query = newQueryDef(directiveParametric.parseDirectiveArgsFromTuple)
     of SystemArgKind.Attach:
-        result.attach = newAttachDef(directiveTuple.parseDirectiveArgsFromTuple)
+        result.attach = newAttachDef(directiveParametric.parseDirectiveArgsFromTuple)
     of SystemArgKind.Detach:
-        result.detach = newDetachDef(directiveTuple.parseDirectiveArgsFromTuple)
+        result.detach = newDetachDef(directiveParametric.parseDirectiveArgsFromTuple)
+    of SystemArgKind.Local:
+        result.local = newLocalDef(argName, directiveParametric)
     of SystemArgKind.TimeDelta, SystemArgKind.Delete:
         error("System argument does not support tuple parameters: " & $result.kind)
 
@@ -74,7 +79,7 @@ proc parseFlagSystemArg(directiveSymbol: NimNode): SystemArg =
     ## Parses unparameterized system args
     result.kind = directiveSymbol.parseArgKind
     case result.kind
-    of SystemArgKind.Spawn, SystemArgKind.Query, SystemArgKind.Attach, SystemArgKind.Detach:
+    of SystemArgKind.Spawn, SystemArgKind.Query, SystemArgKind.Attach, SystemArgKind.Detach, SystemArgKind.Local:
         error("System argument is not flag based: " & $result.kind)
     of SystemArgKind.TimeDelta, SystemArgKind.Delete:
         discard
@@ -82,14 +87,15 @@ proc parseFlagSystemArg(directiveSymbol: NimNode): SystemArg =
 proc parseSystemArg(identDef: NimNode): SystemArg =
     ## Parses a SystemArg from a proc argument
     identDef.expectKind(nnkIdentDefs)
+    let argName = identDef[0].strVal
     let argType = identDef[1]
 
     case argType.kind
     of nnkBracketExpr:
-        result = parseTupleSystemArg(argType[0], argType[1])
+        result = parseParametricArg(argName, argType[0], argType[1])
     of nnkCall:
         identDef[0].expectKind(nnkSym)
-        result = parseTupleSystemArg(argType[1], argType[2])
+        result = parseParametricArg(argName, argType[1], argType[2])
     of nnkSym:
         result = parseFlagSystemArg(argType)
     else:
@@ -123,7 +129,7 @@ iterator components*(systems: openarray[ParsedSystem]): ComponentDef =
                 for component in arg.attach: yield component
             of SystemArgKind.Detach:
                 for component in arg.detach: yield component
-            of SystemArgKind.TimeDelta, SystemArgKind.Delete:
+            of SystemArgKind.TimeDelta, SystemArgKind.Delete, SystemArgKind.Local:
                 discard
 
 iterator args*(system: ParsedSystem): SystemArg =
@@ -148,3 +154,4 @@ generateReaders(queries, query, Query, QueryDef)
 generateReaders(attaches, attach, Attach, AttachDef)
 generateReaders(detaches, detach, Detach, DetachDef)
 generateReaders(spawns, spawn, Spawn, SpawnDef)
+generateReaders(locals, local, Local, LocalDef)

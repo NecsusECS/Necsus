@@ -1,4 +1,4 @@
-import componentDef, hashes
+import componentDef, hashes, sequtils
 
 type
     DirectiveArg* = object
@@ -40,6 +40,10 @@ template createDirective(typ: untyped) =
     iterator args*(directive: typ): DirectiveArg =
         ## Produce all args in a directive
         for arg in directive.args: yield arg
+
+    proc generateName*(directive: typ): string =
+        ## Produces a readable name describing this directive
+        directive.items.toSeq.generateName
 
     proc hash*(directive: typ): Hash = hash(directive.args)
 
