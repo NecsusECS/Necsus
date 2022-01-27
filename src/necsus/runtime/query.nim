@@ -20,7 +20,10 @@ proc newQueryStorage*[C, M](initialSize: int, deletedEntities: EntitySet, filter
 proc addToQuery*[C, M](storage: var QueryStorage[C, M], entityId: EntityId, componentRefs: sink M) =
     ## Registers an entity with this query
     storage.members[entityId.int32] = componentRefs
-    assert(entityId.int32 in storage.members)
+
+proc shouldAdd*[C, M](storage: var QueryStorage[C, M], entityId: EntityId, components: set[C]): bool =
+    ## Returns whether an entity should be added to this query
+    storage.filter.evaluate(components) and entityId.int32 notin storage.members
 
 iterator items*[C, M](storage: QueryStorage[C, M]): (EntityId, M) =
     ## Yields the component pointers in a storage object

@@ -30,6 +30,12 @@ proc asTupleType*(args: openarray[DirectiveArg]): NimNode =
     for arg in args:
         result.add(if arg.isPointer: nnkPtrTy.newTree(arg.component.ident) else: arg.component.ident)
 
+proc createComponentSet*(codeGenInfo: CodeGenInfo, components: openarray[ComponentDef]): NimNode =
+    ## Creates the tuple needed to store
+    result = nnkCurly.newTree()
+    for component in components:
+        result.add(codeGenInfo.components.componentEnumVal(component))
+
 ## Returns the identity needed to access the components field
 let componentsIdent* {.compileTime.} = ident("components")
 

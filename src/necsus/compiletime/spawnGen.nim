@@ -1,26 +1,38 @@
-import directive, directiveSet, codeGenInfo, macros, sequtils, componentDef, queryGen
+import directive, directiveSet, codeGenInfo, macros, sequtils, componentDef, queryGen, sets
 import ../runtime/[packedIntTable, query]
 
 let comps {.compileTime.} = ident("comps")
 
-proc storeAndRegisterComponents(
+proc localIdent(component: ComponentDef): NimNode =
+    ## The variable name to use for local references to a component
+    ident("comp" & $component)
+
+proc storeComponents(
     codeGenInfo: CodeGenInfo,
     entityId: NimNode,
     components: openarray[ComponentDef]
 ): NimNode =
-    ## Generates code for updating an entity in both entity storage and queries
+    # Create code that will store the component values
     result = newStmtList()
-
-    # Create code that will allocate the components
     for (i, component) in components.pairs:
-        let compIdent = ident("comp" & $component)
+        let ident = component.localIdent
         result.add quote do:
-            let `compIdent` = setAndRef(`componentsIdent`.`component`, `entityId`.int32, `comps`[`i`])
+            let `ident` = setAndRef(`componentsIdent`.`component`, `entityId`.int32, `comps`[`i`])
 
+proc createLocalComponentTuple(query: QueryDef): NimNode =
+    ## Creates a tuple constructor for instantiating local references to components
+    nnkTupleConstr.newTree(query.toSeq.mapIt(it.localIdent))
+
+proc registerSpawnComponents(
+    codeGenInfo: CodeGenInfo,
+    entityId: NimNode,
+    spawn: SpawnDef
+): NimNode =
     # Create code to register these components with the queries
-    for (name, query) in codeGenInfo.queries.containing(components):
-        let queryIdent = name.queryStorageIdent
-        let componentTuple = nnkTupleConstr.newTree(query.toSeq.mapIt(ident("comp" & $it)))
+    result = newStmtList()
+    for query in codeGenInfo.queries.containing(spawn.toSeq):
+        let queryIdent = codeGenInfo.queries.nameOf(query).queryStorageIdent
+        let componentTuple = query.createLocalComponentTuple()
         result.add quote do:
             addToQuery(`queryIdent`, `entityId`, `componentTuple`)
 
@@ -28,11 +40,14 @@ proc createSpawnProc(codeGenInfo: CodeGenInfo, name: string, spawn: SpawnDef): N
     ## Creates a proc for spawning a new entity
     let procName = ident(name)
     let componentTuple = spawn.args.toSeq.asTupleType
-    let updateComponents = codeGenInfo.storeAndRegisterComponents(ident("result"), spawn.toSeq)
+    let store = codeGenInfo.storeComponents(ident("result"), spawn.toSeq)
+    let register = codeGenInfo.registerSpawnComponents(ident("result"), spawn)
+    let componentSet = codeGenInfo.createComponentSet(spawn.toSeq)
     result = quote:
         proc `procName`(`comps`: `componentTuple`): EntityId =
-            result = `worldIdent`.createEntity()
-            `updateComponents`
+            result = `worldIdent`.createEntity(`componentSet`)
+            `store`
+            `register`
 
 proc createSpawns*(codeGenInfo: CodeGenInfo): NimNode =
     ## Generates all the procs for spawning new entities
@@ -40,15 +55,47 @@ proc createSpawns*(codeGenInfo: CodeGenInfo): NimNode =
     for (name, spawn) in codeGenInfo.spawns:
         result.add(codeGenInfo.createSpawnProc(name, spawn))
 
+proc registerUpdateComponents(
+    codeGenInfo: CodeGenInfo,
+    entityId: NimNode,
+    componentSet: NimNode,
+    update: UpdateDef
+): NimNode =
+    # Create code to register these components with the queries
+    result = newStmtList()
+    let knownComponents = update.toSeq.toHashSet
+    for query in codeGenInfo.queries.mentioning(update.toSeq):
+        let queryIdent = codeGenInfo.queries.nameOf(query).queryStorageIdent
+        let componentTuple = query.createLocalComponentTuple()
+
+        # If there are components for this query that aren't explicitly being set with the current
+        # update, then we need to go and fetch their current values
+        let getExtraComponents = newStmtList()
+        for component in query:
+            if component notin knownComponents:
+                let compIdent = component.localIdent
+                getExtraComponents.add quote do:
+                    let `compIdent` = getRef[`component`](`componentsIdent`.`component`, `entityId`.int32)
+
+        result.add quote do:
+            if `queryIdent`.shouldAdd(`entityId`, `componentSet`):
+                `getExtraComponents`
+                addToQuery(`queryIdent`, `entityId`, `componentTuple`)
+
 proc createUpdateProc(codeGenInfo: CodeGenInfo, name: string, update: UpdateDef): NimNode =
     ## Generates a proc to update components for an entity
     let procName = ident(name)
     let entityId = ident("entityId")
+    let allComponents = ident("allComponents")
     let componentTuple = update.args.toSeq.asTupleType
-    let updateComponents = codeGenInfo.storeAndRegisterComponents(entityId, update.toSeq)
+    let store = codeGenInfo.storeComponents(entityId, update.toSeq)
+    let register = codeGenInfo.registerUpdateComponents(entityId, allComponents, update)
+    let componentSet = codeGenInfo.createComponentSet(update.toSeq)
     result = quote:
         proc `procName`(`entityId`: EntityId, `comps`: `componentTuple`) =
-            `updateComponents`
+            let `allComponents` = associateComponents(`worldIdent`, `entityId`, `componentSet`)
+            `store`
+            `register`
 
 proc createUpdates*(codeGenInfo: CodeGenInfo): NimNode =
     ## Generates all the procs for updating entities

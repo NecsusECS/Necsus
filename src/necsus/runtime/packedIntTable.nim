@@ -42,9 +42,9 @@ proc `$`*[T](table: PackedIntTable[T]): string =
         result.add($key & ": " & $value)
     result.add "}"
 
-proc `[]`*[T](table: var PackedIntTable[T], key: int32): lent T =
+proc `[]`*[T](table: var PackedIntTable[T], key: int32): var T =
     ## Fetch a value
-    table.entries[table.keyMap[key]].value
+    return table.entries[table.keyMap[key]].value
 
 proc setValue[T](table: var PackedIntTable[T], key: int32, value: sink T): int32 {.inline.} =
     ## Sets a value in the table and returns the generated index
@@ -65,6 +65,10 @@ proc `[]=`*[T](table: var PackedIntTable[T], key: int32, value: sink T) =
 proc setAndRef*[T](table: var PackedIntTable[T], key: int32, value: sink T): PackedIntTableValue[T] =
     ## Add a value and return a value reference to it
     PackedIntTableValue[T](entry: addr table.entries[table.setValue(key, value)], expectKey: key)
+
+proc getRef*[T](table: var PackedIntTable[T], key: int32): PackedIntTableValue[T] =
+    ## Returns a ref to a key
+    PackedIntTableValue[T](entry: addr table.entries[table.keyMap[key]], expectKey: key)
 
 proc contains*[T](table: var PackedIntTable[T], key: int32): bool =
     ## Determine whether a key exists in this table

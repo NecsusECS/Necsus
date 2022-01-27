@@ -27,15 +27,19 @@ proc symbol*[T](directives: DirectiveSet[T]): string =
     ## Returns the name of this query set
     directives.symbol
 
-iterator containing*(
-    queries: DirectiveSet[QueryDef],
-    components: openarray[ComponentDef]
-): tuple[name: string, value: QueryDef] =
+proc containing*(queries: DirectiveSet[QueryDef], components: openarray[ComponentDef]): seq[QueryDef] =
     ## Yields all queries that reference the given components
     let compSet = components.toHashSet
-    for (query, name) in queries.values.pairs:
+    for query in queries.values.keys:
         if query.toSeq.allIt(it in compSet):
-            yield (name: name, value: query)
+            result.add(query)
+
+proc mentioning*(queries: DirectiveSet[QueryDef], components: openarray[ComponentDef]): seq[QueryDef] =
+    ## Yields all queries that mention the given component
+    let compSet = components.toHashSet
+    for query in queries.values.keys:
+        if query.toSeq.anyIt(it in compSet):
+            result.add(query)
 
 proc nameOf*[T](directives: DirectiveSet[T], value: T): string =
     ## Returns the name of a directive

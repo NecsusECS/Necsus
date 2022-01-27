@@ -11,18 +11,12 @@ proc createStorageTupleType(query: QueryDef): NimNode =
     for component in query:
         result.add quote do: PackedIntTableValue[`component`]
 
-proc createComponentSet(codeGenInfo: CodeGenInfo, query: QueryDef): NimNode =
-    ## Creates the tuple needed to store
-    result = nnkCurly.newTree()
-    for component in query:
-        result.add(codeGenInfo.components.componentEnumVal(component))
-
 proc createQueryStorageInstance(codeGenInfo: CodeGenInfo, queryName: string, query: QueryDef): NimNode =
     ## Creates code for instantiating a query storage instance
     let varName = queryName.queryStorageIdent
     let componentEnum = codeGenInfo.components.enumSymbol
     let tupleType = query.createStorageTupleType()
-    let componentSet = codeGenInfo.createComponentSet(query)
+    let componentSet = codeGenInfo.createComponentSet(query.toSeq)
 
     return quote:
         var `varName` = newQueryStorage[`componentEnum`, `tupleType`](

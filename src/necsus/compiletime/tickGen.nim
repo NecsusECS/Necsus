@@ -1,4 +1,4 @@
-import macros, times, codeGenInfo, parse, directiveSet, directive, sequtils, queryGen, componentSet, componentDef
+import macros, times, codeGenInfo, parse, directiveSet, directive, sequtils, queryGen, componentSet
 
 let timeDelta {.compileTime.} = ident("timeDelta")
 
