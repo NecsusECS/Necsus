@@ -1,4 +1,4 @@
-import directive, directiveSet, codeGenInfo, macros, componentSet, sequtils
+import tupleDirective, directiveSet, codeGenInfo, macros, componentSet, sequtils
 import ../runtime/[ queryFilter, packedIntTable ]
 
 proc queryStorageIdent*(queryName: string): NimNode =

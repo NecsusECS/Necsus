@@ -1,4 +1,4 @@
-import directive, directiveSet, codeGenInfo, macros, sequtils, componentDef, queryGen, sets
+import tupleDirective, directiveSet, codeGenInfo, macros, sequtils, componentDef, queryGen, sets
 import ../runtime/[packedIntTable, query]
 
 let comps {.compileTime.} = ident("comps")

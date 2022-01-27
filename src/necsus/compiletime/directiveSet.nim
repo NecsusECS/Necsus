@@ -1,4 +1,4 @@
-import tables, componentDef, directive, sequtils, strutils, sets, strformat
+import tables, componentDef, tupleDirective, sequtils, strutils, sets, strformat
 
 type
     DirectiveSet*[T] = object

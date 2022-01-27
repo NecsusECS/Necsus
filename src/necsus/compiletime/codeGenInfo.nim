@@ -1,4 +1,4 @@
-import macros, componentSet, parse, directiveSet, directive, sequtils, componentDef, localDef
+import macros, componentSet, parse, directiveSet, tupleDirective, sequtils, componentDef, localDef
 
 type CodeGenInfo* = object
     ## Contains all the information needed to do high level code gen

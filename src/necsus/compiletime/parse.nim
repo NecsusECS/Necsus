@@ -1,4 +1,4 @@
-import macros, sequtils, componentDef, directive, localDef
+import macros, sequtils, componentDef, tupleDirective, localDef
 
 type
     SystemArgKind* {.pure.} = enum Spawn, Query, Attach, Detach, TimeDelta, Delete, Local
