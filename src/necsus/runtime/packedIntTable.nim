@@ -46,6 +46,10 @@ proc `[]`*[T](table: var PackedIntTable[T], key: int32): var T =
     ## Fetch a value
     return table.entries[table.keyMap[key]].value
 
+proc getPointer*[T](table: var PackedIntTable[T], key: int32): ptr T =
+    ## Fetch a value as a pointer
+    return addr table.entries[table.keyMap[key]].value
+
 proc setValue[T](table: var PackedIntTable[T], key: int32, value: sink T): int32 {.inline.} =
     ## Sets a value in the table and returns the generated index
     if key in table.keyMap:

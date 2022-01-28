@@ -15,9 +15,12 @@ proc createLookup(codeGenInfo: CodeGenInfo, name: string, lookup: LookupDef): Ni
 
     # Code to instantiate a tuple of components
     var instantiateTuple = nnkTupleConstr.newTree()
-    for component in lookup:
-        let component = component.componentStoreIdent
-        instantiateTuple.add quote do: `component`[int32(`entityId`)]
+    for arg in lookup.args:
+        let component = arg.component.componentStoreIdent
+        if arg.isPointer:
+            instantiateTuple.add quote do: getPointer(`component`, int32(`entityId`))
+        else:
+            instantiateTuple.add quote do: `component`[int32(`entityId`)]
 
     return quote:
         proc `procName`(`entityId`: EntityId): Option[`tupleType`] =
