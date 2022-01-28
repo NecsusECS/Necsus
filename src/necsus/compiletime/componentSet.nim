@@ -8,18 +8,19 @@ type
 
 proc enumSymbol*(components: ComponentSet): auto = components.enumSymbol
 
-proc uniqueComponents(systems: openarray[ParsedSystem]): seq[ComponentDef] =
+proc uniqueComponents(app: ParsedApp, systems: openarray[ParsedSystem]): seq[ComponentDef] =
     ## Pulls any component definitions from an arg
-    toSeq(systems.components).sorted.deduplicate
+    concat(app.components.toSeq, systems.components.toSeq).sorted.deduplicate
 
 proc componentSet*(
-    systems: openarray[ParsedSystem],
-    prefix: string
+    prefix: string,
+    app: ParsedApp,
+    systems: openarray[ParsedSystem]
 ): ComponentSet =
     ## Pulls all unique components from a set of parsed systems
     ComponentSet(
         enumSymbol: ident(prefix & "Components"),
-        components: systems.uniqueComponents
+        components: uniqueComponents(app, systems)
     )
 
 iterator items*(components: ComponentSet): ComponentDef =

@@ -28,10 +28,11 @@ type
         ## Parsed information about a system proc
         isStartup: bool
         symbol: string
-        args: seq[SystemArg]
+        args*: seq[SystemArg]
 
     ParsedApp* = object
         ## Parsed information about the application proc itself
+        runnerArgs*: seq[SystemArg]
         inputs*: seq[tuple[argName: string, directive: SharedDef]]
 
 proc isStartup*(system: ParsedSystem): auto = system.isStartup
@@ -133,23 +134,28 @@ proc parseSystemList*(list: NimNode, isStartup: bool): seq[ParsedSystem] =
         wrappedArg.expectKind(nnkPrefix)
         result.add(wrappedArg[1].parseSystem(isStartup))
 
+iterator components*(arg: SystemArg): ComponentDef =
+    ## Pulls all components out of an argument
+    case arg.kind
+    of SystemArgKind.Spawn:
+        for component in arg.spawn: yield component
+    of SystemArgKind.Query:
+        for component in arg.query: yield component
+    of SystemArgKind.Attach:
+        for component in arg.attach: yield component
+    of SystemArgKind.Detach:
+        for component in arg.detach: yield component
+    of SystemArgKind.Lookup:
+        for component in arg.lookup: yield component
+    of SystemArgKind.TimeDelta, SystemArgKind.Delete, SystemArgKind.Local, SystemArgKind.Shared:
+        discard
+
 iterator components*(systems: openarray[ParsedSystem]): ComponentDef =
     ## Pulls all components from a list of parsed systems
     for system in systems:
         for arg in system.args:
-            case arg.kind
-            of SystemArgKind.Spawn:
-                for component in arg.spawn: yield component
-            of SystemArgKind.Query:
-                for component in arg.query: yield component
-            of SystemArgKind.Attach:
-                for component in arg.attach: yield component
-            of SystemArgKind.Detach:
-                for component in arg.detach: yield component
-            of SystemArgKind.Lookup:
-                for component in arg.lookup: yield component
-            of SystemArgKind.TimeDelta, SystemArgKind.Delete, SystemArgKind.Local, SystemArgKind.Shared:
-                discard
+            for component in arg.components:
+                yield component
 
 iterator args*(system: ParsedSystem): SystemArg =
     ## Yields all args in a system
@@ -165,9 +171,16 @@ template generateReaders(plural, propName, flagName, directiveType: untyped) =
 
     proc `propName`*(arg: SystemArg): auto = arg.`propName`
 
-    iterator `plural`*(systems: openarray[ParsedSystem]): `directiveType` =
+    proc `plural`*(systems: openarray[ParsedSystem]): seq[`directiveType`] =
         ## Pulls all queries from the given parsed systems
-        for arg in systems.args.toSeq.filterIt(it.kind == SystemArgKind.`flagName`): yield arg.`propName`
+        for arg in systems.args.toSeq.filterIt(it.kind == SystemArgKind.`flagName`): result.add(arg.`propName`)
+
+    proc `plural`*(app: ParsedApp): seq[`directiveType`] =
+        ## Pulls directives out of the app
+        for arg in app.runnerArgs.filterIt(it.kind == SystemArgKind.`flagName`): result.add(arg.`propName`)
+        when directiveType is SharedDef:
+            for input in app.inputs: result.add(input.directive)
+
 
 generateReaders(queries, query, Query, QueryDef)
 generateReaders(attaches, attach, Attach, AttachDef)
@@ -177,7 +190,23 @@ generateReaders(locals, local, Local, LocalDef)
 generateReaders(shared, shared, Shared, SharedDef)
 generateReaders(lookups, lookup, Lookup, LookupDef)
 
-proc parseApp*(appProc: NimNode): ParsedApp =
+iterator components*(app: ParsedApp): ComponentDef =
+    ## List all components referenced by an app
+    for arg in app.runnerArgs:
+        for component in arg.components:
+            yield component
+
+proc parseRunner(runner: NimNode): seq[SystemArg] =
+    ## Parses the arguments of the runner
+    runner.expectKind(nnkSym)
+    let impl = runner.getImpl
+
+    # Verify that the last argument is a proc
+    impl.params[^1][1].expectKind(nnkProcTy)
+
+    result = impl.params.toSeq[1..^2].mapIt(parseSystemArg(it))
+
+proc parseApp*(appProc: NimNode, runner: NimNode): ParsedApp =
     ## Parses the app proc
     result.inputs = @[]
     for param in appProc.params:
@@ -188,3 +217,4 @@ proc parseApp*(appProc: NimNode): ParsedApp =
             param[1].expectKind(nnkIdent)
             result.inputs.add((param[0].strVal, newSharedDef(param[1])))
         else: param.expectKind({nnkEmpty, nnkIdentDefs})
+    result.runnerArgs = parseRunner(runner)

@@ -14,23 +14,26 @@ type CodeGenInfo* = object
     shared*: DirectiveSet[SharedDef]
     lookups*: DirectiveSet[LookupDef]
 
+template directives[T](name: NimNode, app: ParsedApp, allSystems: openarray[ParsedSystem], extract: untyped): auto =
+    ## Creates a directive set for a specific type of directive
+    let fromSystems: seq[T] = allSystems.`extract`
+    let fromApp: seq[T] = app.`extract`
+    newDirectiveSet[T](name.strVal, concat(fromSystems, fromApp))
+
 proc newCodeGenInfo*(name: NimNode, config: NimNode, app: ParsedApp, allSystems: openarray[ParsedSystem]): CodeGenInfo =
     ## Collects data needed for code gen from all the parsed systems
     CodeGenInfo(
         config: config,
         app: app,
         systems: allSystems.toSeq,
-        components: allSystems.componentSet(name.strVal),
-        queries: newDirectiveSet[QueryDef](name.strVal, allSystems.queries.toSeq),
-        spawns: newDirectiveSet[SpawnDef](name.strVal, allSystems.spawns.toSeq),
-        attaches: newDirectiveSet[AttachDef](name.strVal, allSystems.attaches.toSeq),
-        detaches: newDirectiveSet[DetachDef](name.strVal, allSystems.detaches.toSeq),
-        locals: newDirectiveSet[LocalDef](name.strVal, allSystems.locals.toSeq),
-        shared: newDirectiveSet[SharedDef](
-            name.strVal,
-            concat(allSystems.shared.toSeq, app.inputs.mapIt(it.directive))
-        ),
-        lookups: newDirectiveSet[LookupDef](name.strVal, allSystems.lookups.toSeq),
+        components: componentSet(name.strVal, app, allSystems),
+        queries: directives[QueryDef](name, app, allSystems, queries),
+        spawns: directives[SpawnDef](name, app, allSystems, spawns),
+        attaches: directives[AttachDef](name, app, allSystems, attaches),
+        detaches: directives[DetachDef](name, app, allSystems, detaches),
+        locals: directives[LocalDef](name, app, allSystems, locals),
+        shared: directives[SharedDef](name, app, allSystems, shared),
+        lookups: directives[LookupDef](name, app, allSystems, lookups),
     )
 
 proc componentEnumVal*(components: ComponentSet, component: ComponentDef): NimNode =

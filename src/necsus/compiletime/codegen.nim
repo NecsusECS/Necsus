@@ -16,17 +16,6 @@ proc createComponentInstances*(genInfo: CodeGenInfo): NimNode =
         result.add quote do:
             var `storageIdent` = newPackedIntTable[`component`](`confIdent`.componentSize)
 
-    #let componentObj = genInfo.components.objSymbol
-    #let componentInstance = construct(
-    #    componentObj,
-    #    genInfo.components.toSeq.map do (pair: auto) -> (string, NimNode):
-    #        let call = quote: newPackedIntTable[`componentType`](`confIdent`.componentSize)
-    #        (pair.name, call)
-    #)
-
-    #result = quote:
-    #    var `componentsIdent` = `componentInstance`
-
 proc createConfig*(genInfo: CodeGenInfo): NimNode =
     nnkLetSection.newTree(nnkIdentDefs.newTree(`confIdent`, newEmptyNode(), genInfo.config))
 

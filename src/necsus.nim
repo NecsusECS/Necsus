@@ -1,6 +1,6 @@
 import necsus / runtime / [entity, query, world, systemVar]
 import necsus / compiletime / [
-    parse, codegen, componentSet, codeGenInfo, queryGen, spawnGen, tickGen,
+    parse, codegen, codeGenInfo, queryGen, spawnGen, tickGen,
     necsusConf, detachGen, sysVarGen, lookupGen
 ]
 import sequtils, macros
@@ -22,19 +22,18 @@ macro necsus*(
 ) =
     ## Creates an ECS world
 
-    let parsed = concat(
+    let parsedSystems = concat(
         startupSystems.parseSystemList(isStartup = true),
         systems.parseSystemList(isStartup = false)
     )
 
-    pragmaProc.expectKind(nnkProcDef)
+    let parsedApp = parseApp(pragmaProc, runner)
 
     let name = pragmaProc.name
-    let codeGenInfo = newCodeGenInfo(name, conf, parseApp(pragmaProc), parsed)
-    let allComponents = parsed.componentSet(name.strVal)
+    let codeGenInfo = newCodeGenInfo(name, conf, parsedApp, parsedSystems)
 
     result = newStmtList(
-        allComponents.createComponentEnum,
+        codeGenInfo.components.createComponentEnum,
         pragmaProc
     )
 

@@ -3,31 +3,33 @@ import codeGenInfo, parse, directiveSet, tupleDirective, monoDirective, queryGen
 
 let timeDelta {.compileTime.} = ident("timeDelta")
 
+proc renderSystemArgs(codeGenInfo: CodeGenInfo, args: openarray[SystemArg]): seq[NimNode] =
+    ## Renders system arguments down to nim code
+    args.toSeq.map do (arg: SystemArg) -> NimNode:
+        case arg.kind
+        of SystemArgKind.Spawn:
+            ident(codeGenInfo.spawns.nameOf(arg.spawn))
+        of SystemArgKind.Query:
+            ident(codeGenInfo.queries.nameOf(arg.query))
+        of SystemArgKind.Attach:
+            ident(codeGenInfo.attaches.nameOf(arg.attach))
+        of SystemArgKind.Detach:
+            ident(codeGenInfo.detaches.nameOf(arg.detach))
+        of SystemArgKind.Lookup:
+            ident(codeGenInfo.lookups.nameOf(arg.lookup))
+        of SystemArgKind.TimeDelta:
+            timeDelta
+        of SystemArgKind.Delete:
+            deleteProc
+        of SystemArgKind.Local:
+            ident(codeGenInfo.locals.nameOf(arg.local))
+        of SystemArgKind.Shared:
+            ident(codeGenInfo.shared.nameOf(arg.shared))
+
 proc callSystems(codeGenInfo: CodeGenInfo, systems: openarray[ParsedSystem]): NimNode =
     result = newStmtList()
     for system in systems:
-        let props = system.args.toSeq.map do (arg: SystemArg) -> NimNode:
-            case arg.kind
-            of SystemArgKind.Spawn:
-                ident(codeGenInfo.spawns.nameOf(arg.spawn))
-            of SystemArgKind.Query:
-                ident(codeGenInfo.queries.nameOf(arg.query))
-            of SystemArgKind.Attach:
-                ident(codeGenInfo.attaches.nameOf(arg.attach))
-            of SystemArgKind.Detach:
-                ident(codeGenInfo.detaches.nameOf(arg.detach))
-            of SystemArgKind.Lookup:
-                ident(codeGenInfo.lookups.nameOf(arg.lookup))
-            of SystemArgKind.TimeDelta:
-                timeDelta
-            of SystemArgKind.Delete:
-                deleteProc
-            of SystemArgKind.Local:
-                ident(codeGenInfo.locals.nameOf(arg.local))
-            of SystemArgKind.Shared:
-                ident(codeGenInfo.shared.nameOf(arg.shared))
-
-        result.add(newCall(ident(system.symbol), props))
+        result.add(newCall(ident(system.symbol), codeGenInfo.renderSystemArgs(system.args)))
 
 proc createDelteFinalizers(codeGenInfo: CodeGenInfo): NimNode =
     ## Creates method calls to process deleted entities
@@ -45,6 +47,12 @@ proc createDelteFinalizers(codeGenInfo: CodeGenInfo): NimNode =
         result.add quote do:
             deleteComponents(`worldIdent`, `storageIdent`)
 
+proc callTick(codeGenInfo: CodeGenInfo, runner: NimNode, body: NimNode): NimNode =
+    ## Creates the code to invoke the runner
+    var args = codeGenInfo.renderSystemArgs(codeGenInfo.app.runnerArgs)
+    args.add(body)
+    return newCall(runner, args)
+
 proc createTickRunner*(codeGenInfo: CodeGenInfo, runner: NimNode): NimNode =
     ## Creates the code required to execute a single tick within the world
 
@@ -58,7 +66,10 @@ proc createTickRunner*(codeGenInfo: CodeGenInfo, runner: NimNode): NimNode =
         var `lastTime`: float = epochTime()
         var `timeDelta`: float = 0
         `startups`
-        `runner` do:
+
+    result.add codeGenInfo.callTick(
+        runner,
+        quote do:
             let `thisTime` = epochTime()
             `timeDelta` = `thisTime` - `lastTime`
             block:
@@ -66,3 +77,4 @@ proc createTickRunner*(codeGenInfo: CodeGenInfo, runner: NimNode): NimNode =
             `lastTime` = `thisTime`
             `deleteFinalizers`
             world.clearDeletedEntities()
+    )
