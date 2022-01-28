@@ -1,4 +1,4 @@
-import threading/atomics, threading/smartptrs, hashes, strutils, math, locks
+import threading/atomics, threading/smartptrs, hashes, strutils, math, locks, options
 
 ##
 ## Entry encoding
@@ -222,6 +222,15 @@ proc get[K, V](chunk: ptr Chunk[K, V], key: K): V =
     do:
         chunk.oldChunk.load.get(key)
 
+proc maybeGet[K, V](chunk: ptr Chunk[K, V], key: K): Option[V] =
+    ## Reads a key if it exists
+    read(chunk, key):
+        some(entry.value)
+    do:
+        return none(V)
+    do:
+        chunk.oldChunk.load.maybeGet(key)
+
 proc contains[K, V](chunk: ptr Chunk[K, V], key: K): bool =
     ## Reads whether a key exists in a chunk
     read(chunk, key):
@@ -293,6 +302,10 @@ proc del*[K, V](table: var OpenAddrTable[K, V], key: K) =
 proc `[]`*[K, V](table: var OpenAddrTable[K, V], key: K): V =
     ## Fetch a value
     table.primaryChunk.load.get(key)
+
+proc maybeGet*[K, V](table: var OpenAddrTable[K, V], key: K): Option[V] =
+    ## Fetch a value if it exists
+    table.primaryChunk.load.maybeGet(key)
 
 proc contains*[K, V](table: var OpenAddrTable[K, V], key: K): bool =
     ## Tests whether a value is in a table

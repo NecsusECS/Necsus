@@ -1,4 +1,4 @@
-import unittest, threadpool, intsets, random, sequtils, algorithm
+import unittest, threadpool, intsets, random, sequtils, algorithm, options
 include necsus/runtime/openAddrTable
 
 proc assertEncoding[K, V](key: K, value: V, state: static EntryState) =
@@ -59,6 +59,12 @@ suite "OpenAddrTable":
         check(table[123] == 789)
 
     test "Reading values that don't exist":
+        var table = newOpenAddrTable[int32, int32](10)
+        table[123] = 456
+        check(table.maybeGet(123).get() == 456)
+        check(table.maybeGet(789).isNone)
+
+    test "Maybe reading values":
         var table = newOpenAddrTable[int32, int32](10)
         expect KeyError:
             discard table[123]
