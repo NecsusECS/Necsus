@@ -11,6 +11,7 @@ type CodeGenInfo* = object
     detaches*: DirectiveSet[DetachDef]
     locals*: DirectiveSet[LocalDef]
     shared*: DirectiveSet[SharedDef]
+    lookups*: DirectiveSet[LookupDef]
 
 proc newCodeGenInfo*(name: NimNode, config: NimNode, allSystems: openarray[ParsedSystem]): CodeGenInfo =
     ## Collects data needed for code gen from all the parsed systems
@@ -24,6 +25,7 @@ proc newCodeGenInfo*(name: NimNode, config: NimNode, allSystems: openarray[Parse
         detaches: newDirectiveSet[DetachDef](name.strVal, allSystems.detaches.toSeq),
         locals: newDirectiveSet[LocalDef](name.strVal, allSystems.locals.toSeq),
         shared: newDirectiveSet[SharedDef](name.strVal, allSystems.shared.toSeq),
+        lookups: newDirectiveSet[LookupDef](name.strVal, allSystems.lookups.toSeq),
     )
 
 proc componentEnumVal*(components: ComponentSet, component: ComponentDef): NimNode =

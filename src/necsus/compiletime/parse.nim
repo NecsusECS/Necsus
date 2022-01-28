@@ -1,7 +1,7 @@
 import macros, sequtils, componentDef, tupleDirective, localDef, monoDirective
 
 type
-    SystemArgKind* {.pure.} = enum Spawn, Query, Attach, Detach, TimeDelta, Delete, Local, Shared
+    SystemArgKind* {.pure.} = enum Spawn, Query, Attach, Detach, TimeDelta, Delete, Local, Shared, Lookup
         ## The kind of arg within a system proc
 
     SystemArg* = object
@@ -19,6 +19,8 @@ type
             local: LocalDef
         of SystemArgKind.Shared:
             shared: SharedDef
+        of SystemArgKind.Lookup:
+            lookup: LookupDef
         of SystemArgKind.TimeDelta, SystemArgKind.Delete:
             discard
 
@@ -46,6 +48,7 @@ proc parseArgKind(symbol: NimNode): SystemArgKind =
     of "Delete": return SystemArgKind.Delete
     of "Local": return SystemArgKind.Local
     of "Shared": return SystemArgKind.Shared
+    of "Lookup": return SystemArgKind.Lookup
     else: error("Unrecognized ECS interface type: " & symbol.repr, symbol)
 
 proc parseDirectiveArg(symbol: NimNode, isPointer: bool = false): DirectiveArg =
@@ -73,6 +76,8 @@ proc parseParametricArg(argName: string, directiveSymbol: NimNode, directivePara
         result.attach = newAttachDef(directiveParametric.parseDirectiveArgsFromTuple)
     of SystemArgKind.Detach:
         result.detach = newDetachDef(directiveParametric.parseDirectiveArgsFromTuple)
+    of SystemArgKind.Lookup:
+        result.lookup = newLookupDef(directiveParametric.parseDirectiveArgsFromTuple)
     of SystemArgKind.Local:
         result.local = newLocalDef(argName, directiveParametric)
     of SystemArgKind.Shared:
@@ -85,7 +90,7 @@ proc parseFlagSystemArg(directiveSymbol: NimNode): SystemArg =
     result.kind = directiveSymbol.parseArgKind
     case result.kind
     of SystemArgKind.Spawn, SystemArgKind.Query, SystemArgKind.Attach, SystemArgKind.Detach,
-        SystemArgKind.Local, SystemArgKind.Shared:
+        SystemArgKind.Local, SystemArgKind.Shared, SystemArgKind.Lookup:
         error("System argument is not flag based: " & $result.kind)
     of SystemArgKind.TimeDelta, SystemArgKind.Delete:
         discard
@@ -137,6 +142,8 @@ iterator components*(systems: openarray[ParsedSystem]): ComponentDef =
                 for component in arg.attach: yield component
             of SystemArgKind.Detach:
                 for component in arg.detach: yield component
+            of SystemArgKind.Lookup:
+                for component in arg.lookup: yield component
             of SystemArgKind.TimeDelta, SystemArgKind.Delete, SystemArgKind.Local, SystemArgKind.Shared:
                 discard
 
@@ -164,3 +171,4 @@ generateReaders(detaches, detach, Detach, DetachDef)
 generateReaders(spawns, spawn, Spawn, SpawnDef)
 generateReaders(locals, local, Local, LocalDef)
 generateReaders(shared, shared, Shared, SharedDef)
+generateReaders(lookups, lookup, Lookup, LookupDef)

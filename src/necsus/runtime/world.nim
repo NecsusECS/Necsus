@@ -1,4 +1,4 @@
-import entity, atomics, query, macros, entitySet, deques, packedIntTable
+import entity, atomics, query, macros, entitySet, deques, packedIntTable, options
 
 type
 
@@ -20,6 +20,9 @@ type
 
     Detach*[C: tuple] = proc(entityId: EntityId)
         ## Detaches a set of components from an entity
+
+    Lookup*[C: tuple] = proc(entityId: EntityId): Option[C]
+        ## Looks up entity details based on its entity ID
 
     TimeDelta* = float
         ## Tracks the amount of time since the last execution of a system

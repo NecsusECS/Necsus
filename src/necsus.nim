@@ -1,6 +1,7 @@
 import necsus / runtime / [entity, query, world, systemVar]
 import necsus / compiletime / [
-    parse, codegen, componentSet, codeGenInfo, queryGen, spawnGen, tickGen, necsusConf, detachGen, sysVarGen
+    parse, codegen, componentSet, codeGenInfo, queryGen, spawnGen, tickGen,
+    necsusConf, detachGen, sysVarGen, lookupGen
 ]
 import sequtils, macros
 
@@ -42,6 +43,7 @@ macro necsus*(
         codeGenInfo.createWorldInstance(),
         codeGenInfo.createComponentInstances(),
         codeGenInfo.createQueries(),
+        codeGenInfo.createLookups(),
         codeGenInfo.createSpawns(),
         codeGenInfo.createAttaches(),
         codeGenInfo.createDetaches(),
