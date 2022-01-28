@@ -14,15 +14,15 @@ template defineSystemVar(typ: untyped) =
 
     proc isEmpty*[T](sysvar: typ[T]): bool =
         ## Returns whether a system variable has a value
-        true
+        sysvar.value.isNone
 
-    proc set*[T](sysvar: typ[T], value: T) =
+    proc set*[T](sysvar: var typ[T], value: sink T) =
         ## Sets the value in a system variable
-        discard
+        sysvar.value = some(value)
 
-    proc get*[T](sysvar: typ[T]): T =
+    proc get*[T](sysvar: typ[T]): lent T =
         ## Returns the value in a system variable
-        discard
+        sysvar.value.get()
 
 defineSystemVar(Local)
 defineSystemVar(Shared)

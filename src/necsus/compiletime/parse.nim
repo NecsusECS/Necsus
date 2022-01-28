@@ -90,22 +90,24 @@ proc parseFlagSystemArg(directiveSymbol: NimNode): SystemArg =
     of SystemArgKind.TimeDelta, SystemArgKind.Delete:
         discard
 
+proc parseArgType(argName: string, argType: NimNode): SystemArg =
+    ## Parses the type of a system argument
+    case argType.kind
+    of nnkBracketExpr:
+        return parseParametricArg(argName, argType[0], argType[1])
+    of nnkCall:
+        return parseParametricArg(argName, argType[1], argType[2])
+    of nnkSym:
+        return parseFlagSystemArg(argType)
+    of nnkVarTy:
+        return parseArgType(argName, argType[0])
+    else:
+        error("Expecting an ECS interface type, but got: " & argType.repr, argType)
+
 proc parseSystemArg(identDef: NimNode): SystemArg =
     ## Parses a SystemArg from a proc argument
     identDef.expectKind(nnkIdentDefs)
-    let argName = identDef[0].strVal
-    let argType = identDef[1]
-
-    case argType.kind
-    of nnkBracketExpr:
-        result = parseParametricArg(argName, argType[0], argType[1])
-    of nnkCall:
-        identDef[0].expectKind(nnkSym)
-        result = parseParametricArg(argName, argType[1], argType[2])
-    of nnkSym:
-        result = parseFlagSystemArg(argType)
-    else:
-        error("Expecting an ECS interface type, but got: " & argType.repr, argType)
+    return parseArgType(identDef[0].strVal, identDef[1])
 
 proc parseSystem(ident: NimNode, isStartup: bool): ParsedSystem =
     ## Parses a single system proc
