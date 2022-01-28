@@ -1,4 +1,4 @@
-import unittest, necsus, sequtils
+import unittest, necsus
 
 proc system1(shared1: var Shared[int], shared2: var Shared[string]) =
     if shared1.isEmpty: shared1.set(123) else: check(shared1.get() == 246)
@@ -12,11 +12,28 @@ proc assertions(shared1: Shared[int], shared2: Shared[string]) =
     check(shared1.get() in [246, 492])
     check(shared2.get() in ["foobar", "foobarbar"])
 
-proc runner(tick: proc(): void) =
+proc runTwice(tick: proc(): void) =
     tick()
     tick()
 
-proc testSharedVar() {.necsus(runner, [], [~system1, ~system2, ~assertions], conf = newNecsusConf()).}
+proc testSharedVar() {.necsus(runTwice, [], [~system1, ~system2, ~assertions], conf = newNecsusConf()).}
 
 test "Assigning and reading shared system vars":
     testSharedVar()
+
+
+
+proc runOnce(tick: proc(): void) = tick()
+
+proc assertAppInputs(strInput: Shared[string], intInput: Shared[int]) =
+    assert(strInput.get() == "blah blah")
+
+proc testSharedVarArg(strInput: string, intInput: int, unmentioned: float) {.necsus(
+    runTwice,
+    [],
+    [~assertAppInputs],
+    conf = newNecsusConf())
+.}
+
+test "Assigning shared variables from app arguments":
+    testSharedVarArg("blah blah", 123, 3.14)

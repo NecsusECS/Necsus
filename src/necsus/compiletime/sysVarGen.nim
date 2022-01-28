@@ -15,4 +15,9 @@ proc createLocalVars*(codeGenInfo: CodeGenInfo): NimNode =
 
 proc createSharedVars*(codeGenInfo: CodeGenInfo): NimNode =
     ## Generates the code necessary for storing local variables
-    defineVars(codeGenInfo.shared, bindSym("newShared"))
+    result = newStmtList(defineVars(codeGenInfo.shared, bindSym("newShared")))
+
+    for (argName, shared) in codeGenInfo.app.inputs:
+        let argIdent = ident(argName)
+        let sharedVarIdent = codeGenInfo.shared.nameOf(shared).ident
+        result.add quote do: `sharedVarIdent`.set(`argIdent`)

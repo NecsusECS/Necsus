@@ -24,5 +24,7 @@ template defineSystemVar(typ: untyped) =
         ## Returns the value in a system variable
         sysvar.value.get()
 
+    proc `$`*[T](sysvar: typ[T]): string = $sysvar.value
+
 defineSystemVar(Local)
 defineSystemVar(Shared)

@@ -3,6 +3,7 @@ import macros, componentSet, parse, directiveSet, tupleDirective, monoDirective,
 type CodeGenInfo* = object
     ## Contains all the information needed to do high level code gen
     config*: NimNode
+    app*: ParsedApp
     systems*: seq[ParsedSystem]
     components*: ComponentSet
     queries*: DirectiveSet[QueryDef]
@@ -13,10 +14,11 @@ type CodeGenInfo* = object
     shared*: DirectiveSet[SharedDef]
     lookups*: DirectiveSet[LookupDef]
 
-proc newCodeGenInfo*(name: NimNode, config: NimNode, allSystems: openarray[ParsedSystem]): CodeGenInfo =
+proc newCodeGenInfo*(name: NimNode, config: NimNode, app: ParsedApp, allSystems: openarray[ParsedSystem]): CodeGenInfo =
     ## Collects data needed for code gen from all the parsed systems
     CodeGenInfo(
         config: config,
+        app: app,
         systems: allSystems.toSeq,
         components: allSystems.componentSet(name.strVal),
         queries: newDirectiveSet[QueryDef](name.strVal, allSystems.queries.toSeq),
@@ -24,7 +26,10 @@ proc newCodeGenInfo*(name: NimNode, config: NimNode, allSystems: openarray[Parse
         attaches: newDirectiveSet[AttachDef](name.strVal, allSystems.attaches.toSeq),
         detaches: newDirectiveSet[DetachDef](name.strVal, allSystems.detaches.toSeq),
         locals: newDirectiveSet[LocalDef](name.strVal, allSystems.locals.toSeq),
-        shared: newDirectiveSet[SharedDef](name.strVal, allSystems.shared.toSeq),
+        shared: newDirectiveSet[SharedDef](
+            name.strVal,
+            concat(allSystems.shared.toSeq, app.inputs.mapIt(it.directive))
+        ),
         lookups: newDirectiveSet[LookupDef](name.strVal, allSystems.lookups.toSeq),
     )
 

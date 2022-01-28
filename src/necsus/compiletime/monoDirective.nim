@@ -14,7 +14,7 @@ template createDirective(typ: untyped) =
 
     proc hash*(directive: typ): Hash = hash(directive.argType.strVal)
 
-    proc `==`*(a, b: typ): bool = a.argType == b.argType
+    proc `==`*(a, b: typ): bool = a.argType.strVal == b.argType.strVal
 
     proc generateName*(directive: typ): string =
         directive.argType.strVal

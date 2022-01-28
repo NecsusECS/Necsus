@@ -30,7 +30,7 @@ macro necsus*(
     pragmaProc.expectKind(nnkProcDef)
 
     let name = pragmaProc.name
-    let codeGenInfo = newCodeGenInfo(name, conf, parsed)
+    let codeGenInfo = newCodeGenInfo(name, conf, parseApp(pragmaProc), parsed)
     let allComponents = parsed.componentSet(name.strVal)
 
     result = newStmtList(

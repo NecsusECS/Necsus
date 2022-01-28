@@ -30,6 +30,10 @@ type
         symbol: string
         args: seq[SystemArg]
 
+    ParsedApp* = object
+        ## Parsed information about the application proc itself
+        inputs*: seq[tuple[argName: string, directive: SharedDef]]
+
 proc isStartup*(system: ParsedSystem): auto = system.isStartup
 
 proc symbol*(system: ParsedSystem): auto = system.symbol
@@ -172,3 +176,15 @@ generateReaders(spawns, spawn, Spawn, SpawnDef)
 generateReaders(locals, local, Local, LocalDef)
 generateReaders(shared, shared, Shared, SharedDef)
 generateReaders(lookups, lookup, Lookup, LookupDef)
+
+proc parseApp*(appProc: NimNode): ParsedApp =
+    ## Parses the app proc
+    result.inputs = @[]
+    for param in appProc.params:
+        case param.kind
+        of nnkEmpty: discard
+        of nnkIdentDefs:
+            param[0].expectKind(nnkIdent)
+            param[1].expectKind(nnkIdent)
+            result.inputs.add((param[0].strVal, newSharedDef(param[1])))
+        else: param.expectKind({nnkEmpty, nnkIdentDefs})
