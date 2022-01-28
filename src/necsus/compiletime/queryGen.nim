@@ -34,11 +34,11 @@ proc createQueryIterator(codeGenInfo: CodeGenInfo, queryName: string, query: Que
 
     var instantiateTuple = nnkTupleConstr.newTree()
     for (i, arg) in query.args.toSeq.pairs:
-        let component = arg.component
+        let component = arg.component.componentStoreIdent
         if arg.isPointer:
-            instantiateTuple.add quote do: getPointer(`componentsIdent`.`component`, `members`[`i`])
+            instantiateTuple.add quote do: getPointer(`component`, `members`[`i`])
         else:
-            instantiateTuple.add quote do: `componentsIdent`.`component`[`members`[`i`]]
+            instantiateTuple.add quote do: `component`[`members`[`i`]]
 
     return quote:
         proc `procName`(): auto =

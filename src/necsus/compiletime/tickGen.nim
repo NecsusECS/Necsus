@@ -39,8 +39,9 @@ proc createDelteFinalizers(codeGenInfo: CodeGenInfo): NimNode =
 
     # Delete entities out of components
     for component in codeGenInfo.components:
+        let storageIdent = component.componentStoreIdent
         result.add quote do:
-            deleteComponents(`worldIdent`, `componentsIdent`.`component`)
+            deleteComponents(`worldIdent`, `storageIdent`)
 
 proc createTickRunner*(codeGenInfo: CodeGenInfo, runner: NimNode): NimNode =
     ## Creates the code required to execute a single tick within the world

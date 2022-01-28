@@ -34,14 +34,13 @@ macro necsus*(
 
     result = newStmtList(
         allComponents.createComponentEnum,
-        allComponents.createComponentObj,
+        codeGenInfo.createConfig(),
         pragmaProc
     )
 
     pragmaProc.body = newStmtList(
-        codeGenInfo.createConfig(),
         codeGenInfo.createWorldInstance(),
-        codeGenInfo.createComponentInstance(),
+        codeGenInfo.createComponentInstances(),
         codeGenInfo.createQueries(),
         codeGenInfo.createSpawns(),
         codeGenInfo.createAttaches(),

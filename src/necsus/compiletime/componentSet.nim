@@ -4,12 +4,9 @@ type
     ComponentSet* = object
         ## A group of components
         enumSymbol: NimNode
-        objSymbol: NimNode
         components: seq[ComponentDef]
 
 proc enumSymbol*(components: ComponentSet): auto = components.enumSymbol
-
-proc objSymbol*(components: ComponentSet): auto = components.objSymbol
 
 proc uniqueComponents(systems: openarray[ParsedSystem]): seq[ComponentDef] =
     ## Pulls any component definitions from an arg
@@ -22,7 +19,6 @@ proc componentSet*(
     ## Pulls all unique components from a set of parsed systems
     ComponentSet(
         enumSymbol: ident(prefix & "Components"),
-        objSymbol: ident(prefix & "ComponentData"),
         components: systems.uniqueComponents
     )
 

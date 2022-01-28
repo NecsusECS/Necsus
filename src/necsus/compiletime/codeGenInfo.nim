@@ -42,8 +42,9 @@ proc createComponentSet*(codeGenInfo: CodeGenInfo, components: openarray[Compone
     for component in components:
         result.add(codeGenInfo.components.componentEnumVal(component))
 
-## Returns the identity needed to access the components field
-let componentsIdent* {.compileTime.} = ident("components")
+proc componentStoreIdent*(component: ComponentDef): NimNode =
+    ## Creates a variable for referencing a component
+    ident("component_" & $component)
 
 ## The variable used to reference the initial size of any structs
 let confIdent* {.compileTime.} = ident("config")

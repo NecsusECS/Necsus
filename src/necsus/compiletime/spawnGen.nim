@@ -16,8 +16,9 @@ proc storeComponents(
     result = newStmtList()
     for (i, component) in components.pairs:
         let ident = component.localIdent
+        let componentIdent = component.componentStoreIdent
         result.add quote do:
-            let `ident` = setAndRef(`componentsIdent`.`component`, `entityId`.int32, `comps`[`i`])
+            let `ident` = setAndRef(`componentIdent`, `entityId`.int32, `comps`[`i`])
 
 proc createLocalComponentTuple(query: QueryDef): NimNode =
     ## Creates a tuple constructor for instantiating local references to components
@@ -74,8 +75,9 @@ proc registerAttachComponents(
         for component in query:
             if component notin knownComponents:
                 let compIdent = component.localIdent
+                let componentStorage = component.componentStoreIdent
                 getExtraComponents.add quote do:
-                    let `compIdent` = getRef[`component`](`componentsIdent`.`component`, `entityId`.int32)
+                    let `compIdent` = getRef[`component`](`componentStorage`, `entityId`.int32)
 
         result.add quote do:
             if `queryIdent`.shouldAdd(`entityId`, `componentSet`):
