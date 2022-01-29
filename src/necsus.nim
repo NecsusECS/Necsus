@@ -3,15 +3,25 @@ import necsus / compiletime / [
     parse, codegen, codeGenInfo, queryGen, spawnGen, tickGen,
     necsusConf, detachGen, sysVarGen, lookupGen
 ]
-import sequtils, macros
+import sequtils, macros, options
 
 export entity, query, world, necsusConf, systemVar
 
-type SystemFlag* = object
-    ## Fixes type checking errors when passing system procs into the necsus macro
+type
+    SystemFlag* = object
+        ## Fixes type checking errors when passing system procs into the necsus macro
+
+    NecsusRun* = enum
+        ## For the default game loop runner, tells the loop when to exit
+        RunLoop, ExitLoop
 
 proc `~`*(system: proc): SystemFlag = SystemFlag()
     ## Ensures that system macros with various arguments are able to be massed in to the necsus macro
+
+proc gameLoop*(exit: Shared[NecsusRun], tick: proc(): void) =
+    ## A standard game loop runner
+    while exit.get(RunLoop) == RunLoop:
+        tick()
 
 macro necsus*(
     runner: typed{sym},
