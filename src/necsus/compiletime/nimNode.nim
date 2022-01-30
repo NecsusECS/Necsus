@@ -3,14 +3,20 @@ import macros, strformat, strutils, sequtils, hashes
 proc symbols*(node: NimNode): seq[string] =
     ## Extracts all the symbols from a NimNode tree
     case node.kind
-    of nnkSym, nnkIdent: return @[node.strVal.toLowerAscii]
+    of nnkSym, nnkIdent, nnkStrLit..nnkTripleStrLit: return @[node.strVal.toLowerAscii]
+    of nnkCharLit..nnkUInt64Lit: return @[$node.intVal]
+    of nnkFloatLit..nnkFloat64Lit: return @[$node.floatVal]
+    of nnkNilLit: return @["nil"]
     of nnkBracketExpr: return node.toSeq.mapIt(it.symbols).foldl(concat(a, b))
     else: error(&"Unable to generate a component symbol from node ({node.kind}): {node.repr}")
 
 proc hash*(node: NimNode): Hash =
     ## Generates a unique hash for a NimNode
     case node.kind:
-    of nnkSym, nnkIdent: return hash(node.strVal)
+    of nnkSym, nnkIdent, nnkStrLit..nnkTripleStrLit: return hash(node.strVal)
+    of nnkCharLit..nnkUInt64Lit: return hash(node.intVal)
+    of nnkFloatLit..nnkFloat64Lit: return hash(node.floatVal)
+    of nnkNilLit: return hash(0)
     of nnkBracketExpr: return node.toSeq.mapIt(hash(it)).foldl(a !& b, hash(node.kind))
     else: error(&"Unable to generate a hash from node ({node.kind}): {node.repr}")
 
