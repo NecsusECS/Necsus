@@ -244,15 +244,17 @@ proc contains[K, V](chunk: ptr Chunk[K, V], key: K): bool =
 ## OpenAddrTable
 ##
 
+# Making this global is a temporary work-around for https://github.com/nim-lang/Nim/issues/14873
+var resizeLock: Lock
+resizeLock.initLock()
+
 type
     OpenAddrTable*[K, V] {.byref.} = object
         primaryChunk: Atomic[ptr Chunk[K, V]]
-        resizeLock: Lock
 
 proc newOpenAddrTable*[K: SmallValue, V: SmallValue](initialSize: int): OpenAddrTable[K, V] =
     ## Instantiates a new OpenAddrTable
     result.primaryChunk.store(newChunk[K, V](initialSize))
-    initLock(result.resizeLock)
 
 proc `=copy`*[K, V](dest: var OpenAddrTable[K, V], src: OpenAddrTable[K, V]) {.error.}
 
@@ -262,7 +264,7 @@ proc awaitClear(tracker: var Atomic[int]) =
 
 proc embiggen[K, V](table: var OpenAddrTable[K, V]) =
     ## Increases the capacity of this table
-    withLock table.resizeLock:
+    withLock resizeLock:
         let existingChunk = table.primaryChunk.load
 
         # Immediately return if it looks like we already resized the table
