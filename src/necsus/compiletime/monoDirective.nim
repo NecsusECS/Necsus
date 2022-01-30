@@ -1,4 +1,4 @@
-import hashes, macros
+import hashes, macros, nimNode, sequtils, strutils
 
 template createDirective(typ: untyped) =
     ## Creates a new mono-directive
@@ -12,11 +12,11 @@ template createDirective(typ: untyped) =
         ## Create a new mono directive
         typ(argType: argType)
 
-    proc hash*(directive: typ): Hash = hash(directive.argType.strVal)
+    proc hash*(directive: typ): Hash = hash(directive.argType)
 
-    proc `==`*(a, b: typ): bool = a.argType.strVal == b.argType.strVal
+    proc `==`*(a, b: typ): bool = cmp(a.argType, b.argType) == 0
 
     proc generateName*(directive: typ): string =
-        directive.argType.strVal
+        directive.argType.mapIt(it.symbols.join("_")).join("_")
 
 createDirective(SharedDef)

@@ -5,7 +5,7 @@ let comps {.compileTime.} = ident("comps")
 
 proc localIdent(component: ComponentDef): NimNode =
     ## The variable name to use for local references to a component
-    ident("comp" & $component)
+    ident("comp_" & component.name)
 
 proc storeComponents(
     codeGenInfo: CodeGenInfo,

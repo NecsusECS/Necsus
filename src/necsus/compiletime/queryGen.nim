@@ -3,7 +3,7 @@ import ../runtime/[ queryFilter, packedIntTable ]
 
 proc queryStorageIdent*(queryName: string): NimNode =
     ## Creates an ident for referencing the storage of a query
-    ident(queryName & "Storage")
+    ident(queryName & "_storage")
 
 proc createStorageTupleType(query: QueryDef): NimNode =
     ## Creates the tuple needed to store

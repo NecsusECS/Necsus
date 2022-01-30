@@ -1,4 +1,4 @@
-import macros, sequtils, componentDef, tupleDirective, localDef, monoDirective
+import macros, sequtils, componentDef, tupleDirective, localDef, monoDirective, strformat
 
 type
     SystemArgKind* {.pure.} = enum Spawn, Query, Attach, Detach, TimeDelta, Delete, Local, Shared, Lookup
@@ -58,10 +58,10 @@ proc parseArgKind(symbol: NimNode): SystemArgKind =
 
 proc parseDirectiveArg(symbol: NimNode, isPointer: bool = false): DirectiveArg =
     case symbol.kind
-    of nnkSym: return newDirectiveArg(ComponentDef(symbol), isPointer)
+    of nnkSym, nnkBracketExpr: return newDirectiveArg(ComponentDef(symbol), isPointer)
     of nnkIdentDefs: return parseDirectiveArg(symbol[1], isPointer)
     of nnkPtrTy: return parseDirectiveArg(symbol[0], true)
-    else: symbol.expectKind({nnkSym, nnkIdentDefs, nnkPtrTy})
+    else: error(&"Unexpected directive kind ({symbol.kind}): {symbol.repr}")
 
 proc parseDirectiveArgsFromTuple(tupleArg: NimNode): seq[DirectiveArg] =
     ## Parses the symbols out of a tuple definition

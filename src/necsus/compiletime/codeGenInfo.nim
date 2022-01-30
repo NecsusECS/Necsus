@@ -38,7 +38,7 @@ proc newCodeGenInfo*(name: NimNode, config: NimNode, app: ParsedApp, allSystems:
 
 proc componentEnumVal*(components: ComponentSet, component: ComponentDef): NimNode =
     ## Creates a reference to a component enum value
-    nnkDotExpr.newTree(components.enumSymbol, component.ident)
+    nnkDotExpr.newTree(components.enumSymbol, component.name.ident)
 
 proc asTupleType*(args: openarray[DirectiveArg]): NimNode =
     ## Creates a tuple type from a list of components
@@ -54,7 +54,7 @@ proc createComponentSet*(codeGenInfo: CodeGenInfo, components: openarray[Compone
 
 proc componentStoreIdent*(component: ComponentDef): NimNode =
     ## Creates a variable for referencing a component
-    ident("component_" & $component)
+    ident("component_" & component.name)
 
 ## The variable used to reference the initial size of any structs
 let confIdent* {.compileTime.} = ident("config")

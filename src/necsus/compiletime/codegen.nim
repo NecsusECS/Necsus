@@ -3,7 +3,7 @@ import ../runtime/packedIntTable
 
 proc createComponentEnum*(components: ComponentSet): NimNode =
     ## Creates an enum with an item for every available component
-    var componentList = toSeq(components).mapIt(it.ident)
+    var componentList = toSeq(components).mapIt(it.name.ident)
     if componentList.len == 0:
         componentList.add ident("Dummy")
     result = newEnum(components.enumSymbol, componentList, public = false, pure = true)
