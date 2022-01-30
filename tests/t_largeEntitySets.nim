@@ -10,7 +10,7 @@ proc run(initialSize: int) =
         for i in 1..initialSize:
             discard spawn((Dummy(), ))
 
-    proc myApp() {.necsus(runner, [], [~system], newNecsusConf(initialSize, initialSize)).}
+    proc myApp() {.necsus(runner, [], [~system], [], newNecsusConf(initialSize, initialSize)).}
 
     test &"World with {initialSize} entities":
         myApp()

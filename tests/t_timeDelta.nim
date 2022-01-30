@@ -18,7 +18,7 @@ proc runner(tick: proc(): void) =
     for i in 1..10:
         tick()
 
-proc myApp() {.necsus(runner, [~setup], [~checkTime], conf = newNecsusConf()).}
+proc myApp() {.necsus(runner, [~setup], [~checkTime], [], newNecsusConf()).}
 
 test "Time delta tracking":
     myApp()

@@ -22,7 +22,7 @@ proc assertion(query: Query[tuple[mult: Multiply, add: Add]]) =
 proc runner(tick: proc(): void) =
     tick()
 
-proc pointerQuery() {.necsus(runner, [~setup], [~operate, ~assertion], conf = newNecsusConf()).}
+proc pointerQuery() {.necsus(runner, [~setup], [~operate, ~assertion], [], newNecsusConf()).}
 
 test "Query and update components by pointer":
     pointerQuery()

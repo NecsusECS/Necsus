@@ -30,7 +30,8 @@ proc myApp() {.necsus(
     runner,
     [~setup],
     [~modifyA, ~modifyB, ~modifyC, ~modifyD, ~modifyE],
-    conf = newNecsusConf(10_000)
+    [],
+    newNecsusConf(10_000)
 ).}
 
 myApp()

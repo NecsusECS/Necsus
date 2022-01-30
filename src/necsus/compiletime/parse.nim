@@ -1,6 +1,9 @@
 import macros, sequtils, componentDef, tupleDirective, localDef, monoDirective, strformat
 
 type
+    SystemPhase* = enum StartupPhase, LoopPhase, TeardownPhase
+        ## When a system should be executed
+
     SystemArgKind* {.pure.} = enum Spawn, Query, Attach, Detach, TimeDelta, Delete, Local, Shared, Lookup
         ## The kind of arg within a system proc
 
@@ -26,7 +29,7 @@ type
 
     ParsedSystem* = object
         ## Parsed information about a system proc
-        isStartup: bool
+        phase: SystemPhase
         symbol: string
         args*: seq[SystemArg]
 
@@ -35,7 +38,7 @@ type
         runnerArgs*: seq[SystemArg]
         inputs*: seq[tuple[argName: string, directive: SharedDef]]
 
-proc isStartup*(system: ParsedSystem): auto = system.isStartup
+proc phase*(system: ParsedSystem): auto = system.phase
 
 proc symbol*(system: ParsedSystem): auto = system.symbol
 
@@ -119,20 +122,20 @@ proc parseSystemArg(identDef: NimNode): SystemArg =
     identDef.expectKind(nnkIdentDefs)
     return parseArgType(identDef[0].strVal, identDef[1])
 
-proc parseSystem(ident: NimNode, isStartup: bool): ParsedSystem =
+proc parseSystem(ident: NimNode, phase: SystemPhase): ParsedSystem =
     ## Parses a single system proc
     ident.expectKind(nnkSym)
     let args = ident.getImpl.params.toSeq
         .filterIt(it.kind == nnkIdentDefs)
         .mapIt(it.parseSystemArg)
-    return ParsedSystem(isStartup: isStartup, symbol: ident.strVal, args: args)
+    return ParsedSystem(phase: phase, symbol: ident.strVal, args: args)
 
-proc parseSystemList*(list: NimNode, isStartup: bool): seq[ParsedSystem] =
+proc parseSystemList*(list: NimNode, phase: SystemPhase): seq[ParsedSystem] =
     # Parses an inputted list of system procs into a digesteable format
     list.expectKind(nnkBracket)
     for wrappedArg in list.children:
         wrappedArg.expectKind(nnkPrefix)
-        result.add(wrappedArg[1].parseSystem(isStartup))
+        result.add(wrappedArg[1].parseSystem(phase))
 
 iterator components*(arg: SystemArg): ComponentDef =
     ## Pulls all components out of an argument

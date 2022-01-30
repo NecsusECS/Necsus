@@ -25,16 +25,18 @@ proc gameLoop*(exit: Shared[NecsusRun], tick: proc(): void) =
 
 proc buildApp(
     runner: NimNode,
-    startupSystems: NimNode,
+    startup: NimNode,
     systems: NimNode,
+    teardown: NimNode,
     conf: NimNode,
     pragmaProc: NimNode
 ): NimNode =
     ## Creates an ECS world
 
     let parsedSystems = concat(
-        startupSystems.parseSystemList(isStartup = true),
-        systems.parseSystemList(isStartup = false)
+        startup.parseSystemList(StartupPhase),
+        systems.parseSystemList(LoopPhase),
+        teardown.parseSystemList(TeardownPhase)
     )
 
     let parsedApp = parseApp(pragmaProc, runner)
@@ -67,19 +69,21 @@ proc buildApp(
 
 macro necsus*(
     runner: typed{sym},
-    startupSystems: openarray[SystemFlag],
+    startup: openarray[SystemFlag],
     systems: openarray[SystemFlag],
+    teardown: openarray[SystemFlag],
     conf: NecsusConf,
     pragmaProc: untyped
 ) =
     ## Creates an ECS world
-    buildApp(runner, startupSystems, systems, conf, pragmaProc)
+    buildApp(runner, startup, systems, teardown, conf, pragmaProc)
 
 macro necsus*(
-    startupSystems: openarray[SystemFlag],
+    startup: openarray[SystemFlag],
     systems: openarray[SystemFlag],
+    teardown: openarray[SystemFlag],
     conf: NecsusConf,
     pragmaProc: untyped
 ) =
     ## Creates an ECS world
-    buildApp(bindSym("gameLoop"), startupSystems, systems, conf, pragmaProc)
+    buildApp(bindSym("gameLoop"), startup, systems, teardown, conf, pragmaProc)

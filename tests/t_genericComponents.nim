@@ -48,7 +48,7 @@ proc assertion(
 
 proc runner(tick: proc(): void) = tick()
 
-proc myApp() {.necsus(runner, [~setup], [~assertion], conf = newNecsusConf()).}
+proc myApp() {.necsus(runner, [~setup], [~assertion], [], newNecsusConf()).}
 
 test "Components with generic parameters":
     myApp()

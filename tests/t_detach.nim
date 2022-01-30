@@ -38,7 +38,8 @@ proc testDetach() {.necsus(
     runner,
     [~setup],
     [~detacher, ~assertDetached, ~reattach, ~assertReattached],
-    conf = newNecsusConf()
+    [],
+    newNecsusConf()
 ).}
 
 test "Detaching components":

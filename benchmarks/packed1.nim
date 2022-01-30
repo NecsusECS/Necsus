@@ -19,6 +19,6 @@ proc runner(tick: proc(): void) =
     benchmark "Packed iteration with 1 query and 1 system", 1000:
         tick()
 
-proc myApp() {.necsus(runner, [~setup], [~modify], conf = newNecsusConf(10_000)).}
+proc myApp() {.necsus(runner, [~setup], [~modify], [], newNecsusConf(10_000)).}
 
 myApp()

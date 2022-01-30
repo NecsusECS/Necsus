@@ -33,7 +33,7 @@ proc assertion(
 proc runner(tick: proc(): void) =
     tick()
 
-proc myApp() {.necsus(runner, [~setup1, ~setup2], [~spawnMore, ~assertion], conf = newNecsusConf()).}
+proc myApp() {.necsus(runner, [~setup1, ~setup2], [~spawnMore], [~assertion], conf = newNecsusConf()).}
 
 test "Basic system":
     myApp()

@@ -56,25 +56,28 @@ proc callTick(codeGenInfo: CodeGenInfo, runner: NimNode, body: NimNode): NimNode
 proc createTickRunner*(codeGenInfo: CodeGenInfo, runner: NimNode): NimNode =
     ## Creates the code required to execute a single tick within the world
 
-    let startups = codeGenInfo.callSystems(codeGenInfo.systems.filterIt(it.isStartup))
-    let execSystems = codeGenInfo.callSystems(codeGenInfo.systems.filterIt(not it.isStartup))
+    let startups = codeGenInfo.callSystems(codeGenInfo.systems.filterIt(it.phase == StartupPhase))
+    let loopSystems = codeGenInfo.callSystems(codeGenInfo.systems.filterIt(it.phase == LoopPhase))
+    let teardown = codeGenInfo.callSystems(codeGenInfo.systems.filterIt(it.phase == TeardownPhase))
     let deleteFinalizers = codeGenInfo.createDelteFinalizers()
     let lastTime = ident("lastTime")
     let thisTime = ident("thisTime")
 
-    result = quote do:
-        var `lastTime`: float = epochTime()
-        var `timeDelta`: float = 0
-        `startups`
-
-    result.add codeGenInfo.callTick(
+    let primaryLoop = codeGenInfo.callTick(
         runner,
         quote do:
             let `thisTime` = epochTime()
             `timeDelta` = `thisTime` - `lastTime`
             block:
-                `execSystems`
+                `loopSystems`
             `lastTime` = `thisTime`
             `deleteFinalizers`
             world.clearDeletedEntities()
     )
+
+    result = quote do:
+        var `lastTime`: float = epochTime()
+        var `timeDelta`: float = 0
+        `startups`
+        `primaryLoop`
+        `teardown`

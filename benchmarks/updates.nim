@@ -41,7 +41,8 @@ proc exec(entityCount: int) =
         runner,
         [~setup],
         [~movement, ~comflab],
-        conf = newNecsusConf(entityCount + 100, entityCount + 100)
+        [],
+        newNecsusConf(entityCount + 100, entityCount + 100)
     ).}
 
     myApp()

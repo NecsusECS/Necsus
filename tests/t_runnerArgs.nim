@@ -43,7 +43,7 @@ proc assertions(checkA: Query[(A, )], checkBC: Query[(B, C)], checkD: Query[(D, 
     check(checkBC.components.toSeq.len == 1)
     check(checkD.components.toSeq.len == 0)
 
-proc testRunnerArgs() {.necsus(runner, [~setup], [~assertions], conf = newNecsusConf()).}
+proc testRunnerArgs() {.necsus(runner, [~setup], [~assertions], [], newNecsusConf()).}
 
 test "Passing directives into the runner":
     testRunnerArgs()
