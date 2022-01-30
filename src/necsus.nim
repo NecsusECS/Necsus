@@ -23,13 +23,13 @@ proc gameLoop*(exit: Shared[NecsusRun], tick: proc(): void) =
     while exit.get(RunLoop) == RunLoop:
         tick()
 
-macro necsus*(
-    runner: typed{sym},
-    startupSystems: openarray[SystemFlag],
-    systems: openarray[SystemFlag],
-    conf: NecsusConf,
-    pragmaProc: untyped
-) =
+proc buildApp(
+    runner: NimNode,
+    startupSystems: NimNode,
+    systems: NimNode,
+    conf: NimNode,
+    pragmaProc: NimNode
+): NimNode =
     ## Creates an ECS world
 
     let parsedSystems = concat(
@@ -64,3 +64,22 @@ macro necsus*(
 
     when defined(dump):
         echo result.repr
+
+macro necsus*(
+    runner: typed{sym},
+    startupSystems: openarray[SystemFlag],
+    systems: openarray[SystemFlag],
+    conf: NecsusConf,
+    pragmaProc: untyped
+) =
+    ## Creates an ECS world
+    buildApp(runner, startupSystems, systems, conf, pragmaProc)
+
+macro necsus*(
+    startupSystems: openarray[SystemFlag],
+    systems: openarray[SystemFlag],
+    conf: NecsusConf,
+    pragmaProc: untyped
+) =
+    ## Creates an ECS world
+    buildApp(bindSym("gameLoop"), startupSystems, systems, conf, pragmaProc)
