@@ -1,4 +1,4 @@
-import locks, strformat
+import locks, strformat, math
 
 #
 # BlockStorage
@@ -7,58 +7,69 @@ import locks, strformat
 const Size = 16_384
 
 type
-    BlockStorage*[T] = ref object
-        ## Linked list of storage for table values
+    Bucket[T] = ref object
         entries: array[Size, T]
-        nextLock: Lock
-        next: BlockStorage[T]
 
-proc newBlockStorage*[T](): BlockStorage[T] =
+    BlockStorage*[T] = object
+        ## Linked list of storage for table values
+        buckets: seq[Bucket[T]]
+
+# Making this global is a temporary work-around for https://github.com/nim-lang/Nim/issues/14873
+var resizeLock: Lock
+resizeLock.initLock()
+
+proc resize[T](buckets: var seq[Bucket[T]], size: int) =
+    if size > buckets.len:
+        let currentSize = buckets.len
+        buckets.setLen(size)
+        for i in currentSize..<size:
+            buckets[i].new
+
+proc newBlockStorage*[T](initialSize: int): BlockStorage[T] =
     ## Instantiate new storage
-    result.new
-    result.nextLock.initLock()
+    result.buckets.resize(ceilDiv(initialSize, Size))
 
-proc `[]=`*[T](storage: var BlockStorage[T], key: int, value: T) {.inline.} =
+proc bucketIndex(key: int): int =
+    ## Returns the bucket index for a given key
+    floorDiv(key, Size)
+
+proc bucketKey(key, bucketIndex: int): int =
+    ## Returns the key within a bucket
+    key - (bucketIndex * Size)
+
+proc `[]=`*[T](storage: var BlockStorage[T], key: int, value: T) =
     ## Set a value
-    if key < Size:
-        storage.entries[key] = value
-    else:
-        if storage.next == nil:
-            storage.nextLock.withLock:
-                if storage.next == nil:
-                    storage.next = newBlockStorage[T]()
+    let bucketIdx = key.bucketIndex
 
-        storage.next[key - Size] = value
+    if bucketIdx >= storage.buckets.len:
+        resizeLock.withLock:
+            storage.buckets.resize(bucketIdx + 1)
 
-template getter[T](storage: BlockStorage[T], key: int, recurse: untyped) =
+    storage.buckets[bucketIdx].entries[bucketKey(key, bucketIdx)] = value
+
+template getter[T](storage: BlockStorage[T], key: int) =
     ## Generate getter code
-    if key < Size:
-        return storage.entries[key]
-    elif storage.next != nil:
-        return recurse(storage.next, key - Size)
-    else:
+    let bucketIdx = bucketIndex(key)
+
+    if bucketIdx >= storage.buckets.len:
         raise newException(IndexDefect, &"Index is out of bounds: {key}")
 
-proc `[]`*[T](storage: BlockStorage[T], key: int): lent T {.inline.} =
-    ## Returns a value
-    getter(storage, key, `[]`)
+    return storage.buckets[bucketIdx].entries[bucketKey(key, bucketIdx)]
 
-proc mget*[T](storage: var BlockStorage[T], key: int): var T {.inline.} =
+proc `[]`*[T](storage: BlockStorage[T], key: int): lent T =
+    ## Returns a value
+    getter(storage, key)
+
+proc mget*[T](storage: var BlockStorage[T], key: int): var T =
     ## Returns a mutable reference to a value
-    getter(storage, key, mget)
+    getter(storage, key)
 
 iterator items*[T](storage: BlockStorage[T], maxIndex: int): lent T =
     ## Iterate through all values in this storage, up to the given index
-
-    var count = maxIndex
-    var currentStorage: BlockStorage[T] = storage
-
-    while true:
-        for i in 0..<min(count, Size):
-            yield currentStorage.entries[i]
-
-        if count < Size or currentStorage.next == nil:
-            break
-
-        currentStorage = currentStorage.next
-        count = count - Size
+    var accum = 0
+    for bucket in storage.buckets:
+        for i in 0..<Size:
+            if accum >= maxIndex:
+                break
+            accum = accum + 1
+            yield bucket.entries[i]

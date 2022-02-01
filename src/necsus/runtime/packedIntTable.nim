@@ -21,7 +21,7 @@ type
 proc newPackedIntTable*[T](initialSize: int): PackedIntTable[T] =
     ## Create a new PackedIntTable
     result.keyMap = newOpenAddrTable[int32, int32](initialSize)
-    result.entries = newBlockStorage[Entry[T]]()
+    result.entries = newBlockStorage[Entry[T]](initialSize)
 
 proc `=copy`*[T](dest: var PackedIntTable[T], src: PackedIntTable[T]) {.error.}
 
