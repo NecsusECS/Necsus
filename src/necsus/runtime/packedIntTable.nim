@@ -1,4 +1,8 @@
-import atomics, math, sequtils, strutils, openAddrTable, strformat
+import openAddrTable, blockStorage
+
+#
+# PackedIntTable
+#
 
 type
     Entry*[T] = tuple[key: int32, value: T]
@@ -11,27 +15,25 @@ type
     PackedIntTable*[T] {.byref.} = object
         ## A packed tabled where the key is always an int
         keyMap: OpenAddrTable[int32, int32]
-        entries: seq[Entry[T]]
+        entries: BlockStorage[Entry[T]]
         maxIndex: int32
 
 proc newPackedIntTable*[T](initialSize: int): PackedIntTable[T] =
     ## Create a new PackedIntTable
-    result = PackedIntTable[T](
-        keyMap: newOpenAddrTable[int32, int32](initialSize),
-        entries: newSeq[Entry[T]](initialSize)
-    )
+    result.keyMap = newOpenAddrTable[int32, int32](initialSize)
+    result.entries = newBlockStorage[Entry[T]]()
 
 proc `=copy`*[T](dest: var PackedIntTable[T], src: PackedIntTable[T]) {.error.}
 
 iterator items*[T](table: PackedIntTable[T]): lent T =
     ## Iterate through all values
-    for i in 0..<table.maxIndex:
-        yield table.entries[i].value
+    for entry in table.entries.items(table.maxIndex):
+        yield entry.value
 
-iterator pairs*[T](table: PackedIntTable[T]): lent Entry[T] =
+iterator pairs*[T](table: PackedIntTable[T]): Entry[T] =
     ## Iterate through all values
-    for i in 0..<table.maxIndex:
-        yield table.entries[i]
+    for entry in table.entries.items(table.maxIndex):
+        yield entry
 
 proc `$`*[T](table: PackedIntTable[T]): string =
     ## Debug string generation
@@ -44,11 +46,11 @@ proc `$`*[T](table: PackedIntTable[T]): string =
 
 proc `[]`*[T](table: var PackedIntTable[T], key: int32): var T =
     ## Fetch a value
-    return table.entries[table.keyMap[key]].value
+    return table.entries.mget(table.keyMap[key]).value
 
 proc getPointer*[T](table: var PackedIntTable[T], key: int32): ptr T =
     ## Fetch a value as a pointer
-    return addr table.entries[table.keyMap[key]].value
+    return addr table.entries.mget(table.keyMap[key]).value
 
 proc setValue[T](table: var PackedIntTable[T], key: int32, value: sink T): int32 {.inline.} =
     ## Sets a value in the table and returns the generated index
@@ -57,8 +59,6 @@ proc setValue[T](table: var PackedIntTable[T], key: int32, value: sink T): int32
     else:
         result = table.maxIndex
         table.maxIndex += 1
-        if result >= table.entries.len:
-            table.entries.setLen(ceilDiv(result * 3, 2))
         table.keyMap[key] = result
     table.entries[result] = (key, value)
 
@@ -68,11 +68,12 @@ proc `[]=`*[T](table: var PackedIntTable[T], key: int32, value: sink T) =
 
 proc setAndRef*[T](table: var PackedIntTable[T], key: int32, value: sink T): PackedIntTableValue[T] =
     ## Add a value and return a value reference to it
-    PackedIntTableValue[T](entry: addr table.entries[table.setValue(key, value)], expectKey: key)
+    result.entry = addr table.entries.mget(table.setValue(key, value))
+    result.expectKey = key
 
 proc getRef*[T](table: var PackedIntTable[T], key: int32): PackedIntTableValue[T] =
     ## Returns a ref to a key
-    PackedIntTableValue[T](entry: addr table.entries[table.keyMap[key]], expectKey: key)
+    PackedIntTableValue[T](entry: addr table.entries.mget(table.keyMap[key]), expectKey: key)
 
 proc contains*[T](table: var PackedIntTable[T], key: int32): bool =
     ## Determine whether a key exists in this table
@@ -92,11 +93,11 @@ proc del*[T](table: var PackedIntTable[T], key: int32) =
         table.keyMap[toCopy.key] = idx
 
         # Change the key of the moved value so that lookups will fail
-        table.entries[table.maxIndex].key += 1
+        table.entries.mget(table.maxIndex).key += 1
 
 proc reference*[T](table: var PackedIntTable[T], key: int32): PackedIntTableValue[T] =
     ## Returns a direct reference to an entry in the table
-    PackedIntTableValue[T](entry: unsafeAddr table.entries[table.keyMap[key]], expectKey: key)
+    PackedIntTableValue[T](entry: addr table.entries.mget(table.keyMap[key]), expectKey: key)
 
 proc `[]`*[T](table: var PackedIntTable[T], reference: PackedIntTableValue[T]): lent T =
     ## Fetch a value
@@ -110,4 +111,4 @@ proc getPointer*[T](table: var PackedIntTable[T], reference: PackedIntTableValue
     if reference.entry.key == reference.expectKey:
         result = addr reference.entry.value
     else:
-        result = unsafeAddr table.entries[table.keyMap[reference.expectKey]].value
+        result = addr table.entries.mget(table.keyMap[reference.expectKey]).value

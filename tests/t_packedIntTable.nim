@@ -71,9 +71,9 @@ suite "PackedIntTable":
 
     test "Filling the table beyond capacity":
         var fill = newPackedIntTable[int](5)
-        for i in 0'i32..1000:
+        for i in 0'i32..10_000:
             fill[i] = i
-        check(fill.toSeq == (0..1000).toSeq)
+        check(fill.toSeq == (0..10_000).toSeq)
 
     test "Take address of a key":
         let ref1 = table.reference(1)
