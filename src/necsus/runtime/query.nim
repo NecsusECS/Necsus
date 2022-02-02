@@ -30,7 +30,7 @@ proc shouldAdd*[C, M](storage: var QueryStorage[C, M], entityId: EntityId, compo
     ## Returns whether an entity should be added to this query
     storage.filter.evaluate(components) and ((entityId.int32 notin storage.members) or (entityId in storage.deleted))
 
-iterator items*[C, M](storage: QueryStorage[C, M]): (EntityId, M) =
+iterator items*[C, M](storage: var QueryStorage[C, M]): (EntityId, M) =
     ## Yields the component pointers in a storage object
     for (eid, components) in storage.members.pairs:
         let entity = EntityId(eid)

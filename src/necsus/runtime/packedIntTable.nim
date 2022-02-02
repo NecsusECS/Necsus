@@ -1,4 +1,4 @@
-import openAddrTable, blockStorage
+import openAddrTable, blockStorage, threading/atomics
 
 #
 # PackedIntTable
@@ -16,7 +16,7 @@ type
         ## A packed tabled where the key is always an int
         keyMap: OpenAddrTable[int32, int32]
         entries: BlockStorage[Entry[T]]
-        maxIndex: int32
+        maxIndex: Atomic[int32]
 
 proc newPackedIntTable*[T](initialSize: int): PackedIntTable[T] =
     ## Create a new PackedIntTable
@@ -25,17 +25,17 @@ proc newPackedIntTable*[T](initialSize: int): PackedIntTable[T] =
 
 proc `=copy`*[T](dest: var PackedIntTable[T], src: PackedIntTable[T]) {.error.}
 
-iterator items*[T](table: PackedIntTable[T]): lent T =
+iterator items*[T](table: var PackedIntTable[T]): lent T =
     ## Iterate through all values
-    for entry in table.entries.items(table.maxIndex):
+    for entry in table.entries.items(table.maxIndex.load()):
         yield entry.value
 
-iterator pairs*[T](table: PackedIntTable[T]): Entry[T] =
+iterator pairs*[T](table: var PackedIntTable[T]): Entry[T] =
     ## Iterate through all values
-    for entry in table.entries.items(table.maxIndex):
+    for entry in table.entries.items(table.maxIndex.load()):
         yield entry
 
-proc `$`*[T](table: PackedIntTable[T]): string =
+proc `$`*[T](table: var PackedIntTable[T]): string =
     ## Debug string generation
     result = "{"
     var first = true
@@ -57,8 +57,7 @@ proc setValue[T](table: var PackedIntTable[T], key: int32, value: sink T): int32
     if key in table.keyMap:
         result = table.keyMap[key]
     else:
-        result = table.maxIndex
-        table.maxIndex += 1
+        result = table.maxIndex.fetchAdd(1)
         table.keyMap[key] = result
     table.entries[result] = (key, value)
 
@@ -83,17 +82,17 @@ proc del*[T](table: var PackedIntTable[T], key: int32) =
     ## Removes a key from this table
     let idx = table.keyMap[key]
     table.keyMap.del(key)
-    table.maxIndex -= 1
+    let newMaxIndex = table.maxIndex.fetchSub(1) - 1
 
     ## To keep the table packed, move the last element into the deleted slot
-    if table.maxIndex > 0 and table.maxIndex != idx:
+    if newMaxIndex > 0 and newMaxIndex != idx:
 
-        let toCopy = table.entries[table.maxIndex]
+        let toCopy = table.entries[newMaxIndex]
         table.entries[idx] = toCopy
         table.keyMap[toCopy.key] = idx
 
         # Change the key of the moved value so that lookups will fail
-        table.entries.mget(table.maxIndex).key += 1
+        table.entries.mget(newMaxIndex).key += 1
 
 proc reference*[T](table: var PackedIntTable[T], key: int32): PackedIntTableValue[T] =
     ## Returns a direct reference to an entry in the table
