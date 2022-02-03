@@ -1,0 +1,1 @@
+createTickRunner	necsus/compiletime/tickGen.html#createTickRunner,CodeGenInfo,NimNode	tickGen: createTickRunner(codeGenInfo: CodeGenInfo; runner: NimNode): NimNode	

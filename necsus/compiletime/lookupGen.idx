@@ -1,0 +1,1 @@
+createLookups	necsus/compiletime/lookupGen.html#createLookups,CodeGenInfo	lookupGen: createLookups(codeGenInfo: CodeGenInfo): NimNode	

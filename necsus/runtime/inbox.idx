@@ -1,0 +1,3 @@
+Inbox	necsus/runtime/inbox.html#Inbox	inbox: Inbox	
+newInbox	necsus/runtime/inbox.html#newInbox,PackedList[T]	inbox: newInbox[T](backingList: var PackedList[T]): Inbox[T]	
+items	necsus/runtime/inbox.html#items.i,Inbox[T]	inbox: items[T](inbox: Inbox[T]): lent T	

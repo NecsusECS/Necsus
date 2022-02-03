@@ -1,0 +1,5 @@
+LocalDef	necsus/compiletime/localDef.html#LocalDef	localDef: LocalDef	
+newLocalDef	necsus/compiletime/localDef.html#newLocalDef,string,NimNode	localDef: newLocalDef(argName: string; argType: NimNode): LocalDef	
+hash	necsus/compiletime/localDef.html#hash,LocalDef	localDef: hash(local: LocalDef): Hash	
+`==`	necsus/compiletime/localDef.html#==,LocalDef,LocalDef	localDef: `==`(a, b: LocalDef): bool	
+generateName	necsus/compiletime/localDef.html#generateName,LocalDef	localDef: generateName(local: LocalDef): string	

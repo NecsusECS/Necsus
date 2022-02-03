@@ -1,0 +1,4 @@
+QueryFilter	necsus/runtime/queryFilter.html#QueryFilter	queryFilter: QueryFilter	
+filterAll	necsus/runtime/queryFilter.html#filterAll	queryFilter: filterAll[C: enum](): auto	
+filterMatching	necsus/runtime/queryFilter.html#filterMatching,set[C]	queryFilter: filterMatching[C: enum](components: set[C]): auto	
+evaluate	necsus/runtime/queryFilter.html#evaluate,QueryFilter[C],set[C]	queryFilter: evaluate[C](filter: QueryFilter[C]; components: set[C]): bool	

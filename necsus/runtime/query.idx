@@ -1,0 +1,11 @@
+QueryItem	necsus/runtime/query.html#QueryItem	query: QueryItem	
+Query	necsus/runtime/query.html#Query	query: Query	
+QueryStorage	necsus/runtime/query.html#QueryStorage	query: QueryStorage	
+newQueryStorage	necsus/runtime/query.html#newQueryStorage,int,QueryFilter[C]	query: newQueryStorage[C, M](initialSize: int; filter: QueryFilter[C]): QueryStorage[C,\n    M]	
+addToQuery	necsus/runtime/query.html#addToQuery,QueryStorage[C,M],EntityId,sinkM	query: addToQuery[C, M](storage: var QueryStorage[C, M]; entityId: EntityId;\n                 componentRefs: sink M)	
+removeFromQuery	necsus/runtime/query.html#removeFromQuery,QueryStorage[C,M],EntityId	query: removeFromQuery[C, M](storage: var QueryStorage[C, M]; entityId: EntityId)	
+shouldAdd	necsus/runtime/query.html#shouldAdd,QueryStorage[C,M],EntityId,set[C]	query: shouldAdd[C, M](storage: var QueryStorage[C, M]; entityId: EntityId;\n                components: set[C]): bool	
+items	necsus/runtime/query.html#items.i,QueryStorage[C,M]	query: items[C, M](storage: var QueryStorage[C, M]): (EntityId, M)	
+items	necsus/runtime/query.html#items.i,Query[T: tuple]	query: items[T: tuple](query: Query[T]): QueryItem[T]	
+components	necsus/runtime/query.html#components.i,Query[T: tuple]	query: components[T: tuple](query: Query[T]): T	
+finalizeDeletes	necsus/runtime/query.html#finalizeDeletes,QueryStorage[C,M]	query: finalizeDeletes[C, M](query: var QueryStorage[C, M])	

@@ -1,0 +1,6 @@
+BlockStorage	necsus/runtime/blockStorage.html#BlockStorage	blockStorage: BlockStorage	
+newBlockStorage	necsus/runtime/blockStorage.html#newBlockStorage,int	blockStorage: newBlockStorage[T](initialSize: int): BlockStorage[T]	
+`[]=`	necsus/runtime/blockStorage.html#[]=,BlockStorage[T],int,T	blockStorage: `[]=`[T](storage: var BlockStorage[T]; key: int; value: T)	
+`[]`	necsus/runtime/blockStorage.html#[],BlockStorage[T],int	blockStorage: `[]`[T](storage: BlockStorage[T]; key: int): lent T	
+mget	necsus/runtime/blockStorage.html#mget,BlockStorage[T],int	blockStorage: mget[T](storage: var BlockStorage[T]; key: int): var T	
+items	necsus/runtime/blockStorage.html#items.i,BlockStorage[T],int	blockStorage: items[T](storage: BlockStorage[T]; maxIndex: int): lent T	

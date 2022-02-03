@@ -1,0 +1,16 @@
+World	necsus/runtime/world.html#World	world: World	
+Spawn	necsus/runtime/world.html#Spawn	world: Spawn	
+Delete	necsus/runtime/world.html#Delete	world: Delete	
+Attach	necsus/runtime/world.html#Attach	world: Attach	
+Detach	necsus/runtime/world.html#Detach	world: Detach	
+Lookup	necsus/runtime/world.html#Lookup	world: Lookup	
+Outbox	necsus/runtime/world.html#Outbox	world: Outbox	
+TimeDelta	necsus/runtime/world.html#TimeDelta	world: TimeDelta	
+newWorld	necsus/runtime/world.html#newWorld,int	world: newWorld[C](initialSize: int): World[C]	
+associateComponents	necsus/runtime/world.html#associateComponents,World[C],EntityId,set[C]	world: associateComponents[C](world: var World[C]; entity: EntityId; components: set[C]): set[\n    C]	
+detachComponents	necsus/runtime/world.html#detachComponents,World[C],EntityId,set[C]	world: detachComponents[C](world: var World[C]; entity: EntityId; components: set[C])	
+createEntity	necsus/runtime/world.html#createEntity,World[C],set[C]	world: createEntity[C](world: var World[C]; initialComponents: set[C]): EntityId	
+getComponents	necsus/runtime/world.html#getComponents,World[C],EntityId	world: getComponents[C](world: var World[C]; entityId: EntityId): set[C]	
+deleteEntity	necsus/runtime/world.html#deleteEntity,World[C],EntityId	world: deleteEntity[C](world: var World[C]; entityId: EntityId)	
+deleteComponents	necsus/runtime/world.html#deleteComponents,World[C],PackedIntTable[T]	world: deleteComponents[C, T](world: World[C]; components: var PackedIntTable[T])	
+clearDeletedEntities	necsus/runtime/world.html#clearDeletedEntities,World[C]	world: clearDeletedEntities[C](world: var World[C])	

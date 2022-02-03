@@ -1,0 +1,2 @@
+createLocalVars	necsus/compiletime/sysVarGen.html#createLocalVars,CodeGenInfo	sysVarGen: createLocalVars(codeGenInfo: CodeGenInfo): NimNode	
+createSharedVars	necsus/compiletime/sysVarGen.html#createSharedVars,CodeGenInfo	sysVarGen: createSharedVars(codeGenInfo: CodeGenInfo): NimNode	

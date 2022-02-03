@@ -1,0 +1,3 @@
+createDetach	necsus/compiletime/detachGen.html#createDetach,CodeGenInfo,string,DetachDef	detachGen: createDetach(codeGenInfo: CodeGenInfo; name: string; detach: DetachDef): NimNode	
+createDetaches	necsus/compiletime/detachGen.html#createDetaches,CodeGenInfo	detachGen: createDetaches(codeGenInfo: CodeGenInfo): NimNode	
+createDeleteProc	necsus/compiletime/detachGen.html#createDeleteProc,CodeGenInfo	detachGen: createDeleteProc(codeGenInfo: CodeGenInfo): NimNode	

@@ -1,0 +1,9 @@
+CodeGenInfo	necsus/compiletime/codeGenInfo.html#CodeGenInfo	codeGenInfo: CodeGenInfo	
+newCodeGenInfo	necsus/compiletime/codeGenInfo.html#newCodeGenInfo,NimNode,NimNode,ParsedApp,openArray[ParsedSystem]	codeGenInfo: newCodeGenInfo(name: NimNode; config: NimNode; app: ParsedApp;\n               allSystems: openArray[ParsedSystem]): CodeGenInfo	
+componentEnumVal	necsus/compiletime/codeGenInfo.html#componentEnumVal,ComponentSet,ComponentDef	codeGenInfo: componentEnumVal(components: ComponentSet; component: ComponentDef): NimNode	
+asTupleType	necsus/compiletime/codeGenInfo.html#asTupleType,openArray[DirectiveArg]	codeGenInfo: asTupleType(args: openArray[DirectiveArg]): NimNode	
+createComponentSet	necsus/compiletime/codeGenInfo.html#createComponentSet,CodeGenInfo,openArray[ComponentDef]	codeGenInfo: createComponentSet(codeGenInfo: CodeGenInfo; components: openArray[ComponentDef]): NimNode	
+componentStoreIdent	necsus/compiletime/codeGenInfo.html#componentStoreIdent,ComponentDef	codeGenInfo: componentStoreIdent(component: ComponentDef): NimNode	
+confIdent	necsus/compiletime/codeGenInfo.html#confIdent	codeGenInfo: confIdent	
+worldIdent	necsus/compiletime/codeGenInfo.html#worldIdent	codeGenInfo: worldIdent	
+deleteProc	necsus/compiletime/codeGenInfo.html#deleteProc	codeGenInfo: deleteProc	

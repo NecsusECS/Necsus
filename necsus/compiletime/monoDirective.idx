@@ -1,0 +1,15 @@
+SharedDef	necsus/compiletime/monoDirective.html#SharedDef	monoDirective: SharedDef	
+newSharedDef	necsus/compiletime/monoDirective.html#newSharedDef,NimNode	monoDirective: newSharedDef(argType`gensym0: NimNode): SharedDef	
+hash	necsus/compiletime/monoDirective.html#hash,SharedDef	monoDirective: hash(directive`gensym0: SharedDef): Hash	
+`==`	necsus/compiletime/monoDirective.html#==,SharedDef,SharedDef	monoDirective: `==`(a`gensym0, b`gensym0: SharedDef): bool	
+generateName	necsus/compiletime/monoDirective.html#generateName,SharedDef	monoDirective: generateName(directive`gensym0: SharedDef): string	
+InboxDef	necsus/compiletime/monoDirective.html#InboxDef	monoDirective: InboxDef	
+newInboxDef	necsus/compiletime/monoDirective.html#newInboxDef,NimNode	monoDirective: newInboxDef(argType`gensym1: NimNode): InboxDef	
+hash	necsus/compiletime/monoDirective.html#hash,InboxDef	monoDirective: hash(directive`gensym1: InboxDef): Hash	
+`==`	necsus/compiletime/monoDirective.html#==,InboxDef,InboxDef	monoDirective: `==`(a`gensym1, b`gensym1: InboxDef): bool	
+generateName	necsus/compiletime/monoDirective.html#generateName,InboxDef	monoDirective: generateName(directive`gensym1: InboxDef): string	
+OutboxDef	necsus/compiletime/monoDirective.html#OutboxDef	monoDirective: OutboxDef	
+newOutboxDef	necsus/compiletime/monoDirective.html#newOutboxDef,NimNode	monoDirective: newOutboxDef(argType`gensym2: NimNode): OutboxDef	
+hash	necsus/compiletime/monoDirective.html#hash,OutboxDef	monoDirective: hash(directive`gensym2: OutboxDef): Hash	
+`==`	necsus/compiletime/monoDirective.html#==,OutboxDef,OutboxDef	monoDirective: `==`(a`gensym2, b`gensym2: OutboxDef): bool	
+generateName	necsus/compiletime/monoDirective.html#generateName,OutboxDef	monoDirective: generateName(directive`gensym2: OutboxDef): string	

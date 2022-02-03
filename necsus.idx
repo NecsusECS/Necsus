@@ -1,0 +1,8 @@
+SystemFlag	necsus.html#SystemFlag	necsus: SystemFlag	
+RunLoop	necsus.html#RunLoop	NecsusRun.RunLoop	
+ExitLoop	necsus.html#ExitLoop	NecsusRun.ExitLoop	
+NecsusRun	necsus.html#NecsusRun	necsus: NecsusRun	
+`~`	necsus.html#~,proc	necsus: `~`(system: proc): SystemFlag	
+gameLoop	necsus.html#gameLoop,Shared[NecsusRun],proc)	necsus: gameLoop(exit: Shared[NecsusRun]; tick: proc (): void)	
+necsus	necsus.html#necsus.m,,openArray[SystemFlag],openArray[SystemFlag],openArray[SystemFlag],NecsusConf,untyped	necsus: necsus(runner: typed{sym}; startup: openArray[SystemFlag];\n       systems: openArray[SystemFlag]; teardown: openArray[SystemFlag];\n       conf: NecsusConf; pragmaProc: untyped)	
+necsus	necsus.html#necsus.m,openArray[SystemFlag],openArray[SystemFlag],openArray[SystemFlag],NecsusConf,untyped	necsus: necsus(startup: openArray[SystemFlag]; systems: openArray[SystemFlag];\n       teardown: openArray[SystemFlag]; conf: NecsusConf; pragmaProc: untyped)	

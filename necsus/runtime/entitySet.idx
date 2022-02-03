@@ -1,0 +1,9 @@
+EntitySet	necsus/runtime/entitySet.html#EntitySet	entitySet: EntitySet	
+items	necsus/runtime/entitySet.html#items.i,EntitySet	entitySet: items(entities: EntitySet): EntityId	
+newEntitySet	necsus/runtime/entitySet.html#newEntitySet	entitySet: newEntitySet(): EntitySet	
+`+=`	necsus/runtime/entitySet.html#+=,EntitySet,EntityId	entitySet: `+=`(entities: var EntitySet; entityId: EntityId)	
+contains	necsus/runtime/entitySet.html#contains,EntitySet,EntityId	entitySet: contains(entities: EntitySet; entityId: EntityId): bool	
+`-=`	necsus/runtime/entitySet.html#-=,EntitySet,EntitySet	entitySet: `-=`(entities: var EntitySet; toRemove: EntitySet)	
+`-=`	necsus/runtime/entitySet.html#-=,EntitySet,EntityId	entitySet: `-=`(entities: var EntitySet; toRemove: EntityId)	
+`$`	necsus/runtime/entitySet.html#$,EntitySet	entitySet: `$`(entities: EntitySet): string	
+clear	necsus/runtime/entitySet.html#clear,EntitySet	entitySet: clear(entities: var EntitySet)	

@@ -1,0 +1,2 @@
+queryStorageIdent	necsus/compiletime/queryGen.html#queryStorageIdent,string	queryGen: queryStorageIdent(queryName: string): NimNode	
+createQueries	necsus/compiletime/queryGen.html#createQueries,CodeGenInfo	queryGen: createQueries(codeGenInfo: CodeGenInfo): NimNode	

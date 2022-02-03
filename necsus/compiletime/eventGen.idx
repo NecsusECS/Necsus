@@ -1,0 +1,2 @@
+createEventDeclarations	necsus/compiletime/eventGen.html#createEventDeclarations,CodeGenInfo	eventGen: createEventDeclarations(codeGenInfo: CodeGenInfo): NimNode	
+createEventResets	necsus/compiletime/eventGen.html#createEventResets,CodeGenInfo	eventGen: createEventResets(codeGenInfo: CodeGenInfo): NimNode	
