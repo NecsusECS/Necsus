@@ -35,3 +35,7 @@ task readme, "Compiles code in the readme":
             inCode = not inCode
         elif inCode:
             accum &= line & "\n"
+
+task documentation, "Generates API documentation":
+    exec("nimble -y doc --index:on --out:docs --project src/necsus.nim")
+    exec("cp docs/necsus.html docs/index.html")

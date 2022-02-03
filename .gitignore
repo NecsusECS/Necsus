@@ -11,3 +11,6 @@ benchmarks/*
 .DS_Store
 callgrind.out.*
 profile_results.txt
+docs
+*.idx
+*.css

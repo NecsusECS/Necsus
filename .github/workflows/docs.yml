@@ -1,19 +1,18 @@
-name: docs
+name: Documentation Deploy
 on:
   push:
     branches:
       - main
-env:
-  deploy-dir: .gh-pages
 jobs:
   docs:
+    concurrency: ci-${{ github.ref }}
     runs-on: ubuntu-latest
     container: nimlang/nim
     steps:
     - uses: actions/checkout@v2.4.0
-    - run: nimble -y doc --index:on --out:${{ env.deploy-dir }} src/necsus.nim
+    - run: nimble documentation
     - name: Deploy documents
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ${{ env.deploy-dir }}
+        publish_dir: docs
