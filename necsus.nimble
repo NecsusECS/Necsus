@@ -28,7 +28,7 @@ task readme, "Compiles code in the readme":
             if inCode:
                 let tmpPath = getTempDir() & "necsus_readme_" & $count & ".nim"
                 writeFile(tmpPath, accum)
-                exec("nim c -r --threads:on " & tmpPath)
+                exec("nimble c -y -r -p:" & getCurrentDir() & "/src --threads:on " & tmpPath)
                 accum = ""
                 count += 1
 
