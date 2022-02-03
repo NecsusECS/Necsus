@@ -6,8 +6,9 @@ jobs:
     container: nimlang/nim
     steps:
     - uses: actions/checkout@v1
-    - name: Build project
-      run: |
-        nimble test -y
-        nimble -y -d:release benchmark
-        nimble readme
+    - name: Test
+      run: nimble test -y
+    - name: Benchmark
+      run: nimble -y -d:release benchmark
+    - name: Build readme code
+      run: nimble readme
