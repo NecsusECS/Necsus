@@ -40,12 +40,14 @@ proc registerSpawnComponents(
 proc createSpawnProc(codeGenInfo: CodeGenInfo, name: string, spawn: SpawnDef): NimNode =
     ## Creates a proc for spawning a new entity
     let procName = ident(name)
+    let localComps = ident("localComps")
     let componentTuple = spawn.args.toSeq.asTupleType
     let store = codeGenInfo.storeComponents(ident("result"), spawn.toSeq)
     let register = codeGenInfo.registerSpawnComponents(ident("result"), spawn)
     let componentSet = codeGenInfo.createComponentSet(spawn.toSeq)
     result = quote:
-        proc `procName`(`comps`: `componentTuple`): EntityId =
+        proc `procName`(`localComps`: sink `componentTuple`): EntityId =
+            let `comps` = `localComps`
             result = `worldIdent`.createEntity(`componentSet`)
             `store`
             `register`

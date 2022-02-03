@@ -9,7 +9,7 @@ type
         nextEntityId: int
         recycleEntityIds: Deque[EntityId]
 
-    Spawn*[C: tuple] = proc(components: C): EntityId
+    Spawn*[C: tuple] = proc(components: sink C): EntityId
         ## Describes a type that is able to create new entities
 
     Delete* = proc(entityId: EntityId)
