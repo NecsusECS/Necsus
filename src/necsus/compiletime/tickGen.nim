@@ -1,5 +1,5 @@
 import macros, times, sequtils
-import codeGenInfo, parse, directiveSet, tupleDirective, monoDirective, queryGen, componentSet, localDef
+import codeGenInfo, parse, directiveSet, tupleDirective, monoDirective, queryGen, componentSet, localDef, eventGen
 
 let timeDelta {.compileTime.} = ident("timeDelta")
 
@@ -25,6 +25,10 @@ proc renderSystemArgs(codeGenInfo: CodeGenInfo, args: openarray[SystemArg]): seq
             ident(codeGenInfo.locals.nameOf(arg.local))
         of SystemArgKind.Shared:
             ident(codeGenInfo.shared.nameOf(arg.shared))
+        of SystemArgKind.Inbox:
+            ident(codeGenInfo.inboxes.nameOf(arg.inbox))
+        of SystemArgKind.Outbox:
+            ident(codeGenInfo.outboxes.nameOf(arg.outbox))
 
 proc callSystems(codeGenInfo: CodeGenInfo, systems: openarray[ParsedSystem]): NimNode =
     result = newStmtList()
@@ -59,6 +63,7 @@ proc createTickRunner*(codeGenInfo: CodeGenInfo, runner: NimNode): NimNode =
     let startups = codeGenInfo.callSystems(codeGenInfo.systems.filterIt(it.phase == StartupPhase))
     let loopSystems = codeGenInfo.callSystems(codeGenInfo.systems.filterIt(it.phase == LoopPhase))
     let teardown = codeGenInfo.callSystems(codeGenInfo.systems.filterIt(it.phase == TeardownPhase))
+    let resetEvents = codeGenInfo.createEventResets()
     let deleteFinalizers = codeGenInfo.createDelteFinalizers()
     let lastTime = ident("lastTime")
     let thisTime = ident("thisTime")
@@ -68,6 +73,7 @@ proc createTickRunner*(codeGenInfo: CodeGenInfo, runner: NimNode): NimNode =
         quote do:
             let `thisTime` = epochTime()
             `timeDelta` = `thisTime` - `lastTime`
+            `resetEvents`
             block:
                 `loopSystems`
             `lastTime` = `thisTime`

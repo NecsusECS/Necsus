@@ -13,6 +13,8 @@ type CodeGenInfo* = object
     locals*: DirectiveSet[LocalDef]
     shared*: DirectiveSet[SharedDef]
     lookups*: DirectiveSet[LookupDef]
+    inboxes*: DirectiveSet[InboxDef]
+    outboxes*: DirectiveSet[OutboxDef]
 
 template directives[T](name: NimNode, app: ParsedApp, allSystems: openarray[ParsedSystem], extract: untyped): auto =
     ## Creates a directive set for a specific type of directive
@@ -34,6 +36,8 @@ proc newCodeGenInfo*(name: NimNode, config: NimNode, app: ParsedApp, allSystems:
         locals: directives[LocalDef](name, app, allSystems, locals),
         shared: directives[SharedDef](name, app, allSystems, shared),
         lookups: directives[LookupDef](name, app, allSystems, lookups),
+        inboxes: directives[InboxDef](name, app, allSystems, inboxes),
+        outboxes: directives[OutboxDef](name, app, allSystems, outboxes),
     )
 
 proc componentEnumVal*(components: ComponentSet, component: ComponentDef): NimNode =

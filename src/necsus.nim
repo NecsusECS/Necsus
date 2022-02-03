@@ -1,11 +1,11 @@
-import necsus / runtime / [entity, query, world, systemVar]
+import necsus / runtime / [entity, query, world, systemVar, inbox]
 import necsus / compiletime / [
     parse, codegen, codeGenInfo, queryGen, spawnGen, tickGen,
-    necsusConf, detachGen, sysVarGen, lookupGen
+    necsusConf, detachGen, sysVarGen, lookupGen, eventGen
 ]
 import sequtils, macros, options
 
-export entity, query, world, necsusConf, systemVar
+export entity, query, world, necsusConf, systemVar, inbox
 
 type
     SystemFlag* = object
@@ -61,6 +61,7 @@ proc buildApp(
         codeGenInfo.createDeleteProc(),
         codeGenInfo.createSharedVars(),
         codeGenInfo.createLocalVars(),
+        codeGenInfo.createEventDeclarations(),
         codeGenInfo.createTickRunner(runner)
     )
 

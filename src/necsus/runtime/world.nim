@@ -24,6 +24,9 @@ type
     Lookup*[C: tuple] = proc(entityId: EntityId): Option[C]
         ## Looks up entity details based on its entity ID
 
+    Outbox*[T] = proc(message: sink T): void
+        ## Sends an event
+
     TimeDelta* = float
         ## Tracks the amount of time since the last execution of a system
 
