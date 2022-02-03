@@ -46,3 +46,7 @@ template deleteKey*[T](list: var PackedList[T], key: int; oldValue, onReorder: u
         list.entries[key] = `[]`(list.entries, newMaxIndex)
         var oldValue = addr mget(list.entries, newMaxIndex)
         onReorder
+
+proc clear*[T](list: var PackedList[T]) =
+    ## Soft clear of all values from this list
+    list.maxIndex.store(0)

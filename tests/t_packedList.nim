@@ -50,3 +50,14 @@ suite "PackedList":
         list.deleteKey(0, _):
             check(false)
         check(list.toSeq.len == 0)
+
+    test "Clearing the list":
+        var list = newPackedList[int](20)
+
+        list.clear()
+        check(list.toSeq.len == 0)
+
+        for i in 0..3:
+            discard list.push(i)
+        list.clear()
+        check(list.toSeq.len == 0)
