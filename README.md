@@ -1,6 +1,7 @@
 # Necsus
 
 [![Build](https://github.com/NecsusECS/Necsus/actions/workflows/build.yml/badge.svg)](https://github.com/NecsusECS/Necsus/actions/workflows/build.yml)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/NecsusECS/Necsus/blob/main/LICENSE)
 
 A "disappearing" ECS (entity component system) library for Nim. Necsus uses Nim macros to generate code for creating
 and executing an ECS application. Components are just regular objects, systems are regular procs, and everything related
@@ -416,4 +417,4 @@ app and execute it. This can be achieved by compiling with the `-d:dump` flag se
 
 # License
 
-Code released under the [Apache license](https://github.com/NecsusECS/Necsus/blob/main/LICENSE)
+Code released under the [Apache 2.0 license](https://github.com/NecsusECS/Necsus/blob/main/LICENSE)
