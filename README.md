@@ -1,15 +1,12 @@
 # Necsus
 
-[![Build](https://github.com/Nycto/Necsus/actions/workflows/build.yml/badge.svg)](https://github.com/Nycto/Necsus/actions/workflows/build.yml)
+[![Build](https://github.com/NecsusECS/Necsus/actions/workflows/build.yml/badge.svg)](https://github.com/NecsusECS/Necsus/actions/workflows/build.yml)
 
 A "disappearing" ECS (entity component system) library for Nim. Necsus uses Nim macros to generate code for creating
-and executing an ECS world. Components are just regular objects, systems are regular procs, and everything related to
-entities is handled for you.
+and executing an ECS application. Components are just regular objects, systems are regular procs, and everything related
+to entities is handled for you.
 
-## Introduction
-
-Necsus is library for generating Entity/Component Systems, also known as ECS. More details about how ECS architectures
-work can be found here:
+More details about how ECS architectures work can be found here:
 
 * [Component game programming pattern](http://gameprogrammingpatterns.com/component.html)
 * [What's an Entity System?](http://entity-systems.wikidot.com/)
@@ -18,13 +15,15 @@ work can be found here:
 
 ### Design
 
-Necsus was born out of the idea that Nim's macros could drastically reduce the boilerplate required for using ECS.
+Necsus was born out of the idea that Nim's macros could drastically reduce the boilerplate required for using ECS
+without adding a heavy DSL layer.
 
-* Entities are managed on your behalf. Under the covers, they're just ints.
-* Components are just regular Nim objects. Pretty much any object can be be used as a component.
-* Systems are just Nim procs. They get access to the broader application state through their arguments
-* Systems and components are wired together automatically into a proc called an "app". Running your app is as simple as
-  calling the genereated proc.
+* Entities are managed on your behalf. Under the covers, they're represented as an `int32`
+* Components are regular Nim types. Just about any type can be be used as a component.
+* Systems are `proc`s. They get access to the broader application state through arguments with special types; called
+  directives
+* Systems and components are wired together automatically into a `proc` called an "app". Running your app is as simple
+  as calling the genereated `proc`.
 
 ### An example
 
@@ -73,9 +72,7 @@ app()
 
 ## Using Necsus
 
-### Creating an app
-
-Define your app by adding the 'necsus' pragma onto a function declaration
+To get started with Necsus, you define your app by adding the `necsus` pragma onto a function declaration:
 
 ```nim
 import necsus
@@ -83,16 +80,102 @@ import necsus
 proc myApp() {.necsus([], [], [], newNecsusConf()).}
 ```
 
+That's it. At this point you have a functioning ECS setup, though it won't do much without systems attached. If you
+call `myApp` it would just loop infinitely.
+
 ### Adding systems
 
-Systems are just just procs. So the most basic system might look like:
+To make your application do useful work, you need to wire up systems. Creating a system is easy -- it's just a `proc`.
+That `proc` name is then prefixed with a `~` and passed into the `necsus` pragma:
+
+```nim
+import necsus
+
+proc helloWorld() =
+    echo "hello world"
+
+proc myApp() {.necsus([], [~helloWorld], [], newNecsusConf()).}
+```
+
+In the above example, if you called `myApp`, it would print `hello world` to the console in an infinite loop.
+
+If you're curious about the tilde prefix, it's used to convince the Nim type checker that all the give systems
+are actually compatible, despite being `proc`s with different arguments.
+
+### Passing multiple systems
+
+When given multiple systems, they will be executed in the same order in which they are passed in:
+
+```nim
+import necsus
+
+proc first() =
+    discard
+
+proc second() =
+    discard
+
+proc myApp() {.necsus([], [~first, ~second], [], newNecsusConf()).}
+
+```
+
+### Types of Systems
+
+Within the lifecycle of an app, there are three phases in which a system can be registered:
+
+1. Startup: The system is executed once when the app is started
+2. Loop: The system is executed for every loop
+3. Teardown: The system is executed once after the loop exits
+
+```nim
+import necsus
+
+proc startupSystem() =
+    discard
+
+proc loopSystem() =
+    discard
+
+proc teardownSystem() =
+    discard
+
+proc myApp(input: string) {.necsus(
+    startup = [~startupSystem],
+    systems = [~loopSystem],
+    teardown = [~teardownSystem],
+    conf = newNecsusConf()
+).}
+```
+
+### Exiting
+
+Exiting the primary system loop is done through a `Shared` directive. Directives will be covered in more details below,
+but the fundamentals are that it's sending a signal by changing a bit of shared state:
+
+```nim
+import necsus
+
+proc immediateExit(exit: var Shared[NecsusRun]) =
+    ## Immediately exit the first time this system is called
+    exit.set(ExitLoop)
+
+proc myApp() {.necsus([], [~immediateExit], [], newNecsusConf()).}
+
+myApp()
+```
 
 ### Directives
 
 Systems interact with the rest of an app by using special method arguments, called `Directives`. These directives are
 just regular types that Necsus knows how to wire up in special ways.
 
+Systems can't have any other type of argument. If Necsus doesn't recognize how to wire-up an argument, the compile
+will fail.
+
 #### Spawn
+
+To create new entities, use a `Spawn` directive. This takes a single argument, which is the initial set of components
+to attach to the newly minted entity.
 
 ```nim
 import necsus
@@ -111,7 +194,8 @@ proc myApp() {.necsus([~spawningSystem], [], [], newNecsusConf()).}
 
 #### Query
 
-Queries allow you to iterate over entities with a specific set of components
+Queries allow you to iterate over entities that have a specific set of components attached to them. Queries are the
+primary mechanism for interacting with entities and components.
 
 ```nim
 import necsus
@@ -127,9 +211,28 @@ proc queryingSystem(query: Query[(A, B)]) =
 proc myApp() {.necsus([], [~queryingSystem], [], newNecsusConf()).}
 ```
 
+#### Queries with Pointers
+
+If you want to looping through a set of entities and update the values of their components, the most efficient mechanism
+available is to update those values in place. This is accomplished by requested pointers when doing a query:
+
+```nim
+import necsus
+
+type
+    A = object
+        value: int
+
+proc inPlaceUpdate(query: Query[tuple[a: ptr A]]) =
+    for components in query.components:
+        components.a.value += 1
+
+proc myApp() {.necsus([], [~inPlaceUpdate], [], newNecsusConf()).}
+```
+
 #### Delete
 
-Deleting is the opposite of spawning -- it deletes an entire entity and all the associated components
+Deleting is the opposite of spawning -- it deletes an entity and all the associated components:
 
 ```nim
 import necsus
@@ -147,8 +250,8 @@ proc myApp() {.necsus([], [~deletingSystem], [], newNecsusConf()).}
 
 #### Lookup
 
-Lookup allows you to get components for an entity when you already have the entity id. It returns an option type, which
-will be a `Some` if the entity has the exact requested components
+Lookup allows you to get components for an entity when you already have the entity id. It returns an `Option`, which
+will be a `Some` if the entity has the exact requested components:
 
 ```nim
 import necsus, options
@@ -169,7 +272,7 @@ proc myApp() {.necsus([], [~lookupSystem], [], newNecsusConf()).}
 
 #### Attach/Detach
 
-Attaching and detaching allow you to add new components or remove old components from an existing entities
+Attaching and detaching allow you to add new components or remove existing components from an entity:
 
 ```nim
 import necsus, options
@@ -189,7 +292,7 @@ proc myApp() {.necsus([], [~attachDetach], [], newNecsusConf()).}
 
 #### TimeDelta
 
-TimeDelta is an alias for `float` which is filled with the amount of time since the last execution of a system
+`TimeDelta` is a `float` filled with the amount of time since the last execution of a system
 
 ```nim
 import necsus
@@ -217,8 +320,8 @@ proc myApp() {.necsus([], [~localVars], [], newNecsusConf()).}
 
 #### Shared
 
-Shared variables are shared across all systems. Any shared variable with the same type will use the same underlying
-storage space.
+Shared variables are shared across all systems. Any shared variable with the same type will have access to the same
+underlying value.
 
 ```nim
 import necsus
@@ -232,10 +335,10 @@ proc printCount(count: Shared[int]) =
 proc myApp() {.necsus([], [~updateCount, ~printCount], [], newNecsusConf()).}
 ```
 
-#### Inbox/Outbox
+#### Inbox/Outbox (aka Events)
 
-Inbox and Outbox are the eventing system in Necsus. Events are published using the Outbox and read using the Inbox. Any
-Inbox or Outbox with the same type will shared the same underlying mailbox.
+`Inbox` and `Outbox` represent the eventing system in Necsus. Events are published using the Outbox and read using the
+`Inbox`. Any `Inbox` or `Outbox` with the same type will shared the same underlying mailbox.
 
 ```
 import necsus
@@ -252,40 +355,9 @@ proc receive(receiver: Inbox[SomeEvent]) =
 proc myApp() {.necsus([], [~publish, ~receive], [], newNecsusConf()).}
 ```
 
-### App setup
+### App
 
-#### Different kinds of systems
-
-When configuring Necsus, there are three phases in which a system can be registered:
-
-1. Startup: Executed once when the app is started
-2. Loop: Executed every game loop
-3. Teardown: Executed once after the game loop exits
-
-Systems will always be executed in the same order in which they are passed in.
-
-When passing system names into the `necsus` pragma, you must prefix them with a `~`. This allows the Nim type checker to
-correctly assert that they are all the same types, despite being procs with different arguments.
-
-```nim
-import necsus
-
-proc startupSystem() =
-    discard
-
-proc loopSystem() =
-    discard
-
-proc teardownSystem() =
-    discard
-
-proc myApp(input: string) {.necsus(
-    startup = [~startupSystem],
-    systems = [~loopSystem],
-    teardown = [~teardownSystem],
-    conf = newNecsusConf()
-).}
-```
+At an app level, there are a few more features worth discussing.
 
 #### App Arguments
 
@@ -300,26 +372,10 @@ proc exampleSystem(input: Shared[string]) =
 proc myApp(input: string) {.necsus([], [], [], newNecsusConf()).}
 ```
 
-### Exiting
+#### App Configuration
 
-When using the default runner, signaling an exit is done through a shared variable:
-
-```nim
-import necsus
-
-proc immediateExit(exit: var Shared[NecsusRun]) =
-    ## Immediately exit when started
-    exit.set(ExitLoop)
-
-proc myApp() {.necsus([], [~immediateExit], [], newNecsusConf()).}
-
-myApp()
-```
-
-### App Configuration
-
-Nuances about the execution environment can be controlled through the `newNecsusConf()` call passed to the `necsus`
-pragma. For example, the number of expected entities can be configured as follows:
+Runtime configuration for the execution environment can be controlled through the `newNecsusConf()` call passed to the
+`necsus` pragma. For example, the number of entities to reserve at startup can be configured as follows:
 
 ```nim
 import necsus
@@ -327,11 +383,14 @@ import necsus
 proc myApp() {.necsus([], [], [], newNecsusConf(entitySize = 100_000)).}
 ```
 
-### Custom runners
+#### Custom runners
 
 The `runner` is the function that is used to execute the primary system loop. The default runner is fairly simple -- it
 executes the loop systems repeatedly until the Shared `NecsusRun` variable flips over to `ExitLoop`. If you need more
-control over your game loop, you can pass in your own:
+control over your game loop, you can pass in your own.
+
+The last argument for a custom runner must be the `tick` callback. Any other arguments will be processed in the same
+manner as a system. This allows your runner to access entities, shared values or events.
 
 ```nim
 import necsus
@@ -349,11 +408,12 @@ proc myApp() {.necsus(customRunner, [], [~incrementer], [], newNecsusConf()).}
 myApp()
 ```
 
-The last argument for a custom runner must be the `tick` callback. Any other arguments will be processed in the same
-manner as a system. This allows your runner to access any entities, shared values or events.
-
 ## Debugging
 
 If Necsus isn't behaving as you would expect, the best tool you've got in your toolbox is the ability to dump the code
 that it generates. This allows you to walk through what is happening, or even substitute the generated code into your
 app and execute it. This can be achieved by compiling with the `-d:dump` flag set.
+
+# License
+
+Code released under the [Apache license](https://github.com/NecsusECS/Necsus/blob/main/LICENSE)
