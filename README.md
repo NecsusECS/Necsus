@@ -11,6 +11,7 @@ entities is handled for you.
 Necsus is library for generating Entity/Component Systems, also known as ECS. More details about how ECS architectures
 work can be found here:
 
+* [Component game programming pattern](http://gameprogrammingpatterns.com/component.html)
 * [What's an Entity System?](http://entity-systems.wikidot.com/)]
 * [Evolve your hierarchy](https://cowboyprogramming.com/2007/01/05/evolve-your-heirachy/)]
 * [ECS on wikipedia](https://en.wikipedia.org/wiki/Entity_component_system)
