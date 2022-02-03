@@ -71,6 +71,12 @@ proc app() {.necsus([~create], [~move, ~report, ~exiter], [], newNecsusConf()).}
 app()
 ```
 
+## API Documentation
+
+API Documentation is available here:
+
+https://necsusecs.github.io/Necsus/
+
 ## Using Necsus
 
 To get started with Necsus, you define your app by adding the `necsus` pragma onto a function declaration:
