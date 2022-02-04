@@ -2,7 +2,9 @@
 OpenAddrTable	necsus/runtime/openAddrTable.html#OpenAddrTable	openAddrTable: OpenAddrTable	
 newOpenAddrTable	necsus/runtime/openAddrTable.html#newOpenAddrTable,int	openAddrTable: newOpenAddrTable[K: SmallValue; V: SmallValue](initialSize: int): OpenAddrTable[\n    K, V]	
 `=copy`	necsus/runtime/openAddrTable.html#=copy,OpenAddrTable[K,V],OpenAddrTable[K,V]	openAddrTable: `=copy`[K, V](dest: var OpenAddrTable[K, V]; src: OpenAddrTable[K, V])	
+setValue	necsus/runtime/openAddrTable.html#setValue,OpenAddrTable[K,V],K,V,staticExistingKeyMode	openAddrTable: setValue[K, V](table: var OpenAddrTable[K, V]; key: K; value: V;\n               mode: static ExistingKeyMode)	
 `[]=`	necsus/runtime/openAddrTable.html#[]=,OpenAddrTable[K,V],K,V	openAddrTable: `[]=`[K, V](table: var OpenAddrTable[K, V]; key: K; value: V)	
+setNew	necsus/runtime/openAddrTable.html#setNew,OpenAddrTable[K,V],K,V	openAddrTable: setNew[K, V](table: var OpenAddrTable[K, V]; key: K; value: V)	
 del	necsus/runtime/openAddrTable.html#del,OpenAddrTable[K,V],K	openAddrTable: del[K, V](table: var OpenAddrTable[K, V]; key: K)	
 `[]`	necsus/runtime/openAddrTable.html#[],OpenAddrTable[K,V],K	openAddrTable: `[]`[K, V](table: var OpenAddrTable[K, V]; key: K): V	
 maybeGet	necsus/runtime/openAddrTable.html#maybeGet,OpenAddrTable[K,V],K	openAddrTable: maybeGet[K, V](table: var OpenAddrTable[K, V]; key: K): Option[V]	

@@ -159,6 +159,18 @@ window.addEventListener('DOMContentLoaded', main);
     K, V]</a></li>
 
   </ul>
+  <ul class="simple nested-toc-section">setNew
+      <li><a class="reference" href="#setNew%2COpenAddrTable%5BK%2CV%5D%2CK%2CV"
+    title="setNew[K, V](table: var OpenAddrTable[K, V]; key: K; value: V)">setNew[K, V](table: var OpenAddrTable[K, V]; key: K; value: V)</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">setValue
+      <li><a class="reference" href="#setValue%2COpenAddrTable%5BK%2CV%5D%2CK%2CV%2CstaticExistingKeyMode"
+    title="setValue[K, V](table: var OpenAddrTable[K, V]; key: K; value: V;
+               mode: static ExistingKeyMode)">setValue[K, V](table: var OpenAddrTable[K, V]; key: K; value: V;
+               mode: static ExistingKeyMode)</a></li>
+
+  </ul>
 
   </ul>
 </li>
@@ -271,6 +283,23 @@ Instantiates a new OpenAddrTable
 
 </dd>
 </div>
+<div id="setNew,OpenAddrTable[K,V],K,V">
+<dt><pre><span class="Keyword">proc</span> <a href="#setNew%2COpenAddrTable%5BK%2CV%5D%2CK%2CV"><span class="Identifier">setNew</span></a><span class="Other">[</span><span class="Identifier">K</span><span class="Other">,</span> <span class="Identifier">V</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">table</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="openAddrTable.html#OpenAddrTable"><span class="Identifier">OpenAddrTable</span></a><span class="Other">[</span><span class="Identifier">K</span><span class="Other">,</span> <span class="Identifier">V</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">key</span><span class="Other">:</span> <span class="Identifier">K</span><span class="Other">;</span> <span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">V</span><span class="Other">)</span></pre></dt>
+<dd>
+
+Sets a value guaranteed to be new
+
+</dd>
+</div>
+<div id="setValue,OpenAddrTable[K,V],K,V,staticExistingKeyMode">
+<dt><pre><span class="Keyword">proc</span> <a href="#setValue%2COpenAddrTable%5BK%2CV%5D%2CK%2CV%2CstaticExistingKeyMode"><span class="Identifier">setValue</span></a><span class="Other">[</span><span class="Identifier">K</span><span class="Other">,</span> <span class="Identifier">V</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">table</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="openAddrTable.html#OpenAddrTable"><span class="Identifier">OpenAddrTable</span></a><span class="Other">[</span><span class="Identifier">K</span><span class="Other">,</span> <span class="Identifier">V</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">key</span><span class="Other">:</span> <span class="Identifier">K</span><span class="Other">;</span> <span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">V</span><span class="Other">;</span>
+                    <span class="Identifier">mode</span><span class="Other">:</span> <span class="Identifier">static</span> <span class="Identifier">ExistingKeyMode</span><span class="Other">)</span> {.<span class="Identifier">inline</span>.}</pre></dt>
+<dd>
+
+
+
+</dd>
+</div>
 
 </dl></div>
 
@@ -281,7 +310,7 @@ Instantiates a new OpenAddrTable
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2022-02-04 16:23:45 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2022-02-04 17:55:16 UTC</small>
       </div>
     </div>
   </div>
