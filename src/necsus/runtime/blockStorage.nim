@@ -29,11 +29,11 @@ proc newBlockStorage*[T](initialSize: int): BlockStorage[T] =
     ## Instantiate new storage
     result.buckets.resize(ceilDiv(initialSize, Size))
 
-proc bucketIndex(key: int): int =
+proc bucketIndex(key: int): int {.inline.} =
     ## Returns the bucket index for a given key
-    floorDiv(key, Size)
+    key div Size
 
-proc bucketKey(key, bucketIndex: int): int =
+proc bucketKey(key, bucketIndex: int): int {.inline.} =
     ## Returns the key within a bucket
     key - (bucketIndex * Size)
 
