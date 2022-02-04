@@ -100,6 +100,20 @@ suite "OpenAddrTable":
         for i in 0..<100:
             check(table[i.int32] == i.int32)
 
+    test "Setting new values":
+        var table = newOpenAddrTable[int8, int8](100)
+
+        for i in 0'i8..<10:
+            table.setNew(i, i)
+            check(table[i] == i)
+
+        for i in 0'i8..<10:
+            expect KeyError:
+                table.setNew(i, i * 2)
+
+        for i in 0'i8..<10:
+            check(table[i] == i)
+
     test "Table to string":
         var table = newOpenAddrTable[int32, int32](10)
         check($table == "{}")

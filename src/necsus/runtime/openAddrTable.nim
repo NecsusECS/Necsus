@@ -76,6 +76,10 @@ converter toInt64[K, V](entry: Entry[K, V]): int64 = entry.int64
 ##
 
 type
+    ExistingKeyMode = enum
+        ## A flag for how to handle existing keys
+        SkipOnExisting, OverwriteExisting, RaiseOnExisting
+
     Chunk[K, V] = object
         ## A block of values in the map
         size: int
@@ -152,7 +156,7 @@ template update[K, V](chunk: ptr Chunk[K, V], idx: uint64, existing: var Entry[K
     ## Updates the given index
     chunk.entries[idx].compareExchange(existing.int64, newValue.int64, Relaxed)
 
-proc set[K, V](chunk: ptr Chunk[K, V], key: K, value: V, overwrite: static bool = true): bool =
+proc set[K, V](chunk: ptr Chunk[K, V], key: K, value: V, overwrite: static ExistingKeyMode = OverwriteExisting): bool =
     ## Set a value in a chunk. Returns whether the set was successful
 
     template writeTo(idx: uint64, existing: var Entry[K, V]): bool =
@@ -171,12 +175,15 @@ proc set[K, V](chunk: ptr Chunk[K, V], key: K, value: V, overwrite: static bool 
                         if writeTo(idx, existing):
                             return true
                     elif existing.key == key:
-                        if not overwrite:
+                        when overwrite == SkipOnExisting:
                             return true
-                        elif writeTo(idx, existing):
-                            return true
-                        else:
-                            break restart
+                        elif overwrite == RaiseOnExisting:
+                            raise newException(KeyError, "Index already exists: " & $key)
+                        elif overwrite == OverwriteExisting:
+                            if writeTo(idx, existing):
+                                return true
+                            else:
+                                break restart
 
                 return false
 
@@ -281,7 +288,10 @@ proc embiggen[K, V](table: var OpenAddrTable[K, V]) =
 
         # Copy any old values over to the new chunk
         for entry in existingChunk.items:
-            assert(chunk.set(entry.key, existingChunk.get(entry.key), false), "Could not copy an existing value")
+            assert(
+                chunk.set(entry.key, existingChunk.get(entry.key), SkipOnExisting),
+                "Could not copy an existing value"
+            )
 
         # Detach the old chunk
         chunk.oldChunk.store(nil)
@@ -290,11 +300,20 @@ proc embiggen[K, V](table: var OpenAddrTable[K, V]) =
         existingChunk.activeReaders.awaitClear()
         existingChunk.deallocShared
 
+proc setValue*[K, V](table: var OpenAddrTable[K, V], key: K, value: V, mode: static ExistingKeyMode) {.inline.} =
+    while true:
+        if table.primaryChunk.load.needsResize or (not table.primaryChunk.load.set(key, value, mode)):
+            table.embiggen()
+        else:
+            return
+
 proc `[]=`*[K, V](table: var OpenAddrTable[K, V], key: K, value: V) =
     ## Set a value
-    if table.primaryChunk.load.needsResize or (not table.primaryChunk.load.set(key, value)):
-        table.embiggen()
-        table[key] = value
+    table.setValue(key, value, OverwriteExisting)
+
+proc setNew*[K, V](table: var OpenAddrTable[K, V], key: K, value: V) =
+    ## Sets a value guaranteed to be new
+    table.setValue(key, value, RaiseOnExisting)
 
 proc del*[K, V](table: var OpenAddrTable[K, V], key: K) =
     ## Deletes a value
