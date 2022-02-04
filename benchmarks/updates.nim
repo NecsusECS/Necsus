@@ -42,7 +42,7 @@ proc exec(entityCount: int) =
         [~setup],
         [~movement, ~comflab],
         [],
-        newNecsusConf(entityCount + 100, entityCount + 100)
+        newNecsusConf(entityCount * 2, entityCount * 2, entityCount * 2)
     ).}
 
     myApp()
