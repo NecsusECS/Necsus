@@ -18,16 +18,17 @@ type
 var resizeLock: Lock
 resizeLock.initLock()
 
-proc resize[T](buckets: var seq[Bucket[T]], size: int) =
+proc ensureSize[T](buckets: var seq[Bucket[T]], size: int) =
     if size > buckets.len:
-        let currentSize = buckets.len
-        buckets.setLen(size)
-        for i in currentSize..<size:
-            buckets[i].new
+        resizeLock.withLock:
+            let currentSize = buckets.len
+            buckets.setLen(size)
+            for i in currentSize..<size:
+                buckets[i].new
 
 proc newBlockStorage*[T](initialSize: int): BlockStorage[T] =
     ## Instantiate new storage
-    result.buckets.resize(ceilDiv(initialSize, Size))
+    result.buckets.ensureSize(ceilDiv(initialSize, Size))
 
 proc bucketIndex(key: int): int {.inline.} =
     ## Returns the bucket index for a given key
@@ -40,29 +41,21 @@ proc bucketKey(key, bucketIndex: int): int {.inline.} =
 proc `[]=`*[T](storage: var BlockStorage[T], key: int, value: T) =
     ## Set a value
     let bucketIdx = key.bucketIndex
-
-    if bucketIdx >= storage.buckets.len:
-        resizeLock.withLock:
-            storage.buckets.resize(bucketIdx + 1)
-
+    storage.buckets.ensureSize(bucketIdx + 1)
     storage.buckets[bucketIdx].entries[bucketKey(key, bucketIdx)] = value
-
-template getter[T](storage: BlockStorage[T], key: int) =
-    ## Generate getter code
-    let bucketIdx = bucketIndex(key)
-
-    if bucketIdx >= storage.buckets.len:
-        raise newException(IndexDefect, &"Index is out of bounds: {key}")
-
-    return storage.buckets[bucketIdx].entries[bucketKey(key, bucketIdx)]
 
 proc `[]`*[T](storage: BlockStorage[T], key: int): lent T =
     ## Returns a value
-    getter(storage, key)
+    let bucketIdx = bucketIndex(key)
+    if bucketIdx >= storage.buckets.len:
+        raise newException(IndexDefect, &"Index is out of bounds: {key}")
+    return storage.buckets[bucketIdx].entries[bucketKey(key, bucketIdx)]
 
 proc mget*[T](storage: var BlockStorage[T], key: int): var T =
     ## Returns a mutable reference to a value
-    getter(storage, key)
+    let bucketIdx = key.bucketIndex
+    storage.buckets.ensureSize(bucketIdx + 1)
+    return storage.buckets[bucketIdx].entries[bucketKey(key, bucketIdx)]
 
 iterator items*[T](storage: BlockStorage[T], maxIndex: int): lent T =
     ## Iterate through all values in this storage, up to the given index
