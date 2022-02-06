@@ -29,9 +29,9 @@ proc runner(
     check(sharedVar.get() == "foo")
     discard spawn((A(value: 123), ))
 
-    check(query.components.toSeq.len == 1)
+    check(query.items.toSeq.len == 1)
 
-    for (eid, comp) in query:
+    for eid, comp in query:
         eid.attach((C(), ))
         eid.detachD()
         check(eid.lookup().get()[0].value == 789)
@@ -39,9 +39,9 @@ proc runner(
     tick()
 
 proc assertions(checkA: Query[(A, )], checkBC: Query[(B, C)], checkD: Query[(D, )]) =
-    check(checkA.components.toSeq.mapIt(it[0].value) == @[123])
-    check(checkBC.components.toSeq.len == 1)
-    check(checkD.components.toSeq.len == 0)
+    check(checkA.items.toSeq.mapIt(it[0].value) == @[123])
+    check(checkBC.items.toSeq.len == 1)
+    check(checkD.items.toSeq.len == 0)
 
 proc testRunnerArgs() {.necsus(runner, [~setup], [~assertions], [], newNecsusConf()).}
 

@@ -48,13 +48,13 @@ proc create(spawn: Spawn[(Position, Velocity)]) =
 
 proc move(dt: TimeDelta, entities: Query[(ptr Position, Velocity)]) =
     ## Updates the positions of each component
-    for (position, velocity) in entities.components:
+    for (position, velocity) in entities:
         position.x += dt * velocity.dx
         position.y += dt * velocity.dy
 
 proc report(entities: Query[(Position, )]) =
     ## Prints the position of each entity
-    for (eid, comp) in entities:
+    for eid, comp in entities:
         echo eid, " is at ", comp[0]
 
 proc exiter(iterations: var Local[int], exit: var Shared[NecsusRun]) =
@@ -212,7 +212,7 @@ type
     B = object
 
 proc queryingSystem(query: Query[(A, B)]) =
-    for (eid, components) in query:
+    for eid, components in query:
         echo "Found entity ", eid, " with ", components[0], " and ", components[1]
 
 proc myApp() {.necsus([], [~queryingSystem], [], newNecsusConf()).}
@@ -231,7 +231,7 @@ type
         value: int
 
 proc inPlaceUpdate(query: Query[tuple[a: ptr A]]) =
-    for components in query.components:
+    for components in query:
         components.a.value += 1
 
 proc myApp() {.necsus([], [~inPlaceUpdate], [], newNecsusConf()).}
@@ -249,7 +249,7 @@ type
     B = object
 
 proc deletingSystem(query: Query[(A, B)], delete: Delete) =
-    for (eid, _) in query:
+    for eid, _ in query:
         delete(eid)
 
 proc myApp() {.necsus([], [~deletingSystem], [], newNecsusConf()).}
@@ -270,7 +270,7 @@ type
     D = object
 
 proc lookupSystem(query: Query[(A, B)], lookup: Lookup[(C, D)]) =
-    for (eid, _) in query:
+    for eid, _ in query:
         let (c, d) = lookup(eid).get()
         echo "Found entity ", eid, " with ", c, " and ", d
 
@@ -290,7 +290,7 @@ type
     C = object
 
 proc attachDetach(query: Query[(A, )], attachB: Attach[(B, )], detachC: Detach[(C, )]) =
-    for (eid, _) in query:
+    for eid, _ in query:
         eid.attachB((B(), ))
         eid.detachC()
 

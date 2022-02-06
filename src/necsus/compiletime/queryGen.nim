@@ -43,7 +43,7 @@ proc createQueryIterator(codeGenInfo: CodeGenInfo, queryName: string, query: Que
     return quote:
         proc `procName`(): auto =
             return iterator(): QueryItem[`queryTupleType`] {.closure.} =
-                for (`eid`, `members`) in `queryStorageName`:
+                for (`eid`, `members`) in values(`queryStorageName`):
                     yield (`eid`, `instantiateTuple`)
 
 proc createQueries*(codeGenInfo: CodeGenInfo): NimNode =

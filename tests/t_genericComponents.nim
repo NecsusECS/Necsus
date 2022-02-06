@@ -37,8 +37,8 @@ proc assertion(
     boolean: Shared[WithStatic[true]],
     character: Shared[WithStatic['a']],
 ) =
-    check(toSeq(all.components).mapIt(it[0].value.a) == @["Foo"])
-    check(toSeq(all.components).mapIt(it[1].value.b) == @["Bar"])
+    check(toSeq(all.items).mapIt(it[0].value.a) == @["Foo"])
+    check(toSeq(all.items).mapIt(it[1].value.b) == @["Bar"])
     check(shared.get().value.a == "Baz")
     check(ordinal.get().value == 123)
     check(decimal.get().value == 3.14)

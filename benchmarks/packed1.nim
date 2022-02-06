@@ -12,7 +12,7 @@ proc setup(spawn: Spawn[(A, B, C, D, E)]) =
         discard spawn((A(i), B(i), C(i), D(i), E(i)))
 
 proc modify(a: Query[(A, )], attach: Attach[(A, )]) =
-    for (entity, comp) in a:
+    for entity, comp in a:
         attach(entity, (A(int(comp[0]) * 2), ))
 
 proc runner(tick: proc(): void) =

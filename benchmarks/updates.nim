@@ -1,4 +1,4 @@
-import necsus, bench, times, necsus/runtime/packedIntTable, necsus/runtime/queryFilter
+import necsus, bench, times
 
 type
     Position {.byref.} = object
@@ -23,12 +23,12 @@ proc exec(entityCount: int) =
                 discard spawn((Position(), Direction(), Comflabulation()))
 
     proc movement(dt: TimeDelta, entities: Query[tuple[pos: ptr Position, dir: Direction]]) =
-        for (_, comp) in entities:
+        for comp in entities:
             comp.pos.x = comp.pos.x + (comp.dir.x * dt)
             comp.pos.y = comp.pos.y + (comp.dir.y * dt)
 
     proc comflab(entities: Query[tuple[comflab: ptr Comflabulation]]) =
-        for (_, comp) in entities:
+        for comp in entities:
             comp.comflab.thingy = comp.comflab.thingy * 1.000001f
             comp.comflab.mingy = not comp.comflab.mingy
             comp.comflab.dingy = comp.comflab.dingy + 1

@@ -13,7 +13,7 @@ proc setup(spawn: Spawn[(A, B, C, D, E)]) =
 
 template setupSystem(typ: typedesc) =
     proc `modify typ`(query: Query[(typ, )], attach: Attach[(typ, )]) =
-        for (entity, comp) in query:
+        for entity, comp in query:
             attach(entity, (typ(int(comp[0]) * 2), ))
 
 setupSystem(A)

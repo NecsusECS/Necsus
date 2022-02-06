@@ -30,21 +30,21 @@ proc shouldAdd*[C, M](storage: var QueryStorage[C, M], entityId: EntityId, compo
     ## Returns whether an entity should be added to this query
     storage.filter.evaluate(components) and ((entityId.int32 notin storage.members) or (entityId in storage.deleted))
 
-iterator items*[C, M](storage: var QueryStorage[C, M]): (EntityId, M) =
+iterator values*[C, M](storage: var QueryStorage[C, M]): (EntityId, M) =
     ## Yields the component pointers in a storage object
     for (eid, components) in storage.members.pairs:
         let entity = EntityId(eid)
         if entity notin storage.deleted:
             yield (entity, components)
 
-iterator items*[T: tuple](query: Query[T]): QueryItem[T] =
+iterator pairs*[T: tuple](query: Query[T]): QueryItem[T] =
     ## Iterates through the entities in a query
     let iter = query()
     for pair in iter(): yield pair
 
-iterator components*[T: tuple](query: Query[T]): T =
+iterator items*[T: tuple](query: Query[T]): T =
     ## Iterates through the entities in a query
-    for (_, components) in query.items: yield components
+    for (_, components) in query.pairs: yield components
 
 proc finalizeDeletes*[C, M](query: var QueryStorage[C, M]) =
     ## Removes any entities that are pending deletion from this query

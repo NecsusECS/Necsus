@@ -11,18 +11,18 @@ proc setup(spawn: Spawn[(A, B)]) =
         discard spawn((A(), B()))
 
 proc addC(query: Query[(A, B)], attach: Attach[(C, )]) =
-    for (eid, comps) in query:
+    for eid, comps in query:
         eid.attach((C(), ))
 
 proc assertABC(query: Query[(A, B, C)]) =
-    check(toSeq(query.components).len == 5)
+    check(toSeq(query.items).len == 5)
 
 proc addD(query: Query[(A, B)], attach: Attach[(D, )]) =
-    for (eid, comps) in query:
+    for eid, comps in query:
         eid.attach((D(), ))
 
 proc assertABCD(query: Query[(A, B, C, D)]) =
-    check(toSeq(query.components).len == 5)
+    check(toSeq(query.items).len == 5)
 
 proc runner(tick: proc(): void) =
     tick()

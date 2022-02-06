@@ -26,9 +26,9 @@ proc assertion(
 ) =
     echo "starting assertion"
 
-    check(toSeq(people.components).mapIt(it.name.name) == @["Jack", "Jill", "Joe"])
-    check(toSeq(ages.components).mapIt(it.age.age) == @[39])
-    check(toSeq(all.components).len == 0)
+    check(toSeq(people.items).mapIt(it.name.name) == @["Jack", "Jill", "Joe"])
+    check(toSeq(ages.items).mapIt(it.age.age) == @[39])
+    check(toSeq(all.items).len == 0)
 
 proc runner(tick: proc(): void) =
     tick()

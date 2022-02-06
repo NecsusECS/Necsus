@@ -1,4 +1,4 @@
-import unittest, necsus, sequtils, algorithm, intsets, std/threadpool
+import unittest, necsus, sequtils, intsets, std/threadpool
 {.experimental: "parallel".}
 
 type
@@ -14,7 +14,7 @@ proc setup(create: Spawn[(Num, )]) =
             spawn exec(i, create)
 
 proc assertion(numbers: Query[tuple[number: Num]]) =
-    let found = numbers.components.toSeq.mapIt(it.number.value).toIntSet
+    let found = numbers.items.toSeq.mapIt(it.number.value).toIntSet
     let expect = (0..5_000).toSeq.toIntSet
 
     check((expect - found).toSeq == newSeq[int](0))
