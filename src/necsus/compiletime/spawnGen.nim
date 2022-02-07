@@ -86,7 +86,7 @@ proc registerAttachComponents(
                     let `compIdent` = getRef[`component`](`componentStorage`, `entityId`.int32)
 
         result.add quote do:
-            if `queryIdent`.shouldAdd(`entityId`, `componentSet`):
+            if `queryIdent`.updateEntity(`entityId`, `componentSet`):
                 `getExtraComponents`
                 addToQuery(`queryIdent`, `entityId`, `componentTuple`)
 

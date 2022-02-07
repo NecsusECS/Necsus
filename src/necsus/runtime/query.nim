@@ -29,9 +29,13 @@ proc removeFromQuery*[C, M](storage: var QueryStorage[C, M], entityId: EntityId)
     ## Removes an entity from this query
     storage.deleted += entityId
 
-proc shouldAdd*[C, M](storage: var QueryStorage[C, M], entityId: EntityId, components: set[C]): bool =
-    ## Returns whether an entity should be added to this query
-    storage.filter.evaluate(components) and ((entityId.int32 notin storage.members) or (entityId in storage.deleted))
+proc updateEntity*[C, M](storage: var QueryStorage[C, M], entityId: EntityId, components: set[C]): bool =
+    ## Evaluates an entity against this query. Returns true if the entity needs to be added to this query
+    let shouldBeInQuery = storage.filter.evaluate(components)
+    let isInQuery = (entityId.int32 in storage.members) and (entityId notin storage.deleted)
+    if isInQuery and not shouldBeInQuery:
+        storage.removeFromQuery(entityId)
+    return shouldBeInQuery and not isInQuery
 
 iterator values*[C, M](storage: var QueryStorage[C, M]): (EntityId, M) =
     ## Yields the component pointers in a storage object

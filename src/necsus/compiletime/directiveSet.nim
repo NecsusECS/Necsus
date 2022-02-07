@@ -35,11 +35,21 @@ proc `$`*[T](directives: DirectiveSet[T]): string =
     ## Returns the name of this query set
     &"{directives.symbol}({directives.directives})"
 
+proc isFulfilledBy(query: QueryDef, components: HashSet[ComponentDef]): bool =
+    ## Determines whether a query can be fulfilled by the given components
+    for arg in query.args:
+        case arg.kind
+        of Include:
+            if arg.component notin components: return false
+        of Exclude:
+            if arg.component in components: return false
+    return true
+
 proc containing*(queries: DirectiveSet[QueryDef], components: openarray[ComponentDef]): seq[QueryDef] =
     ## Yields all queries that reference the given components
     let compSet = components.toHashSet
     for query in queries.values.keys:
-        if query.toSeq.allIt(it in compSet):
+        if query.isFulfilledBy(compSet):
             result.add(query)
 
 proc mentioning*(queries: DirectiveSet[QueryDef], components: openarray[ComponentDef]): seq[QueryDef] =
