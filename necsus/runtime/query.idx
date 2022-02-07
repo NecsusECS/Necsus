@@ -1,5 +1,6 @@
 QueryItem	necsus/runtime/query.html#QueryItem	query: QueryItem	
 Query	necsus/runtime/query.html#Query	query: Query	
+Not	necsus/runtime/query.html#Not	query: Not	
 QueryStorage	necsus/runtime/query.html#QueryStorage	query: QueryStorage	
 newQueryStorage	necsus/runtime/query.html#newQueryStorage,int,QueryFilter[C]	query: newQueryStorage[C, M](initialSize: int; filter: QueryFilter[C]): QueryStorage[C,\n    M]	
 addToQuery	necsus/runtime/query.html#addToQuery,QueryStorage[C,M],EntityId,sinkM	query: addToQuery[C, M](storage: var QueryStorage[C, M]; entityId: EntityId;\n                 componentRefs: sink M)	

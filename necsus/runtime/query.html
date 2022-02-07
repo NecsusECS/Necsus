@@ -107,7 +107,9 @@ window.addEventListener('DOMContentLoaded', main);
 <li>
   <a class="reference reference-toplevel" href="#7" id="57">Types</a>
   <ul class="simple simple-toc-section">
-      <li><a class="reference" href="#Query"
+      <li><a class="reference" href="#Not"
+    title="Not[T] = distinct int8">Not</a></li>
+  <li><a class="reference" href="#Query"
     title="Query[T] = proc (): iterator (): QueryItem[T]">Query</a></li>
   <li><a class="reference" href="#QueryItem"
     title="QueryItem[T] = tuple[entityId: EntityId, components: T]">QueryItem</a></li>
@@ -194,6 +196,14 @@ window.addEventListener('DOMContentLoaded', main);
 <div class="section" id="7">
 <h1><a class="toc-backref" href="#7">Types</a></h1>
 <dl class="item">
+<div id="Not">
+<dt><pre><a href="query.html#Not"><span class="Identifier">Not</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">distinct</span> <span class="Identifier">int8</span></pre></dt>
+<dd>
+
+A query flag that indicates a component should be excluded from a query
+
+</dd>
+</div>
 <div id="Query">
 <dt><pre><a href="query.html#Query"><span class="Identifier">Query</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Keyword">iterator</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <a href="query.html#QueryItem"><span class="Identifier">QueryItem</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span></pre></dt>
 <dd>
@@ -309,7 +319,7 @@ Yields the component pointers in a storage object
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2022-02-07 00:39:38 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2022-02-07 04:22:21 UTC</small>
       </div>
     </div>
   </div>

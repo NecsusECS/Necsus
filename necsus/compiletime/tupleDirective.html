@@ -109,23 +109,27 @@ window.addEventListener('DOMContentLoaded', main);
   <ul class="simple simple-toc-section">
       <li><a class="reference" href="#AttachDef"
     title="AttachDef = object
-  args: seq[DirectiveArg]">AttachDef</a></li>
+  args*: seq[DirectiveArg]">AttachDef</a></li>
   <li><a class="reference" href="#DetachDef"
     title="DetachDef = object
-  args: seq[DirectiveArg]">DetachDef</a></li>
+  args*: seq[DirectiveArg]">DetachDef</a></li>
   <li><a class="reference" href="#DirectiveArg"
     title="DirectiveArg = object
   component*: ComponentDef
-  isPointer*: bool">DirectiveArg</a></li>
+  isPointer*: bool
+  kind*: DirectiveArgKind">DirectiveArg</a></li>
+  <li><a class="reference" href="#DirectiveArgKind"
+    title="DirectiveArgKind = enum
+  Include, Exclude">DirectiveArgKind</a></li>
   <li><a class="reference" href="#LookupDef"
     title="LookupDef = object
-  args: seq[DirectiveArg]">LookupDef</a></li>
+  args*: seq[DirectiveArg]">LookupDef</a></li>
   <li><a class="reference" href="#QueryDef"
     title="QueryDef = object
-  args: seq[DirectiveArg]">QueryDef</a></li>
+  args*: seq[DirectiveArg]">QueryDef</a></li>
   <li><a class="reference" href="#SpawnDef"
     title="SpawnDef = object
-  args: seq[DirectiveArg]">SpawnDef</a></li>
+  args*: seq[DirectiveArg]">SpawnDef</a></li>
 
   </ul>
 </li>
@@ -186,8 +190,8 @@ window.addEventListener('DOMContentLoaded', main);
 
   </ul>
   <ul class="simple nested-toc-section">newDirectiveArg
-      <li><a class="reference" href="#newDirectiveArg%2CComponentDef%2Cbool"
-    title="newDirectiveArg(component: ComponentDef; isPointer: bool): auto">newDirectiveArg(component: ComponentDef; isPointer: bool): auto</a></li>
+      <li><a class="reference" href="#newDirectiveArg%2CComponentDef%2Cbool%2CDirectiveArgKind"
+    title="newDirectiveArg(component: ComponentDef; isPointer: bool; kind: DirectiveArgKind): auto">newDirectiveArg(component: ComponentDef; isPointer: bool; kind: DirectiveArgKind): auto</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">newLookupDef
@@ -259,7 +263,7 @@ window.addEventListener('DOMContentLoaded', main);
 <dl class="item">
 <div id="AttachDef">
 <dt><pre><a href="tupleDirective.html#AttachDef"><span class="Identifier">AttachDef</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
-  <span class="Identifier">args</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="tupleDirective.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a><span class="Other">]</span>
+  <span class="Identifier">args</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="tupleDirective.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a><span class="Other">]</span>
 </pre></dt>
 <dd>
 
@@ -269,7 +273,7 @@ A single directive definition
 </div>
 <div id="DetachDef">
 <dt><pre><a href="tupleDirective.html#DetachDef"><span class="Identifier">DetachDef</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
-  <span class="Identifier">args</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="tupleDirective.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a><span class="Other">]</span>
+  <span class="Identifier">args</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="tupleDirective.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a><span class="Other">]</span>
 </pre></dt>
 <dd>
 
@@ -281,6 +285,7 @@ A single directive definition
 <dt><pre><a href="tupleDirective.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
   <span class="Identifier">component</span><span class="Operator">*</span><span class="Other">:</span> <a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a>
   <span class="Identifier">isPointer</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">bool</span>
+  <span class="Identifier">kind</span><span class="Operator">*</span><span class="Other">:</span> <a href="tupleDirective.html#DirectiveArgKind"><span class="Identifier">DirectiveArgKind</span></a>
 </pre></dt>
 <dd>
 
@@ -288,9 +293,18 @@ Represents a single argument within a directive. For example, in: Query[(Foo, Ba
 
 </dd>
 </div>
+<div id="DirectiveArgKind">
+<dt><pre><a href="tupleDirective.html#DirectiveArgKind"><span class="Identifier">DirectiveArgKind</span></a> <span class="Other">=</span> <span class="Keyword">enum</span>
+  <span class="Identifier">Include</span><span class="Other">,</span> <span class="Identifier">Exclude</span></pre></dt>
+<dd>
+
+Indicates the behavior of a directive
+
+</dd>
+</div>
 <div id="LookupDef">
 <dt><pre><a href="tupleDirective.html#LookupDef"><span class="Identifier">LookupDef</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
-  <span class="Identifier">args</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="tupleDirective.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a><span class="Other">]</span>
+  <span class="Identifier">args</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="tupleDirective.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a><span class="Other">]</span>
 </pre></dt>
 <dd>
 
@@ -300,7 +314,7 @@ A single directive definition
 </div>
 <div id="QueryDef">
 <dt><pre><a href="tupleDirective.html#QueryDef"><span class="Identifier">QueryDef</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
-  <span class="Identifier">args</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="tupleDirective.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a><span class="Other">]</span>
+  <span class="Identifier">args</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="tupleDirective.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a><span class="Other">]</span>
 </pre></dt>
 <dd>
 
@@ -310,7 +324,7 @@ A single directive definition
 </div>
 <div id="SpawnDef">
 <dt><pre><a href="tupleDirective.html#SpawnDef"><span class="Identifier">SpawnDef</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
-  <span class="Identifier">args</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="tupleDirective.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a><span class="Other">]</span>
+  <span class="Identifier">args</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="tupleDirective.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a><span class="Other">]</span>
 </pre></dt>
 <dd>
 
@@ -482,9 +496,9 @@ Generate a unique hash
 
 </dd>
 </div>
-<div id="newDirectiveArg,ComponentDef,bool">
-<dt><pre><span class="Keyword">proc</span> <a href="#newDirectiveArg%2CComponentDef%2Cbool"><span class="Identifier">newDirectiveArg</span></a><span class="Other">(</span><span class="Identifier">component</span><span class="Other">:</span> <a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">;</span> <span class="Identifier">isPointer</span><span class="Other">:</span> <span class="Identifier">bool</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">auto</span> {.
-    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<div id="newDirectiveArg,ComponentDef,bool,DirectiveArgKind">
+<dt><pre><span class="Keyword">proc</span> <a href="#newDirectiveArg%2CComponentDef%2Cbool%2CDirectiveArgKind"><span class="Identifier">newDirectiveArg</span></a><span class="Other">(</span><span class="Identifier">component</span><span class="Other">:</span> <a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">;</span> <span class="Identifier">isPointer</span><span class="Other">:</span> <span class="Identifier">bool</span><span class="Other">;</span>
+                     <span class="Identifier">kind</span><span class="Other">:</span> <a href="tupleDirective.html#DirectiveArgKind"><span class="Identifier">DirectiveArgKind</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">auto</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 Creates a DirectiveArg
@@ -617,7 +631,7 @@ Produce all components in a directive
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2022-02-07 00:39:39 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2022-02-07 04:22:21 UTC</small>
       </div>
     </div>
   </div>

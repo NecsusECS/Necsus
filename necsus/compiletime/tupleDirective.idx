@@ -1,5 +1,8 @@
+Include	necsus/compiletime/tupleDirective.html#Include	DirectiveArgKind.Include	
+Exclude	necsus/compiletime/tupleDirective.html#Exclude	DirectiveArgKind.Exclude	
+DirectiveArgKind	necsus/compiletime/tupleDirective.html#DirectiveArgKind	tupleDirective: DirectiveArgKind	
 DirectiveArg	necsus/compiletime/tupleDirective.html#DirectiveArg	tupleDirective: DirectiveArg	
-newDirectiveArg	necsus/compiletime/tupleDirective.html#newDirectiveArg,ComponentDef,bool	tupleDirective: newDirectiveArg(component: ComponentDef; isPointer: bool): auto	
+newDirectiveArg	necsus/compiletime/tupleDirective.html#newDirectiveArg,ComponentDef,bool,DirectiveArgKind	tupleDirective: newDirectiveArg(component: ComponentDef; isPointer: bool; kind: DirectiveArgKind): auto	
 `==`	necsus/compiletime/tupleDirective.html#==,DirectiveArg,DirectiveArg	tupleDirective: `==`(a, b: DirectiveArg): auto	
 hash	necsus/compiletime/tupleDirective.html#hash,DirectiveArg	tupleDirective: hash(arg: DirectiveArg): Hash	
 QueryDef	necsus/compiletime/tupleDirective.html#QueryDef	tupleDirective: QueryDef	
