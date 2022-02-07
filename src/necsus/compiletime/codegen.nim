@@ -1,4 +1,4 @@
-import macros, componentDef, componentSet, sequtils, codeGenInfo
+import macros, componentDef, componentSet, sequtils, codeGenInfo, options, directiveSet, monoDirective
 import ../runtime/packedIntTable
 
 proc createComponentEnum*(components: ComponentSet): NimNode =
@@ -23,3 +23,12 @@ proc createWorldInstance*(genInfo: CodeGenInfo): NimNode =
     let componentEnum = genInfo.components.enumSymbol
     result = quote:
         var `worldIdent` = newWorld[`componentEnum`](`confIdent`.entitySize)
+
+proc createAppReturn*(genInfo: CodeGenInfo): NimNode =
+    if genInfo.app.returns.isSome:
+        let returns: SharedDef = genInfo.app.returns.get()
+        let sharedVarIdent = genInfo.shared.nameOf(returns).ident
+        return quote:
+            return get(`sharedVarIdent`)
+    else:
+        return newEmptyNode()

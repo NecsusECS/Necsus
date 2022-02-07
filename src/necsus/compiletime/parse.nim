@@ -1,4 +1,4 @@
-import macros, sequtils, componentDef, tupleDirective, localDef, monoDirective, strformat
+import macros, sequtils, componentDef, tupleDirective, localDef, monoDirective, strformat, options
 
 type
     SystemPhase* = enum StartupPhase, LoopPhase, TeardownPhase
@@ -42,6 +42,7 @@ type
         ## Parsed information about the application proc itself
         runnerArgs*: seq[SystemArg]
         inputs*: seq[tuple[argName: string, directive: SharedDef]]
+        returns*: Option[SharedDef]
 
 proc phase*(system: ParsedSystem): auto = system.phase
 
@@ -200,6 +201,8 @@ template generateReaders(plural, propName, flagName, directiveType: untyped) =
         for arg in app.runnerArgs.filterIt(it.kind == SystemArgKind.`flagName`): result.add(arg.`propName`)
         when directiveType is SharedDef:
             for input in app.inputs: result.add(input.directive)
+            if app.returns.isSome:
+                result.add(app.returns.get())
 
 
 generateReaders(queries, query, Query, QueryDef)
@@ -231,7 +234,7 @@ proc parseRunner(runner: NimNode): seq[SystemArg] =
 proc parseApp*(appProc: NimNode, runner: NimNode): ParsedApp =
     ## Parses the app proc
     result.inputs = @[]
-    for param in appProc.params:
+    for param in appProc.params[1..^1]:
         case param.kind
         of nnkEmpty: discard
         of nnkIdentDefs:
@@ -240,3 +243,6 @@ proc parseApp*(appProc: NimNode, runner: NimNode): ParsedApp =
             result.inputs.add((param[0].strVal, newSharedDef(param[1])))
         else: param.expectKind({nnkEmpty, nnkIdentDefs})
     result.runnerArgs = parseRunner(runner)
+
+    let returnNode = appProc.params[0]
+    result.returns = if returnNode.kind == nnkEmpty: none(SharedDef) else: some(newSharedDef(returnNode))

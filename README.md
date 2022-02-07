@@ -420,7 +420,20 @@ import necsus
 proc exampleSystem(input: Shared[string]) =
     echo input.get()
 
-proc myApp(input: string) {.necsus([], [], [], newNecsusConf()).}
+proc myApp(input: string) {.necsus([], [~exampleSystem], [], newNecsusConf()).}
+```
+
+#### App Return Type
+
+If an app has a return value, it can be set in a system via a `Shared` argument:
+
+```nim
+import necsus
+
+proc setAppReturn(appReturns: var Shared[string]) =
+    appReturns.set("Return value from app")
+
+proc myApp(): string {.necsus([], [~setAppReturn], [], newNecsusConf()).}
 ```
 
 #### App Configuration

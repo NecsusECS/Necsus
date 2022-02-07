@@ -62,7 +62,8 @@ proc buildApp(
         codeGenInfo.createSharedVars(),
         codeGenInfo.createLocalVars(),
         codeGenInfo.createEventDeclarations(),
-        codeGenInfo.createTickRunner(runner)
+        codeGenInfo.createTickRunner(runner),
+        codeGenInfo.createAppReturn(),
     )
 
     when defined(dump):
