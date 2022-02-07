@@ -27,6 +27,7 @@ proc createLocalComponentTuple(query: QueryDef): NimNode =
         case arg.kind
         of Include: result.add(arg.component.localIdent)
         of Exclude: discard
+        of Optional: discard
 
 proc registerSpawnComponents(
     codeGenInfo: CodeGenInfo,

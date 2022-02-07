@@ -1,4 +1,4 @@
-import openAddrTable, blockStorage, packedList
+import openAddrTable, blockStorage, packedList, options
 
 #
 # PackedIntTable
@@ -50,6 +50,16 @@ proc `[]`*[T](table: var PackedIntTable[T], key: int32): var T =
 proc getPointer*[T](table: var PackedIntTable[T], key: int32): ptr T =
     ## Fetch a value as a pointer
     return addr table.entries[table.keyMap[key]].value
+
+proc maybeGet*[T](table: var PackedIntTable[T], key: int32): Option[T] =
+    ## Fetch a value if it exists
+    let index = table.keyMap.maybeGet(key)
+    return if index.isSome: return some(table.entries[index.get()].value) else: none(T)
+
+proc maybeGetPointer*[T](table: var PackedIntTable[T], key: int32): Option[ptr T] =
+    ## Fetch a pointer to a value if it exists
+    let index = table.keyMap.maybeGet(key)
+    return if index.isSome: return some(addr table.entries[index.get()].value) else: none(ptr T)
 
 proc setValue[T](table: var PackedIntTable[T], key: int32, value: sink T): int32 {.inline.} =
     ## Sets a value in the table and returns the generated index

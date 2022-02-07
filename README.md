@@ -259,6 +259,28 @@ proc excludingC(query: Query[(A, B, Not[C])]) =
 proc myApp() {.necsus([], [~excludingC], [], newNecsusConf()).}
 ```
 
+#### Queries with optional components
+
+If you would like a query to include a component if it exists, but still return the entity if it doesn't exist, you
+can use an optional in the component query:
+
+```nim
+import necsus, options
+
+type
+    A = object
+        a: string
+    B = object
+        b: string
+
+proc optionalB(query: Query[(A, Option[B])]) =
+    for (a, b) in query:
+        echo "Found a with ", a.a
+        if b.isSome: echo "Component B exists: ", b.get().b
+
+proc myApp() {.necsus([], [~optionalB], [], newNecsusConf()).}
+```
+
 #### Delete
 
 Deleting is the opposite of spawning -- it deletes an entity and all the associated components:

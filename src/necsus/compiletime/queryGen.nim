@@ -9,11 +9,13 @@ proc createStorageTupleType(query: QueryDef): NimNode =
     ## Creates the tuple needed to store
     result = nnkTupleConstr.newTree()
     for arg in query.args:
+        let component = arg.component
         case arg.kind
         of Include:
-            let component = arg.component
             result.add quote do: PackedIntTableValue[`component`]
         of Exclude:
+            discard
+        of Optional:
             discard
 
 proc createQueryFilter(codeGenInfo: CodeGenInfo, query: QueryDef): NimNode =
@@ -24,6 +26,7 @@ proc createQueryFilter(codeGenInfo: CodeGenInfo, query: QueryDef): NimNode =
         case arg.kind
         of Include: matches.incl(arg.component)
         of Exclude: excluding.incl(arg.component)
+        of Optional: discard
 
     let componentEnum = codeGenInfo.components.enumSymbol
 
@@ -46,27 +49,36 @@ proc createQueryStorageInstance(codeGenInfo: CodeGenInfo, queryName: string, que
     return quote:
         var `varName` = newQueryStorage[`componentEnum`, `tupleType`](`confIdent`.componentSize, `queryFilter`)
 
-proc createQueryIterator(codeGenInfo: CodeGenInfo, queryName: string, query: QueryDef): NimNode =
-    ## Creates the iterator needed to execute a query
-    let procName = ident(queryName)
-    let queryTupleType = query.args.asTupleType
-    let queryStorageName = queryName.queryStorageIdent
-    let eid = ident("eid")
-    let members = ident("members")
 
-    var instantiateTuple = nnkTupleConstr.newTree()
+let eid {.compileTime.} = ident("eid")
+let members {.compileTime.} = ident("members")
+
+proc instantiateQueryTuple(codeGenInfo: CodeGenInfo, query: QueryDef): NimNode =
+    ## Creates the code for instantiating the QueryItem tuple produced by a query
+    result = nnkTupleConstr.newTree()
     for (i, arg) in query.args.toSeq.pairs:
         let component = arg.component.componentStoreIdent
         case arg.kind
         of Include:
             if arg.isPointer:
-                instantiateTuple.add quote do: getPointer(`component`, `members`[`i`])
+                result.add quote do: getPointer(`component`, `members`[`i`])
             else:
-                instantiateTuple.add quote do: `component`[`members`[`i`]]
+                result.add quote do: `component`[`members`[`i`]]
         of Exclude:
             let componentType = arg.component
-            instantiateTuple.add quote do: cast[Not[`componentType`]](0'i8)
+            result.add quote do: cast[Not[`componentType`]](0'i8)
+        of Optional:
+            if arg.isPointer:
+                result.add quote do: maybeGetPointer(`component`, `eid`.int32)
+            else:
+                result.add quote do: maybeGet(`component`, `eid`.int32)
 
+proc createQueryIterator(codeGenInfo: CodeGenInfo, queryName: string, query: QueryDef): NimNode =
+    ## Creates the iterator needed to execute a query
+    let procName = ident(queryName)
+    let queryTupleType = query.args.asTupleType
+    let queryStorageName = queryName.queryStorageIdent
+    var instantiateTuple = codeGenInfo.instantiateQueryTuple(query)
     return quote:
         proc `procName`(): auto =
             return iterator(): QueryItem[`queryTupleType`] {.closure.} =

@@ -43,6 +43,8 @@ proc isFulfilledBy(query: QueryDef, components: HashSet[ComponentDef]): bool =
             if arg.component notin components: return false
         of Exclude:
             if arg.component in components: return false
+        of Optional:
+            discard
     return true
 
 proc containing*(queries: DirectiveSet[QueryDef], components: openarray[ComponentDef]): seq[QueryDef] =

@@ -3,7 +3,7 @@ import componentDef, hashes, sequtils
 type
     DirectiveArgKind* = enum
         ## Indicates the behavior of a directive
-        Include, Exclude
+        Include, Exclude, Optional
 
     DirectiveArg* = object
         ## Represents a single argument within a directive. For example, in:

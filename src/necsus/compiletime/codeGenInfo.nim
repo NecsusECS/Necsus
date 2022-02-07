@@ -1,4 +1,5 @@
-import macros, componentSet, parse, directiveSet, tupleDirective, monoDirective, sequtils, componentDef, localDef
+import componentSet, parse, directiveSet, tupleDirective, monoDirective, componentDef, localDef
+import macros, sequtils, options
 import ../runtime/query
 
 type CodeGenInfo* = object
@@ -49,11 +50,11 @@ proc asTupleType*(args: openarray[DirectiveArg]): NimNode =
     ## Creates a tuple type from a list of components
     result = nnkTupleConstr.newTree()
     for arg in args:
+        let componentIdent = if arg.isPointer: nnkPtrTy.newTree(arg.component.ident) else: arg.component.ident
         case arg.kind
-        of Include:
-            result.add(if arg.isPointer: nnkPtrTy.newTree(arg.component.ident) else: arg.component.ident)
-        of Exclude:
-            result.add(nnkBracketExpr.newTree(bindSym("Not"), arg.component.ident))
+        of Include: result.add(componentIdent)
+        of Exclude: result.add(nnkBracketExpr.newTree(bindSym("Not"), componentIdent))
+        of Optional: result.add(nnkBracketExpr.newTree(bindSym("Option"), componentIdent))
 
 proc createComponentSet*(codeGenInfo: CodeGenInfo, components: openarray[ComponentDef]): NimNode =
     ## Creates the tuple needed to store
