@@ -1,16 +1,21 @@
 import componentDef, hashes, sequtils
 
 type
+    DirectiveArgKind* = enum
+        ## Indicates the behavior of a directive
+        Include, Exclude
+
     DirectiveArg* = object
         ## Represents a single argument within a directive. For example, in:
         ## Query[(Foo, Bar, Baz)]
         ## This would just represent `Foo` or `Bar` or `Baz`
         component*: ComponentDef
         isPointer*: bool
+        kind*: DirectiveArgKind
 
-proc newDirectiveArg*(component: ComponentDef, isPointer: bool): auto =
+proc newDirectiveArg*(component: ComponentDef, isPointer: bool, kind: DirectiveArgKind): auto =
     ## Creates a DirectiveArg
-    DirectiveArg(component: component, isPointer: isPointer)
+    DirectiveArg(component: component, isPointer: isPointer, kind: kind)
 
 proc `==`*(a, b: DirectiveArg): auto =
     ## Compare two Directive instances
@@ -24,7 +29,7 @@ template createDirective(typ: untyped) =
     type
         typ* = object
             ## A single directive definition
-            args: seq[DirectiveArg]
+            args*: seq[DirectiveArg]
 
     proc `new typ`*(args: seq[DirectiveArg]): typ =
         typ(args: args)

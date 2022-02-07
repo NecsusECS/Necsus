@@ -7,6 +7,9 @@ type
     Query*[T: tuple] = proc(): iterator(): QueryItem[T]
         ## Allows systems to query for entities with specific components
 
+    Not*[T] = distinct int8
+        ## A query flag that indicates a component should be excluded from a query
+
     QueryStorage*[C: enum, M: tuple] {.byref.} = object
         ## Storage container for query data
         filter: QueryFilter[C]

@@ -22,7 +22,11 @@ proc storeComponents(
 
 proc createLocalComponentTuple(query: QueryDef): NimNode =
     ## Creates a tuple constructor for instantiating local references to components
-    nnkTupleConstr.newTree(query.toSeq.mapIt(it.localIdent))
+    result = nnkTupleConstr.newTree()
+    for arg in query.args:
+        case arg.kind
+        of Include: result.add(arg.component.localIdent)
+        of Exclude: discard
 
 proc registerSpawnComponents(
     codeGenInfo: CodeGenInfo,

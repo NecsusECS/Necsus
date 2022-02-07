@@ -66,9 +66,14 @@ proc parseArgKind(symbol: NimNode): SystemArgKind =
     of "Outbox": return SystemArgKind.Outbox
     else: error("Unrecognized ECS interface type: " & symbol.repr, symbol)
 
-proc parseDirectiveArg(symbol: NimNode, isPointer: bool = false): DirectiveArg =
+proc parseDirectiveArg(symbol: NimNode, isPointer: bool = false, kind: DirectiveArgKind = Include): DirectiveArg =
     case symbol.kind
-    of nnkSym, nnkBracketExpr: return newDirectiveArg(ComponentDef(symbol), isPointer)
+    of nnkSym: return newDirectiveArg(ComponentDef(symbol), isPointer, kind)
+    of nnkBracketExpr:
+        if symbol[0].strVal == "Not":
+            return parseDirectiveArg(symbol[1], isPointer, Exclude)
+        else:
+            return newDirectiveArg(ComponentDef(symbol), isPointer, kind)
     of nnkIdentDefs: return parseDirectiveArg(symbol[1], isPointer)
     of nnkPtrTy: return parseDirectiveArg(symbol[0], true)
     else: error(&"Unexpected directive kind ({symbol.kind}): {symbol.repr}")

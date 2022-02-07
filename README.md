@@ -237,6 +237,28 @@ proc inPlaceUpdate(query: Query[tuple[a: ptr A]]) =
 proc myApp() {.necsus([], [~inPlaceUpdate], [], newNecsusConf()).}
 ```
 
+#### Queries that exclude components
+
+There will be times you want to query for entities that contain a set of entities, but also exclude anoter set of
+components. This can be accomplished with the `Not` type:
+
+```nim
+import necsus
+
+type
+    A = object
+        a: string
+    B = object
+        b: string
+    C = object
+
+proc excludingC(query: Query[(A, B, Not[C])]) =
+    for (a, b, _) in query:
+        echo "Found a with ", a.a, " and b with ", b.b
+
+proc myApp() {.necsus([], [~excludingC], [], newNecsusConf()).}
+```
+
 #### Delete
 
 Deleting is the opposite of spawning -- it deletes an entity and all the associated components:

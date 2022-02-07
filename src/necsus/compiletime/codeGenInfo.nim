@@ -1,4 +1,5 @@
 import macros, componentSet, parse, directiveSet, tupleDirective, monoDirective, sequtils, componentDef, localDef
+import ../runtime/query
 
 type CodeGenInfo* = object
     ## Contains all the information needed to do high level code gen
@@ -48,7 +49,11 @@ proc asTupleType*(args: openarray[DirectiveArg]): NimNode =
     ## Creates a tuple type from a list of components
     result = nnkTupleConstr.newTree()
     for arg in args:
-        result.add(if arg.isPointer: nnkPtrTy.newTree(arg.component.ident) else: arg.component.ident)
+        case arg.kind
+        of Include:
+            result.add(if arg.isPointer: nnkPtrTy.newTree(arg.component.ident) else: arg.component.ident)
+        of Exclude:
+            result.add(nnkBracketExpr.newTree(bindSym("Not"), arg.component.ident))
 
 proc createComponentSet*(codeGenInfo: CodeGenInfo, components: openarray[ComponentDef]): NimNode =
     ## Creates the tuple needed to store
