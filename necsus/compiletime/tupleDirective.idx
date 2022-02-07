@@ -1,5 +1,6 @@
 Include	necsus/compiletime/tupleDirective.html#Include	DirectiveArgKind.Include	
 Exclude	necsus/compiletime/tupleDirective.html#Exclude	DirectiveArgKind.Exclude	
+Optional	necsus/compiletime/tupleDirective.html#Optional	DirectiveArgKind.Optional	
 DirectiveArgKind	necsus/compiletime/tupleDirective.html#DirectiveArgKind	tupleDirective: DirectiveArgKind	
 DirectiveArg	necsus/compiletime/tupleDirective.html#DirectiveArg	tupleDirective: DirectiveArg	
 newDirectiveArg	necsus/compiletime/tupleDirective.html#newDirectiveArg,ComponentDef,bool,DirectiveArgKind	tupleDirective: newDirectiveArg(component: ComponentDef; isPointer: bool; kind: DirectiveArgKind): auto	

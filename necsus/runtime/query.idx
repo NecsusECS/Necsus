@@ -5,7 +5,7 @@ QueryStorage	necsus/runtime/query.html#QueryStorage	query: QueryStorage
 newQueryStorage	necsus/runtime/query.html#newQueryStorage,int,QueryFilter[C]	query: newQueryStorage[C, M](initialSize: int; filter: QueryFilter[C]): QueryStorage[C,\n    M]	
 addToQuery	necsus/runtime/query.html#addToQuery,QueryStorage[C,M],EntityId,sinkM	query: addToQuery[C, M](storage: var QueryStorage[C, M]; entityId: EntityId;\n                 componentRefs: sink M)	
 removeFromQuery	necsus/runtime/query.html#removeFromQuery,QueryStorage[C,M],EntityId	query: removeFromQuery[C, M](storage: var QueryStorage[C, M]; entityId: EntityId)	
-shouldAdd	necsus/runtime/query.html#shouldAdd,QueryStorage[C,M],EntityId,set[C]	query: shouldAdd[C, M](storage: var QueryStorage[C, M]; entityId: EntityId;\n                components: set[C]): bool	
+updateEntity	necsus/runtime/query.html#updateEntity,QueryStorage[C,M],EntityId,set[C]	query: updateEntity[C, M](storage: var QueryStorage[C, M]; entityId: EntityId;\n                   components: set[C]): bool	
 values	necsus/runtime/query.html#values.i,QueryStorage[C,M]	query: values[C, M](storage: var QueryStorage[C, M]): (EntityId, M)	
 pairs	necsus/runtime/query.html#pairs.i,Query[T: tuple]	query: pairs[T: tuple](query: Query[T]): QueryItem[T]	
 items	necsus/runtime/query.html#items.i,Query[T: tuple]	query: items[T: tuple](query: Query[T]): T	

@@ -120,7 +120,7 @@ window.addEventListener('DOMContentLoaded', main);
   kind*: DirectiveArgKind">DirectiveArg</a></li>
   <li><a class="reference" href="#DirectiveArgKind"
     title="DirectiveArgKind = enum
-  Include, Exclude">DirectiveArgKind</a></li>
+  Include, Exclude, Optional">DirectiveArgKind</a></li>
   <li><a class="reference" href="#LookupDef"
     title="LookupDef = object
   args*: seq[DirectiveArg]">LookupDef</a></li>
@@ -295,7 +295,7 @@ Represents a single argument within a directive. For example, in: Query[(Foo, Ba
 </div>
 <div id="DirectiveArgKind">
 <dt><pre><a href="tupleDirective.html#DirectiveArgKind"><span class="Identifier">DirectiveArgKind</span></a> <span class="Other">=</span> <span class="Keyword">enum</span>
-  <span class="Identifier">Include</span><span class="Other">,</span> <span class="Identifier">Exclude</span></pre></dt>
+  <span class="Identifier">Include</span><span class="Other">,</span> <span class="Identifier">Exclude</span><span class="Other">,</span> <span class="Identifier">Optional</span></pre></dt>
 <dd>
 
 Indicates the behavior of a directive
@@ -631,7 +631,7 @@ Produce all components in a directive
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2022-02-07 04:22:21 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2022-02-07 16:37:28 UTC</small>
       </div>
     </div>
   </div>

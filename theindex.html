@@ -668,6 +668,12 @@ window.addEventListener('DOMContentLoaded', main);
 <dt><a name="maybeGet" href="#maybeGet"><span>maybeGet:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="openAddrTable: maybeGet[K, V](table: var OpenAddrTable[K, V]; key: K): Option[V]" href="necsus/runtime/openAddrTable.html#maybeGet%2COpenAddrTable%5BK%2CV%5D%2CK">openAddrTable: maybeGet[K, V](table: var OpenAddrTable[K, V]; key: K): Option[V]</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="packedIntTable: maybeGet[T](table: var PackedIntTable[T]; key: int32): Option[T]" href="necsus/runtime/packedIntTable.html#maybeGet%2CPackedIntTable%5BT%5D%2Cint32">packedIntTable: maybeGet[T](table: var PackedIntTable[T]; key: int32): Option[T]</a></li>
+          </ul></dd>
+<dt><a name="maybeGetPointer" href="#maybeGetPointer"><span>maybeGetPointer:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="packedIntTable: maybeGetPointer[T](table: var PackedIntTable[T]; key: int32): Option[ptr T]" href="necsus/runtime/packedIntTable.html#maybeGetPointer%2CPackedIntTable%5BT%5D%2Cint32">packedIntTable: maybeGetPointer[T](table: var PackedIntTable[T]; key: int32): Option[ptr T]</a></li>
           </ul></dd>
 <dt><a name="mentioning" href="#mentioning"><span>mentioning:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -821,6 +827,10 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference external"
           data-doc-search-tag="openAddrTable: OpenAddrTable" href="necsus/runtime/openAddrTable.html#OpenAddrTable">openAddrTable: OpenAddrTable</a></li>
           </ul></dd>
+<dt><a name="Optional" href="#Optional"><span>Optional:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="DirectiveArgKind.Optional" href="necsus/compiletime/tupleDirective.html#Optional">DirectiveArgKind.Optional</a></li>
+          </ul></dd>
 <dt><a name="outbox" href="#outbox"><span>outbox:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="parse: outbox(arg`gensym47: SystemArg): auto" href="necsus/compiletime/parse.html#outbox%2CSystemArg">parse: outbox(arg`gensym47: SystemArg): auto</a></li>
@@ -965,12 +975,6 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference external"
           data-doc-search-tag="monoDirective: SharedDef" href="necsus/compiletime/monoDirective.html#SharedDef">monoDirective: SharedDef</a></li>
           </ul></dd>
-<dt><a name="shouldAdd" href="#shouldAdd"><span>shouldAdd:</span></a></dt><dd><ul class="simple">
-<li><a class="reference external"
-          data-doc-search-tag="query: shouldAdd[C, M](storage: var QueryStorage[C, M]; entityId: EntityId;
-                components: set[C]): bool" href="necsus/runtime/query.html#shouldAdd%2CQueryStorage%5BC%2CM%5D%2CEntityId%2Cset%5BC%5D">query: shouldAdd[C, M](storage: var QueryStorage[C, M]; entityId: EntityId;
-                components: set[C]): bool</a></li>
-          </ul></dd>
 <dt><a name="spawn" href="#spawn"><span>spawn:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="parse: spawn(arg`gensym25: SystemArg): auto" href="necsus/compiletime/parse.html#spawn%2CSystemArg">parse: spawn(arg`gensym25: SystemArg): auto</a></li>
@@ -1027,6 +1031,12 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference external"
           data-doc-search-tag="world: TimeDelta" href="necsus/runtime/world.html#TimeDelta">world: TimeDelta</a></li>
           </ul></dd>
+<dt><a name="updateEntity" href="#updateEntity"><span>updateEntity:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="query: updateEntity[C, M](storage: var QueryStorage[C, M]; entityId: EntityId;
+                   components: set[C]): bool" href="necsus/runtime/query.html#updateEntity%2CQueryStorage%5BC%2CM%5D%2CEntityId%2Cset%5BC%5D">query: updateEntity[C, M](storage: var QueryStorage[C, M]; entityId: EntityId;
+                   components: set[C]): bool</a></li>
+          </ul></dd>
 <dt><a name="values" href="#values"><span>values:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="query: values[C, M](storage: var QueryStorage[C, M]): (EntityId, M)" href="necsus/runtime/query.html#values.i%2CQueryStorage%5BC%2CM%5D">query: values[C, M](storage: var QueryStorage[C, M]): (EntityId, M)</a></li>
@@ -1044,7 +1054,7 @@ window.addEventListener('DOMContentLoaded', main);
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2022-02-07 04:22:22 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2022-02-07 16:37:28 UTC</small>
       </div>
     </div>
   </div>

@@ -148,11 +148,11 @@ window.addEventListener('DOMContentLoaded', main);
     title="removeFromQuery[C, M](storage: var QueryStorage[C, M]; entityId: EntityId)">removeFromQuery[C, M](storage: var QueryStorage[C, M]; entityId: EntityId)</a></li>
 
   </ul>
-  <ul class="simple nested-toc-section">shouldAdd
-      <li><a class="reference" href="#shouldAdd%2CQueryStorage%5BC%2CM%5D%2CEntityId%2Cset%5BC%5D"
-    title="shouldAdd[C, M](storage: var QueryStorage[C, M]; entityId: EntityId;
-                components: set[C]): bool">shouldAdd[C, M](storage: var QueryStorage[C, M]; entityId: EntityId;
-                components: set[C]): bool</a></li>
+  <ul class="simple nested-toc-section">updateEntity
+      <li><a class="reference" href="#updateEntity%2CQueryStorage%5BC%2CM%5D%2CEntityId%2Cset%5BC%5D"
+    title="updateEntity[C, M](storage: var QueryStorage[C, M]; entityId: EntityId;
+                   components: set[C]): bool">updateEntity[C, M](storage: var QueryStorage[C, M]; entityId: EntityId;
+                   components: set[C]): bool</a></li>
 
   </ul>
 
@@ -271,12 +271,12 @@ Removes an entity from this query
 
 </dd>
 </div>
-<div id="shouldAdd,QueryStorage[C,M],EntityId,set[C]">
-<dt><pre><span class="Keyword">proc</span> <a href="#shouldAdd%2CQueryStorage%5BC%2CM%5D%2CEntityId%2Cset%5BC%5D"><span class="Identifier">shouldAdd</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">,</span> <span class="Identifier">M</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">storage</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="query.html#QueryStorage"><span class="Identifier">QueryStorage</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">,</span> <span class="Identifier">M</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">entityId</span><span class="Other">:</span> <a href="entity.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">;</span>
-                     <span class="Identifier">components</span><span class="Other">:</span> <span class="Identifier">set</span><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span></pre></dt>
+<div id="updateEntity,QueryStorage[C,M],EntityId,set[C]">
+<dt><pre><span class="Keyword">proc</span> <a href="#updateEntity%2CQueryStorage%5BC%2CM%5D%2CEntityId%2Cset%5BC%5D"><span class="Identifier">updateEntity</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">,</span> <span class="Identifier">M</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">storage</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="query.html#QueryStorage"><span class="Identifier">QueryStorage</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">,</span> <span class="Identifier">M</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">entityId</span><span class="Other">:</span> <a href="entity.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">;</span>
+                        <span class="Identifier">components</span><span class="Other">:</span> <span class="Identifier">set</span><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span></pre></dt>
 <dd>
 
-Returns whether an entity should be added to this query
+Evaluates an entity against this query. Returns true if the entity needs to be added to this query
 
 </dd>
 </div>
@@ -319,7 +319,7 @@ Yields the component pointers in a storage object
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2022-02-07 04:22:21 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2022-02-07 16:37:28 UTC</small>
       </div>
     </div>
   </div>

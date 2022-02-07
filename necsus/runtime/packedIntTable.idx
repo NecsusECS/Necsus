@@ -8,6 +8,8 @@ pairs	necsus/runtime/packedIntTable.html#pairs.i,PackedIntTable[T]	packedIntTabl
 `$`	necsus/runtime/packedIntTable.html#$,PackedIntTable[T]	packedIntTable: `$`[T](table: var PackedIntTable[T]): string	
 `[]`	necsus/runtime/packedIntTable.html#[],PackedIntTable[T],int32	packedIntTable: `[]`[T](table: var PackedIntTable[T]; key: int32): var T	
 getPointer	necsus/runtime/packedIntTable.html#getPointer,PackedIntTable[T],int32	packedIntTable: getPointer[T](table: var PackedIntTable[T]; key: int32): ptr T	
+maybeGet	necsus/runtime/packedIntTable.html#maybeGet,PackedIntTable[T],int32	packedIntTable: maybeGet[T](table: var PackedIntTable[T]; key: int32): Option[T]	
+maybeGetPointer	necsus/runtime/packedIntTable.html#maybeGetPointer,PackedIntTable[T],int32	packedIntTable: maybeGetPointer[T](table: var PackedIntTable[T]; key: int32): Option[ptr T]	
 `[]=`	necsus/runtime/packedIntTable.html#[]=,PackedIntTable[T],int32,sinkT	packedIntTable: `[]=`[T](table: var PackedIntTable[T]; key: int32; value: sink T)	
 setAndRef	necsus/runtime/packedIntTable.html#setAndRef,PackedIntTable[T],int32,sinkT	packedIntTable: setAndRef[T](table: var PackedIntTable[T]; key: int32; value: sink T): PackedIntTableValue[\n    T]	
 getRef	necsus/runtime/packedIntTable.html#getRef,PackedIntTable[T],int32	packedIntTable: getRef[T](table: var PackedIntTable[T]; key: int32): PackedIntTableValue[T]	

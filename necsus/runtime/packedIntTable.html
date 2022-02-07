@@ -167,6 +167,16 @@ window.addEventListener('DOMContentLoaded', main);
     title="getRef[T](table: var PackedIntTable[T]; key: int32): PackedIntTableValue[T]">getRef[T](table: var PackedIntTable[T]; key: int32): PackedIntTableValue[T]</a></li>
 
   </ul>
+  <ul class="simple nested-toc-section">maybeGet
+      <li><a class="reference" href="#maybeGet%2CPackedIntTable%5BT%5D%2Cint32"
+    title="maybeGet[T](table: var PackedIntTable[T]; key: int32): Option[T]">maybeGet[T](table: var PackedIntTable[T]; key: int32): Option[T]</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">maybeGetPointer
+      <li><a class="reference" href="#maybeGetPointer%2CPackedIntTable%5BT%5D%2Cint32"
+    title="maybeGetPointer[T](table: var PackedIntTable[T]; key: int32): Option[ptr T]">maybeGetPointer[T](table: var PackedIntTable[T]; key: int32): Option[ptr T]</a></li>
+
+  </ul>
   <ul class="simple nested-toc-section">newPackedIntTable
       <li><a class="reference" href="#newPackedIntTable%2Cint"
     title="newPackedIntTable[T](initialSize: int): PackedIntTable[T]">newPackedIntTable[T](initialSize: int): PackedIntTable[T]</a></li>
@@ -337,6 +347,22 @@ Returns a ref to a key
 
 </dd>
 </div>
+<div id="maybeGet,PackedIntTable[T],int32">
+<dt><pre><span class="Keyword">proc</span> <a href="#maybeGet%2CPackedIntTable%5BT%5D%2Cint32"><span class="Identifier">maybeGet</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">table</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="packedIntTable.html#PackedIntTable"><span class="Identifier">PackedIntTable</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">key</span><span class="Other">:</span> <span class="Identifier">int32</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Option</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span></pre></dt>
+<dd>
+
+Fetch a value if it exists
+
+</dd>
+</div>
+<div id="maybeGetPointer,PackedIntTable[T],int32">
+<dt><pre><span class="Keyword">proc</span> <a href="#maybeGetPointer%2CPackedIntTable%5BT%5D%2Cint32"><span class="Identifier">maybeGetPointer</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">table</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="packedIntTable.html#PackedIntTable"><span class="Identifier">PackedIntTable</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">key</span><span class="Other">:</span> <span class="Identifier">int32</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Option</span><span class="Other">[</span><span class="Keyword">ptr</span> <span class="Identifier">T</span><span class="Other">]</span></pre></dt>
+<dd>
+
+Fetch a pointer to a value if it exists
+
+</dd>
+</div>
 <div id="newPackedIntTable,int">
 <dt><pre><span class="Keyword">proc</span> <a href="#newPackedIntTable%2Cint"><span class="Identifier">newPackedIntTable</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">initialSize</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">:</span> <a href="packedIntTable.html#PackedIntTable"><span class="Identifier">PackedIntTable</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span></pre></dt>
 <dd>
@@ -394,7 +420,7 @@ Iterate through all values
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2022-02-07 04:22:21 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2022-02-07 16:37:28 UTC</small>
       </div>
     </div>
   </div>
