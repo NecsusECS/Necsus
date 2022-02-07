@@ -1,4 +1,6 @@
 QueryFilter	necsus/runtime/queryFilter.html#QueryFilter	queryFilter: QueryFilter	
 filterAll	necsus/runtime/queryFilter.html#filterAll	queryFilter: filterAll[C: enum](): auto	
 filterMatching	necsus/runtime/queryFilter.html#filterMatching,set[C]	queryFilter: filterMatching[C: enum](components: set[C]): auto	
+filterExcluding	necsus/runtime/queryFilter.html#filterExcluding,set[C]	queryFilter: filterExcluding[C: enum](components: set[C]): auto	
+filterBoth	necsus/runtime/queryFilter.html#filterBoth,QueryFilter[C: enum],QueryFilter[C: enum]	queryFilter: filterBoth[C: enum](first, second: QueryFilter[C]): auto	
 evaluate	necsus/runtime/queryFilter.html#evaluate,QueryFilter[C],set[C]	queryFilter: evaluate[C](filter: QueryFilter[C]; components: set[C]): bool	

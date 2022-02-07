@@ -102,13 +102,16 @@ window.addEventListener('DOMContentLoaded', main);
   <a class="reference reference-toplevel" href="#7" id="57">Types</a>
   <ul class="simple simple-toc-section">
       <li><a class="reference" href="#QueryFilter"
-    title="QueryFilter[C] {.shallow.} = object
+    title="QueryFilter[C] {.shallow.} = ref object
   case kind: QueryFilterKind
   of All:
       nil
 
-  of Matching:
-      components: set[C]">QueryFilter</a></li>
+  of Matching, Excluding:
+      components: set[C]
+
+  of Both:
+      first, second: QueryFilter[C]">QueryFilter</a></li>
 
   </ul>
 </li>
@@ -123,6 +126,16 @@ window.addEventListener('DOMContentLoaded', main);
   <ul class="simple nested-toc-section">filterAll
       <li><a class="reference" href="#filterAll"
     title="filterAll[C: enum](): auto">filterAll[C: enum](): auto</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">filterBoth
+      <li><a class="reference" href="#filterBoth%2CQueryFilter%5BC%3A%20enum%5D%2CQueryFilter%5BC%3A%20enum%5D"
+    title="filterBoth[C: enum](first, second: QueryFilter[C]): auto">filterBoth[C: enum](first, second: QueryFilter[C]): auto</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">filterExcluding
+      <li><a class="reference" href="#filterExcluding%2Cset%5BC%5D"
+    title="filterExcluding[C: enum](components: set[C]): auto">filterExcluding[C: enum](components: set[C]): auto</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">filterMatching
@@ -146,13 +159,16 @@ window.addEventListener('DOMContentLoaded', main);
 <h1><a class="toc-backref" href="#7">Types</a></h1>
 <dl class="item">
 <div id="QueryFilter">
-<dt><pre><a href="queryFilter.html#QueryFilter"><span class="Identifier">QueryFilter</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span> {.<span class="Identifier">shallow</span>.} <span class="Other">=</span> <span class="Keyword">object</span>
+<dt><pre><a href="queryFilter.html#QueryFilter"><span class="Identifier">QueryFilter</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span> {.<span class="Identifier">shallow</span>.} <span class="Other">=</span> <span class="Keyword">ref</span> <span class="Keyword">object</span>
   <span class="Keyword">case</span> <span class="Identifier">kind</span><span class="Other">:</span> <span class="Identifier">QueryFilterKind</span>
   <span class="Keyword">of</span> <span class="Identifier">All</span><span class="Other">:</span>
       <span class="Keyword">nil</span>
 
-  <span class="Keyword">of</span> <span class="Identifier">Matching</span><span class="Other">:</span>
+  <span class="Keyword">of</span> <span class="Identifier">Matching</span><span class="Other">,</span> <span class="Identifier">Excluding</span><span class="Other">:</span>
       <span class="Identifier">components</span><span class="Other">:</span> <span class="Identifier">set</span><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span>
+
+  <span class="Keyword">of</span> <span class="Identifier">Both</span><span class="Other">:</span>
+      <span class="Identifier">first</span><span class="Other">,</span> <span class="Identifier">second</span><span class="Other">:</span> <a href="queryFilter.html#QueryFilter"><span class="Identifier">QueryFilter</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span>
 
   </pre></dt>
 <dd>
@@ -182,6 +198,22 @@ Creates a filter that matches all components
 
 </dd>
 </div>
+<div id="filterBoth,QueryFilter[C: enum],QueryFilter[C: enum]">
+<dt><pre><span class="Keyword">func</span> <a href="#filterBoth%2CQueryFilter%5BC%3A%20enum%5D%2CQueryFilter%5BC%3A%20enum%5D"><span class="Identifier">filterBoth</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">:</span> <span class="Keyword">enum</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">first</span><span class="Other">,</span> <span class="Identifier">second</span><span class="Other">:</span> <a href="queryFilter.html#QueryFilter"><span class="Identifier">QueryFilter</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">auto</span></pre></dt>
+<dd>
+
+Creates a filter that requires two other filters both match
+
+</dd>
+</div>
+<div id="filterExcluding,set[C]">
+<dt><pre><span class="Keyword">func</span> <a href="#filterExcluding%2Cset%5BC%5D"><span class="Identifier">filterExcluding</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">:</span> <span class="Keyword">enum</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">components</span><span class="Other">:</span> <span class="Identifier">set</span><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">auto</span></pre></dt>
+<dd>
+
+Creates a filter that must not include any of the given components
+
+</dd>
+</div>
 <div id="filterMatching,set[C]">
 <dt><pre><span class="Keyword">func</span> <a href="#filterMatching%2Cset%5BC%5D"><span class="Identifier">filterMatching</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">:</span> <span class="Keyword">enum</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">components</span><span class="Other">:</span> <span class="Identifier">set</span><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">auto</span></pre></dt>
 <dd>
@@ -200,7 +232,7 @@ Creates a filter that must match the given components
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2022-02-06 18:18:54 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2022-02-07 00:39:38 UTC</small>
       </div>
     </div>
   </div>
