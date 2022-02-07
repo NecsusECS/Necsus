@@ -110,7 +110,8 @@ window.addEventListener('DOMContentLoaded', main);
       <li><a class="reference" href="#ParsedApp"
     title="ParsedApp = object
   runnerArgs*: seq[SystemArg]
-  inputs*: seq[tuple[argName: string, directive: SharedDef]]">ParsedApp</a></li>
+  inputs*: seq[tuple[argName: string, directive: SharedDef]]
+  returns*: Option[SharedDef]">ParsedApp</a></li>
   <li><a class="reference" href="#ParsedSystem"
     title="ParsedSystem = object
   phase: SystemPhase
@@ -187,14 +188,14 @@ window.addEventListener('DOMContentLoaded', main);
   </ul>
   <ul class="simple nested-toc-section">inbox
       <li><a class="reference" href="#inbox%2CSystemArg"
-    title="inbox(arg`gensym43: SystemArg): auto">inbox(arg`gensym43: SystemArg): auto</a></li>
+    title="inbox(arg`gensym44: SystemArg): auto">inbox(arg`gensym44: SystemArg): auto</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">inboxes
       <li><a class="reference" href="#inboxes%2CParsedApp"
-    title="inboxes(app`gensym43: ParsedApp): seq[InboxDef]">inboxes(app`gensym43: ParsedApp): seq[InboxDef]</a></li>
+    title="inboxes(app`gensym44: ParsedApp): seq[InboxDef]">inboxes(app`gensym44: ParsedApp): seq[InboxDef]</a></li>
   <li><a class="reference" href="#inboxes"
-    title="inboxes(systems`gensym43: openArray[ParsedSystem]): seq[InboxDef]">inboxes(systems`gensym43: openArray[ParsedSystem]): seq[InboxDef]</a></li>
+    title="inboxes(systems`gensym44: openArray[ParsedSystem]): seq[InboxDef]">inboxes(systems`gensym44: openArray[ParsedSystem]): seq[InboxDef]</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">kind
@@ -216,26 +217,26 @@ window.addEventListener('DOMContentLoaded', main);
   </ul>
   <ul class="simple nested-toc-section">lookup
       <li><a class="reference" href="#lookup%2CSystemArg"
-    title="lookup(arg`gensym39: SystemArg): auto">lookup(arg`gensym39: SystemArg): auto</a></li>
+    title="lookup(arg`gensym40: SystemArg): auto">lookup(arg`gensym40: SystemArg): auto</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">lookups
       <li><a class="reference" href="#lookups%2CParsedApp"
-    title="lookups(app`gensym39: ParsedApp): seq[LookupDef]">lookups(app`gensym39: ParsedApp): seq[LookupDef]</a></li>
+    title="lookups(app`gensym40: ParsedApp): seq[LookupDef]">lookups(app`gensym40: ParsedApp): seq[LookupDef]</a></li>
   <li><a class="reference" href="#lookups"
-    title="lookups(systems`gensym39: openArray[ParsedSystem]): seq[LookupDef]">lookups(systems`gensym39: openArray[ParsedSystem]): seq[LookupDef]</a></li>
+    title="lookups(systems`gensym40: openArray[ParsedSystem]): seq[LookupDef]">lookups(systems`gensym40: openArray[ParsedSystem]): seq[LookupDef]</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">outbox
       <li><a class="reference" href="#outbox%2CSystemArg"
-    title="outbox(arg`gensym47: SystemArg): auto">outbox(arg`gensym47: SystemArg): auto</a></li>
+    title="outbox(arg`gensym48: SystemArg): auto">outbox(arg`gensym48: SystemArg): auto</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">outboxes
       <li><a class="reference" href="#outboxes%2CParsedApp"
-    title="outboxes(app`gensym47: ParsedApp): seq[OutboxDef]">outboxes(app`gensym47: ParsedApp): seq[OutboxDef]</a></li>
+    title="outboxes(app`gensym48: ParsedApp): seq[OutboxDef]">outboxes(app`gensym48: ParsedApp): seq[OutboxDef]</a></li>
   <li><a class="reference" href="#outboxes"
-    title="outboxes(systems`gensym47: openArray[ParsedSystem]): seq[OutboxDef]">outboxes(systems`gensym47: openArray[ParsedSystem]): seq[OutboxDef]</a></li>
+    title="outboxes(systems`gensym48: openArray[ParsedSystem]): seq[OutboxDef]">outboxes(systems`gensym48: openArray[ParsedSystem]): seq[OutboxDef]</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">parseApp
@@ -337,6 +338,7 @@ window.addEventListener('DOMContentLoaded', main);
 <dt><pre><a href="parse.html#ParsedApp"><span class="Identifier">ParsedApp</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
   <span class="Identifier">runnerArgs</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="parse.html#SystemArg"><span class="Identifier">SystemArg</span></a><span class="Other">]</span>
   <span class="Identifier">inputs</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Keyword">tuple</span><span class="Other">[</span><span class="Identifier">argName</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">,</span> <span class="Identifier">directive</span><span class="Other">:</span> <a href="monoDirective.html#SharedDef"><span class="Identifier">SharedDef</span></a><span class="Other">]</span><span class="Other">]</span>
+  <span class="Identifier">returns</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">Option</span><span class="Other">[</span><a href="monoDirective.html#SharedDef"><span class="Identifier">SharedDef</span></a><span class="Other">]</span>
 </pre></dt>
 <dd>
 
@@ -471,7 +473,7 @@ Pulls all queries from the given parsed systems
 </dd>
 </div>
 <div id="inbox,SystemArg">
-<dt><pre><span class="Keyword">proc</span> <a href="#inbox%2CSystemArg"><span class="Identifier">inbox</span></a><span class="Other">(</span><span class="Identifier">arg`gensym43</span><span class="Other">:</span> <a href="parse.html#SystemArg"><span class="Identifier">SystemArg</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">auto</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dt><pre><span class="Keyword">proc</span> <a href="#inbox%2CSystemArg"><span class="Identifier">inbox</span></a><span class="Other">(</span><span class="Identifier">arg`gensym44</span><span class="Other">:</span> <a href="parse.html#SystemArg"><span class="Identifier">SystemArg</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">auto</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 
@@ -479,7 +481,7 @@ Pulls all queries from the given parsed systems
 </dd>
 </div>
 <div id="inboxes,ParsedApp">
-<dt><pre><span class="Keyword">proc</span> <a href="#inboxes%2CParsedApp"><span class="Identifier">inboxes</span></a><span class="Other">(</span><span class="Identifier">app`gensym43</span><span class="Other">:</span> <a href="parse.html#ParsedApp"><span class="Identifier">ParsedApp</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="monoDirective.html#InboxDef"><span class="Identifier">InboxDef</span></a><span class="Other">]</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dt><pre><span class="Keyword">proc</span> <a href="#inboxes%2CParsedApp"><span class="Identifier">inboxes</span></a><span class="Other">(</span><span class="Identifier">app`gensym44</span><span class="Other">:</span> <a href="parse.html#ParsedApp"><span class="Identifier">ParsedApp</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="monoDirective.html#InboxDef"><span class="Identifier">InboxDef</span></a><span class="Other">]</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 Pulls directives out of the app
@@ -487,7 +489,7 @@ Pulls directives out of the app
 </dd>
 </div>
 <div id="inboxes">
-<dt><pre><span class="Keyword">proc</span> <a href="#inboxes"><span class="Identifier">inboxes</span></a><span class="Other">(</span><span class="Identifier">systems`gensym43</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><a href="parse.html#ParsedSystem"><span class="Identifier">ParsedSystem</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="monoDirective.html#InboxDef"><span class="Identifier">InboxDef</span></a><span class="Other">]</span> {.
+<dt><pre><span class="Keyword">proc</span> <a href="#inboxes"><span class="Identifier">inboxes</span></a><span class="Other">(</span><span class="Identifier">systems`gensym44</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><a href="parse.html#ParsedSystem"><span class="Identifier">ParsedSystem</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="monoDirective.html#InboxDef"><span class="Identifier">InboxDef</span></a><span class="Other">]</span> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
@@ -529,7 +531,7 @@ Pulls all queries from the given parsed systems
 </dd>
 </div>
 <div id="lookup,SystemArg">
-<dt><pre><span class="Keyword">proc</span> <a href="#lookup%2CSystemArg"><span class="Identifier">lookup</span></a><span class="Other">(</span><span class="Identifier">arg`gensym39</span><span class="Other">:</span> <a href="parse.html#SystemArg"><span class="Identifier">SystemArg</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">auto</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dt><pre><span class="Keyword">proc</span> <a href="#lookup%2CSystemArg"><span class="Identifier">lookup</span></a><span class="Other">(</span><span class="Identifier">arg`gensym40</span><span class="Other">:</span> <a href="parse.html#SystemArg"><span class="Identifier">SystemArg</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">auto</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 
@@ -537,7 +539,7 @@ Pulls all queries from the given parsed systems
 </dd>
 </div>
 <div id="lookups,ParsedApp">
-<dt><pre><span class="Keyword">proc</span> <a href="#lookups%2CParsedApp"><span class="Identifier">lookups</span></a><span class="Other">(</span><span class="Identifier">app`gensym39</span><span class="Other">:</span> <a href="parse.html#ParsedApp"><span class="Identifier">ParsedApp</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="tupleDirective.html#LookupDef"><span class="Identifier">LookupDef</span></a><span class="Other">]</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dt><pre><span class="Keyword">proc</span> <a href="#lookups%2CParsedApp"><span class="Identifier">lookups</span></a><span class="Other">(</span><span class="Identifier">app`gensym40</span><span class="Other">:</span> <a href="parse.html#ParsedApp"><span class="Identifier">ParsedApp</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="tupleDirective.html#LookupDef"><span class="Identifier">LookupDef</span></a><span class="Other">]</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 Pulls directives out of the app
@@ -545,7 +547,7 @@ Pulls directives out of the app
 </dd>
 </div>
 <div id="lookups">
-<dt><pre><span class="Keyword">proc</span> <a href="#lookups"><span class="Identifier">lookups</span></a><span class="Other">(</span><span class="Identifier">systems`gensym39</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><a href="parse.html#ParsedSystem"><span class="Identifier">ParsedSystem</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="tupleDirective.html#LookupDef"><span class="Identifier">LookupDef</span></a><span class="Other">]</span> {.
+<dt><pre><span class="Keyword">proc</span> <a href="#lookups"><span class="Identifier">lookups</span></a><span class="Other">(</span><span class="Identifier">systems`gensym40</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><a href="parse.html#ParsedSystem"><span class="Identifier">ParsedSystem</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="tupleDirective.html#LookupDef"><span class="Identifier">LookupDef</span></a><span class="Other">]</span> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
@@ -554,7 +556,7 @@ Pulls all queries from the given parsed systems
 </dd>
 </div>
 <div id="outbox,SystemArg">
-<dt><pre><span class="Keyword">proc</span> <a href="#outbox%2CSystemArg"><span class="Identifier">outbox</span></a><span class="Other">(</span><span class="Identifier">arg`gensym47</span><span class="Other">:</span> <a href="parse.html#SystemArg"><span class="Identifier">SystemArg</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">auto</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dt><pre><span class="Keyword">proc</span> <a href="#outbox%2CSystemArg"><span class="Identifier">outbox</span></a><span class="Other">(</span><span class="Identifier">arg`gensym48</span><span class="Other">:</span> <a href="parse.html#SystemArg"><span class="Identifier">SystemArg</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">auto</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 
@@ -562,7 +564,7 @@ Pulls all queries from the given parsed systems
 </dd>
 </div>
 <div id="outboxes,ParsedApp">
-<dt><pre><span class="Keyword">proc</span> <a href="#outboxes%2CParsedApp"><span class="Identifier">outboxes</span></a><span class="Other">(</span><span class="Identifier">app`gensym47</span><span class="Other">:</span> <a href="parse.html#ParsedApp"><span class="Identifier">ParsedApp</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="monoDirective.html#OutboxDef"><span class="Identifier">OutboxDef</span></a><span class="Other">]</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dt><pre><span class="Keyword">proc</span> <a href="#outboxes%2CParsedApp"><span class="Identifier">outboxes</span></a><span class="Other">(</span><span class="Identifier">app`gensym48</span><span class="Other">:</span> <a href="parse.html#ParsedApp"><span class="Identifier">ParsedApp</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="monoDirective.html#OutboxDef"><span class="Identifier">OutboxDef</span></a><span class="Other">]</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 Pulls directives out of the app
@@ -570,7 +572,7 @@ Pulls directives out of the app
 </dd>
 </div>
 <div id="outboxes">
-<dt><pre><span class="Keyword">proc</span> <a href="#outboxes"><span class="Identifier">outboxes</span></a><span class="Other">(</span><span class="Identifier">systems`gensym47</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><a href="parse.html#ParsedSystem"><span class="Identifier">ParsedSystem</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="monoDirective.html#OutboxDef"><span class="Identifier">OutboxDef</span></a><span class="Other">]</span> {.
+<dt><pre><span class="Keyword">proc</span> <a href="#outboxes"><span class="Identifier">outboxes</span></a><span class="Other">(</span><span class="Identifier">systems`gensym48</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><a href="parse.html#ParsedSystem"><span class="Identifier">ParsedSystem</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="monoDirective.html#OutboxDef"><span class="Identifier">OutboxDef</span></a><span class="Other">]</span> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
@@ -744,7 +746,7 @@ Pulls all components from a list of parsed systems
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2022-02-07 16:37:28 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2022-02-07 18:33:32 UTC</small>
       </div>
     </div>
   </div>
