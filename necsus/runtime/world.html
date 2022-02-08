@@ -121,6 +121,8 @@ window.addEventListener('DOMContentLoaded', main);
     title="Spawn[C] = proc (components: sink C): EntityId">Spawn</a></li>
   <li><a class="reference" href="#TimeDelta"
     title="TimeDelta = float">TimeDelta</a></li>
+  <li><a class="reference" href="#TimeElapsed"
+    title="TimeElapsed = float">TimeElapsed</a></li>
   <li><a class="reference" href="#World"
     title="World[C] = ref object
   entities: PackedIntTable[EntityMetadata[C]]
@@ -251,6 +253,14 @@ Tracks the amount of time since the last execution of a system
 
 </dd>
 </div>
+<div id="TimeElapsed">
+<dt><pre><a href="world.html#TimeElapsed"><span class="Identifier">TimeElapsed</span></a> <span class="Other">=</span> <span class="Identifier">float</span></pre></dt>
+<dd>
+
+The total amount of time spent in an app
+
+</dd>
+</div>
 <div id="World">
 <dt><pre><a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">ref</span> <span class="Keyword">object</span>
   <span class="Identifier">entities</span><span class="Other">:</span> <a href="packedIntTable.html#PackedIntTable"><span class="Identifier">PackedIntTable</span></a><span class="Other">[</span><a href="entity.html#EntityMetadata"><span class="Identifier">EntityMetadata</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">]</span>
@@ -345,7 +355,7 @@ Creates a new world
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2022-02-07 18:33:31 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2022-02-08 03:02:08 UTC</small>
       </div>
     </div>
   </div>

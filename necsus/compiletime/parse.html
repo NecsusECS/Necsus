@@ -147,12 +147,12 @@ window.addEventListener('DOMContentLoaded', main);
   of SystemArgKind.Outbox:
       outbox: OutboxDef
 
-  of SystemArgKind.TimeDelta, SystemArgKind.Delete:
+  of SystemArgKind.TimeDelta, SystemArgKind.TimeElapsed, SystemArgKind.Delete:
       nil">SystemArg</a></li>
   <li><a class="reference" href="#SystemArgKind"
     title="SystemArgKind {.pure.} = enum
-  Spawn, Query, Attach, Detach, TimeDelta, Delete, Local, Shared, Lookup, Inbox,
-  Outbox">SystemArgKind</a></li>
+  Spawn, Query, Attach, Detach, TimeDelta, TimeElapsed, Delete, Local, Shared,
+  Lookup, Inbox, Outbox">SystemArgKind</a></li>
   <li><a class="reference" href="#SystemPhase"
     title="SystemPhase = enum
   StartupPhase, LoopPhase, TeardownPhase ## When a system should be executed">SystemPhase</a></li>
@@ -388,7 +388,7 @@ Parsed information about a system proc
   <span class="Keyword">of</span> <span class="Identifier">SystemArgKind</span><span class="Other">.</span><span class="Identifier">Outbox</span><span class="Other">:</span>
       <span class="Identifier">outbox</span><span class="Other">:</span> <a href="monoDirective.html#OutboxDef"><span class="Identifier">OutboxDef</span></a>
 
-  <span class="Keyword">of</span> <span class="Identifier">SystemArgKind</span><span class="Other">.</span><span class="Identifier">TimeDelta</span><span class="Other">,</span> <span class="Identifier">SystemArgKind</span><span class="Other">.</span><span class="Identifier">Delete</span><span class="Other">:</span>
+  <span class="Keyword">of</span> <span class="Identifier">SystemArgKind</span><span class="Other">.</span><span class="Identifier">TimeDelta</span><span class="Other">,</span> <span class="Identifier">SystemArgKind</span><span class="Other">.</span><span class="Identifier">TimeElapsed</span><span class="Other">,</span> <span class="Identifier">SystemArgKind</span><span class="Other">.</span><span class="Identifier">Delete</span><span class="Other">:</span>
       <span class="Keyword">nil</span>
 
   </pre></dt>
@@ -400,8 +400,8 @@ A single arg within a system proc
 </div>
 <div id="SystemArgKind">
 <dt><pre><a href="parse.html#SystemArgKind"><span class="Identifier">SystemArgKind</span></a> {.<span class="Identifier">pure</span>.} <span class="Other">=</span> <span class="Keyword">enum</span>
-  <span class="Identifier">Spawn</span><span class="Other">,</span> <span class="Identifier">Query</span><span class="Other">,</span> <span class="Identifier">Attach</span><span class="Other">,</span> <span class="Identifier">Detach</span><span class="Other">,</span> <span class="Identifier">TimeDelta</span><span class="Other">,</span> <span class="Identifier">Delete</span><span class="Other">,</span> <span class="Identifier">Local</span><span class="Other">,</span> <span class="Identifier">Shared</span><span class="Other">,</span> <span class="Identifier">Lookup</span><span class="Other">,</span> <span class="Identifier">Inbox</span><span class="Other">,</span>
-  <span class="Identifier">Outbox</span></pre></dt>
+  <span class="Identifier">Spawn</span><span class="Other">,</span> <span class="Identifier">Query</span><span class="Other">,</span> <span class="Identifier">Attach</span><span class="Other">,</span> <span class="Identifier">Detach</span><span class="Other">,</span> <span class="Identifier">TimeDelta</span><span class="Other">,</span> <span class="Identifier">TimeElapsed</span><span class="Other">,</span> <span class="Identifier">Delete</span><span class="Other">,</span> <span class="Identifier">Local</span><span class="Other">,</span> <span class="Identifier">Shared</span><span class="Other">,</span>
+  <span class="Identifier">Lookup</span><span class="Other">,</span> <span class="Identifier">Inbox</span><span class="Other">,</span> <span class="Identifier">Outbox</span></pre></dt>
 <dd>
 
 The kind of arg within a system proc
@@ -746,7 +746,7 @@ Pulls all components from a list of parsed systems
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2022-02-07 18:33:32 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2022-02-08 03:02:08 UTC</small>
       </div>
     </div>
   </div>

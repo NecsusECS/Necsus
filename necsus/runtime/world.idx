@@ -6,6 +6,7 @@ Detach	necsus/runtime/world.html#Detach	world: Detach
 Lookup	necsus/runtime/world.html#Lookup	world: Lookup	
 Outbox	necsus/runtime/world.html#Outbox	world: Outbox	
 TimeDelta	necsus/runtime/world.html#TimeDelta	world: TimeDelta	
+TimeElapsed	necsus/runtime/world.html#TimeElapsed	world: TimeElapsed	
 newWorld	necsus/runtime/world.html#newWorld,int	world: newWorld[C](initialSize: int): World[C]	
 associateComponents	necsus/runtime/world.html#associateComponents,World[C],EntityId,set[C]	world: associateComponents[C](world: var World[C]; entity: EntityId; components: set[C]): set[\n    C]	
 detachComponents	necsus/runtime/world.html#detachComponents,World[C],EntityId,set[C]	world: detachComponents[C](world: var World[C]; entity: EntityId; components: set[C])	
