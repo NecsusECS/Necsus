@@ -239,7 +239,7 @@ proc myApp() {.necsus([], [~inPlaceUpdate], [], newNecsusConf()).}
 
 #### Queries that exclude components
 
-There will be times you want to query for entities that contain a set of entities, but also exclude anoter set of
+There will be times you want to query for entities that contain a set of entities, but also exclude another set of
 components. This can be accomplished with the `Not` type:
 
 ```nim
@@ -404,7 +404,7 @@ proc myApp() {.necsus([], [~updateCount, ~printCount], [], newNecsusConf()).}
 `Inbox` and `Outbox` represent the eventing system in Necsus. Events are published using the Outbox and read using the
 `Inbox`. Any `Inbox` or `Outbox` with the same type will shared the same underlying mailbox.
 
-```
+```nim
 import necsus
 
 type SomeEvent = distinct string
