@@ -354,6 +354,19 @@ proc showTime(dt: TimeDelta) =
 proc myApp() {.necsus([], [~showTime], [], newNecsusConf()).}
 ```
 
+#### TimeElapsed
+
+`TimeElapsed` is a `float` that tracks the amount of time spent executing the current application
+
+```nim
+import necsus
+
+proc showTime(elapsed: TimeElapsed) =
+    echo "Time spent executing app: ", elapsed
+
+proc myApp() {.necsus([], [~showTime], [], newNecsusConf()).}
+```
+
 #### Local
 
 Local variables are a way to manage state that is specific to one system. Local variables will only be visible to the

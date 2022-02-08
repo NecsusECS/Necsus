@@ -30,6 +30,9 @@ type
     TimeDelta* = float
         ## Tracks the amount of time since the last execution of a system
 
+    TimeElapsed* = float
+        ## The total amount of time spent in an app
+
 proc newWorld*[C](initialSize: int): World[C] =
     ## Creates a new world
     World[C](

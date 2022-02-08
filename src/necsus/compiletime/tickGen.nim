@@ -2,6 +2,7 @@ import macros, times, sequtils
 import codeGenInfo, parse, directiveSet, tupleDirective, monoDirective, queryGen, componentSet, localDef, eventGen
 
 let timeDelta {.compileTime.} = ident("timeDelta")
+let timeElapsed {.compileTime.} = ident("timeElapsed")
 
 proc renderSystemArgs(codeGenInfo: CodeGenInfo, args: openarray[SystemArg]): seq[NimNode] =
     ## Renders system arguments down to nim code
@@ -19,6 +20,8 @@ proc renderSystemArgs(codeGenInfo: CodeGenInfo, args: openarray[SystemArg]): seq
             ident(codeGenInfo.lookups.nameOf(arg.lookup))
         of SystemArgKind.TimeDelta:
             timeDelta
+        of SystemArgKind.TimeElapsed:
+            timeElapsed
         of SystemArgKind.Delete:
             deleteProc
         of SystemArgKind.Local:
@@ -67,11 +70,14 @@ proc createTickRunner*(codeGenInfo: CodeGenInfo, runner: NimNode): NimNode =
     let deleteFinalizers = codeGenInfo.createDelteFinalizers()
     let lastTime = ident("lastTime")
     let thisTime = ident("thisTime")
+    let startTime = ident("startTime")
+    let timeElapsed = ident("timeElapsed")
 
     let primaryLoop = codeGenInfo.callTick(
         runner,
         quote do:
             let `thisTime` = epochTime()
+            `timeElapsed` = `thisTime` - `startTime`
             `timeDelta` = `thisTime` - `lastTime`
             `resetEvents`
             block:
@@ -82,7 +88,9 @@ proc createTickRunner*(codeGenInfo: CodeGenInfo, runner: NimNode): NimNode =
     )
 
     result = quote do:
-        var `lastTime`: float = epochTime()
+        let `startTime`: float = epochTime()
+        var `timeElapsed`: float = 0
+        var `lastTime`: float = `startTime`
         var `timeDelta`: float = 0
         `startups`
         `primaryLoop`

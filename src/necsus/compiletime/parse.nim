@@ -6,7 +6,7 @@ type
 
     SystemArgKind* {.pure.} = enum
         ## The kind of arg within a system proc
-        Spawn, Query, Attach, Detach, TimeDelta, Delete, Local, Shared, Lookup, Inbox, Outbox
+        Spawn, Query, Attach, Detach, TimeDelta, TimeElapsed, Delete, Local, Shared, Lookup, Inbox, Outbox
 
     SystemArg* = object
         ## A single arg within a system proc
@@ -29,7 +29,7 @@ type
             inbox: InboxDef
         of SystemArgKind.Outbox:
             outbox: OutboxDef
-        of SystemArgKind.TimeDelta, SystemArgKind.Delete:
+        of SystemArgKind.TimeDelta, SystemArgKind.TimeElapsed, SystemArgKind.Delete:
             discard
 
     ParsedSystem* = object
@@ -59,6 +59,7 @@ proc parseArgKind(symbol: NimNode): SystemArgKind =
     of "Attach": return SystemArgKind.Attach
     of "Detach": return SystemArgKind.Detach
     of "TimeDelta": return SystemArgKind.TimeDelta
+    of "TimeElapsed": return SystemArgKind.TimeElapsed
     of "Delete": return SystemArgKind.Delete
     of "Local": return SystemArgKind.Local
     of "Shared": return SystemArgKind.Shared
@@ -107,7 +108,7 @@ proc parseParametricArg(argName: string, directiveSymbol: NimNode, directivePara
         result.inbox = newInboxDef(directiveParametric)
     of SystemArgKind.Outbox:
         result.outbox = newOutboxDef(directiveParametric)
-    of SystemArgKind.TimeDelta, SystemArgKind.Delete:
+    of SystemArgKind.TimeDelta, SystemArgKind.TimeElapsed, SystemArgKind.Delete:
         error("System argument does not support tuple parameters: " & $result.kind)
 
 proc parseFlagSystemArg(directiveSymbol: NimNode): SystemArg =
@@ -117,7 +118,7 @@ proc parseFlagSystemArg(directiveSymbol: NimNode): SystemArg =
     of SystemArgKind.Spawn, SystemArgKind.Query, SystemArgKind.Attach, SystemArgKind.Detach,
         SystemArgKind.Local, SystemArgKind.Shared, SystemArgKind.Lookup, SystemArgKind.Inbox, SystemArgKind.Outbox:
         error("System argument is not flag based: " & $result.kind)
-    of SystemArgKind.TimeDelta, SystemArgKind.Delete:
+    of SystemArgKind.TimeDelta, SystemArgKind.TimeElapsed, SystemArgKind.Delete:
         discard
 
 proc parseArgType(argName: string, argType: NimNode): SystemArg =
@@ -167,7 +168,7 @@ iterator components*(arg: SystemArg): ComponentDef =
         for component in arg.detach: yield component
     of SystemArgKind.Lookup:
         for component in arg.lookup: yield component
-    of SystemArgKind.TimeDelta, SystemArgKind.Delete, SystemArgKind.Local,
+    of SystemArgKind.TimeDelta, SystemArgKind.TimeElapsed, SystemArgKind.Delete, SystemArgKind.Local,
         SystemArgKind.Shared, SystemArgKind.Inbox, SystemArgKind.Outbox:
         discard
 
