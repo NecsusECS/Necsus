@@ -71,6 +71,10 @@ proc app() {.necsus([~create], [~move, ~report, ~exiter], [], newNecsusConf()).}
 app()
 ```
 
+### More Examples
+
+* [Particle Demo](https://github.com/NecsusECS/NecsusParticleDemo)
+
 ## API Documentation
 
 API Documentation is available here:
