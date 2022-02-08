@@ -50,23 +50,24 @@ proc symbol*(system: ParsedSystem): auto = system.symbol
 
 proc kind*(arg: SystemArg): auto = arg.kind
 
-proc parseArgKind(symbol: NimNode): SystemArgKind =
+proc parseArgKind(symbol: NimNode): Option[SystemArgKind] =
     ## Parses a type symbol to a SystemArgKind
     symbol.expectKind(nnkSym)
     case symbol.strVal
-    of "Query": return SystemArgKind.Query
-    of "Spawn": return SystemArgKind.Spawn
-    of "Attach": return SystemArgKind.Attach
-    of "Detach": return SystemArgKind.Detach
-    of "TimeDelta": return SystemArgKind.TimeDelta
-    of "TimeElapsed": return SystemArgKind.TimeElapsed
-    of "Delete": return SystemArgKind.Delete
-    of "Local": return SystemArgKind.Local
-    of "Shared": return SystemArgKind.Shared
-    of "Lookup": return SystemArgKind.Lookup
-    of "Inbox": return SystemArgKind.Inbox
-    of "Outbox": return SystemArgKind.Outbox
-    else: error("Unrecognized ECS interface type: " & symbol.repr, symbol)
+    of "Query": return some(SystemArgKind.Query)
+    of "Spawn": return some(SystemArgKind.Spawn)
+    of "Attach": return some(SystemArgKind.Attach)
+    of "Detach": return some(SystemArgKind.Detach)
+    of "TimeDelta": return some(SystemArgKind.TimeDelta)
+    of "TimeElapsed": return some(SystemArgKind.TimeElapsed)
+    of "Delete": return some(SystemArgKind.Delete)
+    of "Local": return some(SystemArgKind.Local)
+    of "Shared": return some(SystemArgKind.Shared)
+    of "Lookup": return some(SystemArgKind.Lookup)
+    of "Inbox": return some(SystemArgKind.Inbox)
+    of "Outbox": return some(SystemArgKind.Outbox)
+    else: return none(SystemArgKind)
+        #error("Unrecognized ECS interface type: " & symbol.repr, symbol)
 
 proc parseDirectiveArg(symbol: NimNode, isPointer: bool = false, kind: DirectiveArgKind = Include): DirectiveArg =
     case symbol.kind
@@ -86,59 +87,70 @@ proc parseDirectiveArgsFromTuple(tupleArg: NimNode): seq[DirectiveArg] =
     for child in tupleArg.children:
         result.add(parseDirectiveArg(child, false))
 
-proc parseParametricArg(argName: string, directiveSymbol: NimNode, directiveParametric: NimNode): SystemArg =
-    ## Parses a system arg given a specific symbol and tuple
-    result.kind = directiveSymbol.parseArgKind
-    case result.kind
-    of SystemArgKind.Spawn:
-        result.spawn = newSpawnDef(directiveParametric.parseDirectiveArgsFromTuple)
-    of SystemArgKind.Query:
-        result.query = newQueryDef(directiveParametric.parseDirectiveArgsFromTuple)
-    of SystemArgKind.Attach:
-        result.attach = newAttachDef(directiveParametric.parseDirectiveArgsFromTuple)
-    of SystemArgKind.Detach:
-        result.detach = newDetachDef(directiveParametric.parseDirectiveArgsFromTuple)
-    of SystemArgKind.Lookup:
-        result.lookup = newLookupDef(directiveParametric.parseDirectiveArgsFromTuple)
-    of SystemArgKind.Local:
-        result.local = newLocalDef(argName, directiveParametric)
-    of SystemArgKind.Shared:
-        result.shared = newSharedDef(directiveParametric)
-    of SystemArgKind.Inbox:
-        result.inbox = newInboxDef(directiveParametric)
-    of SystemArgKind.Outbox:
-        result.outbox = newOutboxDef(directiveParametric)
-    of SystemArgKind.TimeDelta, SystemArgKind.TimeElapsed, SystemArgKind.Delete:
-        error("System argument does not support tuple parameters: " & $result.kind)
+template orElse[T](optional: Option[T], exec: untyped): T =
+    if optional.isSome: optional.get else: exec
 
-proc parseFlagSystemArg(directiveSymbol: NimNode): SystemArg =
+proc parseParametricArg(argName: string, directiveSymbol: NimNode, directiveParametric: NimNode): Option[SystemArg] =
+    ## Parses a system arg given a specific symbol and tuple
+    let kind = directiveSymbol.parseArgKind.orElse: return none(SystemArg)
+
+    case kind
+    of SystemArgKind.Spawn:
+        return some(SystemArg(kind: kind, spawn: newSpawnDef(directiveParametric.parseDirectiveArgsFromTuple)))
+    of SystemArgKind.Query:
+        return some(SystemArg(kind: kind, query: newQueryDef(directiveParametric.parseDirectiveArgsFromTuple)))
+    of SystemArgKind.Attach:
+        return some(SystemArg(kind: kind, attach: newAttachDef(directiveParametric.parseDirectiveArgsFromTuple)))
+    of SystemArgKind.Detach:
+        return some(SystemArg(kind: kind, detach: newDetachDef(directiveParametric.parseDirectiveArgsFromTuple)))
+    of SystemArgKind.Lookup:
+        return some(SystemArg(kind: kind, lookup: newLookupDef(directiveParametric.parseDirectiveArgsFromTuple)))
+    of SystemArgKind.Local:
+        return some(SystemArg(kind: kind, local: newLocalDef(argName, directiveParametric)))
+    of SystemArgKind.Shared:
+        return some(SystemArg(kind: kind, shared: newSharedDef(directiveParametric)))
+    of SystemArgKind.Inbox:
+        return some(SystemArg(kind: kind, inbox: newInboxDef(directiveParametric)))
+    of SystemArgKind.Outbox:
+        return some(SystemArg(kind: kind, outbox: newOutboxDef(directiveParametric)))
+    of SystemArgKind.TimeDelta, SystemArgKind.TimeElapsed, SystemArgKind.Delete:
+        error("System argument does not support tuple parameters: " & $kind)
+
+proc parseFlagSystemArg(directiveSymbol: NimNode): Option[SystemArg] =
     ## Parses unparameterized system args
-    result.kind = directiveSymbol.parseArgKind
-    case result.kind
+    let kind = directiveSymbol.parseArgKind.orElse: return none(SystemArg)
+    case kind
     of SystemArgKind.Spawn, SystemArgKind.Query, SystemArgKind.Attach, SystemArgKind.Detach,
         SystemArgKind.Local, SystemArgKind.Shared, SystemArgKind.Lookup, SystemArgKind.Inbox, SystemArgKind.Outbox:
-        error("System argument is not flag based: " & $result.kind)
+        error("System argument is not flag based: " & $kind)
     of SystemArgKind.TimeDelta, SystemArgKind.TimeElapsed, SystemArgKind.Delete:
-        discard
+        return some(SystemArg(kind: kind))
 
-proc parseArgType(argName: string, argType: NimNode): SystemArg =
+proc parseArgType(argName: string, argType, original: NimNode): SystemArg =
     ## Parses the type of a system argument
-    case argType.kind
-    of nnkBracketExpr:
-        return parseParametricArg(argName, argType[0], argType[1])
-    of nnkCall:
-        return parseParametricArg(argName, argType[1], argType[2])
-    of nnkSym:
-        return parseFlagSystemArg(argType)
-    of nnkVarTy:
-        return parseArgType(argName, argType[0])
+
+    var parsed: Option[SystemArg]
+    case argType.kind:
+    of nnkBracketExpr: parsed = parseParametricArg(argName, argType[0], argType[1])
+    of nnkCall: parsed = parseParametricArg(argName, argType[1], argType[2])
+    of nnkSym: parsed = parseFlagSystemArg(argType)
+    of nnkVarTy: parsed = some(parseArgType(argName, argType[0], original))
+    else: parsed = none(SystemArg)
+
+    # If we were unable to parse the argument, it may be because it's a type alias. Lets try to resolve it
+    if parsed.isNone:
+        let impl = argType.getImpl
+        if impl.kind == nnkTypeDef:
+            return parseArgType(argName, impl[2], original)
+        else:
+            error("Expecting an ECS interface type, but got: " & original.repr, original)
     else:
-        error("Expecting an ECS interface type, but got: " & argType.repr, argType)
+        return parsed.get
 
 proc parseSystemArg(identDef: NimNode): SystemArg =
     ## Parses a SystemArg from a proc argument
     identDef.expectKind(nnkIdentDefs)
-    return parseArgType(identDef[0].strVal, identDef[1])
+    return parseArgType(identDef[0].strVal, identDef[1], identDef[1])
 
 proc parseSystem(ident: NimNode, phase: SystemPhase): ParsedSystem =
     ## Parses a single system proc
