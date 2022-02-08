@@ -83,9 +83,16 @@ proc parseDirectiveArg(symbol: NimNode, isPointer: bool = false, kind: Directive
 
 proc parseDirectiveArgsFromTuple(tupleArg: NimNode): seq[DirectiveArg] =
     ## Parses the symbols out of a tuple definition
-    tupleArg.expectKind({nnkTupleConstr, nnkTupleTy})
-    for child in tupleArg.children:
-        result.add(parseDirectiveArg(child, false))
+    case tupleArg.kind:
+    of nnkTupleConstr, nnkTupleTy:
+        for child in tupleArg.children:
+            result.add(parseDirectiveArg(child, false))
+    of nnkSym:
+        return parseDirectiveArgsFromTuple(tupleArg.getImpl)
+    of nnkTypeDef:
+        return parseDirectiveArgsFromTuple(tupleArg[2])
+    else:
+        error(&"Unexpected directive argument tuple: {tupleArg.repr}", tupleArg)
 
 template orElse[T](optional: Option[T], exec: untyped): T =
     if optional.isSome: optional.get else: exec

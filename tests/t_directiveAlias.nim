@@ -10,7 +10,9 @@ type
 
     Alias3 = Alias2
 
-proc withAlias(spawn: Alias, spawn2: Alias2, spawn3: Alias3) =
+    SpawnTuple = (Thingy, )
+
+proc withAlias(spawn: Alias, spawn2: Alias2, spawn3: Alias3, spawn4: Spawn[SpawnTuple]) =
     discard
 
 proc runner(tick: proc(): void) = tick()
