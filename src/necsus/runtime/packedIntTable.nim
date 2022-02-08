@@ -89,12 +89,13 @@ proc contains*[T](table: var PackedIntTable[T], key: int32): bool =
 
 proc del*[T](table: var PackedIntTable[T], key: int32) =
     ## Removes a key from this table
-    let idx = table.keyMap[key]
-    table.keyMap.del(key)
+    let idx = table.keyMap.maybeGet(key)
+    if idx.isSome:
+        table.keyMap.del(key)
 
-    table.entries.deleteKey(idx, moved):
-        table.keyMap[moved.key] = idx
-        moved.key += 1
+        table.entries.deleteKey(idx.get, moved):
+            table.keyMap[moved.key] = idx.get
+            moved.key += 1
 
 proc reference*[T](table: var PackedIntTable[T], key: int32): PackedIntTableValue[T] =
     ## Returns a direct reference to an entry in the table

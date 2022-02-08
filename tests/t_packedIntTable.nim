@@ -43,9 +43,6 @@ suite "PackedIntTable":
         deletable[2] = "two"
         deletable[3] = "three"
 
-        expect(KeyError):
-            deletable.del 4'i32
-
         deletable.del 2
         check(deletable.pairs.toSeq == @[(1'i32, "one"), (3'i32, "three")])
         check(deletable[1] == "one")
@@ -58,9 +55,6 @@ suite "PackedIntTable":
         deletable.del 3
         check(deletable.pairs.toSeq.len == 0)
 
-        expect(KeyError):
-            deletable.del 3
-
     test "Deleting the last key":
         var deletable = newPackedIntTable[string](5)
         deletable[1] = "one"
@@ -68,6 +62,10 @@ suite "PackedIntTable":
 
         deletable.del 2
         check(2 notin deletable)
+
+    test "Deleting missing keys":
+        var deletable = newPackedIntTable[string](5)
+        deletable.del(1)
 
     test "Filling the table beyond capacity":
         var fill = newPackedIntTable[int](5)
