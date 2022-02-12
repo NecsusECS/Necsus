@@ -120,7 +120,7 @@ suite "OpenAddrTable":
 
         table[1] = 2
         table[3] = 4
-        check($table == "{3: 4, 1: 2}")
+        check($table == "{1: 2, 3: 4}")
 
     for i in 0..10:
         test "Parallel setting of values #" & $i:

@@ -1,4 +1,4 @@
-import threading/atomics, threading/smartptrs, hashes, strutils, math, locks, options
+import threading/atomics, threading/smartptrs, strutils, math, locks, options
 
 ##
 ## Entry encoding
@@ -114,7 +114,8 @@ proc `$`[K, V](chunk: ptr Chunk[K, V]): string =
 
 proc bestIndex[K, V](chunk: ptr Chunk[K, V], key: K): uint64 =
     ## Returns the best index a key can be at for a given chunk
-    key.hash.uint64 mod (chunk.size - 1).uint64
+    # Yes, this is a ridiculous hashing function. But it's also ridiculously fast
+    (key.uint64 * 7) mod (chunk.size - 1).uint64
 
 proc dump[K, V](chunk: ptr Chunk[K, V]): string =
     ## Dumps the internal state of this chunk
