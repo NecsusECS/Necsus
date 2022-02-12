@@ -1,4 +1,4 @@
-import tupleDirective, directiveSet, codeGenInfo, macros, componentSet, sequtils, sets, componentDef
+import tupleDirective, directiveSet, codeGenInfo, macros, componentEnum, sequtils, sets, componentDef
 import ../runtime/[ queryFilter, packedIntTable ]
 
 proc queryStorageIdent*(queryName: string): NimNode =
@@ -30,12 +30,12 @@ proc createQueryFilter(codeGenInfo: CodeGenInfo, query: QueryDef): NimNode =
 
     let componentEnum = codeGenInfo.components.enumSymbol
 
-    let matchesSet = codeGenInfo.createComponentSet(matches.toSeq)
+    let matchesSet = codeGenInfo.createComponentEnum(matches.toSeq)
     result = quote:
         filterMatching[`componentEnum`](`matchesSet`)
 
     if excluding.len > 0:
-        let excludingSet = codeGenInfo.createComponentSet(excluding.toSeq)
+        let excludingSet = codeGenInfo.createComponentEnum(excluding.toSeq)
         result = quote:
             filterBoth[`componentEnum`](`result`, filterExcluding[`componentEnum`](`excludingSet`))
 

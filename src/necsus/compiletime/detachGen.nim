@@ -12,12 +12,12 @@ proc createDetach*(codeGenInfo: CodeGenInfo, name: string, detach: DetachDef): N
     ## Creates a proc for detaching components
     let procName = ident(name)
     let entityId = ident("entityId")
-    let componentSet = codeGenInfo.createComponentSet(detach.toSeq)
+    let componentEnum = codeGenInfo.createComponentEnum(detach.toSeq)
     let queryRemovals = codeGenInfo.createQueryRemovals(entityId, codeGenInfo.queries.mentioning(detach.toSeq))
 
     result = quote:
         proc `procName`(`entityId`: EntityId) =
-            detachComponents(`worldIdent`, `entityId`, `componentSet`)
+            detachComponents(`worldIdent`, `entityId`, `componentEnum`)
             `queryRemovals`
 
 proc createDetaches*(codeGenInfo: CodeGenInfo): NimNode =

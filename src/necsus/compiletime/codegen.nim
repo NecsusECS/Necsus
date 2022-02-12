@@ -1,7 +1,7 @@
-import macros, componentDef, componentSet, sequtils, codeGenInfo, options, directiveSet, monoDirective
+import macros, componentDef, componentEnum, sequtils, codeGenInfo, options, directiveSet, monoDirective
 import ../runtime/packedIntTable
 
-proc createComponentEnum*(components: ComponentSet): NimNode =
+proc createComponentEnum*(components: ComponentEnum): NimNode =
     ## Creates an enum with an item for every available component
     var componentList = toSeq(components).mapIt(it.name.ident)
     if componentList.len == 0:

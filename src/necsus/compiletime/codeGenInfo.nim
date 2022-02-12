@@ -1,4 +1,4 @@
-import componentSet, parse, directiveSet, tupleDirective, monoDirective, componentDef, localDef
+import componentEnum, parse, directiveSet, tupleDirective, monoDirective, componentDef, localDef
 import macros, sequtils, options
 import ../runtime/query
 
@@ -7,7 +7,7 @@ type CodeGenInfo* = object
     config*: NimNode
     app*: ParsedApp
     systems*: seq[ParsedSystem]
-    components*: ComponentSet
+    components*: ComponentEnum
     queries*: DirectiveSet[QueryDef]
     spawns*: DirectiveSet[SpawnDef]
     attaches*: DirectiveSet[AttachDef]
@@ -30,7 +30,7 @@ proc newCodeGenInfo*(name: NimNode, config: NimNode, app: ParsedApp, allSystems:
         config: config,
         app: app,
         systems: allSystems.toSeq,
-        components: componentSet(name.strVal, app, allSystems),
+        components: componentEnum(name.strVal, app, allSystems),
         queries: directives[QueryDef](name, app, allSystems, queries),
         spawns: directives[SpawnDef](name, app, allSystems, spawns),
         attaches: directives[AttachDef](name, app, allSystems, attaches),
@@ -42,7 +42,7 @@ proc newCodeGenInfo*(name: NimNode, config: NimNode, app: ParsedApp, allSystems:
         outboxes: directives[OutboxDef](name, app, allSystems, outboxes),
     )
 
-proc componentEnumVal*(components: ComponentSet, component: ComponentDef): NimNode =
+proc componentEnumVal*(components: ComponentEnum, component: ComponentDef): NimNode =
     ## Creates a reference to a component enum value
     nnkDotExpr.newTree(components.enumSymbol, component.name.ident)
 
@@ -56,7 +56,7 @@ proc asTupleType*(args: openarray[DirectiveArg]): NimNode =
         of Exclude: result.add(nnkBracketExpr.newTree(bindSym("Not"), componentIdent))
         of Optional: result.add(nnkBracketExpr.newTree(bindSym("Option"), componentIdent))
 
-proc createComponentSet*(codeGenInfo: CodeGenInfo, components: openarray[ComponentDef]): NimNode =
+proc createComponentEnum*(codeGenInfo: CodeGenInfo, components: openarray[ComponentDef]): NimNode =
     ## Creates the tuple needed to store
     result = nnkCurly.newTree()
     for component in components:

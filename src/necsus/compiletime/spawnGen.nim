@@ -49,11 +49,11 @@ proc createSpawnProc(codeGenInfo: CodeGenInfo, name: string, spawn: SpawnDef): N
     let componentTuple = spawn.args.toSeq.asTupleType
     let store = codeGenInfo.storeComponents(ident("result"), spawn.toSeq)
     let register = codeGenInfo.registerSpawnComponents(ident("result"), spawn)
-    let componentSet = codeGenInfo.createComponentSet(spawn.toSeq)
+    let componentEnum = codeGenInfo.createComponentEnum(spawn.toSeq)
     result = quote:
         proc `procName`(`localComps`: sink `componentTuple`): EntityId =
             let `comps` = `localComps`
-            result = `worldIdent`.createEntity(`componentSet`)
+            result = `worldIdent`.createEntity(`componentEnum`)
             `store`
             `register`
 
@@ -66,7 +66,7 @@ proc createSpawns*(codeGenInfo: CodeGenInfo): NimNode =
 proc registerAttachComponents(
     codeGenInfo: CodeGenInfo,
     entityId: NimNode,
-    componentSet: NimNode,
+    componentEnum: NimNode,
     attach: AttachDef
 ): NimNode =
     # Create code to register these components with the queries
@@ -87,7 +87,7 @@ proc registerAttachComponents(
                     let `compIdent` = getRef[`component`](`componentStorage`, `entityId`.int32)
 
         result.add quote do:
-            if `queryIdent`.updateEntity(`entityId`, `componentSet`):
+            if `queryIdent`.updateEntity(`entityId`, `componentEnum`):
                 `getExtraComponents`
                 addToQuery(`queryIdent`, `entityId`, `componentTuple`)
 
@@ -99,10 +99,10 @@ proc createAttachProc(codeGenInfo: CodeGenInfo, name: string, attach: AttachDef)
     let componentTuple = attach.args.toSeq.asTupleType
     let store = codeGenInfo.storeComponents(entityId, attach.toSeq)
     let register = codeGenInfo.registerAttachComponents(entityId, allComponents, attach)
-    let componentSet = codeGenInfo.createComponentSet(attach.toSeq)
+    let componentEnum = codeGenInfo.createComponentEnum(attach.toSeq)
     result = quote:
         proc `procName`(`entityId`: EntityId, `comps`: `componentTuple`) =
-            let `allComponents` = associateComponents(`worldIdent`, `entityId`, `componentSet`)
+            let `allComponents` = associateComponents(`worldIdent`, `entityId`, `componentEnum`)
             `store`
             `register`
 
