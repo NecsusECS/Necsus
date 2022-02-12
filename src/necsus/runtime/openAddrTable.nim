@@ -156,15 +156,16 @@ template update[K, V](chunk: ptr Chunk[K, V], idx: uint64, existing: var Entry[K
     ## Updates the given index
     chunk.entries[idx].compareExchange(existing.int64, newValue.int64, Relaxed)
 
+proc writeTo[K, V](chunk: ptr Chunk[K, V], idx: uint64, key: K, value: V, existing: var Entry[K, V]): bool {.inline.} =
+    ## Writes a key/value to a specific index, asserting the value of an existing entry
+    if chunk.update(idx, existing, encode(key, value, UsedKey)):
+        chunk.consumedCapacity.atomicInc()
+        true
+    else:
+        false
+
 proc set[K, V](chunk: ptr Chunk[K, V], key: K, value: V, overwrite: static ExistingKeyMode = OverwriteExisting): bool =
     ## Set a value in a chunk. Returns whether the set was successful
-
-    template writeTo(idx: uint64, existing: var Entry[K, V]): bool =
-        if chunk.update(idx, existing, encode(key, value, UsedKey)):
-            chunk.consumedCapacity.atomicInc()
-            true
-        else:
-            false
 
     chunk.activeWriters.track:
         while true:
@@ -172,7 +173,7 @@ proc set[K, V](chunk: ptr Chunk[K, V], key: K, value: V, overwrite: static Exist
                 for idx in chunk.indexes(key):
                     var existing = Entry[K, V](chunk.entries[idx])
                     if existing.isWritable:
-                        if writeTo(idx, existing):
+                        if chunk.writeTo(idx, key, value, existing):
                             return true
                     elif existing.key == key:
                         when overwrite == SkipOnExisting:
@@ -180,7 +181,7 @@ proc set[K, V](chunk: ptr Chunk[K, V], key: K, value: V, overwrite: static Exist
                         elif overwrite == RaiseOnExisting:
                             raise newException(KeyError, "Index already exists: " & $key)
                         elif overwrite == OverwriteExisting:
-                            if writeTo(idx, existing):
+                            if chunk.writeTo(idx, key, value, existing):
                                 return true
                             else:
                                 break restart
@@ -203,22 +204,24 @@ proc del[K, V](chunk: ptr Chunk[K, V], key: K) =
 
 const searchMask = usedBit or maxValue.int64
 
-template read[K, V](chunk: ptr Chunk[K, V], readKey: K, onFound, onMissing, recurse: untyped) =
-    if chunk == nil:
-        onMissing
+template read[K, V](chunk: ptr Chunk[K, V], readKey: K, onFound, onMissing) =
+    var currentChunk = chunk
+    while currentChunk != nil:
 
-    track(chunk.activeReaders):
+        track(currentChunk.activeReaders):
 
-        let searchTarget = readKey.int64 or usedBit
+            let searchTarget = readKey.int64 or usedBit
 
-        for idx in indexes(chunk, readKey):
-            var entry {.inject.} = Entry[K, V](chunk.entries[idx])
-            if (entry.int64 and searchMask) == searchTarget:
-                return onFound
-            elif isState(entry, UnusedKey):
-                break
+            for idx in indexes(currentChunk, readKey):
+                var entry {.inject.} = Entry[K, V](currentChunk.entries[idx])
+                if (entry.int64 and searchMask) == searchTarget:
+                    return onFound
+                elif isState(entry, UnusedKey):
+                    break
 
-        return recurse
+        currentChunk = load(currentChunk.oldChunk)
+
+    onMissing
 
 proc get[K, V](chunk: ptr Chunk[K, V], key: K): V =
     ## Reads a key
@@ -226,8 +229,6 @@ proc get[K, V](chunk: ptr Chunk[K, V], key: K): V =
         entry.value
     do:
         raise newException(KeyError, "Key does not exist: " & $key)
-    do:
-        chunk.oldChunk.load.get(key)
 
 proc maybeGet[K, V](chunk: ptr Chunk[K, V], key: K): Option[V] =
     ## Reads a key if it exists
@@ -235,8 +236,6 @@ proc maybeGet[K, V](chunk: ptr Chunk[K, V], key: K): Option[V] =
         some(entry.value)
     do:
         return none(V)
-    do:
-        chunk.oldChunk.load.maybeGet(key)
 
 proc contains[K, V](chunk: ptr Chunk[K, V], key: K): bool =
     ## Reads whether a key exists in a chunk
@@ -244,8 +243,6 @@ proc contains[K, V](chunk: ptr Chunk[K, V], key: K): bool =
         true
     do:
         return false
-    do:
-        chunk.oldChunk.load.contains(key)
 
 ##
 ## OpenAddrTable
