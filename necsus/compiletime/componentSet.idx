@@ -1,4 +1,0 @@
-ComponentSet	necsus/compiletime/componentSet.html#ComponentSet	componentSet: ComponentSet	
-enumSymbol	necsus/compiletime/componentSet.html#enumSymbol,ComponentSet	componentSet: enumSymbol(components: ComponentSet): auto	
-componentSet	necsus/compiletime/componentSet.html#componentSet,string,ParsedApp,openArray[ParsedSystem]	componentSet: componentSet(prefix: string; app: ParsedApp; systems: openArray[ParsedSystem]): ComponentSet	
-items	necsus/compiletime/componentSet.html#items.i,ComponentSet	componentSet: items(components: ComponentSet): ComponentDef	

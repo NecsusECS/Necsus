@@ -1,0 +1,4 @@
+ComponentEnum	necsus/compiletime/componentEnum.html#ComponentEnum	componentEnum: ComponentEnum	
+enumSymbol	necsus/compiletime/componentEnum.html#enumSymbol,ComponentEnum	componentEnum: enumSymbol(components: ComponentEnum): auto	
+componentEnum	necsus/compiletime/componentEnum.html#componentEnum,string,ParsedApp,openArray[ParsedSystem]	componentEnum: componentEnum(prefix: string; app: ParsedApp; systems: openArray[ParsedSystem]): ComponentEnum	
+items	necsus/compiletime/componentEnum.html#items.i,ComponentEnum	componentEnum: items(components: ComponentEnum): ComponentDef	
