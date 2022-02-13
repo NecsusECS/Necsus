@@ -69,8 +69,6 @@ proc dump[K, V](entry: Entry[K, V]): string =
     elif entry.isState(TombstonedKey): return "T"
     elif entry.isState(UnusedKey): return "X"
 
-converter toInt64[K, V](entry: Entry[K, V]): int64 = entry.int64
-
 ##
 ## Chunk
 ##

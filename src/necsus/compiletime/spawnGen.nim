@@ -18,7 +18,7 @@ proc storeComponents(
         let ident = component.localIdent
         let componentIdent = component.componentStoreIdent
         result.add quote do:
-            let `ident` = setAndRef(`componentIdent`, `entityId`.int32, `comps`[`i`])
+            let `ident` {.used.} = setAndRef(`componentIdent`, `entityId`.int32, `comps`[`i`])
 
 proc createLocalComponentTuple(query: QueryDef): NimNode =
     ## Creates a tuple constructor for instantiating local references to components
@@ -101,8 +101,8 @@ proc createAttachProc(codeGenInfo: CodeGenInfo, name: string, attach: AttachDef)
     let register = codeGenInfo.registerAttachComponents(entityId, allComponents, attach)
     let componentEnum = codeGenInfo.createComponentEnum(attach.toSeq)
     result = quote:
-        proc `procName`(`entityId`: EntityId, `comps`: `componentTuple`) =
-            let `allComponents` = associateComponents(`worldIdent`, `entityId`, `componentEnum`)
+        proc `procName`(`entityId`: EntityId, `comps`: `componentTuple`) {.used.} =
+            let `allComponents` {.used.} = associateComponents(`worldIdent`, `entityId`, `componentEnum`)
             `store`
             `register`
 

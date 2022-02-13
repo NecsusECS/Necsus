@@ -31,6 +31,6 @@ proc createDeleteProc*(codeGenInfo: CodeGenInfo): NimNode =
     let entity = ident("entity")
     let queryRemovals = codeGenInfo.createQueryRemovals(entity, codeGenInfo.queries.directives)
     result = quote do:
-        proc `deleteProc`(`entity`: EntityId) =
+        proc `deleteProc`(`entity`: EntityId) {.used.} =
             `worldIdent`.deleteEntity(`entity`)
             `queryRemovals`
