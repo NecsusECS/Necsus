@@ -1,5 +1,5 @@
-import componentEnum, parse, directiveSet, tupleDirective, monoDirective, componentDef, localDef
-import macros, sequtils, options
+import componentEnum, parse, directiveSet, tupleDirective, monoDirective, componentDef, localDef, grouper
+import macros, sequtils, options, strutils, sets
 import ../runtime/query
 
 type CodeGenInfo* = object
@@ -8,6 +8,7 @@ type CodeGenInfo* = object
     app*: ParsedApp
     systems*: seq[ParsedSystem]
     components*: ComponentEnum
+    compGroups*: GroupTable[ComponentDef]
     queries*: DirectiveSet[QueryDef]
     spawns*: DirectiveSet[SpawnDef]
     attaches*: DirectiveSet[AttachDef]
@@ -24,6 +25,15 @@ template directives[T](name: NimNode, app: ParsedApp, allSystems: openarray[Pars
     let fromApp: seq[T] = app.`extract`
     newDirectiveSet[T](name.strVal, concat(fromSystems, fromApp))
 
+proc calculateGroups(app: ParsedApp, allSystems: openarray[ParsedSystem]): GroupTable[ComponentDef] =
+    ## Calculates the grouping of components that can be stored together
+    var group = newGrouper[ComponentDef]()
+    for spawns in allSystems.spawns: group.add(spawns.items.toSeq)
+    for attaches in allSystems.attaches: group.add(attaches.items.toSeq)
+    for spawns in app.spawns: group.add(spawns.items.toSeq)
+    for attaches in app.attaches: group.add(attaches.items.toSeq)
+    return group.build()
+
 proc newCodeGenInfo*(name: NimNode, config: NimNode, app: ParsedApp, allSystems: openarray[ParsedSystem]): CodeGenInfo =
     ## Collects data needed for code gen from all the parsed systems
     CodeGenInfo(
@@ -31,6 +41,7 @@ proc newCodeGenInfo*(name: NimNode, config: NimNode, app: ParsedApp, allSystems:
         app: app,
         systems: allSystems.toSeq,
         components: componentEnum(name.strVal, app, allSystems),
+        compGroups: calculateGroups(app, allSystems),
         queries: directives[QueryDef](name, app, allSystems, queries),
         spawns: directives[SpawnDef](name, app, allSystems, spawns),
         attaches: directives[AttachDef](name, app, allSystems, attaches),
@@ -62,9 +73,32 @@ proc createComponentEnum*(codeGenInfo: CodeGenInfo, components: openarray[Compon
     for component in components:
         result.add(codeGenInfo.components.componentEnumVal(component))
 
-proc componentStoreIdent*(component: ComponentDef): NimNode =
+proc name*(group: Group[ComponentDef]): string =
+    ## Creates a name describing a group, usable in variable names
+    group.toSeq.mapIt(it.name).join("_")
+
+proc componentStoreIdent*(group: Group[ComponentDef]): NimNode =
     ## Creates a variable for referencing a component
-    ident("component_" & component.name)
+    ident("comp_store_" & group.name)
+
+proc asStorageTuple*(group: Group[ComponentDef]): NimNode =
+    ## Creates the tuple type for storing a group of components
+    result = nnkTupleConstr.newTree()
+    for component in group: result.add(component.ident)
+
+iterator groups*(codeGenInfo: CodeGenInfo, directive: SpawnDef | AttachDef | LookupDef): Group[ComponentDef] =
+    ## Produce the ordered unique component groups in a directive
+    var seen = initHashSet[Group[ComponentDef]]()
+    for component in directive:
+        if component in codeGenInfo.compGroups:
+            let group = codeGenInfo.compGroups[component]
+            if group notin seen:
+                seen.incl group
+                yield group
+
+proc canQueryExecute*(codeGenInfo: CodeGenInfo, query: QueryDef): bool =
+    ## Returns whether a query will ever be able to return a value
+    query.toSeq.allIt(it in codeGenInfo.compGroups)
 
 ## The variable used to reference the initial size of any structs
 let confIdent* {.compileTime.} = ident("config")

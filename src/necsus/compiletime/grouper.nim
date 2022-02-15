@@ -90,6 +90,10 @@ proc build*[T](builder: Grouper[T]): GroupTable[T] =
         for value in group:
             result.lookup[value] = group
 
+proc contains*[T](groupTable: GroupTable[T], value: T): bool =
+    ## Whether a value is in a group
+    value in groupTable.lookup
+
 proc `[]`*[T](groupTable: GroupTable[T], value: T): Group[T] =
     ## Returns the group for a value
     groupTable.lookup[value]

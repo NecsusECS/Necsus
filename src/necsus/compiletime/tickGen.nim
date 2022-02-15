@@ -1,5 +1,5 @@
 import macros, times, sequtils
-import codeGenInfo, parse, directiveSet, tupleDirective, monoDirective, queryGen, componentEnum, localDef, eventGen
+import codeGenInfo, parse, directiveSet, tupleDirective, monoDirective, queryGen, localDef, eventGen, grouper
 
 let timeDelta {.compileTime.} = ident("timeDelta")
 let timeElapsed {.compileTime.} = ident("timeElapsed")
@@ -43,14 +43,15 @@ proc createDelteFinalizers(codeGenInfo: CodeGenInfo): NimNode =
     result = newStmtList()
 
     # Delete entities out of queries
-    for (name, _) in codeGenInfo.queries:
-        let queryStorage = name.queryStorageIdent
-        result.add quote do:
-            finalizeDeletes(`queryStorage`)
+    for (name, query) in codeGenInfo.queries:
+        if codeGenInfo.canQueryExecute(query):
+            let queryStorage = name.queryStorageIdent
+            result.add quote do:
+                finalizeDeletes(`queryStorage`)
 
     # Delete entities out of components
-    for component in codeGenInfo.components:
-        let storageIdent = component.componentStoreIdent
+    for group in codeGenInfo.compGroups:
+        let storageIdent = group.componentStoreIdent
         result.add quote do:
             deleteComponents(`worldIdent`, `storageIdent`)
 

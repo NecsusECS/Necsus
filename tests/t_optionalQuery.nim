@@ -28,7 +28,7 @@ proc assertions(query: Query[(A, B, Option[C], Option[D])]) =
 
 proc runner(tick: proc(): void) = tick()
 
-proc notQuery() {.necsus(runner, [~setup], [~update], [~assertions], newNecsusConf()).}
+proc optionalQuery() {.necsus(runner, [~setup], [~update], [~assertions], newNecsusConf()).}
 
-test "Exclude entities with a component":
-    notQuery()
+test "Queries with optional components":
+    optionalQuery()

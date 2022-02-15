@@ -4,9 +4,10 @@ proc createQueryRemovals(codeGenInfo: CodeGenInfo, entityId: NimNode, queries: o
     # Generate code for detaching this entity from any associated queries
     result = newStmtList()
     for query in queries:
-        let queryIdent = codeGenInfo.queries.nameOf(query).queryStorageIdent
-        result.add quote do:
-            removeFromQuery(`queryIdent`, `entityId`)
+        if codeGenInfo.canQueryExecute(query):
+            let queryIdent = codeGenInfo.queries.nameOf(query).queryStorageIdent
+            result.add quote do:
+                removeFromQuery(`queryIdent`, `entityId`)
 
 proc createDetach*(codeGenInfo: CodeGenInfo, name: string, detach: DetachDef): NimNode =
     ## Creates a proc for detaching components

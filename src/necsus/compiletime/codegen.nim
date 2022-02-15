@@ -1,4 +1,5 @@
-import macros, componentDef, componentEnum, sequtils, codeGenInfo, options, directiveSet, monoDirective
+import macros, sequtils, options
+import componentDef, componentEnum, codeGenInfo, directiveSet, monoDirective, grouper, codeGenInfo
 import ../runtime/packedIntTable
 
 proc createComponentEnum*(components: ComponentEnum): NimNode =
@@ -11,10 +12,11 @@ proc createComponentEnum*(components: ComponentEnum): NimNode =
 proc createComponentInstances*(genInfo: CodeGenInfo): NimNode =
     ## Creates the variables for component storage
     result = newStmtList()
-    for component in genInfo.components:
-        let storageIdent = component.componentStoreIdent
+    for group in genInfo.compGroups:
+        let storageIdent = group.componentStoreIdent
+        let storageType = group.asStorageTuple
         result.add quote do:
-            var `storageIdent` = newPackedIntTable[`component`](`confIdent`.componentSize)
+            var `storageIdent` = newPackedIntTable[`storageType`](`confIdent`.componentSize)
 
 proc createConfig*(genInfo: CodeGenInfo): NimNode =
     nnkLetSection.newTree(nnkIdentDefs.newTree(`confIdent`, newEmptyNode(), genInfo.config))
