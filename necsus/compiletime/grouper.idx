@@ -1,0 +1,15 @@
+Group	necsus/compiletime/grouper.html#Group	grouper: Group	
+GroupTable	necsus/compiletime/grouper.html#GroupTable	grouper: GroupTable	
+Grouper	necsus/compiletime/grouper.html#Grouper	grouper: Grouper	
+newGrouper	necsus/compiletime/grouper.html#newGrouper	grouper: newGrouper[T](): Grouper[T]	
+add	necsus/compiletime/grouper.html#add,Grouper[T],openArray[T]	grouper: add[T](builder: var Grouper[T]; group: openArray[T])	
+items	necsus/compiletime/grouper.html#items.i,Group[T]	grouper: items[T](group: Group[T]): T	
+hash	necsus/compiletime/grouper.html#hash,Group[T]	grouper: hash[T](group: Group[T]): Hash	
+`==`	necsus/compiletime/grouper.html#==,Group[T],Group[T]	grouper: `==`[T](a, b: Group[T]): bool	
+`$`	necsus/compiletime/grouper.html#$,Group[T]	grouper: `$`[T](group: Group[T]): string	
+`[]`	necsus/compiletime/grouper.html#[],Group[T],T	grouper: `[]`[T](group: Group[T]; value: T): int	
+build	necsus/compiletime/grouper.html#build,Grouper[T]	grouper: build[T](builder: Grouper[T]): GroupTable[T]	
+contains	necsus/compiletime/grouper.html#contains,GroupTable[T],T	grouper: contains[T](groupTable: GroupTable[T]; value: T): bool	
+`[]`	necsus/compiletime/grouper.html#[],GroupTable[T],T	grouper: `[]`[T](groupTable: GroupTable[T]; value: T): Group[T]	
+items	necsus/compiletime/grouper.html#items.i,GroupTable[T]	grouper: items[T](groupTable: GroupTable[T]): Group[T]	
+`$`	necsus/compiletime/grouper.html#$,GroupTable[T]	grouper: `$`[T](groupTable: GroupTable[T]): string	

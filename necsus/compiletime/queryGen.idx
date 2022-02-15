@@ -1,2 +1,3 @@
 queryStorageIdent	necsus/compiletime/queryGen.html#queryStorageIdent,string	queryGen: queryStorageIdent(queryName: string): NimNode	
+queryGroups	necsus/compiletime/queryGen.html#queryGroups.i,CodeGenInfo,QueryDef	queryGen: queryGroups(codeGenInfo: CodeGenInfo; query: QueryDef): tuple[\n    group: Group[ComponentDef], optional: bool]	
 createQueries	necsus/compiletime/queryGen.html#createQueries,CodeGenInfo	queryGen: createQueries(codeGenInfo: CodeGenInfo): NimNode	
