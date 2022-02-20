@@ -1,6 +1,6 @@
 import macros, sequtils, options
 import componentDef, componentEnum, codeGenInfo, directiveSet, monoDirective, grouper, codeGenInfo
-import ../runtime/packedIntTable
+import necsusUtil/packedIntTable
 
 proc createComponentEnum*(components: ComponentEnum): NimNode =
     ## Creates an enum with an item for every available component

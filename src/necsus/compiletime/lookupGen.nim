@@ -1,5 +1,5 @@
 import tupleDirective, directiveSet, codeGenInfo, macros, sequtils, options, grouper, componentDef
-import ../runtime/packedIntTable
+import necsusUtil/packedIntTable
 
 let entityId {.compileTime.} = ident("entityId")
 

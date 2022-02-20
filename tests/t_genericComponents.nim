@@ -1,4 +1,4 @@
-import unittest, necsus, sequtils, necsus/runtime/packedIntTable, math
+import unittest, necsus, sequtils, math
 
 type
     A = object

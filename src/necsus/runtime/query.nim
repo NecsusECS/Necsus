@@ -1,4 +1,4 @@
-import entitySet, entity, queryFilter, packedIntTable
+import entitySet, entity, queryFilter, necsusUtil/packedIntTable
 
 type
     QueryItem*[T: tuple] = tuple[entityId: EntityId, components: T]
