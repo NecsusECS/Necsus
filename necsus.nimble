@@ -13,8 +13,10 @@ requires "nim >= 1.6.0", "threading >= 0.1.0", "https://github.com/NecsusECS/Nec
 import os
 
 task benchmark, "Executes a suite of benchmarks":
-    for script in ["packed1", "packed5", "updates"]:
-        exec("nim r -d:release --verbosity:0 --hints:off ./benchmarks/" & script & ".nim")
+    for file in listFiles("benchmarks"):
+        if file.startsWith("benchmarks/b_") and file.endsWith(".nim"):
+            echo "Executing: ", file
+            exec("nim r " & file)
 
 task readme, "Compiles code in the readme":
     let readme = readFile("README.md")
