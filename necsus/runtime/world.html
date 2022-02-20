@@ -192,7 +192,7 @@ window.addEventListener('DOMContentLoaded', main);
   <div class="section" id="6">
 <h1><a class="toc-backref" href="#6">Imports</a></h1>
 <dl class="item">
-<a class="reference external" href="entity.html">entity</a>, <a class="reference external" href="query.html">query</a>, <a class="reference external" href="entitySet.html">entitySet</a>, <a class="reference external" href="packedIntTable.html">packedIntTable</a>
+<a class="reference external" href="entity.html">entity</a>, <a class="reference external" href="query.html">query</a>, <a class="reference external" href="entitySet.html">entitySet</a>
 </dl></div>
 <div class="section" id="7">
 <h1><a class="toc-backref" href="#7">Types</a></h1>
@@ -263,7 +263,7 @@ The total amount of time spent in an app
 </div>
 <div id="World">
 <dt><pre><a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">ref</span> <span class="Keyword">object</span>
-  <span class="Identifier">entities</span><span class="Other">:</span> <a href="packedIntTable.html#PackedIntTable"><span class="Identifier">PackedIntTable</span></a><span class="Other">[</span><a href="entity.html#EntityMetadata"><span class="Identifier">EntityMetadata</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">]</span>
+  <span class="Identifier">entities</span><span class="Other">:</span> <span class="Identifier">PackedIntTable</span><span class="Other">[</span><a href="entity.html#EntityMetadata"><span class="Identifier">EntityMetadata</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">]</span>
   <span class="Identifier">deleted</span><span class="Operator">*</span><span class="Other">:</span> <a href="entitySet.html#EntitySet"><span class="Identifier">EntitySet</span></a>
   <span class="Identifier">nextEntityId</span><span class="Other">:</span> <span class="Identifier">int</span>
   <span class="Identifier">recycleEntityIds</span><span class="Other">:</span> <span class="Identifier">Deque</span><span class="Other">[</span><a href="entity.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">]</span>
@@ -305,7 +305,7 @@ Create a new entity in the given world
 </dd>
 </div>
 <div id="deleteComponents,World[C],PackedIntTable[T]">
-<dt><pre><span class="Keyword">proc</span> <a href="#deleteComponents%2CWorld%5BC%5D%2CPackedIntTable%5BT%5D"><span class="Identifier">deleteComponents</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">,</span> <span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">components</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="packedIntTable.html#PackedIntTable"><span class="Identifier">PackedIntTable</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span></pre></dt>
+<dt><pre><span class="Keyword">proc</span> <a href="#deleteComponents%2CWorld%5BC%5D%2CPackedIntTable%5BT%5D"><span class="Identifier">deleteComponents</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">,</span> <span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">components</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">PackedIntTable</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span></pre></dt>
 <dd>
 
 Removes deleted entities from a component table
@@ -355,7 +355,7 @@ Creates a new world
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2022-02-15 19:00:55 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2022-02-20 00:39:05 UTC</small>
       </div>
     </div>
   </div>
