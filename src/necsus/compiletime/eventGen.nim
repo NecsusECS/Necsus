@@ -1,4 +1,4 @@
-import macros, strutils, codeGenInfo, sequtils, directiveSet, monoDirective, nimNode, necsusUtil/packedList
+import macros, strutils, codeGenInfo, sequtils, directiveSet, monoDirective, nimNode, ../util/packedList
 
 proc eventStorageIdent(event: InboxDef | OutboxDef | NimNode): NimNode =
     ## Returns the name of the identifier that holds the storage for an event

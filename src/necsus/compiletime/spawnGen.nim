@@ -1,6 +1,6 @@
 import macros, sequtils, sets, tables
 import tupleDirective, directiveSet, codeGenInfo, componentDef, queryGen, grouper
-import ../runtime/query, necsusUtil/packedIntTable
+import ../runtime/query, ../util/packedIntTable
 
 let comps {.compileTime.} = ident("comps")
 

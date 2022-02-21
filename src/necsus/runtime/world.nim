@@ -1,4 +1,4 @@
-import entity, atomics, query, macros, entitySet, deques, necsusUtil/packedIntTable, options
+import entity, atomics, query, macros, entitySet, deques, ../util/packedIntTable, options
 
 type
 

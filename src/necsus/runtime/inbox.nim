@@ -1,4 +1,4 @@
-import necsusUtil/packedList
+import ../util/packedList
 
 type
     Inbox*[T] {.byref.} = object
