@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/NecsusECS/Necsus/blob/main/LICENSE)
 
 A "disappearing" ECS (entity component system) library for Nim. Necsus uses Nim macros to generate code for creating
-and executing an ECS application. Components are just regular objects, systems are regular procs, and everything related
+and executing an ECS based application. Components are just regular objects, systems are regular procs, and everything related
 to entities is handled for you.
 
 More details about how ECS architectures work can be found here:
@@ -16,8 +16,8 @@ More details about how ECS architectures work can be found here:
 
 ### Design
 
-Necsus was born out of the idea that Nim's macros could drastically reduce the boilerplate required for using ECS
-without adding a heavy DSL layer.
+Necsus was born out of the idea that Nim's macros could drastically reduce the boilerplate required for building an ECS
+based application, while still being approachable and keeping the cognitive overhead low.
 
 * Entities are managed on your behalf. Under the covers, they're represented as an `int32`
 * Components are regular Nim types. Just about any type can be be used as a component.
@@ -128,7 +128,6 @@ proc second() =
     discard
 
 proc myApp() {.necsus([], [~first, ~second], [], newNecsusConf()).}
-
 ```
 
 ### Types of Systems
@@ -162,7 +161,7 @@ proc myApp(input: string) {.necsus(
 ### Exiting
 
 Exiting the primary system loop is done through a `Shared` directive. Directives will be covered in more details below,
-but the fundamentals are that it's sending a signal by changing a bit of shared state:
+but all you need to know in this case is that it's sending a signal to the execution loop by changing a bit of shared state:
 
 ```nim
 import necsus
