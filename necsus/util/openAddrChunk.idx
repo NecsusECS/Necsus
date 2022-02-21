@@ -1,0 +1,17 @@
+SkipOnExisting	necsus/util/openAddrChunk.html#SkipOnExisting	ExistingKeyMode.SkipOnExisting	
+OverwriteExisting	necsus/util/openAddrChunk.html#OverwriteExisting	ExistingKeyMode.OverwriteExisting	
+RaiseOnExisting	necsus/util/openAddrChunk.html#RaiseOnExisting	ExistingKeyMode.RaiseOnExisting	
+ExistingKeyMode	necsus/util/openAddrChunk.html#ExistingKeyMode	openAddrChunk: ExistingKeyMode	
+Chunk	necsus/util/openAddrChunk.html#Chunk	openAddrChunk: Chunk	
+newChunk	necsus/util/openAddrChunk.html#newChunk,int	openAddrChunk: newChunk[K: SmallValue; V: SmallValue](minSize: int): ptr Chunk[K, V]	
+`=copy`	necsus/util/openAddrChunk.html#=copy,Chunk[K,V],Chunk[K,V]	openAddrChunk: `=copy`[K, V](dest: var Chunk[K, V]; src: Chunk[K, V])	
+items	necsus/util/openAddrChunk.html#items.i,ptr.Chunk[K,V]	openAddrChunk: items[K, V](chunk: ptr Chunk[K, V]): Entry[K, V]	
+`$`	necsus/util/openAddrChunk.html#$,ptr.Chunk[K,V]	openAddrChunk: `$`[K, V](chunk: ptr Chunk[K, V]): string	
+dump	necsus/util/openAddrChunk.html#dump,ptr.Chunk[K,V]	openAddrChunk: dump[K, V](chunk: ptr Chunk[K, V]): string	
+needsResize	necsus/util/openAddrChunk.html#needsResize,ptr.Chunk[K,V]	openAddrChunk: needsResize[K, V](chunk: ptr Chunk[K, V]): bool	
+set	necsus/util/openAddrChunk.html#set,ptr.Chunk[K,V],K,V,staticExistingKeyMode	openAddrChunk: set[K, V](chunk: ptr Chunk[K, V]; key: K; value: V;\n          overwrite: static ExistingKeyMode = OverwriteExisting): bool	
+del	necsus/util/openAddrChunk.html#del,ptr.Chunk[K,V],K	openAddrChunk: del[K, V](chunk: ptr Chunk[K, V]; key: K)	
+read	necsus/util/openAddrChunk.html#read.t,ptr.Chunk[K,V],K,,	openAddrChunk: read[K, V](chunk: ptr Chunk[K, V]; readKey: K; onFound, onMissing)	
+get	necsus/util/openAddrChunk.html#get,ptr.Chunk[K,V],K	openAddrChunk: get[K, V](chunk: ptr Chunk[K, V]; key: K): V	
+maybeGet	necsus/util/openAddrChunk.html#maybeGet,ptr.Chunk[K,V],K	openAddrChunk: maybeGet[K, V](chunk: ptr Chunk[K, V]; key: K): Option[V]	
+contains	necsus/util/openAddrChunk.html#contains,ptr.Chunk[K,V],K	openAddrChunk: contains[K, V](chunk: ptr Chunk[K, V]; key: K): bool	
