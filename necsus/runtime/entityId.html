@@ -17,7 +17,7 @@
 <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro:400,500,600' rel='stylesheet' type='text/css'/>
 
 <!-- CSS -->
-<title>src/necsus/compiletime/nimNode</title>
+<title>src/necsus/runtime/entityId</title>
 <link rel="stylesheet" type="text/css" href="../../nimdoc.out.css">
 
 <script type="text/javascript" src="../../dochack.js"></script>
@@ -69,7 +69,7 @@ window.addEventListener('DOMContentLoaded', main);
 <body>
 <div class="document" id="documentId">
   <div class="container">
-    <h1 class="title">src/necsus/compiletime/nimNode</h1>
+    <h1 class="title">src/necsus/runtime/entityId</h1>
     <div class="row">
   <div class="three columns">
   <div class="theme-switch-wrapper">
@@ -99,21 +99,19 @@ window.addEventListener('DOMContentLoaded', main);
   </div>
   <ul class="simple simple-toc" id="toc-list">
 <li>
+  <a class="reference reference-toplevel" href="#7" id="57">Types</a>
+  <ul class="simple simple-toc-section">
+      <li><a class="reference" href="#EntityId"
+    title="EntityId = distinct int32">EntityId</a></li>
+
+  </ul>
+</li>
+<li>
   <a class="reference reference-toplevel" href="#12" id="62">Procs</a>
   <ul class="simple simple-toc-section">
-      <ul class="simple nested-toc-section">cmp
-      <li><a class="reference" href="#cmp%2CNimNode%2CNimNode"
-    title="cmp(a: NimNode; b: NimNode): int">cmp(a: NimNode; b: NimNode): int</a></li>
-
-  </ul>
-  <ul class="simple nested-toc-section">hash
-      <li><a class="reference" href="#hash%2CNimNode"
-    title="hash(node: NimNode): Hash">hash(node: NimNode): Hash</a></li>
-
-  </ul>
-  <ul class="simple nested-toc-section">symbols
-      <li><a class="reference" href="#symbols%2CNimNode"
-    title="symbols(node: NimNode): seq[string]">symbols(node: NimNode): seq[string]</a></li>
+      <ul class="simple nested-toc-section">$
+      <li><a class="reference" href="#%24%2CEntityId"
+    title="`$`(entityId: EntityId): string">`$`(entityId: EntityId): string</a></li>
 
   </ul>
 
@@ -128,30 +126,27 @@ window.addEventListener('DOMContentLoaded', main);
   <div id="tocRoot"></div>
   
   <p class="module-desc"></p>
-  <div class="section" id="12">
+  <div class="section" id="7">
+<h1><a class="toc-backref" href="#7">Types</a></h1>
+<dl class="item">
+<div id="EntityId">
+<dt><pre><a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a> <span class="Other">=</span> <span class="Keyword">distinct</span> <span class="Identifier">int32</span></pre></dt>
+<dd>
+
+Identity of an entity
+
+</dd>
+</div>
+
+</dl></div>
+<div class="section" id="12">
 <h1><a class="toc-backref" href="#12">Procs</a></h1>
 <dl class="item">
-<div id="cmp,NimNode,NimNode">
-<dt><pre><span class="Keyword">proc</span> <a href="#cmp%2CNimNode%2CNimNode"><span class="Identifier">cmp</span></a><span class="Other">(</span><span class="Identifier">a</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">;</span> <span class="Identifier">b</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<div id="$,EntityId">
+<dt><pre><span class="Keyword">proc</span> <a href="#%24%2CEntityId"><span class="Identifier">`$`</span></a><span class="Other">(</span><span class="Identifier">entityId</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
-Compare two nim nodes for sorting
-
-</dd>
-</div>
-<div id="hash,NimNode">
-<dt><pre><span class="Keyword">proc</span> <a href="#hash%2CNimNode"><span class="Identifier">hash</span></a><span class="Other">(</span><span class="Identifier">node</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Hash</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
-<dd>
-
-Generates a unique hash for a NimNode
-
-</dd>
-</div>
-<div id="symbols,NimNode">
-<dt><pre><span class="Keyword">proc</span> <a href="#symbols%2CNimNode"><span class="Identifier">symbols</span></a><span class="Other">(</span><span class="Identifier">node</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">string</span><span class="Other">]</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
-<dd>
-
-Extracts all the symbols from a NimNode tree
+Stringify an EntityId
 
 </dd>
 </div>
@@ -165,7 +160,7 @@ Extracts all the symbols from a NimNode tree
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2022-02-22 04:56:15 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2022-02-22 04:56:14 UTC</small>
       </div>
     </div>
   </div>

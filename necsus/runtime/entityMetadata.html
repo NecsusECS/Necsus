@@ -17,7 +17,7 @@
 <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro:400,500,600' rel='stylesheet' type='text/css'/>
 
 <!-- CSS -->
-<title>src/necsus/runtime/entity</title>
+<title>src/necsus/runtime/entityMetadata</title>
 <link rel="stylesheet" type="text/css" href="../../nimdoc.out.css">
 
 <script type="text/javascript" src="../../dochack.js"></script>
@@ -69,7 +69,7 @@ window.addEventListener('DOMContentLoaded', main);
 <body>
 <div class="document" id="documentId">
   <div class="container">
-    <h1 class="title">src/necsus/runtime/entity</h1>
+    <h1 class="title">src/necsus/runtime/entityMetadata</h1>
     <div class="row">
   <div class="three columns">
   <div class="theme-switch-wrapper">
@@ -99,11 +99,15 @@ window.addEventListener('DOMContentLoaded', main);
   </div>
   <ul class="simple simple-toc" id="toc-list">
 <li>
+  <a class="reference reference-toplevel" href="#6" id="56">Imports</a>
+  <ul class="simple simple-toc-section">
+    
+  </ul>
+</li>
+<li>
   <a class="reference reference-toplevel" href="#7" id="57">Types</a>
   <ul class="simple simple-toc-section">
-      <li><a class="reference" href="#EntityId"
-    title="EntityId = distinct int32">EntityId</a></li>
-  <li><a class="reference" href="#EntityMetadata"
+      <li><a class="reference" href="#EntityMetadata"
     title="EntityMetadata[C] {.byref.} = object
   components: set[C]">EntityMetadata</a></li>
 
@@ -112,12 +116,7 @@ window.addEventListener('DOMContentLoaded', main);
 <li>
   <a class="reference reference-toplevel" href="#12" id="62">Procs</a>
   <ul class="simple simple-toc-section">
-      <ul class="simple nested-toc-section">$
-      <li><a class="reference" href="#%24%2CEntityId"
-    title="`$`(entityId: EntityId): string">`$`(entityId: EntityId): string</a></li>
-
-  </ul>
-  <ul class="simple nested-toc-section">[]
+      <ul class="simple nested-toc-section">[]
       <li><a class="reference" href="#%5B%5D%2CopenArray%5BT%5D%2CEntityId"
     title="`[]`[T](s: openArray[T]; id: EntityId): T">`[]`[T](s: openArray[T]; id: EntityId): T</a></li>
 
@@ -154,19 +153,16 @@ window.addEventListener('DOMContentLoaded', main);
   <div id="tocRoot"></div>
   
   <p class="module-desc"></p>
-  <div class="section" id="7">
+  <div class="section" id="6">
+<h1><a class="toc-backref" href="#6">Imports</a></h1>
+<dl class="item">
+<a class="reference external" href="entityId.html">entityId</a>
+</dl></div>
+<div class="section" id="7">
 <h1><a class="toc-backref" href="#7">Types</a></h1>
 <dl class="item">
-<div id="EntityId">
-<dt><pre><a href="entity.html#EntityId"><span class="Identifier">EntityId</span></a> <span class="Other">=</span> <span class="Keyword">distinct</span> <span class="Identifier">int32</span></pre></dt>
-<dd>
-
-Identity of an entity
-
-</dd>
-</div>
 <div id="EntityMetadata">
-<dt><pre><a href="entity.html#EntityMetadata"><span class="Identifier">EntityMetadata</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span> {.<span class="Identifier">byref</span>.} <span class="Other">=</span> <span class="Keyword">object</span>
+<dt><pre><a href="entityMetadata.html#EntityMetadata"><span class="Identifier">EntityMetadata</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span> {.<span class="Identifier">byref</span>.} <span class="Other">=</span> <span class="Keyword">object</span>
   <span class="Identifier">components</span><span class="Other">:</span> <span class="Identifier">set</span><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span>
 </pre></dt>
 <dd>
@@ -180,16 +176,8 @@ General data about an entity
 <div class="section" id="12">
 <h1><a class="toc-backref" href="#12">Procs</a></h1>
 <dl class="item">
-<div id="$,EntityId">
-<dt><pre><span class="Keyword">proc</span> <a href="#%24%2CEntityId"><span class="Identifier">`$`</span></a><span class="Other">(</span><span class="Identifier">entityId</span><span class="Other">:</span> <a href="entity.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
-<dd>
-
-Stringify an EntityId
-
-</dd>
-</div>
 <div id="[],openArray[T],EntityId">
-<dt><pre><span class="Keyword">proc</span> <a href="#%5B%5D%2CopenArray%5BT%5D%2CEntityId"><span class="Identifier">`[]`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="entity.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">T</span></pre></dt>
+<dt><pre><span class="Keyword">proc</span> <a href="#%5B%5D%2CopenArray%5BT%5D%2CEntityId"><span class="Identifier">`[]`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">T</span></pre></dt>
 <dd>
 
 Allows indexing into an openarray by directly using an entity id
@@ -197,7 +185,7 @@ Allows indexing into an openarray by directly using an entity id
 </dd>
 </div>
 <div id="components,EntityMetadata[C]">
-<dt><pre><span class="Keyword">proc</span> <a href="#components%2CEntityMetadata%5BC%5D"><span class="Identifier">components</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">metadata</span><span class="Other">:</span> <a href="entity.html#EntityMetadata"><span class="Identifier">EntityMetadata</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">set</span><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span></pre></dt>
+<dt><pre><span class="Keyword">proc</span> <a href="#components%2CEntityMetadata%5BC%5D"><span class="Identifier">components</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">metadata</span><span class="Other">:</span> <a href="entityMetadata.html#EntityMetadata"><span class="Identifier">EntityMetadata</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">set</span><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span></pre></dt>
 <dd>
 
 Return components in an entity
@@ -205,7 +193,7 @@ Return components in an entity
 </dd>
 </div>
 <div id="excl,EntityMetadata[C],set[C]">
-<dt><pre><span class="Keyword">proc</span> <a href="#excl%2CEntityMetadata%5BC%5D%2Cset%5BC%5D"><span class="Identifier">excl</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">metadata</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="entity.html#EntityMetadata"><span class="Identifier">EntityMetadata</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">components</span><span class="Other">:</span> <span class="Identifier">set</span><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">)</span></pre></dt>
+<dt><pre><span class="Keyword">proc</span> <a href="#excl%2CEntityMetadata%5BC%5D%2Cset%5BC%5D"><span class="Identifier">excl</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">metadata</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="entityMetadata.html#EntityMetadata"><span class="Identifier">EntityMetadata</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">components</span><span class="Other">:</span> <span class="Identifier">set</span><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">)</span></pre></dt>
 <dd>
 
 Removes components to entity metadata
@@ -213,7 +201,7 @@ Removes components to entity metadata
 </dd>
 </div>
 <div id="incl,EntityMetadata[C],set[C]">
-<dt><pre><span class="Keyword">proc</span> <a href="#incl%2CEntityMetadata%5BC%5D%2Cset%5BC%5D"><span class="Identifier">incl</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">metadata</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="entity.html#EntityMetadata"><span class="Identifier">EntityMetadata</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">components</span><span class="Other">:</span> <span class="Identifier">set</span><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">)</span></pre></dt>
+<dt><pre><span class="Keyword">proc</span> <a href="#incl%2CEntityMetadata%5BC%5D%2Cset%5BC%5D"><span class="Identifier">incl</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">metadata</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="entityMetadata.html#EntityMetadata"><span class="Identifier">EntityMetadata</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">components</span><span class="Other">:</span> <span class="Identifier">set</span><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">)</span></pre></dt>
 <dd>
 
 Adds components to entity metadata
@@ -221,7 +209,7 @@ Adds components to entity metadata
 </dd>
 </div>
 <div id="newEntityMetadata,set[C]">
-<dt><pre><span class="Keyword">proc</span> <a href="#newEntityMetadata%2Cset%5BC%5D"><span class="Identifier">newEntityMetadata</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">components</span><span class="Other">:</span> <span class="Identifier">set</span><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="entity.html#EntityMetadata"><span class="Identifier">EntityMetadata</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span></pre></dt>
+<dt><pre><span class="Keyword">proc</span> <a href="#newEntityMetadata%2Cset%5BC%5D"><span class="Identifier">newEntityMetadata</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">components</span><span class="Other">:</span> <span class="Identifier">set</span><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="entityMetadata.html#EntityMetadata"><span class="Identifier">EntityMetadata</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span></pre></dt>
 <dd>
 
 Constructor
@@ -238,7 +226,7 @@ Constructor
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2022-02-21 05:49:59 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2022-02-22 04:56:15 UTC</small>
       </div>
     </div>
   </div>

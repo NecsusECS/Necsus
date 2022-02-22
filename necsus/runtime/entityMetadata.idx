@@ -1,0 +1,6 @@
+EntityMetadata	necsus/runtime/entityMetadata.html#EntityMetadata	entityMetadata: EntityMetadata	
+`[]`	necsus/runtime/entityMetadata.html#[],openArray[T],EntityId	entityMetadata: `[]`[T](s: openArray[T]; id: EntityId): T	
+newEntityMetadata	necsus/runtime/entityMetadata.html#newEntityMetadata,set[C]	entityMetadata: newEntityMetadata[C](components: set[C]): EntityMetadata[C]	
+incl	necsus/runtime/entityMetadata.html#incl,EntityMetadata[C],set[C]	entityMetadata: incl[C](metadata: var EntityMetadata[C]; components: set[C])	
+excl	necsus/runtime/entityMetadata.html#excl,EntityMetadata[C],set[C]	entityMetadata: excl[C](metadata: var EntityMetadata[C]; components: set[C])	
+components	necsus/runtime/entityMetadata.html#components,EntityMetadata[C]	entityMetadata: components[C](metadata: EntityMetadata[C]): set[C]	

@@ -174,7 +174,7 @@ window.addEventListener('DOMContentLoaded', main);
   <div class="section" id="6">
 <h1><a class="toc-backref" href="#6">Imports</a></h1>
 <dl class="item">
-<a class="reference external" href="entity.html">entity</a>
+<a class="reference external" href="entityId.html">entityId</a>
 </dl></div>
 <div class="section" id="7">
 <h1><a class="toc-backref" href="#7">Types</a></h1>
@@ -203,7 +203,7 @@ Stringify
 </dd>
 </div>
 <div id="+=,EntitySet,EntityId">
-<dt><pre><span class="Keyword">proc</span> <a href="#%2B%3D%2CEntitySet%2CEntityId"><span class="Identifier">`+=`</span></a><span class="Other">(</span><span class="Identifier">entities</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="entitySet.html#EntitySet"><span class="Identifier">EntitySet</span></a><span class="Other">;</span> <span class="Identifier">entityId</span><span class="Other">:</span> <a href="entity.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dt><pre><span class="Keyword">proc</span> <a href="#%2B%3D%2CEntitySet%2CEntityId"><span class="Identifier">`+=`</span></a><span class="Other">(</span><span class="Identifier">entities</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="entitySet.html#EntitySet"><span class="Identifier">EntitySet</span></a><span class="Other">;</span> <span class="Identifier">entityId</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 Create a new entity set
@@ -211,7 +211,7 @@ Create a new entity set
 </dd>
 </div>
 <div id="-=,EntitySet,EntityId">
-<dt><pre><span class="Keyword">func</span> <a href="#-%3D%2CEntitySet%2CEntityId"><span class="Identifier">`-=`</span></a><span class="Other">(</span><span class="Identifier">entities</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="entitySet.html#EntitySet"><span class="Identifier">EntitySet</span></a><span class="Other">;</span> <span class="Identifier">toRemove</span><span class="Other">:</span> <a href="entity.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dt><pre><span class="Keyword">func</span> <a href="#-%3D%2CEntitySet%2CEntityId"><span class="Identifier">`-=`</span></a><span class="Other">(</span><span class="Identifier">entities</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="entitySet.html#EntitySet"><span class="Identifier">EntitySet</span></a><span class="Other">;</span> <span class="Identifier">toRemove</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 Removes a set of entities from this instance
@@ -235,7 +235,7 @@ Removes all values
 </dd>
 </div>
 <div id="contains,EntitySet,EntityId">
-<dt><pre><span class="Keyword">func</span> <a href="#contains%2CEntitySet%2CEntityId"><span class="Identifier">contains</span></a><span class="Other">(</span><span class="Identifier">entities</span><span class="Other">:</span> <a href="entitySet.html#EntitySet"><span class="Identifier">EntitySet</span></a><span class="Other">;</span> <span class="Identifier">entityId</span><span class="Other">:</span> <a href="entity.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+<dt><pre><span class="Keyword">func</span> <a href="#contains%2CEntitySet%2CEntityId"><span class="Identifier">contains</span></a><span class="Other">(</span><span class="Identifier">entities</span><span class="Other">:</span> <a href="entitySet.html#EntitySet"><span class="Identifier">EntitySet</span></a><span class="Other">;</span> <span class="Identifier">entityId</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
@@ -257,7 +257,7 @@ Create a new entity set
 <h1><a class="toc-backref" href="#15">Iterators</a></h1>
 <dl class="item">
 <div id="items.i,EntitySet">
-<dt><pre><span class="Keyword">iterator</span> <a href="#items.i%2CEntitySet"><span class="Identifier">items</span></a><span class="Other">(</span><span class="Identifier">entities</span><span class="Other">:</span> <a href="entitySet.html#EntitySet"><span class="Identifier">EntitySet</span></a><span class="Other">)</span><span class="Other">:</span> <a href="entity.html#EntityId"><span class="Identifier">EntityId</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dt><pre><span class="Keyword">iterator</span> <a href="#items.i%2CEntitySet"><span class="Identifier">items</span></a><span class="Other">(</span><span class="Identifier">entities</span><span class="Other">:</span> <a href="entitySet.html#EntitySet"><span class="Identifier">EntitySet</span></a><span class="Other">)</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 Produces all entities in this set
@@ -274,7 +274,7 @@ Produces all entities in this set
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2022-02-21 05:50:00 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2022-02-22 04:56:15 UTC</small>
       </div>
     </div>
   </div>
