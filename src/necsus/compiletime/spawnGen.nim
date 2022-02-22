@@ -1,6 +1,6 @@
 import macros, sequtils, sets, tables
 import tupleDirective, directiveSet, codeGenInfo, componentDef, queryGen, grouper
-import ../runtime/query, ../util/packedIntTable
+import ../runtime/[query, world], ../util/packedIntTable
 
 let comps {.compileTime.} = ident("comps")
 
@@ -58,7 +58,7 @@ proc createSpawnProc(codeGenInfo: CodeGenInfo, name: string, spawn: SpawnDef): N
     result = quote:
         proc `procName`(`localComps`: sink `componentTuple`): EntityId =
             let `comps` = `localComps`
-            result = `worldIdent`.createEntity(`componentEnum`)
+            result = createEntity(`worldIdent`, `componentEnum`)
             `store`
             `register`
 

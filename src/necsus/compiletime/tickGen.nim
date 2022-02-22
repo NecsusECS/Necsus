@@ -1,5 +1,6 @@
 import macros, times, sequtils
 import codeGenInfo, parse, directiveSet, tupleDirective, monoDirective, queryGen, localDef, eventGen, grouper
+import ../runtime/world
 
 let timeDelta {.compileTime.} = ident("timeDelta")
 let timeElapsed {.compileTime.} = ident("timeElapsed")
@@ -85,7 +86,7 @@ proc createTickRunner*(codeGenInfo: CodeGenInfo, runner: NimNode): NimNode =
                 `loopSystems`
             `lastTime` = `thisTime`
             `deleteFinalizers`
-            world.clearDeletedEntities()
+            clearDeletedEntities(world)
     )
 
     result = quote do:

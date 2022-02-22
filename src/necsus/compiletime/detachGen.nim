@@ -1,4 +1,4 @@
-import codeGenInfo, macros, directiveSet, tupleDirective, sequtils, queryGen
+import codeGenInfo, macros, directiveSet, tupleDirective, sequtils, queryGen, ../runtime/world
 
 proc createQueryRemovals(codeGenInfo: CodeGenInfo, entityId: NimNode, queries: openarray[QueryDef]): NimNode =
     # Generate code for detaching this entity from any associated queries
@@ -33,5 +33,5 @@ proc createDeleteProc*(codeGenInfo: CodeGenInfo): NimNode =
     let queryRemovals = codeGenInfo.createQueryRemovals(entity, codeGenInfo.queries.directives)
     result = quote do:
         proc `deleteProc`(`entity`: EntityId) {.used.} =
-            `worldIdent`.deleteEntity(`entity`)
+            deleteEntity(`worldIdent`, `entity`)
             `queryRemovals`
