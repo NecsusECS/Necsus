@@ -1,5 +1,5 @@
 import tupleDirective, directiveSet, codeGenInfo, macros, componentEnum, sequtils, sets, componentDef, grouper
-import ../runtime/queryFilter, ../util/packedIntTable
+import ../runtime/[queryFilter, queryStorage], ../util/packedIntTable
 
 proc queryStorageIdent*(queryName: string): NimNode =
     ## Creates an ident for referencing the storage of a query

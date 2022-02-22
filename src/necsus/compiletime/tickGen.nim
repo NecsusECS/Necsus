@@ -1,6 +1,6 @@
 import macros, times, sequtils
 import codeGenInfo, parse, directiveSet, tupleDirective, monoDirective, queryGen, localDef, eventGen, grouper
-import ../runtime/world
+import ../runtime/[world, queryStorage]
 
 let timeDelta {.compileTime.} = ident("timeDelta")
 let timeElapsed {.compileTime.} = ident("timeElapsed")

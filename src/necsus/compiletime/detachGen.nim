@@ -1,4 +1,4 @@
-import codeGenInfo, macros, directiveSet, tupleDirective, sequtils, queryGen, ../runtime/world
+import codeGenInfo, macros, directiveSet, tupleDirective, sequtils, queryGen, ../runtime/[world, queryStorage]
 
 proc createQueryRemovals(codeGenInfo: CodeGenInfo, entityId: NimNode, queries: openarray[QueryDef]): NimNode =
     # Generate code for detaching this entity from any associated queries

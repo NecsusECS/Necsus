@@ -1,6 +1,6 @@
 import macros, sequtils, sets, tables
 import tupleDirective, directiveSet, codeGenInfo, componentDef, queryGen, grouper
-import ../runtime/[query, world], ../util/packedIntTable
+import ../runtime/[query, world, queryStorage], ../util/packedIntTable
 
 let comps {.compileTime.} = ident("comps")
 
@@ -91,7 +91,7 @@ proc registerAttachComponents(
                 let `localIdent` = getRef(`compStore`, `entityId`.int32)
 
         result.add quote do:
-            if `queryIdent`.updateEntity(`entityId`, `componentEnum`):
+            if updateEntity(`queryIdent`, `entityId`, `componentEnum`):
                 `getExtraComponents`
                 addToQuery(`queryIdent`, `entityId`, `componentTuple`)
 
