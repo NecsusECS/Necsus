@@ -234,9 +234,9 @@ type
     A = object
         value: int
 
-proc inPlaceUpdate(query: Query[tuple[a: ptr A]]) =
-    for components in query:
-        components.a.value += 1
+proc inPlaceUpdate(query: Query[(ptr A, )]) =
+    for (a) in query:
+        a.value += 1
 
 proc myApp() {.necsus([], [~inPlaceUpdate], [], newNecsusConf()).}
 ```
