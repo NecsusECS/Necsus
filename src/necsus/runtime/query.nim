@@ -1,4 +1,4 @@
-import entitySet, entity, queryFilter, ../util/packedIntTable
+import entitySet, entityId, queryFilter, ../util/packedIntTable
 
 type
     QueryItem*[T: tuple] = tuple[entityId: EntityId, components: T]

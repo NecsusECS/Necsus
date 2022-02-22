@@ -1,4 +1,4 @@
-import entity, atomics, query, macros, entitySet, deques, ../util/packedIntTable
+import entityId, entityMetadata, atomics, query, macros, entitySet, deques, ../util/packedIntTable
 
 type
 

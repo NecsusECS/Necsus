@@ -1,4 +1,4 @@
-import intsets, entity
+import intsets, entityId
 
 type
 

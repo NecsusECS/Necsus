@@ -1,4 +1,4 @@
-import entity, options
+import entityId, options
 
 type
 
