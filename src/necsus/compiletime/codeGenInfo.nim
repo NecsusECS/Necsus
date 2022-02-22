@@ -25,13 +25,22 @@ template directives[T](name: NimNode, app: ParsedApp, allSystems: openarray[Pars
     let fromApp: seq[T] = app.`extract`
     newDirectiveSet[T](name.strVal, concat(fromSystems, fromApp))
 
+template addComponents(
+    grouper: Grouper[ComponentDef],
+    app: ParsedApp,
+    allSystems: openarray[ParsedSystem],
+    directiveType: untyped
+) =
+    ## Adds components for a type of directive to a grouper
+    for definition in allSystems.`directiveType`: group.add(definition.items.toSeq)
+    for definition in app.`directiveType`: group.add(definition.items.toSeq)
+
 proc calculateGroups(app: ParsedApp, allSystems: openarray[ParsedSystem]): GroupTable[ComponentDef] =
     ## Calculates the grouping of components that can be stored together
     var group = newGrouper[ComponentDef]()
-    for spawns in allSystems.spawns: group.add(spawns.items.toSeq)
-    for attaches in allSystems.attaches: group.add(attaches.items.toSeq)
-    for spawns in app.spawns: group.add(spawns.items.toSeq)
-    for attaches in app.attaches: group.add(attaches.items.toSeq)
+    group.addComponents(app, allSystems, `spawns`)
+    group.addComponents(app, allSystems, `attaches`)
+    group.addComponents(app, allSystems, `detaches`)
     return group.build()
 
 proc newCodeGenInfo*(name: NimNode, config: NimNode, app: ParsedApp, allSystems: openarray[ParsedSystem]): CodeGenInfo =
