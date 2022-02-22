@@ -147,7 +147,7 @@ window.addEventListener('DOMContentLoaded', main);
 <dt><pre><a href="directives.html#Attach"><span class="Identifier">Attach</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">entityId</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">;</span> <span class="Identifier">components</span><span class="Other">:</span> <span class="Identifier">C</span><span class="Other">)</span></pre></dt>
 <dd>
 
-Describes a type that is able to update existing entities new entities
+Describes a type that is able to update existing entities new entities. Where <tt class="docutils literal"><span class="pre"><span class="Identifier">C</span></span></tt> is a tuple with all the components to attach.
 
 </dd>
 </div>
@@ -155,7 +155,7 @@ Describes a type that is able to update existing entities new entities
 <dt><pre><a href="directives.html#Delete"><span class="Identifier">Delete</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">entityId</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span></pre></dt>
 <dd>
 
-Deletes an entity
+Deletes an entity and all associated components
 
 </dd>
 </div>
@@ -163,7 +163,7 @@ Deletes an entity
 <dt><pre><a href="directives.html#Detach"><span class="Identifier">Detach</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">entityId</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span></pre></dt>
 <dd>
 
-Detaches a set of components from an entity
+Detaches a set of components from an entity. Where <tt class="docutils literal"><span class="pre"><span class="Identifier">C</span></span></tt> is a tuple describing all the components to detach
 
 </dd>
 </div>
@@ -171,7 +171,7 @@ Detaches a set of components from an entity
 <dt><pre><a href="directives.html#Lookup"><span class="Identifier">Lookup</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">entityId</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Option</span><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span></pre></dt>
 <dd>
 
-Looks up entity details based on its entity ID
+Looks up entity details based on its entity ID. Where <tt class="docutils literal"><span class="pre"><span class="Identifier">C</span></span></tt> is a tuple with all the components to fetch
 
 </dd>
 </div>
@@ -179,7 +179,7 @@ Looks up entity details based on its entity ID
 <dt><pre><a href="directives.html#Outbox"><span class="Identifier">Outbox</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">message</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">T</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">void</span></pre></dt>
 <dd>
 
-Sends an event
+Sends an event. Where <tt class="docutils literal"><span class="pre"><span class="Identifier">T</span></span></tt> is the message being sent
 
 </dd>
 </div>
@@ -187,7 +187,7 @@ Sends an event
 <dt><pre><a href="directives.html#Spawn"><span class="Identifier">Spawn</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">components</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">C</span><span class="Other">)</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a></pre></dt>
 <dd>
 
-Describes a type that is able to create new entities
+Describes a type that is able to create new entities. Where <tt class="docutils literal"><span class="pre"><span class="Identifier">C</span></span></tt> is a tuple with all the components to initially attach to this entity
 
 </dd>
 </div>
@@ -217,7 +217,7 @@ The total amount of time spent in an app
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2022-02-22 04:58:17 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2022-02-22 05:06:36 UTC</small>
       </div>
     </div>
   </div>
