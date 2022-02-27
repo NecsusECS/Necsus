@@ -18,7 +18,7 @@ suite "PackedList":
             discard list.push(i)
 
         for i in 0..10:
-            list[i] = i + 20
+            list[i.uint] = i + 20
 
         check(list.toSeq == toSeq(20..30))
 

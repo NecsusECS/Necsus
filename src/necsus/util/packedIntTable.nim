@@ -1,4 +1,4 @@
-import openAddrTable, blockStorage, packedList, options
+import openAddrTable, sharedVector, packedList, options
 
 #
 # PackedIntTable
