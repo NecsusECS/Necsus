@@ -4,3 +4,5 @@ switch("path", "$projectDir/../src")
 --debugger:native
 --verbosity:0
 --hints:off
+--boundChecks:off
+--assertions:off
