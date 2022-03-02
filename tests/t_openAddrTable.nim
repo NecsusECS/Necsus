@@ -1,70 +1,75 @@
-import unittest, options, necsus/util/openAddrTable
+import unittest, options, necsus/util/openAddrTable, sequtils
 
 suite "OpenAddrTable":
 
     test "Reading and writing values":
-        var table = newOpenAddrTable[int32, int32](10)
+        var table = newOpenAddrTable[int32, int32](5)
         table[123] = 456
         check(table[123] == 456)
 
         table[123] = 789
         check(table[123] == 789)
 
-    test "Reading values that don't exist":
+    test "Maybe reading values":
         var table = newOpenAddrTable[int32, int32](10)
         table[123] = 456
         check(table.maybeGet(123).get() == 456)
         check(table.maybeGet(789).isNone)
 
-    test "Maybe reading values":
+    test "Maybe reading pointers":
         var table = newOpenAddrTable[int32, int32](10)
-        expect KeyError:
-            discard table[123]
-
-    test "Deleting values":
-        var table = newOpenAddrTable[int32, int32](10)
-        table[100] = 789
-        table.del(100)
-        expect KeyError:
-            discard table[100]
-
-    test "Deleting from a filled table":
-        var table = newOpenAddrTable[int32, int32](2)
-        for i in 1.int32..4:
-            table[i] = i
-        table.del(100)
-        for i in 1.int32..4:
-            check(table[i] == i)
+        table[123] = 456
+        check(table.maybeGetPointer(123).get()[] == 456)
+        check(table.maybeGetPointer(789).isNone)
 
     test "Contains":
         var table = newOpenAddrTable[int32, int32](10)
         check(123 notin table)
         table[123] = 456
         check(123 in table)
-        table.del 123
-        check(123 notin table)
+
+    test "Deleting values":
+        var table = newOpenAddrTable[int32, int32](10)
+        table[100] = 789
+        table.del(100)
+        check(100 notin table)
+        check(table.maybeGet(100).isNone)
+
+    test "Deleting everything in a table":
+        var table = newOpenAddrTable[int, string](5)
+        table[1] = "one"
+        table[2] = "two"
+        table[3] = "three"
+
+        table.del 2
+        check(table.pairs.toSeq == @[(1, "one"), (3, "three")])
+        check(table[1] == "one")
+        check(table[3] == "three")
+
+        table.del 1
+        check(table.pairs.toSeq == @[(3, "three")])
+        check(table[3] == "three")
+
+        table.del 3
+        check(table.pairs.toSeq.len == 0)
 
     test "Filling a table with values":
-        var table = newOpenAddrTable[int32, int32](100)
+        var table = newOpenAddrTable[int, int](2)
+
         for i in 0..<100:
-            table[i.int32] = i.int32
-            check(table[i.int32] == i.int32)
+            table[i] = i + 1000
+
+            for j in max(0, i - 2)..i:
+                checkpoint("Checking value of key " & $j)
+                checkpoint(table.dump)
+                require(j in table)
+                require(table.maybeGet(j) == some(j + 1000))
+                require(table[j] == j + 1000)
+
         for i in 0..<100:
-            check(table[i.int32] == i.int32)
-
-    test "Setting new values":
-        var table = newOpenAddrTable[int8, int8](100)
-
-        for i in 0'i8..<10:
-            table.setNew(i, i)
-            check(table[i] == i)
-
-        for i in 0'i8..<10:
-            expect KeyError:
-                table.setNew(i, i * 2)
-
-        for i in 0'i8..<10:
-            check(table[i] == i)
+            require(i in table)
+            require(table.maybeGet(i) == some(i + 1000))
+            check(table[i] == i + 1000)
 
     test "Table to string":
         var table = newOpenAddrTable[int32, int32](10)
@@ -73,3 +78,33 @@ suite "OpenAddrTable":
         table[1] = 2
         table[3] = 4
         check($table == "{1: 2, 3: 4}")
+
+    test "Table iterators":
+        var table = newOpenAddrTable[int, string](10)
+        check(table.items.toSeq.len == 0)
+        check(table.pairs.toSeq.len == 0)
+
+        table[900] = "a"
+        check(table.items.toSeq == @["a"])
+        check(table.pairs.toSeq == @[(900, "a")])
+
+        table[950] = "b"
+        check(table.items.toSeq == @["a", "b"])
+        check(table.pairs.toSeq == @[(900, "a"), (950, "b")])
+
+        table.del(900)
+        check(table.items.toSeq == @["b"])
+        check(table.pairs.toSeq == @[(950, "b")])
+
+    test "Table setAndRef":
+        var table = newOpenAddrTable[int, string](4)
+        var refs = newSeq[ptr string](100)
+
+        for i in 0..<100:
+            let strPtr: ptr string = table.setAndRef(i, $i)
+            require(strPtr[] == $i)
+            refs[i] = strPtr
+
+        for i in 0..<100:
+            require(refs[i][] == $i)
+            require(table[i] == $i)

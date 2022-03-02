@@ -1,93 +1,94 @@
-import openAddrEntry, openAddrChunk, threading/atomics, threading/smartptrs, strutils, math, locks, options
+import sharedVector, options, threading/atomics, openAddrData, locks
 
 ##
 ## OpenAddrTable
 ##
 
-# Making this global is a temporary work-around for https://github.com/nim-lang/Nim/issues/14873
-var resizeLock: Lock
-resizeLock.initLock()
-
 type
     OpenAddrTable*[K, V] {.byref.} = object
-        primaryChunk: Atomic[ptr Chunk[K, V]]
+        previousCapacity: Atomic[uint]
+        capacity: Atomic[uint]
+        data: OpenAddrData[K, V]
 
-proc newOpenAddrTable*[K: SmallValue, V: SmallValue](initialSize: int): OpenAddrTable[K, V] =
+# Global lock to work around https://github.com/nim-lang/Nim/issues/14873
+# This should be moved into OpenAddrTable when possible
+var resizeLock: Lock
+resizeLock.initLock
+
+proc newOpenAddrTable*[K, V](initialSize: SomeInteger): OpenAddrTable[K, V] =
     ## Instantiates a new OpenAddrTable
-    result.primaryChunk.store(newChunk[K, V](initialSize))
+    result.data = newOpenAddrData[K, V](initialSize.uint)
+    result.capacity.store(result.data.capacity)
 
 proc `=copy`*[K, V](dest: var OpenAddrTable[K, V], src: OpenAddrTable[K, V]) {.error.}
 
-proc awaitClear(tracker: var Atomic[int]) =
-    # Spins until a tracker is considered clear
-    while tracker.load > 0: discard
+proc enlarge[K, V](table: var OpenAddrTable[K, V]) =
+    ## Increase the capacity of this table
+    resizeLock.withLock:
+        let currentCapacity = table.capacity.load
 
-proc embiggen[K, V](table: var OpenAddrTable[K, V]) =
-    ## Increases the capacity of this table
-    withLock resizeLock:
-        let existingChunk = table.primaryChunk.load
+        # Increase the amount of available data space
+        table.data.enlarge((currentCapacity * 3) div 2)
+        let newCapacity = table.data.capacity
 
-        # Immediately return if it looks like we already resized the table
-        if existingChunk.consumedCapacity.load < floorDiv(existingChunk.size, 2):
-            return
+        # Store the size of the new capacity and backlog the size of the old capacity
+        table.previousCapacity.store(currentCapacity)
+        table.capacity.store(newCapacity)
 
-        # Create a new chunk
-        var chunk = newChunk[K, V](existingChunk.size + 1)
-        chunk.oldChunk.store(existingChunk)
-        table.primaryChunk.store(chunk)
+        table.data.migrate(currentCapacity, newCapacity)
 
-        # Wait for any existing writes to finish so we know we have the full data set
-        existingChunk.activeWriters.awaitClear()
+        table.data.cleanup()
 
-        # Copy any old values over to the new chunk
-        for item in existingChunk.items:
-            assert(
-                chunk.set(item.key, existingChunk.get(item.key), SkipOnExisting),
-                "Could not copy an existing value"
-            )
+        table.previousCapacity.store(newCapacity)
 
-        # Detach the old chunk
-        chunk.oldChunk.store(nil)
+proc setAndRef*[K, V](table: var OpenAddrTable[K, V], key: K, value: sink V): ptr V =
+    ## Set a value and returns a pointer to the value
+    let (status, location) = write(table.data, key, value, table.capacity.load)
+    case status
+    of SetSuccess: return location
+    of RetrySet: return table.setAndRef(key, value)
+    of ResizeNeeded:
+        table.enlarge()
+        return table.setAndRef(key, value)
 
-        # Wait for all reads to complete on the old chunk and release the old memory
-        existingChunk.activeReaders.awaitClear()
-        existingChunk.deallocShared
-
-proc setValue*[K, V](table: var OpenAddrTable[K, V], key: K, value: V, mode: static ExistingKeyMode) {.inline.} =
-    while true:
-        if table.primaryChunk.load.needsResize or (not table.primaryChunk.load.set(key, value, mode)):
-            table.embiggen()
-        else:
-            return
-
-proc `[]=`*[K, V](table: var OpenAddrTable[K, V], key: K, value: V) =
+proc `[]=`*[K, V](table: var OpenAddrTable[K, V], key: K, value: sink V) =
     ## Set a value
-    table.setValue(key, value, OverwriteExisting)
+    discard table.setAndRef(key, value)
 
-proc setNew*[K, V](table: var OpenAddrTable[K, V], key: K, value: V) =
-    ## Sets a value guaranteed to be new
-    table.setValue(key, value, RaiseOnExisting)
-
-proc del*[K, V](table: var OpenAddrTable[K, V], key: K) =
-    ## Deletes a value
-    table.primaryChunk.load.del(key)
-    assert(key notin table.primaryChunk.load)
-
-proc `[]`*[K, V](table: var OpenAddrTable[K, V], key: K): V =
+proc `[]`*[K, V](table: var OpenAddrTable[K, V], key: K): var V =
     ## Fetch a value
-    table.primaryChunk.load.get(key)
+    return read(table.data, key, table.capacity, table.previousCapacity)
 
 proc maybeGet*[K, V](table: var OpenAddrTable[K, V], key: K): Option[V] =
     ## Fetch a value if it exists
-    table.primaryChunk.load.maybeGet(key)
+    return maybeRead(table.data, key, table.capacity, table.previousCapacity)
+
+proc maybeGetPointer*[K, V](table: var OpenAddrTable[K, V], key: K): Option[ptr V] =
+    ## Fetch a value if it exists
+    return maybeReadPointer(table.data, key, table.capacity, table.previousCapacity)
 
 proc contains*[K, V](table: var OpenAddrTable[K, V], key: K): bool =
     ## Tests whether a value is in a table
-    table.primaryChunk.load.contains(key)
+    return contains(table.data, key, table.capacity, table.previousCapacity)
 
-proc `$`*[K, V](table: var OpenAddrTable[K, V]): string = "{" & $table.primaryChunk.load & "}"
+proc del*[K, V](table: var OpenAddrTable[K, V], key: K) =
+    ## Deletes a value
+    del(table.data, key, table.capacity, table.previousCapacity)
+
+proc `$`*[K, V](table: var OpenAddrTable[K, V]): string =
     ## Stringify an OpenAddrTable
+    "{" & $table.data & "}"
+
+iterator items*[K, V](table: var OpenAddrTable[K, V]): lent V =
+    ## Iterate over the values in this table
+    for value in items(table.data):
+        yield value
+
+iterator pairs*[K, V](table: var OpenAddrTable[K, V]): (K, V) =
+    ## Iterate over the keys and values in this table
+    for entry in pairs(table.data):
+        yield entry
 
 proc dump*[K, V](table: var OpenAddrTable[K, V]): string =
     ## Dumps the internal state of the table
-    table.primaryChunk.load.dump()
+    "[" & table.data.dump & "]"

@@ -45,11 +45,11 @@ suite "OpenAddrTable bulk actions":
                 case action.kind
                 of SetKey, ChangeKey:
                     table[action.key] = action.value
-                    check(table[action.key] == action.value)
+                    require(table[action.key] == action.value)
                     setKeys.incl action.key
                 of DeleteKey:
                     table.del(action.key)
-                    expect KeyError: discard table[action.key]
+                    require(action.key notin table)
                     setKeys.excl action.key
                 checkpoint table.dump()
 
@@ -59,5 +59,5 @@ suite "OpenAddrTable bulk actions":
                     checkpoint "Checking " & $action
                     checkedKeys.incl action.key
                     case action.kind
-                    of SetKey, ChangeKey: check(table[action.key] == action.value)
-                    of DeleteKey: expect KeyError: discard table[action.key]
+                    of SetKey, ChangeKey: require(table[action.key] == action.value)
+                    of DeleteKey: require(action.key notin table)

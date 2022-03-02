@@ -1,11 +1,13 @@
 import unittest, threadpool, necsus/util/openAddrTable
 
 template testParallelInsets(tableSize: int, values: int) =
-    var table = newOpenAddrTable[int32, int32](tableSize)
+    var table = newOpenAddrTable[int, int](tableSize)
 
     proc assignAndCheck(keyval: int) =
-        table[keyval.int32] = keyval.int32
-        check(table[keyval.int32] == keyval.int32)
+        table[keyval] = keyval
+        if keyval notin table:
+            echo table.dump
+            assert(false, "Key does not exist " & $keyval)
 
     for i in 0..<values:
         spawn assignAndCheck(i)
@@ -13,7 +15,7 @@ template testParallelInsets(tableSize: int, values: int) =
     sync()
 
     for i in 0..<values:
-        check(table[i.int32] == i.int32)
+        check(table[i] == i)
 
 suite "OpenAddrTable parallel sets":
 
