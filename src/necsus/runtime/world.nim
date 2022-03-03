@@ -1,10 +1,10 @@
-import entityId, entityMetadata, atomics, query, macros, entitySet, deques, ../util/packedIntTable
+import entityId, entityMetadata, atomics, query, macros, entitySet, deques, ../util/[openAddrTable, packedIntTable]
 
 type
 
     World*[C: enum] = ref object
         ## Contains the data describing the entire world
-        entities: PackedIntTable[EntityMetadata[C]]
+        entities: OpenAddrTable[EntityId, EntityMetadata[C]]
         deleted*: EntitySet
         nextEntityId: int
         recycleEntityIds: Deque[EntityId]
@@ -12,7 +12,7 @@ type
 proc newWorld*[C](initialSize: int): World[C] =
     ## Creates a new world
     World[C](
-        entities: newPackedIntTable[EntityMetadata[C]](initialSize),
+        entities: newOpenAddrTable[EntityId, EntityMetadata[C]](initialSize),
         deleted: newEntitySet(),
         nextEntityId: 0,
         recycleEntityIds: initDeque[EntityId]()
@@ -20,12 +20,12 @@ proc newWorld*[C](initialSize: int): World[C] =
 
 proc associateComponents*[C](world: var World[C], entity: EntityId, components: set[C]): set[C] =
     ## Associates a given set of entities with a component
-    world.entities[entity.int32].incl(components)
-    result = world.entities[entity.int32].components
+    world.entities[entity].incl(components)
+    result = world.entities[entity].components
 
 proc detachComponents*[C](world: var World[C], entity: EntityId, components: set[C]) =
     ## Associates a given set of entities with a component
-    world.entities[entity.int32].excl(components)
+    world.entities[entity].excl(components)
 
 proc createEntity*[C](world: var World[C], initialComponents: set[C]): EntityId =
     ## Create a new entity in the given world
@@ -33,12 +33,12 @@ proc createEntity*[C](world: var World[C], initialComponents: set[C]): EntityId 
         result = world.recycleEntityIds.popFirst
     else:
         result = EntityId(world.nextEntityId.atomicInc - 1)
-    world.entities[result.int32] = newEntityMetadata[C](initialComponents)
+    world.entities[result] = newEntityMetadata[C](initialComponents)
     # echo "Spawning ", result
 
 proc getComponents*[C](world: var World[C], entityId: EntityId): set[C] =
     ## Returns all the set components for an entity
-    world.entities[result.int32].components
+    world.entities[result].components
 
 proc deleteEntity*[C](world: var World[C], entityId: EntityId) =
     world.deleted += entityId
@@ -51,6 +51,6 @@ proc deleteComponents*[C, T](world: World[C], components: var PackedIntTable[T])
 proc clearDeletedEntities*[C](world: var World[C]) =
     ## Resets the list of deleted entities
     for entity in world.deleted.items:
-        world.entities.del(entity.int32)
+        world.entities.del(entity)
         world.recycleEntityIds.addLast entity
     world.deleted.clear()
