@@ -1,22 +1,28 @@
-import entityId, entityMetadata, atomics, query, macros, entitySet, deques, ../util/openAddrTable
+import entityId, entityMetadata, atomics, query, macros, entitySet, deques, ../util/[sharedVector, openAddrTable]
 
 type
 
     World*[C: enum] = ref object
         ## Contains the data describing the entire world
-        entities: OpenAddrTable[EntityId, EntityMetadata[C]]
+        entities: SharedVector[EntityMetadata[C]]
         deleted*: EntitySet
         nextEntityId: int
         recycleEntityIds: Deque[EntityId]
 
-proc newWorld*[C](initialSize: int): World[C] =
+proc newWorld*[C](initialSize: SomeInteger): World[C] =
     ## Creates a new world
     World[C](
-        entities: newOpenAddrTable[EntityId, EntityMetadata[C]](initialSize),
+        entities: newSharedVector[EntityMetadata[C]](initialSize.uint),
         deleted: newEntitySet(),
         nextEntityId: 0,
         recycleEntityIds: initDeque[EntityId]()
     )
+
+template `[]`[T](vector: var SharedVector[T], eid: EntityId): untyped =
+    mget(vector, eid.uint)
+
+template `[]=`[T](vector: var SharedVector[T], eid: EntityId, value: sink T) =
+    vector[eid.uint] = value
 
 proc associateComponents*[C](world: var World[C], entity: EntityId, components: set[C]): set[C] =
     ## Associates a given set of entities with a component
@@ -51,6 +57,5 @@ proc deleteComponents*[C, T](world: World[C], components: var OpenAddrTable[Enti
 proc clearDeletedEntities*[C](world: var World[C]) =
     ## Resets the list of deleted entities
     for entity in world.deleted.items:
-        world.entities.del(entity)
         world.recycleEntityIds.addLast entity
     world.deleted.clear()
