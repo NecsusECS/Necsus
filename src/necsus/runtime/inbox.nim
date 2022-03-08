@@ -1,14 +1,14 @@
-import ../util/packedList
+import ../util/mailbox
 
 type
     Inbox*[T] {.byref.} = object
         ## Receives events
-        backingList: ptr PackedList[T]
+        mailbox: ptr Mailbox[T]
 
-proc newInbox*[T](backingList: var PackedList[T]): Inbox[T] =
-    result.backingList = addr backingList
+proc newInbox*[T](mailbox: var Mailbox[T]): Inbox[T] =
+    result.mailbox = addr mailbox
 
 iterator items*[T](inbox: Inbox[T]): lent T =
     ## Iterate over inbox items
-    for message in inbox.backingList[].items:
+    for message in inbox.mailbox[].items:
         yield message

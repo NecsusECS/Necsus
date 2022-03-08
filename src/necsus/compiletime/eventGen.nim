@@ -1,4 +1,4 @@
-import macros, strutils, codeGenInfo, sequtils, directiveSet, monoDirective, nimNode, ../util/packedList
+import macros, strutils, codeGenInfo, sequtils, directiveSet, monoDirective, nimNode, ../util/mailbox
 
 proc eventStorageIdent(event: InboxDef | OutboxDef | NimNode): NimNode =
     ## Returns the name of the identifier that holds the storage for an event
@@ -12,7 +12,7 @@ proc createInboxProc(name: string, inbox: InboxDef): NimNode =
     let inboxName = name.ident
     let eventType = inbox.argType
     result = quote:
-        var `storageIdent` = newPackedList[`eventType`](`confIdent`.eventQueueSize)
+        var `storageIdent` = newMailbox[`eventType`](`confIdent`.eventQueueSize)
         let `inboxName` = newInbox[`eventType`](`storageIdent`)
 
 proc hasInboxes(codeGenInfo: CodeGenInfo, outbox: OutboxDef): bool =
@@ -29,7 +29,7 @@ proc createOutboxProc(codeGenInfo: CodeGenInfo, name: string, outbox: OutboxDef)
     # If there is nobody to listen to this event, just discard it immediately
     let body = if codeGenInfo.hasInboxes(outbox):
         quote:
-            discard push[`eventType`](`storageIdent`, `event`)
+            send[`eventType`](`storageIdent`, `event`)
     else:
         quote:
             discard
