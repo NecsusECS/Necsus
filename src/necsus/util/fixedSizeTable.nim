@@ -2,11 +2,13 @@ import denseIdxs, options, threading/atomics, hashes
 
 type
     Entry[K, V] = object
+        ## An individual value within the table
         key: K
         value: V
         visible: bool
 
     FixedSizeTable*[K, V] = object
+        ## Lock-free table of values that wont ever resize
         capacity: uint
         used: Atomic[uint]
         dense: ptr UncheckedArray[Entry[K, V]]
@@ -40,6 +42,10 @@ proc `$`*[K, V](table: var FixedSizeTable[K, V]): string =
     result.add("}")
 
 proc `=copy`*[K, V](dest: var FixedSizeTable[K, V], src: FixedSizeTable[K, V]) {.error.}
+
+proc `=destroy`*[K, V](table: var FixedSizeTable[K, V]) =
+    deallocShared(table.dense)
+    deallocShared(table.sparse)
 
 proc bestIndex[K](key: K, tableSize: uint): uint =
     ## Returns the best index a key can be at for a given chunk
