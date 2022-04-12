@@ -3,7 +3,7 @@ import unittest, necsus/util/ringbuffer, options, threadpool, std/sharedlist, se
 suite "RingBuffer":
 
     test "tryPush and tryShift":
-        var q: RingBuffer[8, int]
+        var q = newRingBuffer[int](8)
 
         check(q.tryPush(123))
         check(q.tryPush(456))
@@ -14,14 +14,14 @@ suite "RingBuffer":
         check(q.tryShift() == some(789))
 
     test "Draining":
-        var q: RingBuffer[8, int]
+        var q = newRingBuffer[int](8)
         check(q.tryPush(123))
         check(q.tryPush(456))
         check(q.tryPush(789))
         check(q.drain() == @[ 123, 456, 789 ])
 
     test "Pushing onto a full queue":
-        var q: RingBuffer[4, int]
+        var q = newRingBuffer[int](4)
         check(q.capacity == 3)
 
         check(q.tryPush(1))
@@ -31,7 +31,7 @@ suite "RingBuffer":
         check(not q.tryPush(5))
 
     test "Wrapping around":
-        var q: RingBuffer[8, int]
+        var q = newRingBuffer[int](8)
 
         for i in 0..<7:
             check(q.tryPush(i))
@@ -41,11 +41,11 @@ suite "RingBuffer":
             require(q.tryPush(i))
 
     test "Popping from an empty ring":
-        var q: RingBuffer[8, int]
+        var q = newRingBuffer[int](8)
         check(q.tryShift().isNone)
 
     test "Stringify":
-        var q: RingBuffer[8, int]
+        var q = newRingBuffer[int](8)
         check($q == "[]")
 
         check q.tryPush(123)
@@ -67,23 +67,18 @@ suite "RingBuffer":
         check($q == "[]")
 
     test "isEmpty":
-        var q: RingBuffer[8, int]
+        var q = newRingBuffer[int](8)
         check(q.isEmpty)
 
         discard q.tryPush(123)
         check(not q.isEmpty)
 
     test "Assert compile errors when size is wrong":
-        var q: RingBuffer[200, int]
-
-        when compiles(q.tryPush(123)):
-            check(false)
-
-        when compiles(q.tryShift()):
-            check(false)
+        expect AssertionDefect:
+            discard newRingBuffer[int](200)
 
     test "Multi-threaded push and shift":
-        var q: RingBuffer[2048, int]
+        var q = newRingBuffer[int](2048)
 
         proc pushIt(value: int) {.gcsafe.} =
             require(q.tryPush(value))
@@ -106,7 +101,7 @@ suite "RingBuffer":
 
     for i in 0..10:
         test "Random push and pop #" & $i:
-            var q: RingBuffer[2048, uint64]
+            var q = newRingBuffer[uint64](2048)
             var length: Atomic[int]
 
             proc act(randomInt: uint64) {.gcsafe.} =
