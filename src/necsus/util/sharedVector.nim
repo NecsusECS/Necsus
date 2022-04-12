@@ -1,4 +1,4 @@
-import macros, sync/spinlock
+import macros, sync/spinlock, arrayblock
 
 ##
 ## Resizable array of values stored in large buckets of memory. The benefit of this
@@ -13,33 +13,26 @@ type
         ## Resizable vector of values
         resizeLock: SpinLock # A SpinLock to work around: https://github.com/nim-lang/Nim/issues/14873
         size: uint
-        buckets: array[32, ptr UncheckedArray[T]]
+        buckets: array[32, ArrayBlock[T]]
 
 proc `=copy`*[T](dest: var SharedVector[T], src: SharedVector[T]) {.error.}
+
+proc `=sink`*[T](dest: var SharedVector[T], src: SharedVector[T]) =
+    dest.size = src.size
+    for i in 0'u..<len(src.buckets):
+        `=sink`(dest.buckets[i], src.buckets[i])
 
 iterator bucketDetails*[T](vector: SharedVector[T]): tuple[index: uint, size: uint] =
     ## Iterate through all the used buckets in this vector, along with their length
     var bucketSize = 1'u
     for bucket in 0'u..<len(vector.buckets):
 
-        if vector.buckets[bucket] == nil:
+        if vector.buckets[bucket].isNil:
             break
 
         yield (bucket, bucketSize)
 
         bucketSize *= 2
-
-proc `=destroy`*[T](vector: var SharedVector[T]) =
-    for (bucket, bucketSize) in vector.bucketDetails:
-        for index in 0..<bucketSize:
-            `=destroy`(vector.buckets[bucket][index])
-        deallocShared(vector.buckets[bucket])
-
-proc allocateArray(typ: typedesc, len: uint): ptr UncheckedArray[typ] =
-    let memsize = uint(sizeof(typ)) * len
-    let mem = allocShared(memsize)
-    mem.zeroMem(memsize)
-    result = cast[ptr UncheckedArray[typ]](mem)
 
 proc reserve*[T](vector: var SharedVector[T], size: uint) =
     ## Ensures this vector can hold at least the given number of elements
@@ -51,8 +44,8 @@ proc reserve*[T](vector: var SharedVector[T], size: uint) =
         var bucketSize = 1'u
 
         while allocated <= size:
-            if vector.buckets[bucket] == nil:
-                vector.buckets[bucket] = allocateArray(T, bucketSize)
+            if vector.buckets[bucket].isNil:
+                vector.buckets[bucket] = newArrayBlock[T](bucketSize)
             allocated += bucketSize
             bucket += 1
             bucketSize *= 2
@@ -98,7 +91,7 @@ template entryRef[T](vector: SharedVector[T], key: uint, allowResize: static boo
     let bucket = determineBucket(key)
     let index = key - (1'u shl bucket) + 1
 
-    if vector.buckets[bucket] == nil:
+    if vector.buckets[bucket].isNil:
         when allowResize:
             reserve(vector, key)
         elif compileOption("boundChecks"):

@@ -1,4 +1,4 @@
-import denseIdxs, options, threading/atomics, hashes, ringbuffer
+import denseIdxs, options, threading/atomics, hashes, ringbuffer, arrayblock
 
 type
     Entry[K, V] = object
@@ -12,18 +12,14 @@ type
         capacity: uint
         used: Atomic[uint]
         recycle: RingBuffer[DenseIdx]
-        dense: ptr UncheckedArray[Entry[K, V]]
-        sparse: ptr UncheckedArray[AtomicDenseIdx]
-
-proc allocateArray(typ: typedesc, len: SomeInteger): ptr UncheckedArray[typ] =
-    let memsize = uint(sizeof(typ)) * len.uint
-    result = cast[ptr UncheckedArray[typ]](allocShared0(memsize))
+        dense: ArrayBlock[Entry[K, V]]
+        sparse: ArrayBlock[AtomicDenseIdx]
 
 proc newFixedSizeTable*[K, V](size: SomeInteger): FixedSizeTable[K, V] =
     ## Instantiates a new FixedSizeTable
     result.capacity = size.uint
-    result.dense = allocateArray(Entry[K, V], size)
-    result.sparse = allocateArray(AtomicDenseIdx, size)
+    result.dense = newArrayBlock[Entry[K, V]](size)
+    result.sparse = newArrayBlock[AtomicDenseIdx](size)
     result.recycle = newRingBuffer[DenseIdx](size)
 
 proc `$`*[K, V](table: var FixedSizeTable[K, V]): string =
@@ -42,12 +38,6 @@ proc `$`*[K, V](table: var FixedSizeTable[K, V]): string =
     result.add("}")
 
 proc `=copy`*[K, V](dest: var FixedSizeTable[K, V], src: FixedSizeTable[K, V]) {.error.}
-
-proc `=destroy`*[K, V](table: var FixedSizeTable[K, V]) =
-    if table.dense != nil:
-        deallocShared(table.dense)
-    if table.sparse != nil:
-        deallocShared(table.sparse)
 
 proc bestIndex[K](key: K, tableSize: uint): uint =
     ## Returns the best index a key can be at for a given chunk
