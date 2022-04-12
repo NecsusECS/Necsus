@@ -110,7 +110,7 @@ window.addEventListener('DOMContentLoaded', main);
       <li><a class="reference" href="#QueryStorage"
     title="QueryStorage[C; M] {.byref.} = object
   filter: QueryFilter[C]
-  members: PackedIntTable[M]
+  members: FixedSizeTable[EntityId, M]
   deleted: EntitySet">QueryStorage</a></li>
 
   </ul>
@@ -175,7 +175,7 @@ window.addEventListener('DOMContentLoaded', main);
   <div class="section" id="6">
 <h1><a class="toc-backref" href="#6">Imports</a></h1>
 <dl class="item">
-<a class="reference external" href="queryFilter.html">queryFilter</a>, <a class="reference external" href="entitySet.html">entitySet</a>, <a class="reference external" href="../util/packedIntTable.html">../util/packedIntTable</a>, <a class="reference external" href="entityId.html">entityId</a>
+<a class="reference external" href="queryFilter.html">queryFilter</a>, <a class="reference external" href="entitySet.html">entitySet</a>, <a class="reference external" href="../util/fixedSizeTable.html">../util/fixedSizeTable</a>, <a class="reference external" href="entityId.html">entityId</a>
 </dl></div>
 <div class="section" id="7">
 <h1><a class="toc-backref" href="#7">Types</a></h1>
@@ -183,7 +183,7 @@ window.addEventListener('DOMContentLoaded', main);
 <div id="QueryStorage">
 <dt><pre><a href="queryStorage.html#QueryStorage"><span class="Identifier">QueryStorage</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">;</span> <span class="Identifier">M</span><span class="Other">]</span> {.<span class="Identifier">byref</span>.} <span class="Other">=</span> <span class="Keyword">object</span>
   <span class="Identifier">filter</span><span class="Other">:</span> <a href="queryFilter.html#QueryFilter"><span class="Identifier">QueryFilter</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span>
-  <span class="Identifier">members</span><span class="Other">:</span> <a href="../util/packedIntTable.html#PackedIntTable"><span class="Identifier">PackedIntTable</span></a><span class="Other">[</span><span class="Identifier">M</span><span class="Other">]</span>
+  <span class="Identifier">members</span><span class="Other">:</span> <a href="../util/fixedSizeTable.html#FixedSizeTable"><span class="Identifier">FixedSizeTable</span></a><span class="Other">[</span><a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">,</span> <span class="Identifier">M</span><span class="Other">]</span>
   <span class="Identifier">deleted</span><span class="Other">:</span> <a href="entitySet.html#EntitySet"><span class="Identifier">EntitySet</span></a>
 </pre></dt>
 <dd>
@@ -263,7 +263,7 @@ Yields the component pointers in a storage object
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2022-02-22 16:07:41 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2022-04-12 03:53:28 UTC</small>
       </div>
     </div>
   </div>

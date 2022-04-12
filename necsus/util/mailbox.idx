@@ -1,0 +1,5 @@
+Mailbox	necsus/util/mailbox.html#Mailbox	mailbox: Mailbox	
+newMailbox	necsus/util/mailbox.html#newMailbox,SomeInteger	mailbox: newMailbox[T](initialSize: SomeInteger): Mailbox[T]	
+send	necsus/util/mailbox.html#send,Mailbox[T],sinkT	mailbox: send[T](mailbox: var Mailbox[T]; message: sink T)	
+items	necsus/util/mailbox.html#items.i,Mailbox[T]	mailbox: items[T](mailbox: var Mailbox[T]): lent T	
+clear	necsus/util/mailbox.html#clear,Mailbox[T]	mailbox: clear[T](mailbox: var Mailbox[T])	

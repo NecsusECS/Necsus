@@ -1,0 +1,9 @@
+RingBuffer	necsus/util/ringbuffer.html#RingBuffer	ringbuffer: RingBuffer	
+newRingBuffer	necsus/util/ringbuffer.html#newRingBuffer,SomeInteger	ringbuffer: newRingBuffer[T](minimumSize: SomeInteger): RingBuffer[T]	
+`=destroy`	necsus/util/ringbuffer.html#=destroy,RingBuffer[T]	ringbuffer: `=destroy`[T](ring: var RingBuffer[T])	
+`$`	necsus/util/ringbuffer.html#$,RingBuffer[T]	ringbuffer: `$`[T](ring: var RingBuffer[T]): string	
+capacity	necsus/util/ringbuffer.html#capacity,RingBuffer[T]	ringbuffer: capacity[T](ring: RingBuffer[T]): uint	
+tryPush	necsus/util/ringbuffer.html#tryPush,RingBuffer[T],sinkT	ringbuffer: tryPush[T](ring: var RingBuffer[T]; value: sink T): bool	
+tryShift	necsus/util/ringbuffer.html#tryShift,RingBuffer[T]	ringbuffer: tryShift[T](ring: var RingBuffer[T]): Option[T]	
+drain	necsus/util/ringbuffer.html#drain,RingBuffer[T]	ringbuffer: drain[T](ring: var RingBuffer[T]): seq[T]	
+isEmpty	necsus/util/ringbuffer.html#isEmpty,RingBuffer[T]	ringbuffer: isEmpty[T](ring: var RingBuffer[T]): bool	
