@@ -56,14 +56,14 @@ type
         size: uint
             ## The length of data being stored
 
-proc newRingBuffer*[T](size: SomeInteger): RingBuffer[T] =
-    result.size = size.uint - 1
+proc newRingBuffer*[T](minimumSize: SomeInteger): RingBuffer[T] =
+    let size = nextPowerOfTwo(minimumSize.int).uint
+    result.size = size - 1
     result.data = cast[ptr UncheckedArray[T]](allocShared0(sizeof(T) * size.int))
 
     # Assuming a size power of 2 N, we can compute X % N as X & mask for any integer. (where & is faster than %).
-    assert(isPowerOfTwo(size.int))
-    result.prodMask = size.uint - 1
-    result.consMask = size.uint - 1
+    result.prodMask = size - 1
+    result.consMask = size - 1
 
 proc `=destroy`*[T](ring: var RingBuffer[T]) =
     for i in 0..ring.size:

@@ -73,9 +73,9 @@ suite "RingBuffer":
         discard q.tryPush(123)
         check(not q.isEmpty)
 
-    test "Assert compile errors when size is wrong":
-        expect AssertionDefect:
-            discard newRingBuffer[int](200)
+    test "Allow ring buffer sizes that aren't a power of 2":
+        var q = newRingBuffer[int](200)
+        check(q.capacity == 255)
 
     test "Multi-threaded push and shift":
         var q = newRingBuffer[int](2048)
