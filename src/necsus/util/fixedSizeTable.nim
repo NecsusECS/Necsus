@@ -44,8 +44,10 @@ proc `$`*[K, V](table: var FixedSizeTable[K, V]): string =
 proc `=copy`*[K, V](dest: var FixedSizeTable[K, V], src: FixedSizeTable[K, V]) {.error.}
 
 proc `=destroy`*[K, V](table: var FixedSizeTable[K, V]) =
-    deallocShared(table.dense)
-    deallocShared(table.sparse)
+    if table.dense != nil:
+        deallocShared(table.dense)
+    if table.sparse != nil:
+        deallocShared(table.sparse)
 
 proc bestIndex[K](key: K, tableSize: uint): uint =
     ## Returns the best index a key can be at for a given chunk
