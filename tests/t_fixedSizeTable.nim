@@ -107,3 +107,19 @@ suite "FixedSizeTable":
         for i in 0..<100:
             require(refs[i][] == $i)
             require(table[i] == $i)
+
+    test "Overfilling a table should throw":
+        var table = newFixedSizeTable[int, string](4)
+
+        for i in 0..<4:
+            table[i] = "foo"
+
+        expect RangeDefect:
+            table[5] = "explode"
+
+    test "Reusing slots after deleting them":
+        var table = newFixedSizeTable[int, string](4)
+
+        for i in 0..<100:
+            table[i] = "foo"
+            table.del(i)

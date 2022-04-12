@@ -1,4 +1,4 @@
-import denseIdxs, options, threading/atomics, hashes
+import denseIdxs, options, threading/atomics, hashes, ringbuffer
 
 type
     Entry[K, V] = object
@@ -11,20 +11,20 @@ type
         ## Lock-free table of values that wont ever resize
         capacity: uint
         used: Atomic[uint]
+        recycle: RingBuffer[DenseIdx]
         dense: ptr UncheckedArray[Entry[K, V]]
         sparse: ptr UncheckedArray[AtomicDenseIdx]
 
 proc allocateArray(typ: typedesc, len: SomeInteger): ptr UncheckedArray[typ] =
     let memsize = uint(sizeof(typ)) * len.uint
-    let mem = allocShared(memsize)
-    mem.zeroMem(memsize)
-    result = cast[ptr UncheckedArray[typ]](mem)
+    result = cast[ptr UncheckedArray[typ]](allocShared0(memsize))
 
 proc newFixedSizeTable*[K, V](size: SomeInteger): FixedSizeTable[K, V] =
     ## Instantiates a new FixedSizeTable
     result.capacity = size.uint
     result.dense = allocateArray(Entry[K, V], size)
     result.sparse = allocateArray(AtomicDenseIdx, size)
+    result.recycle = newRingBuffer[DenseIdx](size)
 
 proc `$`*[K, V](table: var FixedSizeTable[K, V]): string =
     result.add("{")
@@ -72,7 +72,7 @@ template findStoreSlot[K, V](
             let denseEntry = addr table.dense[idx(denseIdx)]
             if denseEntry.key == key:
                 onExisting
-        elif isUnused(denseIdx):
+        else:
             onNew
 
 proc storeNew[K, V](
@@ -83,7 +83,12 @@ proc storeNew[K, V](
     existingDenseIdx: var DenseIdx
 ): ptr V {.inline.} =
 
-    let denseIdx = table.used.fetchAdd(1)
+    let recycled = table.recycle.tryShift()
+    let denseIdx = if recycled.isSome: recycled.unsafeGet.idx else: table.used.fetchAdd(1)
+
+    when compileOption("boundChecks"):
+        if denseIdx >= table.capacity:
+            return nil
 
     let entry = addr table.dense[denseIdx]
     entry.visible = false
@@ -94,7 +99,7 @@ proc storeNew[K, V](
         entry.visible = true
         return addr entry.value
     else:
-        ## TODO: When this fails, it leaves the dense entry we created stranded
+        discard table.recycle.tryPush(denseIdx.asDenseIdx)
         return nil
 
 proc setAndRef*[K, V](table: var FixedSizeTable[K, V], key: K, value: sink V): ptr V =
@@ -112,7 +117,7 @@ proc `[]=`*[K, V](table: var FixedSizeTable[K, V], key: K, value: sink V) =
     let reference = setAndRef(table, key, value)
     when compileOption("boundChecks"):
         if reference == nil:
-            raise newException(KeyError, "Could not set key: " & $key)
+            raise newException(RangeDefect, "Could not set key: " & $key)
 
 template find[K, V](
     table: var FixedSizeTable[K, V],
@@ -158,7 +163,7 @@ proc del*[K, V](table: var FixedSizeTable[K, V], key: K) =
     find(table, key, denseIdx, sparseIdx):
         table.sparse[sparseIdx].store(Tombstoned)
         table.dense[denseIdx.idx] = Entry[K, V](visible: false)
-        # TODO: Recycle the dense index
+        assert(table.recycle.tryPush(denseIdx))
 
 iterator items*[K, V](table: var FixedSizeTable[K, V]): lent V =
     ## Iterate over the values in this table

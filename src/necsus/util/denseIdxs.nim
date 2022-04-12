@@ -52,3 +52,12 @@ proc idx*(index: DenseIdx): DenseIdxInt {.inline.} =
 proc asDenseIdx*(idx: DenseIdxInt): DenseIdx {.inline.} =
     ## Converts an integer to a dense index
     DenseIdx(idx + 2)
+
+proc `$`*(index: DenseIdx): string =
+    ## Stringify a dense index
+    if isUnused(index):
+        "unused"
+    elif isTombstoned(index):
+        "tombstoned"
+    else:
+        `$`(idx(index))
