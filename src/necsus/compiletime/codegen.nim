@@ -1,6 +1,6 @@
 import macros, sequtils, options
 import componentDef, componentEnum, codeGenInfo, directiveSet, monoDirective, grouper, codeGenInfo
-import ../util/packedIntTable, ../runtime/world
+import ../util/fixedSizeTable, ../runtime/[world, entityId]
 
 proc createComponentEnum*(components: ComponentEnum): NimNode =
     ## Creates an enum with an item for every available component
@@ -16,7 +16,7 @@ proc createComponentInstances*(genInfo: CodeGenInfo): NimNode =
         let storageIdent = group.componentStoreIdent
         let storageType = group.asStorageTuple
         result.add quote do:
-            var `storageIdent` = newPackedIntTable[`storageType`](`confIdent`.componentSize)
+            var `storageIdent` = newFixedSizeTable[EntityId, `storageType`](`confIdent`.componentSize)
 
 proc createConfig*(genInfo: CodeGenInfo): NimNode =
     nnkLetSection.newTree(nnkIdentDefs.newTree(`confIdent`, newEmptyNode(), genInfo.config))

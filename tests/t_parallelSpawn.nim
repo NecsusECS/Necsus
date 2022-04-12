@@ -23,7 +23,7 @@ proc assertion(numbers: Query[tuple[number: Num]]) =
 
 proc runner(tick: proc(): void) = tick()
 
-proc myApp() {.necsus(runner, [~setup], [], [~assertion], conf = newNecsusConf()).}
+proc myApp() {.necsus(runner, [~setup], [], [~assertion], conf = newNecsusConf(entitySize = 20_000)).}
 
 for i in 1..10:
     test "parallel spawn #" & $i:

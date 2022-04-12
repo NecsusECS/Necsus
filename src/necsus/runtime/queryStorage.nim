@@ -1,19 +1,19 @@
-import queryFilter, entitySet, ../util/packedIntTable, entityId
+import queryFilter, entitySet, ../util/fixedSizeTable, entityId
 
 type
     QueryStorage*[C: enum, M: tuple] {.byref.} = object
         ## Storage container for query data
         filter: QueryFilter[C]
-        members: PackedIntTable[M]
+        members: FixedSizeTable[EntityId, M]
         deleted: EntitySet
 
 proc newQueryStorage*[C, M](initialSize: int, filter: QueryFilter[C]): QueryStorage[C, M] =
     ## Creates a storage container for query data
-    QueryStorage[C, M](filter: filter, members: newPackedIntTable[M](initialSize), deleted: newEntitySet())
+    QueryStorage[C, M](filter: filter, members: newFixedSizeTable[EntityId, M](initialSize), deleted: newEntitySet())
 
 proc addToQuery*[C, M](storage: var QueryStorage[C, M], entityId: EntityId, componentRefs: sink M) =
     ## Registers an entity with this query
-    storage.members[entityId.int32] = componentRefs
+    storage.members[entityId] = componentRefs
     storage.deleted -= entityId
 
 proc removeFromQuery*[C, M](storage: var QueryStorage[C, M], entityId: EntityId) =
@@ -23,7 +23,7 @@ proc removeFromQuery*[C, M](storage: var QueryStorage[C, M], entityId: EntityId)
 proc updateEntity*[C, M](storage: var QueryStorage[C, M], entityId: EntityId, components: set[C]): bool =
     ## Evaluates an entity against this query. Returns true if the entity needs to be added to this query
     let shouldBeInQuery = storage.filter.evaluate(components)
-    let isInQuery = (entityId.int32 in storage.members) and (entityId notin storage.deleted)
+    let isInQuery = (entityId in storage.members) and (entityId notin storage.deleted)
     if isInQuery and not shouldBeInQuery:
         storage.removeFromQuery(entityId)
     return shouldBeInQuery and not isInQuery
@@ -38,5 +38,5 @@ iterator values*[C, M](storage: var QueryStorage[C, M]): (EntityId, M) =
 proc finalizeDeletes*[C, M](query: var QueryStorage[C, M]) =
     ## Removes any entities that are pending deletion from this query
     for entityId in items(query.deleted):
-        query.members.del(entityId.int32)
+        query.members.del(entityId)
     query.deleted.clear()

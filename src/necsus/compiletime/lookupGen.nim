@@ -1,5 +1,5 @@
 import tupleDirective, directiveSet, codeGenInfo, macros, sequtils, options, grouper, componentDef
-import ../util/packedIntTable
+import ../util/fixedSizeTable
 
 let entityId {.compileTime.} = ident("entityId")
 
@@ -17,7 +17,7 @@ proc createLookupBody(codeGenInfo: CodeGenInfo, lookup: LookupDef): NimNode =
     for group in codeGenInfo.groups(lookup):
         let compStore = group.componentStoreIdent
         allComponentsExist = quote:
-            `allComponentsExist` and contains(`compStore`, int32(`entityId`))
+            `allComponentsExist` and contains(`compStore`, `entityId`)
 
     # Grab references for all storage variables for all the components we care about
     var getGroupInstances = newStmtList()
@@ -25,7 +25,7 @@ proc createLookupBody(codeGenInfo: CodeGenInfo, lookup: LookupDef): NimNode =
         let compStore = group.componentStoreIdent
         let groupIdent = group.localIdent
         getGroupInstances.add quote do:
-            let `groupIdent` = getPointer(`compStore`, int32(`entityId`))
+            let `groupIdent` = addr `compStore`[`entityId`]
 
     # Code to instantiate a tuple of components
     var instantiateTuple = nnkTupleConstr.newTree()

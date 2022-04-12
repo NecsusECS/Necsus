@@ -1,6 +1,6 @@
 import macros, sequtils, sets, tables
 import tupleDirective, directiveSet, codeGenInfo, componentDef, queryGen, grouper
-import ../runtime/[query, world, queryStorage], ../util/packedIntTable
+import ../runtime/[query, world, queryStorage], ../util/fixedSizeTable
 
 let comps {.compileTime.} = ident("comps")
 
@@ -28,7 +28,7 @@ proc storeComponents(codeGenInfo: CodeGenInfo, entityId: NimNode, directive: Spa
             storageTuple.add(nnkBracketExpr.newTree(comps, newLit(componentMap[component])))
 
         result.add quote do:
-            let `groupIdent` = setAndRef(`compStoreIdent`, `entityId`.int32, `storageTuple`)
+            let `groupIdent` = setAndRef(`compStoreIdent`, `entityId`, `storageTuple`)
 
 proc createLocalComponentTuple(codeGenInfo: CodeGenInfo, query: QueryDef): NimNode =
     ## Creates a tuple constructor for instantiating local references to components
@@ -88,7 +88,7 @@ proc registerAttachComponents(
             let compStore = group.componentStoreIdent
             let localIdent = group.localIdent
             getExtraComponents.add quote do:
-                let `localIdent` = getRef(`compStore`, `entityId`.int32)
+                let `localIdent` = addr `compStore`[`entityId`]
 
         result.add quote do:
             if updateEntity(`queryIdent`, `entityId`, `componentEnum`):

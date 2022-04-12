@@ -1,5 +1,5 @@
 import tupleDirective, directiveSet, codeGenInfo, macros, componentEnum, sequtils, sets, componentDef, grouper
-import ../runtime/[queryFilter, queryStorage], ../util/packedIntTable
+import ../runtime/[queryFilter, queryStorage], ../util/fixedSizeTable
 
 proc queryStorageIdent*(queryName: string): NimNode =
     ## Creates an ident for referencing the storage of a query
@@ -24,7 +24,7 @@ proc createStorageTupleType(codeGenInfo: CodeGenInfo, query: QueryDef): NimNode 
     for (group, isOptional) in codeGenInfo.queryGroups(query):
         if not isOptional:
             let groupType = group.asStorageTuple
-            result.add quote do: PackedIntTableValue[`groupType`]
+            result.add quote do: ptr `groupType`
 
 proc createQueryFilter(codeGenInfo: CodeGenInfo, query: QueryDef): NimNode =
     ## Creates the code to define a query filter
@@ -73,10 +73,10 @@ proc createCompStoreVariables(codeGenInfo: CodeGenInfo, query: QueryDef): NimNod
         let groupIdent = group.localGroupIdent
         if isOptional:
             result.add quote do:
-                let `groupIdent` = maybeGetPointer(`compStoreIdent`, `eid`.int32)
+                let `groupIdent` = maybeGetPointer(`compStoreIdent`, `eid`)
         else:
             result.add quote do:
-                let `groupIdent` = getPointer(`compStoreIdent`, `members`[`i`])
+                let `groupIdent` = `members`[`i`]
 
 proc optionalCompIdent(comp: ComponentDef): NimNode =
     ## The local variable to use for reading the value of an optional component

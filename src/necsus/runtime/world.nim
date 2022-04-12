@@ -1,4 +1,4 @@
-import entityId, entityMetadata, atomics, query, macros, entitySet, deques, ../util/[packedIntTable, sharedVector]
+import entityId, entityMetadata, atomics, query, macros, entitySet, deques, ../util/[fixedSizeTable, sharedVector]
 
 type
 
@@ -49,10 +49,10 @@ proc getComponents*[C](world: var World[C], entityId: EntityId): set[C] =
 proc deleteEntity*[C](world: var World[C], entityId: EntityId) =
     world.deleted += entityId
 
-proc deleteComponents*[C, T](world: World[C], components: var PackedIntTable[T]) =
+proc deleteComponents*[C, T](world: World[C], components: var FixedSizeTable[EntityId, T]) =
     ## Removes deleted entities from a component table
     for entityId in world.deleted.items:
-        components.del entityId.int32
+        components.del entityId
 
 proc clearDeletedEntities*[C](world: var World[C]) =
     ## Resets the list of deleted entities
