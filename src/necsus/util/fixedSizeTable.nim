@@ -77,6 +77,10 @@ template findStoreSlot[K, V](
         else:
             onNew
 
+proc nextDenseIdx[K, V](table: var FixedSizeTable[K, V]): DenseIdx =
+    let recycled = table.recycle.tryShift()
+    return if recycled.isSome: recycled.unsafeGet else: table.used.fetchAdd(1).asDenseIdx
+
 proc storeNew[K, V](
     table: var FixedSizeTable[K, V],
     key: K,
@@ -85,23 +89,22 @@ proc storeNew[K, V](
     existingDenseIdx: var DenseIdx
 ): ptr V {.inline.} =
 
-    let recycled = table.recycle.tryShift()
-    let denseIdx = if recycled.isSome: recycled.unsafeGet.idx else: table.used.fetchAdd(1)
+    let denseIdx = table.nextDenseIdx
 
     when compileOption("boundChecks"):
-        if denseIdx >= table.capacity:
+        if denseIdx.idx >= table.capacity:
             return nil
 
-    let entry = addr table.dense[denseIdx]
+    let entry = addr table.dense[denseIdx.idx]
     entry.visible = false
     entry.value = value
     entry.key = key
 
-    if compareExchange(sparseEntry[], existingDenseIdx, denseIdx.asDenseIdx):
+    if compareExchange(sparseEntry[], existingDenseIdx, denseIdx):
         entry.visible = true
         return addr entry.value
     else:
-        discard table.recycle.tryPush(denseIdx.asDenseIdx)
+        discard table.recycle.tryPush(denseIdx)
         return nil
 
 proc setAndRef*[K, V](table: var FixedSizeTable[K, V], key: K, value: sink V): ptr V =
