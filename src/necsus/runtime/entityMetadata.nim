@@ -1,7 +1,7 @@
 import entityId
 
 type
-    EntityMetadata*[C: enum] {.byref.} = object
+    EntityMetadata*[C: enum, Q: enum] {.byref.} = object
         ## General data about an entity
         components: set[C]
 
@@ -9,18 +9,18 @@ proc `[]`*[T](s: openarray[T], id: EntityId): T =
     ## Allows indexing into an openarray by directly using an entity id
     s[int(id)]
 
-proc newEntityMetadata*[C](components: set[C]): EntityMetadata[C] =
+proc newEntityMetadata*[C, Q](components: set[C]): EntityMetadata[C, Q] =
     ## Constructor
-    EntityMetadata[C](components: components)
+    EntityMetadata[C, Q](components: components)
 
-proc incl*[C](metadata: var EntityMetadata[C], components: set[C]) =
+proc incl*[C, Q](metadata: var EntityMetadata[C, Q], components: set[C]) =
     ## Adds components to entity metadata
     metadata.components.incl(components)
 
-proc excl*[C](metadata: var EntityMetadata[C], components: set[C]) =
+proc excl*[C, Q](metadata: var EntityMetadata[C, Q], components: set[C]) =
     ## Removes components to entity metadata
     metadata.components.excl(components)
 
-proc components*[C](metadata: EntityMetadata[C]): set[C] =
+proc components*[C, Q](metadata: EntityMetadata[C, Q]): set[C] =
     ## Return components in an entity
     metadata.components

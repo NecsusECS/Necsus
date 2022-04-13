@@ -4,7 +4,7 @@ type
 
     World*[C: enum, Q: enum] = ref object
         ## Contains the data describing the entire world
-        entities: SharedVector[EntityMetadata[C]]
+        entities: SharedVector[EntityMetadata[C, Q]]
         deleted*: EntitySet
         nextEntityId: int
         recycleEntityIds: Deque[EntityId]
@@ -12,7 +12,7 @@ type
 proc newWorld*[C, Q](initialSize: SomeInteger): World[C, Q] =
     ## Creates a new world
     World[C, Q](
-        entities: newSharedVector[EntityMetadata[C]](initialSize.uint),
+        entities: newSharedVector[EntityMetadata[C, Q]](initialSize.uint),
         deleted: newEntitySet(),
         nextEntityId: 0,
         recycleEntityIds: initDeque[EntityId]()
@@ -39,7 +39,7 @@ proc createEntity*[C, Q](world: var World[C, Q], initialComponents: set[C]): Ent
         result = world.recycleEntityIds.popFirst
     else:
         result = EntityId(world.nextEntityId.atomicInc - 1)
-    world.entities[result] = newEntityMetadata[C](initialComponents)
+    world.entities[result] = newEntityMetadata[C, Q](initialComponents)
     # echo "Spawning ", result
 
 proc getComponents*[C, Q](world: var World[C, Q], entityId: EntityId): set[C] =
