@@ -39,3 +39,8 @@ proc `[]=`*[T](ary: ArrayBlock[T], index: SomeInteger, value: sink T) {.inline.}
     ## Write a value to this array block
     ary.checkBounds(index)
     ary.data[index] = value
+
+iterator items*[T](ary: var ArrayBlock[T]): var T =
+    ## Iterate through all values in this array
+    for i in 0..<ary.size:
+        yield ary.data[i]
