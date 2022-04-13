@@ -1,7 +1,7 @@
 import necsus / runtime / [ entityId, query, systemVar, inbox, directives ]
 import necsus / compiletime / [
     parse, codegen, codeGenInfo, queryGen, spawnGen, tickGen,
-    necsusConf, detachGen, sysVarGen, lookupGen, eventGen
+    necsusConf, detachGen, sysVarGen, lookupGen, eventGen, worldEnum
 ]
 import sequtils, macros, options
 
@@ -45,7 +45,7 @@ proc buildApp(
     let codeGenInfo = newCodeGenInfo(name, conf, parsedApp, parsedSystems)
 
     result = newStmtList(
-        codeGenInfo.components.createComponentEnum,
+        codeGenInfo.components.codeGen,
         pragmaProc
     )
 

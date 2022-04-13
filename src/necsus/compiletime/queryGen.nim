@@ -1,4 +1,4 @@
-import tupleDirective, directiveSet, codeGenInfo, macros, componentEnum, sequtils, sets, componentDef, grouper
+import tupleDirective, directiveSet, codeGenInfo, macros, worldEnum, sequtils, sets, componentDef, grouper
 import ../runtime/[queryFilter, queryStorage], ../util/fixedSizeTable
 
 proc queryStorageIdent*(queryName: string): NimNode =

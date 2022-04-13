@@ -1,4 +1,4 @@
-import componentEnum, parse, directiveSet, tupleDirective, monoDirective, componentDef, localDef, grouper
+import worldEnum, parse, directiveSet, tupleDirective, monoDirective, componentDef, localDef, grouper
 import macros, sequtils, options, strutils, sets
 import ../runtime/query
 
@@ -62,10 +62,6 @@ proc newCodeGenInfo*(name: NimNode, config: NimNode, app: ParsedApp, allSystems:
         outboxes: directives[OutboxDef](name, app, allSystems, outboxes),
     )
 
-proc componentEnumVal*(components: ComponentEnum, component: ComponentDef): NimNode =
-    ## Creates a reference to a component enum value
-    nnkDotExpr.newTree(components.enumSymbol, component.name.ident)
-
 proc asTupleType*(args: openarray[DirectiveArg]): NimNode =
     ## Creates a tuple type from a list of components
     result = nnkTupleConstr.newTree()
@@ -80,7 +76,7 @@ proc createComponentEnum*(codeGenInfo: CodeGenInfo, components: openarray[Compon
     ## Creates the tuple needed to store
     result = nnkCurly.newTree()
     for component in components:
-        result.add(codeGenInfo.components.componentEnumVal(component))
+        result.add(codeGenInfo.components.enumRef(component))
 
 proc name*(group: Group[ComponentDef]): string =
     ## Creates a name describing a group, usable in variable names

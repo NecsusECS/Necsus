@@ -1,13 +1,6 @@
 import macros, sequtils, options
-import componentDef, componentEnum, codeGenInfo, directiveSet, monoDirective, grouper, codeGenInfo
+import worldEnum, codeGenInfo, directiveSet, monoDirective, grouper, codeGenInfo
 import ../util/fixedSizeTable, ../runtime/[world, entityId]
-
-proc createComponentEnum*(components: ComponentEnum): NimNode =
-    ## Creates an enum with an item for every available component
-    var componentList = toSeq(components).mapIt(it.name.ident)
-    if componentList.len == 0:
-        componentList.add ident("Dummy")
-    result = newEnum(components.enumSymbol, componentList, public = false, pure = true)
 
 proc createComponentInstances*(genInfo: CodeGenInfo): NimNode =
     ## Creates the variables for component storage
