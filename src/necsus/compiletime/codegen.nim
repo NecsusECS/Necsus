@@ -16,8 +16,9 @@ proc createConfig*(genInfo: CodeGenInfo): NimNode =
 
 proc createWorldInstance*(genInfo: CodeGenInfo): NimNode =
     let componentEnum = genInfo.components.enumSymbol
+    let queryEnum = genInfo.queryEnum.enumSymbol
     result = quote:
-        var `worldIdent` = newWorld[`componentEnum`](`confIdent`.entitySize)
+        var `worldIdent` = newWorld[`componentEnum`, `queryEnum`](`confIdent`.entitySize)
 
 proc createAppReturn*(genInfo: CodeGenInfo): NimNode =
     if genInfo.app.returns.isSome:
