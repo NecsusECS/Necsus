@@ -8,6 +8,7 @@ type CodeGenInfo* = object
     app*: ParsedApp
     systems*: seq[ParsedSystem]
     components*: ComponentEnum
+    queryEnum*: QueryEnum
     compGroups*: GroupTable[ComponentDef]
     queries*: DirectiveSet[QueryDef]
     spawns*: DirectiveSet[SpawnDef]
@@ -50,6 +51,7 @@ proc newCodeGenInfo*(name: NimNode, config: NimNode, app: ParsedApp, allSystems:
         app: app,
         systems: allSystems.toSeq,
         components: componentEnum(name.strVal, app, allSystems),
+        queryEnum: queryEnum(name.strVal, app, allSystems),
         compGroups: calculateGroups(app, allSystems),
         queries: directives[QueryDef](name, app, allSystems, queries),
         spawns: directives[SpawnDef](name, app, allSystems, spawns),

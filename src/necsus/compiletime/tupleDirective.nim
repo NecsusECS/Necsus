@@ -21,6 +21,10 @@ proc `==`*(a, b: DirectiveArg): auto =
     ## Compare two Directive instances
     (a.isPointer == b.isPointer) and (a.component == b.component)
 
+proc `<`*(a, b: DirectiveArg): auto =
+    ## Allow deterministic sorting of directives
+    (a.component < b.component) or (a.isPointer < b.isPointer) or (a.kind < b.kind)
+
 proc hash*(arg: DirectiveArg): Hash = hash(arg.component)
     ## Generate a unique hash
 
@@ -38,6 +42,17 @@ template createDirective(typ: untyped) =
         ## Compare two Directive instances
         a.args == b.args
 
+    proc `<`*(a, b: typ): auto =
+        ## Compare two Directive instances
+        if a.args.len < b.args.len:
+            return true
+        for i in 0..<b.args.len:
+            if a.args[i] < b.args[i]:
+                return true
+            elif a.args[i] != b.args[i]:
+                return false
+        return false
+
     iterator items*(directive: typ): ComponentDef =
         ## Produce all components in a directive
         for arg in directive.args: yield arg.component
@@ -49,6 +64,10 @@ template createDirective(typ: untyped) =
     proc generateName*(directive: typ): string =
         ## Produces a readable name describing this directive
         directive.items.toSeq.generateName
+
+    proc name*(directive: typ): string =
+        ## Produces a readable name describing this directive
+        directive.generateName
 
     proc hash*(directive: typ): Hash = hash(directive.args)
 
