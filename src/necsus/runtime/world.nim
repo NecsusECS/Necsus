@@ -42,6 +42,10 @@ proc createEntity*[C, Q](world: var World[C, Q], initialComponents: sink set[C])
     world.entities[result].initEntityMetadata(initialComponents)
     # echo "Spawning ", result
 
+proc metadata*[C, Q](world: ptr World[C, Q], entityId: EntityId): var EntityMetadata[C, Q] =
+    ## Returns the metadata for an entity
+    world.entities[entityId]
+
 proc getComponents*[C, Q](world: var World[C, Q], entityId: EntityId): set[C] =
     ## Returns all the set components for an entity
     world.entities[result].components

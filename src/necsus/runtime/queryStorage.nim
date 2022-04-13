@@ -1,42 +1,47 @@
-import queryFilter, entitySet, ../util/fixedSizeTable, entityId
+import queryFilter, entitySet, entityId, options, ../util/blockstore, world, entityMetadata
 
 type
-    QueryStorage*[C: enum, M: tuple] {.byref.} = object
+    QueryEntry*[M: tuple] = tuple[entityId: EntityId, data: M]
+        ## An individually stored value in a query
+
+    QueryStorage*[C: enum, Q: enum, M: tuple] {.byref.} = object
         ## Storage container for query data
+        world: ptr World[C, Q]
+        queryType: Q
         filter: QueryFilter[C]
-        members: FixedSizeTable[EntityId, M]
-        deleted: EntitySet
+        members: BlockStore[QueryEntry[M]]
 
-proc newQueryStorage*[C, M](initialSize: int, filter: QueryFilter[C]): QueryStorage[C, M] =
+proc newQueryStorage*[C, Q, M](
+    queryType: Q,
+    initialSize: int,
+    filter: QueryFilter[C],
+    world: ptr World[C, Q]
+): QueryStorage[C, Q, M] =
     ## Creates a storage container for query data
-    QueryStorage[C, M](filter: filter, members: newFixedSizeTable[EntityId, M](initialSize), deleted: newEntitySet())
+    result.queryType = queryType
+    result.filter = filter
+    result.members = newBlockStore[QueryEntry[M]](initialSize)
+    result.world = world
 
-proc addToQuery*[C, M](storage: var QueryStorage[C, M], entityId: EntityId, componentRefs: sink M) =
+proc addToQuery*[C, Q, M](storage: var QueryStorage[C, Q, M], entityId: EntityId, componentRefs: sink M) =
     ## Registers an entity with this query
-    storage.members[entityId] = componentRefs
-    storage.deleted -= entityId
+    let index = storage.members.push((entityId, componentRefs))
+    storage.world.metadata(entityId).setQueryIndex(storage.queryType, index)
 
-proc removeFromQuery*[C, M](storage: var QueryStorage[C, M], entityId: EntityId) =
+proc removeFromQuery*[C, Q, M](storage: var QueryStorage[C, Q, M], entityId: EntityId) =
     ## Removes an entity from this query
-    storage.deleted += entityId
+    storage.world.metadata(entityId).removeQueryIndex(storage.queryType):
+        storage.members.del(index)
 
-proc updateEntity*[C, M](storage: var QueryStorage[C, M], entityId: EntityId, components: set[C]): bool =
+proc updateEntity*[C, Q, M](storage: var QueryStorage[C, Q, M], entityId: EntityId, components: set[C]): bool =
     ## Evaluates an entity against this query. Returns true if the entity needs to be added to this query
     let shouldBeInQuery = storage.filter.evaluate(components)
-    let isInQuery = (entityId in storage.members) and (entityId notin storage.deleted)
+    let isInQuery = storage.world.metadata(entityId).isInQuery(storage.queryType)
     if isInQuery and not shouldBeInQuery:
         storage.removeFromQuery(entityId)
     return shouldBeInQuery and not isInQuery
 
-iterator values*[C, M](storage: var QueryStorage[C, M]): (EntityId, M) =
+iterator values*[C, Q, M](storage: var QueryStorage[C, Q, M]): QueryEntry[M] =
     ## Yields the component pointers in a storage object
-    for (eid, components) in storage.members.pairs:
-        let entity = EntityId(eid)
-        if entity notin storage.deleted:
-            yield (entity, components)
-
-proc finalizeDeletes*[C, M](query: var QueryStorage[C, M]) =
-    ## Removes any entities that are pending deletion from this query
-    for entityId in items(query.deleted):
-        query.members.del(entityId)
-    query.deleted.clear()
+    for entry in storage.members.items:
+        yield entry

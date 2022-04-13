@@ -1,6 +1,6 @@
 import macros, times, sequtils
-import codeGenInfo, parse, directiveSet, tupleDirective, monoDirective, queryGen, localDef, eventGen, grouper
-import ../runtime/[world, queryStorage]
+import codeGenInfo, parse, directiveSet, tupleDirective, monoDirective, localDef, eventGen, grouper
+import ../runtime/world
 
 let timeDelta {.compileTime.} = ident("timeDelta")
 let timeElapsed {.compileTime.} = ident("timeElapsed")
@@ -42,13 +42,6 @@ proc callSystems(codeGenInfo: CodeGenInfo, systems: openarray[ParsedSystem]): Ni
 proc createDelteFinalizers(codeGenInfo: CodeGenInfo): NimNode =
     ## Creates method calls to process deleted entities
     result = newStmtList()
-
-    # Delete entities out of queries
-    for (name, query) in codeGenInfo.queries:
-        if codeGenInfo.canQueryExecute(query):
-            let queryStorage = name.queryStorageIdent
-            result.add quote do:
-                finalizeDeletes(`queryStorage`)
 
     # Delete entities out of components
     for group in codeGenInfo.compGroups:

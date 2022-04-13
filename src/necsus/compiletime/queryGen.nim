@@ -51,11 +51,18 @@ proc createQueryStorageInstance(codeGenInfo: CodeGenInfo, queryName: string, que
     ## Creates code for instantiating a query storage instance
     let varName = queryName.queryStorageIdent
     let componentEnum = codeGenInfo.components.enumSymbol
+    let queryEnum = codeGenInfo.queryEnum.enumSymbol
+    let queryType = codeGenInfo.queryEnum.enumRef(query)
     let tupleType = codeGenInfo.createStorageTupleType(query)
     let queryFilter = codeGenInfo.createQueryFilter(query)
 
     return quote:
-        var `varName` = newQueryStorage[`componentEnum`, `tupleType`](`confIdent`.componentSize, `queryFilter`)
+        var `varName` = newQueryStorage[`componentEnum`, `queryEnum`, `tupleType`](
+            `queryType`,
+            `confIdent`.componentSize,
+            `queryFilter`,
+            addr `worldIdent`
+        )
 
 
 let eid {.compileTime.} = ident("eid")
