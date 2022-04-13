@@ -9,9 +9,9 @@ proc `[]`*[T](s: openarray[T], id: EntityId): T =
     ## Allows indexing into an openarray by directly using an entity id
     s[int(id)]
 
-proc newEntityMetadata*[C, Q](components: set[C]): EntityMetadata[C, Q] =
+proc initEntityMetadata*[C, Q](metadata: var EntityMetadata[C, Q], components: set[C]) {.inline.} =
     ## Constructor
-    EntityMetadata[C, Q](components: components)
+    metadata.components = components
 
 proc incl*[C, Q](metadata: var EntityMetadata[C, Q], components: set[C]) =
     ## Adds components to entity metadata

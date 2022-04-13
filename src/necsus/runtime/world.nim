@@ -33,13 +33,13 @@ proc detachComponents*[C, Q](world: var World[C, Q], entity: EntityId, component
     ## Associates a given set of entities with a component
     world.entities[entity].excl(components)
 
-proc createEntity*[C, Q](world: var World[C, Q], initialComponents: set[C]): EntityId =
+proc createEntity*[C, Q](world: var World[C, Q], initialComponents: sink set[C]): EntityId =
     ## Create a new entity in the given world
     if world.recycleEntityIds.len > 0:
         result = world.recycleEntityIds.popFirst
     else:
         result = EntityId(world.nextEntityId.atomicInc - 1)
-    world.entities[result] = newEntityMetadata[C, Q](initialComponents)
+    world.entities[result].initEntityMetadata(initialComponents)
     # echo "Spawning ", result
 
 proc getComponents*[C, Q](world: var World[C, Q], entityId: EntityId): set[C] =
