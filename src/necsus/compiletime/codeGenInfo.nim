@@ -19,6 +19,7 @@ type CodeGenInfo* = object
     outboxes*: DirectiveSet[OutboxDef]
     components*: ComponentEnum
     queryEnum*: QueryEnum
+    compGroupEnum*: CompGroupEnum
 
 template directives[T](name: NimNode, app: ParsedApp, allSystems: openarray[ParsedSystem], extract: untyped): auto =
     ## Creates a directive set for a specific type of directive
@@ -61,6 +62,7 @@ proc newCodeGenInfo*(name: NimNode, config: NimNode, app: ParsedApp, allSystems:
     result.outboxes = directives[OutboxDef](name, app, allSystems, outboxes)
     result.components = componentEnum(name.strVal, app, allSystems)
     result.queryEnum = queryEnum(name.strVal, result.queries)
+    result.compGroupEnum = compGroupEnum(name.strVal, result.compGroups)
 
 proc asTupleType*(args: openarray[DirectiveArg]): NimNode =
     ## Creates a tuple type from a list of components

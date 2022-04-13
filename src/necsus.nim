@@ -47,6 +47,7 @@ proc buildApp(
     result = newStmtList(
         codeGenInfo.components.codeGen,
         codeGenInfo.queryEnum.codeGen,
+        codeGenInfo.compGroupEnum.codeGen,
         pragmaProc
     )
 
