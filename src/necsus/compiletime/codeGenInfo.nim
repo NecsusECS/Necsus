@@ -7,8 +7,6 @@ type CodeGenInfo* = object
     config*: NimNode
     app*: ParsedApp
     systems*: seq[ParsedSystem]
-    components*: ComponentEnum
-    queryEnum*: QueryEnum
     compGroups*: GroupTable[ComponentDef]
     queries*: DirectiveSet[QueryDef]
     spawns*: DirectiveSet[SpawnDef]
@@ -19,6 +17,8 @@ type CodeGenInfo* = object
     lookups*: DirectiveSet[LookupDef]
     inboxes*: DirectiveSet[InboxDef]
     outboxes*: DirectiveSet[OutboxDef]
+    components*: ComponentEnum
+    queryEnum*: QueryEnum
 
 template directives[T](name: NimNode, app: ParsedApp, allSystems: openarray[ParsedSystem], extract: untyped): auto =
     ## Creates a directive set for a specific type of directive
@@ -46,23 +46,21 @@ proc calculateGroups(app: ParsedApp, allSystems: openarray[ParsedSystem]): Group
 
 proc newCodeGenInfo*(name: NimNode, config: NimNode, app: ParsedApp, allSystems: openarray[ParsedSystem]): CodeGenInfo =
     ## Collects data needed for code gen from all the parsed systems
-    CodeGenInfo(
-        config: config,
-        app: app,
-        systems: allSystems.toSeq,
-        components: componentEnum(name.strVal, app, allSystems),
-        queryEnum: queryEnum(name.strVal, app, allSystems),
-        compGroups: calculateGroups(app, allSystems),
-        queries: directives[QueryDef](name, app, allSystems, queries),
-        spawns: directives[SpawnDef](name, app, allSystems, spawns),
-        attaches: directives[AttachDef](name, app, allSystems, attaches),
-        detaches: directives[DetachDef](name, app, allSystems, detaches),
-        locals: directives[LocalDef](name, app, allSystems, locals),
-        shared: directives[SharedDef](name, app, allSystems, shared),
-        lookups: directives[LookupDef](name, app, allSystems, lookups),
-        inboxes: directives[InboxDef](name, app, allSystems, inboxes),
-        outboxes: directives[OutboxDef](name, app, allSystems, outboxes),
-    )
+    result.config = config
+    result.app = app
+    result.systems = allSystems.toSeq
+    result.compGroups = calculateGroups(app, allSystems)
+    result.queries = directives[QueryDef](name, app, allSystems, queries)
+    result.spawns = directives[SpawnDef](name, app, allSystems, spawns)
+    result.attaches = directives[AttachDef](name, app, allSystems, attaches)
+    result.detaches = directives[DetachDef](name, app, allSystems, detaches)
+    result.locals = directives[LocalDef](name, app, allSystems, locals)
+    result.shared = directives[SharedDef](name, app, allSystems, shared)
+    result.lookups = directives[LookupDef](name, app, allSystems, lookups)
+    result.inboxes = directives[InboxDef](name, app, allSystems, inboxes)
+    result.outboxes = directives[OutboxDef](name, app, allSystems, outboxes)
+    result.components = componentEnum(name.strVal, app, allSystems)
+    result.queryEnum = queryEnum(name.strVal, result.queries)
 
 proc asTupleType*(args: openarray[DirectiveArg]): NimNode =
     ## Creates a tuple type from a list of components

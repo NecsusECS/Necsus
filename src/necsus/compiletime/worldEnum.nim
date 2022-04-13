@@ -1,4 +1,4 @@
-import componentDef, parse, algorithm, sequtils, macros, tupleDirective
+import componentDef, parse, algorithm, sequtils, macros, tupleDirective, directiveSet
 
 type
     WorldEnum*[T] = object
@@ -20,10 +20,9 @@ proc componentEnum*(prefix: string, app: ParsedApp, systems: openarray[ParsedSys
     let uniqueComponents = concat(app.components.toSeq, systems.components.toSeq).sorted.deduplicate
     return ComponentEnum(enumSymbol: ident(prefix & "Components"), values: uniqueComponents)
 
-proc queryEnum*(prefix: string, app: ParsedApp, systems: openarray[ParsedSystem]): QueryEnum =
+proc queryEnum*(prefix: string, queries: DirectiveSet[QueryDef]): QueryEnum =
     ## Pulls all unique components from a set of parsed systems
-    let uniqueQueries = concat(app.queries.toSeq, systems.queries.toSeq).sorted.deduplicate
-    return QueryEnum(enumSymbol: ident(prefix & "Queries"), values: uniqueQueries)
+    return QueryEnum(enumSymbol: ident(prefix & "Queries"), values: queries.items.toSeq.mapIt(it.value))
 
 iterator items*[T](worldEnum: WorldEnum[T]): T =
     ## Iterates over all elements in a component set
