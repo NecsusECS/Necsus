@@ -52,12 +52,13 @@ proc createQueryStorageInstance(codeGenInfo: CodeGenInfo, queryName: string, que
     let varName = queryName.queryStorageIdent
     let componentEnum = codeGenInfo.components.enumSymbol
     let queryEnum = codeGenInfo.queryEnum.enumSymbol
+    let groupEnum = codeGenInfo.compGroupEnum.enumSymbol
     let queryType = codeGenInfo.queryEnum.enumRef(query)
     let tupleType = codeGenInfo.createStorageTupleType(query)
     let queryFilter = codeGenInfo.createQueryFilter(query)
 
     return quote:
-        var `varName` = newQueryStorage[`componentEnum`, `queryEnum`, `tupleType`](
+        var `varName` = newQueryStorage[`componentEnum`, `queryEnum`, `groupEnum`, `tupleType`](
             `queryType`,
             `confIdent`.componentSize,
             `queryFilter`,
