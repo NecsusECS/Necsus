@@ -1,7 +1,7 @@
-import necsus / runtime / [ entityId, query, systemVar, inbox, directives ]
+import necsus / runtime / [ entityId, query, systemVar, inbox, directives, necsusConf ]
 import necsus / compiletime / [
     parse, codegen, codeGenInfo, queryGen, spawnGen, tickGen,
-    necsusConf, detachGen, sysVarGen, lookupGen, eventGen, worldEnum
+    detachGen, sysVarGen, lookupGen, eventGen, worldEnum
 ]
 import sequtils, macros, options
 
