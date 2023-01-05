@@ -1,6 +1,5 @@
 import macros, times, sequtils
-import codeGenInfo, parse, directiveSet, tupleDirective, monoDirective, localDef, eventGen, grouper
-import ../runtime/world
+import codeGenInfo, parse, directiveSet, tupleDirective, monoDirective, localDef, eventGen
 
 let timeDelta {.compileTime.} = ident("timeDelta")
 let timeElapsed {.compileTime.} = ident("timeElapsed")
@@ -39,15 +38,15 @@ proc callSystems(codeGenInfo: CodeGenInfo, systems: openarray[ParsedSystem]): Ni
     for system in systems:
         result.add(newCall(ident(system.symbol), codeGenInfo.renderSystemArgs(system.args)))
 
-proc createDelteFinalizers(codeGenInfo: CodeGenInfo): NimNode =
-    ## Creates method calls to process deleted entities
-    result = newStmtList()
-
-    # Delete entities out of components
-    for group in codeGenInfo.compGroups:
-        let storageIdent = group.componentStoreIdent
-        result.add quote do:
-            deleteComponents(`worldIdent`, `storageIdent`)
+# proc createDelteFinalizers(codeGenInfo: CodeGenInfo): NimNode =
+#     ## Creates method calls to process deleted entities
+#     result = newStmtList()
+#
+#     # Delete entities out of components
+#     for group in codeGenInfo.compGroups:
+#         let storageIdent = group.componentStoreIdent
+#         result.add quote do:
+#             deleteComponents(`worldIdent`, `storageIdent`)
 
 proc callTick(codeGenInfo: CodeGenInfo, runner: NimNode, body: NimNode): NimNode =
     ## Creates the code to invoke the runner
@@ -62,7 +61,7 @@ proc createTickRunner*(codeGenInfo: CodeGenInfo, runner: NimNode): NimNode =
     let loopSystems = codeGenInfo.callSystems(codeGenInfo.systems.filterIt(it.phase == LoopPhase))
     let teardown = codeGenInfo.callSystems(codeGenInfo.systems.filterIt(it.phase == TeardownPhase))
     let resetEvents = codeGenInfo.createEventResets()
-    let deleteFinalizers = codeGenInfo.createDelteFinalizers()
+    # let deleteFinalizers = codeGenInfo.createDelteFinalizers()
     let lastTime = ident("lastTime")
     let thisTime = ident("thisTime")
     let startTime = ident("startTime")
@@ -78,8 +77,6 @@ proc createTickRunner*(codeGenInfo: CodeGenInfo, runner: NimNode): NimNode =
             block:
                 `loopSystems`
             `lastTime` = `thisTime`
-            `deleteFinalizers`
-            clearDeletedEntities(world)
     )
 
     result = quote do:

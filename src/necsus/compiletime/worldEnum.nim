@@ -1,4 +1,4 @@
-import componentDef, parse, algorithm, sequtils, macros, tupleDirective, directiveSet, grouper
+import componentDef, parse, algorithm, sequtils, macros, tupleDirective, directiveSet, archetypeBuilder
 
 type
     WorldEnum*[T] = object
@@ -6,17 +6,21 @@ type
         enumSymbol: NimNode
         values: seq[T]
 
+    ArchetypeEnum* = WorldEnum[Archetype[ComponentDef]]
+        ## An enum describing the different archetypes in a world
+
     ComponentEnum* = WorldEnum[ComponentDef]
         ## An enum where every component in an app has a value
 
     QueryEnum* = WorldEnum[QueryDef]
         ## An enum where every query in an app has a value
 
-    CompGroupEnum* = WorldEnum[Group[ComponentDef]]
-        ## An enum where every entity represents one of the groups of enums
-
 proc enumSymbol*[T](worldEnum: WorldEnum[T]): auto = worldEnum.enumSymbol
     ## Returns the symbol used to reference an enum in code
+
+proc archetypeEnum*(prefix: string, archetypes: ArchetypeSet[ComponentDef]): ArchetypeEnum =
+    ## Creates a set of unique enums from the various archetypes
+    ArchetypeEnum(enumSymbol: ident(prefix & "Archetypes"), values: archetypes.items.toSeq)
 
 proc componentEnum*(prefix: string, app: ParsedApp, systems: openarray[ParsedSystem]): ComponentEnum =
     ## Pulls all unique components from a set of parsed systems
@@ -26,10 +30,6 @@ proc componentEnum*(prefix: string, app: ParsedApp, systems: openarray[ParsedSys
 proc queryEnum*(prefix: string, queries: DirectiveSet[QueryDef]): QueryEnum =
     ## Pulls all unique components from a set of parsed systems
     return QueryEnum(enumSymbol: ident(prefix & "Queries"), values: queries.items.toSeq.mapIt(it.value))
-
-proc compGroupEnum*(prefix: string, groups: GroupTable[ComponentDef]): CompGroupEnum =
-    ## Creates an enum for all the component groups
-    return CompGroupEnum(enumSymbol: ident(prefix & "CompGroups"), values: groups.items.toSeq)
 
 iterator items*[T](worldEnum: WorldEnum[T]): T =
     ## Iterates over all elements in a component set

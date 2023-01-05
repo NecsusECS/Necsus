@@ -1,4 +1,5 @@
-import unittest, necsus, sequtils
+import unittest, sequtils, necsus
+import std/[math, times], necsus/runtime/[world, archetypeStore]
 
 type
     Person = object
@@ -7,9 +8,10 @@ type
     Age = object
         age*: int
 
-proc setup1(spawn: Spawn[(Person, Name)]) =
+proc setup1(spawn: Spawn[(Person, Name)], spawnAll: Spawn[(Person, Name, Age)]) =
     discard spawn((Person(), Name(name: "Jack")))
     discard spawn((Person(), Name(name: "Jill")))
+    discard spawnAll((Person(), Name(name: "John"), Age(age: 40)))
 
 proc setup2(spawnAge: Spawn[(Age, )], spawnPerson: Spawn[(Person, )]) =
     discard spawnAge((Age(age: 39), ))
@@ -24,11 +26,9 @@ proc assertion(
     ages: Query[tuple[age: Age, ]],
     all: Query[tuple[person: Person, name: Name, age: Age]]
 ) =
-    echo "starting assertion"
-
-    check(toSeq(people.items).mapIt(it.name.name) == @["Jack", "Jill", "Joe"])
-    check(toSeq(ages.items).mapIt(it.age.age) == @[39])
-    check(toSeq(all.items).len == 0)
+    check(toSeq(people.items).mapIt(it.name.name) == @["Jack", "Jill", "Joe", "John"])
+    check(toSeq(ages.items).mapIt(it.age.age) == @[40, 39])
+    check(toSeq(all.items).mapIt(it.name.name) == @["John"])
 
 proc runner(tick: proc(): void) =
     tick()

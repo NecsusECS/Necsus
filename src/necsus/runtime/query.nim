@@ -1,23 +1,29 @@
-import entityId
+import entityId, archetypeStore
 
 type
-    QueryItem*[C: tuple] = tuple[entityId: EntityId, components: C]
-        ## An individual value yielded by a query. Where `C` is a tuple of the components to fetch in
+    QueryItem*[Comps: tuple] = tuple[entityId: EntityId, components: Comps]
+        ## An individual value yielded by a query. Where `Comps` is a tuple of the components to fetch in
         ## this query
 
-    Query*[C: tuple] = proc(): iterator(): QueryItem[C]
-        ## Allows systems to query for entities with specific components. Where `C` is a tuple of
+    Query*[Comps: tuple] = object
+        ## Allows systems to query for entities with specific components. Where `Comps` is a tuple of
         ## the components to fetch in this query.
+        archetypes: seq[ArchView[Comps]]
 
-    Not*[C] = distinct int8
-        ## A query flag that indicates a component should be excluded from a query. Where `C` is
+    Not*[Comps] = distinct int8
+        ## A query flag that indicates a component should be excluded from a query. Where `Comps` is
         ## the single component that should be excluded.
 
-iterator pairs*[C: tuple](query: Query[C]): QueryItem[C] =
-    ## Iterates through the entities in a query
-    let iter = query()
-    for pair in iter(): yield pair
+proc newQuery*[Comps: tuple](archetypes: sink seq[ArchView[Comps]]): Query[Comps] =
+    ## Creates a new object for executing a query
+    result.archetypes = archetypes
 
-iterator items*[C: tuple](query: Query[C]): C =
+iterator pairs*[Comps: tuple](query: Query[Comps]): QueryItem[Comps] =
+    ## Iterates through the entities in a query
+    for view in query.archetypes:
+        for entityId, components in view:
+            yield (entityId, components)
+
+iterator items*[Comps: tuple](query: Query[Comps]): Comps =
     ## Iterates through the entities in a query
     for (_, components) in query.pairs: yield components

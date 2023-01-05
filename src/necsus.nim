@@ -1,11 +1,12 @@
-import necsus / runtime / [ entityId, query, systemVar, inbox, directives, necsusConf ]
+import necsus / runtime / [ entityId, query, systemVar, inbox, directives, necsusConf, archetypeStore ]
 import necsus / compiletime / [
-    parse, codegen, codeGenInfo, queryGen, spawnGen, tickGen,
-    detachGen, sysVarGen, lookupGen, eventGen, worldEnum
+    parse, codeGenInfo, codegen, worldEnum, spawnGen, queryGen, tickGen
+    # parse, codegen, codeGenInfo, queryGen, spawnGen, tickGen,
+    # necsusConf, detachGen, sysVarGen, lookupGen, eventGen, worldEnum
 ]
 import sequtils, macros, options
 
-export entityId, query, necsusConf, systemVar, inbox, directives
+export entityId, query, archetypeStore.pairs, necsusConf, systemVar, inbox, directives
 
 type
     SystemFlag* = object
@@ -45,27 +46,26 @@ proc buildApp(
     let codeGenInfo = newCodeGenInfo(name, conf, parsedApp, parsedSystems)
 
     result = newStmtList(
-        codeGenInfo.components.codeGen,
-        codeGenInfo.queryEnum.codeGen,
-        codeGenInfo.compGroupEnum.codeGen,
+        codeGenInfo.archetypeEnum.codeGen,
         pragmaProc
     )
 
     pragmaProc.body = newStmtList(
         codeGenInfo.createConfig(),
         codeGenInfo.createWorldInstance(),
-        codeGenInfo.createComponentInstances(),
-        codeGenInfo.createQueries(),
-        codeGenInfo.createLookups(),
-        codeGenInfo.createSpawns(),
-        codeGenInfo.createAttaches(),
-        codeGenInfo.createDetaches(),
-        codeGenInfo.createDeleteProc(),
-        codeGenInfo.createSharedVars(),
-        codeGenInfo.createLocalVars(),
-        codeGenInfo.createEventDeclarations(),
+        codeGenInfo.createArchetypeInstances(),
+        codeGenInfo.createSpawnProcs(),
+        codeGenInfo.createQueryInstances(),
+        # codeGenInfo.createLookups(),
+        # codeGenInfo.createSpawns(),
+        # codeGenInfo.createAttaches(),
+        # codeGenInfo.createDetaches(),
+        # codeGenInfo.createDeleteProc(),
+        # codeGenInfo.createSharedVars(),
+        # codeGenInfo.createLocalVars(),
+        # codeGenInfo.createEventDeclarations(),
         codeGenInfo.createTickRunner(runner),
-        codeGenInfo.createAppReturn(),
+        # codeGenInfo.createAppReturn(),
     )
 
     when defined(dump):
