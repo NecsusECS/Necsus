@@ -8,6 +8,4 @@ template benchmark*(benchmarkName: string, totalOps: int, code: untyped) =
         echo benchmarkName
         echo "  CPU Time: ", formatFloat(elapsed, ffDecimal, precision = 4), " s"
         echo "  Ops per second: ", formatFloat(float(totalOps) / elapsed, ffDecimal, precision = 2), " op/s"
-        echo "  Op speed: ", formatFloat(elapsed / float(totalOps) * 1_000_000, ffDecimal, precision = 4), " μs/op"
-
-
+        echo "  Op speed: ", formatFloat(elapsed / float(totalOps) * 1_000_000_000, ffDecimal, precision = 2), " ns/op"
