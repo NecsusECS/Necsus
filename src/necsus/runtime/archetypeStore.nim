@@ -23,7 +23,7 @@ proc spawn*[Archs: enum, Comps: tuple](
     world: var World[Archs],
     store: var ArchetypeStore[Comps],
     components: sink Comps
-): EntityId =
+): EntityId {.inline.} =
     ## Spawns an entity in this archetype
     result = world.nextEntityId
     discard store.compStore.push(ArchRow[Comps](entityId: result, components: components))
@@ -38,7 +38,7 @@ proc asView*[ArchetypeComps: tuple, ViewComps: tuple](
             for row in items(input.compStore):
                 yield (row.entityId, convert(addr row.components))
 
-iterator pairs*[ViewComps: tuple](view: ArchView[ViewComps]): (EntityId, ViewComps) =
+iterator pairs*[ViewComps: tuple](view: ArchView[ViewComps]): (EntityId, ViewComps) {.inline.} =
     ## Iterates over the components in a view
     let instance = view.buildIterator()
     for row in instance():
