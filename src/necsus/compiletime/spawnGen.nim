@@ -1,5 +1,5 @@
 import macros, sequtils, sets
-import codegen, codeGenInfo, directiveSet, tupleDirective, archetype, componentDef
+import tools, codeGenInfo, directiveSet, tupleDirective, archetype, componentDef
 import ../runtime/archetypeStore
 
 proc createSpawnProcs*(codeGenInfo: CodeGenInfo): NimNode =

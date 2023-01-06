@@ -30,13 +30,13 @@ proc spawn*[Archs: enum, Comps: tuple](
 
 proc asView*[ArchetypeComps: tuple, ViewComps: tuple](
     input: ArchetypeStore[ArchetypeComps],
-    convert: proc (input: ArchetypeComps): ViewComps
+    convert: proc (input: ptr ArchetypeComps): ViewComps
 ): ArchView[ViewComps] =
     ## Creates an iterable view into this component that uses the given converter
     result.buildIterator = proc(): auto =
         return iterator(): (EntityId, ViewComps) =
             for row in items(input.compStore):
-                yield (row.entityId, convert(row.components))
+                yield (row.entityId, convert(addr row.components))
 
 iterator pairs*[ViewComps: tuple](view: ArchView[ViewComps]): (EntityId, ViewComps) =
     ## Iterates over the components in a view

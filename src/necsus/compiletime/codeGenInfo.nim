@@ -1,6 +1,5 @@
 import worldEnum, parse, directiveSet, tupleDirective, monoDirective, componentDef, localDef, archetypeBuilder
-import macros, sequtils, options, strutils, sets
-import ../runtime/query
+import macros, sequtils, options, sets
 
 type CodeGenInfo* = object
     ## Contains all the information needed to do high level code gen
@@ -58,21 +57,11 @@ proc newCodeGenInfo*(name: NimNode, config: NimNode, app: ParsedApp, allSystems:
     result.archetypes = calculateArchetypes(result.spawns, result.attaches, result.detaches)
     result.archetypeEnum = archetypeEnum(name.strVal, result.archetypes)
 
-proc asTupleType*(args: openarray[DirectiveArg]): NimNode =
-    ## Creates a tuple type from a list of components
-    result = nnkTupleConstr.newTree()
-    for arg in args:
-        let componentIdent = if arg.isPointer: nnkPtrTy.newTree(arg.component.ident) else: arg.component.ident
-        case arg.kind
-        of Include: result.add(componentIdent)
-        of Exclude: result.add(nnkBracketExpr.newTree(bindSym("Not"), componentIdent))
-        of Optional: result.add(nnkBracketExpr.newTree(bindSym("Option"), componentIdent))
-
-proc createComponentEnum*(codeGenInfo: CodeGenInfo, components: openarray[ComponentDef]): NimNode =
-    ## Creates the tuple needed to store
-    result = nnkCurly.newTree()
-    for component in components:
-        result.add(codeGenInfo.components.enumRef(component))
+#proc createComponentEnum*(codeGenInfo: CodeGenInfo, components: openarray[ComponentDef]): NimNode =
+#    ## Creates the tuple needed to store
+#    result = nnkCurly.newTree()
+#    for component in components:
+#        result.add(codeGenInfo.components.enumRef(component))
 
 # proc name*(group: Group[ComponentDef]): string =
 #     ## Creates a name describing a group, usable in variable names
@@ -97,10 +86,10 @@ proc createComponentEnum*(codeGenInfo: CodeGenInfo, components: openarray[Compon
 #                seen.incl group
 #                yield group
 
-proc canQueryExecute*(codeGenInfo: CodeGenInfo, query: QueryDef): bool =
-    ## Returns whether a query will ever be able to return a value
-    # query.toSeq.allIt(it in codeGenInfo.compGroups)
-    true
+#proc canQueryExecute*(codeGenInfo: CodeGenInfo, query: QueryDef): bool =
+#    ## Returns whether a query will ever be able to return a value
+#    # query.toSeq.allIt(it in codeGenInfo.compGroups)
+#    true
 
 ## The variable used to reference the initial size of any structs
 let confIdent* {.compileTime.} = ident("config")

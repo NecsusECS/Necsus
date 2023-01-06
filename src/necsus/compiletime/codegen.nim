@@ -2,17 +2,6 @@ import macros, sequtils, options, tables
 import worldEnum, codeGenInfo, directiveSet, monoDirective, codeGenInfo, archetype
 import ../util/fixedSizeTable, ../runtime/[world, archetypeStore]
 
-proc copyTuple*[T](fromVar: NimNode, fromTuple: openarray[T], toTuple: openarray[T]): NimNode =
-    ## Generates code for copying from one tuple to another
-
-    if fromTuple == toTuple:
-        return fromVar
-
-    var indexes = initTable[T, int](fromTuple.len)
-    for i, fromValue in fromTuple: indexes[fromValue] = i
-
-    result = nnkTupleConstr.newTree(toTuple.mapIt(nnkBracketExpr.newTree(fromVar, newLit(indexes[it]))))
-
 proc createArchetypeInstances*(genInfo: CodeGenInfo): NimNode =
     ## Creates variables for storing archetypes
     result = newStmtList()
