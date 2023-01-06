@@ -1,8 +1,6 @@
 import necsus / runtime / [ entityId, query, systemVar, inbox, directives, necsusConf, archetypeStore ]
 import necsus / compiletime / [
-    parse, codeGenInfo, codegen, worldEnum, spawnGen, queryGen, tickGen
-    # parse, codegen, codeGenInfo, queryGen, spawnGen, tickGen,
-    # necsusConf, detachGen, sysVarGen, lookupGen, eventGen, worldEnum
+    parse, codeGenInfo, worldGen, worldEnum, spawnGen, queryGen, tickGen
 ]
 import sequtils, macros, options
 

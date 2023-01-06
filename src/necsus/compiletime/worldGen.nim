@@ -1,5 +1,5 @@
 import macros, sequtils, options, tables
-import worldEnum, codeGenInfo, directiveSet, monoDirective, codeGenInfo, archetype
+import worldEnum, codeGenInfo, directiveSet, monoDirective, codeGenInfo, archetype, commonVars
 import ../util/fixedSizeTable, ../runtime/[world, archetypeStore]
 
 proc createArchetypeInstances*(genInfo: CodeGenInfo): NimNode =

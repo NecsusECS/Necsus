@@ -1,4 +1,4 @@
-import macros, strutils, codeGenInfo, sequtils, directiveSet, monoDirective, nimNode, ../util/mailbox
+import macros, strutils, codeGenInfo, sequtils, directiveSet, monoDirective, nimNode, ../util/mailbox, commonVars
 
 proc eventStorageIdent(event: InboxDef | OutboxDef | NimNode): NimNode =
     ## Returns the name of the identifier that holds the storage for an event

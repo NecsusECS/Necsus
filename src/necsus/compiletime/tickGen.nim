@@ -1,5 +1,5 @@
 import macros, times, sequtils
-import codeGenInfo, parse, directiveSet, tupleDirective, monoDirective, localDef, eventGen
+import codeGenInfo, parse, directiveSet, tupleDirective, monoDirective, localDef, eventGen, commonVars
 
 let timeDelta {.compileTime.} = ident("timeDelta")
 let timeElapsed {.compileTime.} = ident("timeElapsed")
