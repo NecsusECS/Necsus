@@ -1,6 +1,6 @@
 import necsus / runtime / [ entityId, query, systemVar, inbox, directives, necsusConf, archetypeStore ]
 import necsus / compiletime / [
-    parse, codeGenInfo, worldGen, worldEnum, spawnGen, queryGen, tickGen
+    parse, codeGenInfo, worldGen, worldEnum, spawnGen, queryGen, tickGen, sysVarGen
 ]
 import sequtils, macros, options
 
@@ -59,11 +59,11 @@ proc buildApp(
         # codeGenInfo.createAttaches(),
         # codeGenInfo.createDetaches(),
         # codeGenInfo.createDeleteProc(),
-        # codeGenInfo.createSharedVars(),
-        # codeGenInfo.createLocalVars(),
+        codeGenInfo.createSharedVars(),
+        codeGenInfo.createLocalVars(),
         # codeGenInfo.createEventDeclarations(),
         codeGenInfo.createTickRunner(runner),
-        # codeGenInfo.createAppReturn(),
+        codeGenInfo.createAppReturn(),
     )
 
     when defined(dump):
