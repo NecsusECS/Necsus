@@ -2,7 +2,7 @@ import atomics, ringbuffer, arrayblock, options
 
 type
     Entry[V] = object
-        deleted: Atomic[bool]
+        alive: Atomic[bool]
         value: V
 
     BlockStore*[V] = object
@@ -16,16 +16,23 @@ proc newBlockStore*[V](size: SomeInteger): BlockStore[V] =
     result.recycle = newRingBuffer[uint](size)
     result.data = newArrayBlock[Entry[V]](size)
 
+proc reserve*[V](blockstore: var BlockStore[V], construct: proc (i: uint, value: var V)): uint {.inline.} =
+    ## Adds a value and returns an index to it
+    let recycled = tryShift(blockstore.recycle)
+    let index = if isSome(recycled): unsafeGet(recycled) else: fetchAdd(blockstore.nextId, 1)
+    construct(index, blockstore.data[index].value)
+    store(blockstore.data[index].alive, true)
+    index
+
 proc push*[V](store: var BlockStore[V], value: sink V): uint =
     ## Adds a value and returns an index to it
-    let recycled = store.recycle.tryShift()
-    result = if recycled.isSome: recycled.unsafeGet else: store.nextId.fetchAdd(1)
-    store.data[result] = Entry[V](value: value)
+    return store.reserve do (i: uint, storage: var V) -> void:
+        storage = value
 
 proc del*[V](store: var BlockStore[V], idx: uint) =
     ## Deletes a field
-    var falsey = false
-    if store.data[idx].deleted.compareExchange(falsey, true):
+    var falsey = true
+    if store.data[idx].alive.compareExchange(falsey, false):
         discard store.recycle.tryPush(idx)
 
 proc `[]`*[V](store: BlockStore[V], idx: uint): lent V =
@@ -40,5 +47,5 @@ iterator items*[V](store: var BlockStore[V]): var V =
         accum += 1
         if accum > upper:
             break
-        if not entry.deleted.load:
+        if entry.alive.load:
             yield entry.value

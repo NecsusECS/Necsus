@@ -63,3 +63,19 @@ suite "BlockStore":
             let idx = store.push(i)
             check(store[idx] == i)
             store.del(idx)
+
+    test "Reserving values":
+        var store = newBlockStore[string](50)
+
+        let id1 = store.reserve do (index: uint, value: var string) -> void:
+            check(index == 0)
+            value = "foo"
+
+        check(store[id1] == "foo")
+        check(store.items.toSeq == @["foo"])
+
+        let id2 = store.reserve do (index: uint, value: var string) -> void:
+            check(index == 1)
+            value = "bar"
+        check(store[id2] == "bar")
+        check(store.items.toSeq == @["foo", "bar"])
