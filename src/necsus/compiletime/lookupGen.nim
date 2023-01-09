@@ -1,62 +1,50 @@
-import tupleDirective, directiveSet, codeGenInfo, macros, sequtils, options, grouper, componentDef
-import ../util/fixedSizeTable
+import macros, sequtils, options
+import codeGenInfo, tupleDirective, tools, directiveSet, commonVars, archetype, componentDef, worldEnum
 
 let entityId {.compileTime.} = ident("entityId")
 
-proc localIdent(group: Group[ComponentDef]): NimNode =
-    ## Returns an identifier used to store a looked up group storage value
-    ident("local_comp_group_" & group.name)
+let entityIndex {.compileTime.} = ident("entityIndex")
 
-proc createLookupBody(codeGenInfo: CodeGenInfo, lookup: LookupDef): NimNode =
-    ## Returns the content of the method when a lookup is possible
+proc buildArchetypeLookup(codeGenInfo: CodeGenInfo, lookup: LookupDef, archetype: Archetype[ComponentDef]): NimNode =
+    ## Builds the block of code for pulling a lookup out of a specific archetype
 
-    let tupleType = lookup.args.toSeq.asTupleType
+    let archetypeType = archetype.asStorageTuple
+    let archetypeIdent = archetype.ident
+    let compsIdent = ident("comps")
+    let createTuple = compsIdent.copyTuple(archetype.items.toSeq, lookup.args)
 
-    # Generate an or statement for each component group we're looking at
-    var allComponentsExist = ident("true")
-    for group in codeGenInfo.groups(lookup):
-        let compStore = group.componentStoreIdent
-        allComponentsExist = quote:
-            `allComponentsExist` and contains(`compStore`, `entityId`)
+    return quote do:
+        let `compsIdent` = getComps[`archetypeType`](`archetypeIdent`, `entityIndex`.archetypeIndex)
+        return some(`createTuple`)
 
-    # Grab references for all storage variables for all the components we care about
-    var getGroupInstances = newStmtList()
-    for group in codeGenInfo.groups(lookup):
-        let compStore = group.componentStoreIdent
-        let groupIdent = group.localIdent
-        getGroupInstances.add quote do:
-            let `groupIdent` = addr `compStore`[`entityId`]
-
-    # Code to instantiate a tuple of components
-    var instantiateTuple = nnkTupleConstr.newTree()
-    for arg in lookup.args:
-        let group = codeGenInfo.compGroups[arg.component]
-        let groupIdent = group.localIdent
-        let compIndex = group[arg.component]
-        if arg.isPointer:
-            instantiateTuple.add quote do: addr `groupIdent`[`compIndex`]
-        else:
-            instantiateTuple.add quote do: `groupIdent`[`compIndex`]
-
-    return quote:
-        if `allComponentsExist`:
-            `getGroupInstances`
-            some[`tupleType`](`instantiateTuple`)
-        else:
-            return none(`tupleType`)
+proc canCreateFrom(lookup: LookupDef, archetype: Archetype[ComponentDef]): bool =
+    ## Returns whether a lookup can be created from an archetype
+    lookup.items.toSeq.allIt(it in archetype)
 
 proc createLookupProc(codeGenInfo: CodeGenInfo, name: string, lookup: LookupDef): NimNode =
+    ## Create the proc for performing a single lookup
+
     let procName = ident(name)
     let tupleType = lookup.args.toSeq.asTupleType
 
-    # If a component is never spawned or attached, we can never look it up
-    let procBody = if lookup.toSeq.allIt(it in codeGenInfo.compGroups):
-        createLookupBody(codeGenInfo, lookup)
-    else:
-        quote: none(`tupleType`)
+    # Create a case statement where each branch is one of the archetypes
+    let archetypeCases = nnkCaseStmt.newTree(newDotExpr(entityIndex, ident("archetype")))
+    for archetype in codeGenInfo.archetypes:
+        if lookup.canCreateFrom(archetype):
+            archetypeCases.add(
+                nnkOfBranch.newTree(
+                    codeGenInfo.archetypeEnum.enumRef(archetype),
+                    buildArchetypeLookup(codeGenInfo, lookup, archetype)
+                )
+            )
+
+    if codeGenInfo.archetypes.anyIt(not canCreateFrom(lookup, it)):
+        archetypeCases.add(nnkElse.newTree(nnkReturnStmt.newTree(newCall(bindSym("none"), tupleType))))
 
     return quote:
-        proc `procName`(`entityId`: EntityId): Option[`tupleType`] = `procBody`
+        proc `procName`(`entityId`: EntityId): Option[`tupleType`] =
+            let `entityIndex` = `worldIdent`[`entityId`]
+            `archetypeCases`
 
 proc createLookups*(codeGenInfo: CodeGenInfo): NimNode =
     # Creates the methods needed to look up an entity

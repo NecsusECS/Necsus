@@ -9,27 +9,17 @@ iterator selectArchetypes(codeGenInfo: CodeGenInfo, query: QueryDef): Archetype[
         if query.args.allIt(it.component in archetype):
             yield archetype
 
-proc copyTuple(fromVar: NimNode, fromArch: Archetype[ComponentDef], toQuery: QueryDef): NimNode =
-    ## Generates code for copying from an archetype tuple to a query tuple
-    fromVar.copyTuple(
-        fromArch.items.toSeq,
-        toQuery.args.toSeq.mapIt((it.component, it.isPointer))
-    )
-
 proc createArchetypeViews(codeGenInfo: CodeGenInfo, query: QueryDef): NimNode =
     ## Creates the views that bind an archetype to a query
     result = nnkBracket.newTree()
     for archetype in selectArchetypes(codeGenInfo, query):
         let archetypeIdent = archetype.ident
         let compsIdent = ident("comps")
-        let tupleCopy = compsIdent.copyTuple(archetype, query)
+        let tupleCopy = compsIdent.copyTuple(archetype.items.toSeq, query.args)
         let archTupleType = archetype.asStorageTuple
         let queryTupleType = query.args.asTupleType
         result.add quote do:
-            asView[`archTupleType`, `queryTupleType`](
-                `archetypeIdent`,
-                proc (`compsIdent`: ptr `archTupleType`): auto = `tupleCopy`
-            )
+            asView(`archetypeIdent`, proc (`compsIdent`: ptr `archTupleType`): `queryTupleType` = `tupleCopy`)
 
 proc createQueryInstances*(codeGenInfo: CodeGenInfo): NimNode =
     ## Creates the variables required for running a query

@@ -23,6 +23,10 @@ proc copyTuple*[T](fromVar: NimNode, fromTuple: openarray[T], toTuple: openarray
     ## Generates code for copying from one tuple to another
     fromVar.copyTuple(fromTuple, toTuple.toSeq.mapIt((it, false)))
 
+proc copyTuple*(fromVar: NimNode, fromTuple: openarray[ComponentDef], toTuple: openarray[DirectiveArg]): NimNode =
+    ## Generates code for copying from one tuple to another
+    fromVar.copyTuple(fromTuple, toTuple.toSeq.mapIt((it.component, it.isPointer)))
+
 proc asTupleType*(args: openarray[DirectiveArg]): NimNode =
     ## Creates a tuple type from a list of components
     result = nnkTupleConstr.newTree()

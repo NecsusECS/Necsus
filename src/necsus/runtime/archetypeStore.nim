@@ -6,30 +6,35 @@ type
         entityId: EntityId
         components: Comps
 
-    ArchetypeStore[Comps: tuple] = ref object
+    ArchetypeStore[Archs: enum, Comps: tuple] = ref object
         ## Stores a specific archetype shape
+        archetype: Archs
         compStore: BlockStore[ArchRow[Comps]]
 
     ArchView*[ViewComps: tuple] = object
         ## An object able to iterate over an archetype using a specific view of the data
         buildIterator: proc(): iterator(): (EntityId, ViewComps)
 
-proc newArchetypeStore*[Comps: tuple](initialSize: SomeInteger): ArchetypeStore[Comps] =
+proc newArchetypeStore*[Archs: enum, Comps: tuple](
+    archetype: Archs,
+    initialSize: SomeInteger
+): ArchetypeStore[Archs, Comps] =
     ## Creates a new storage block for an archetype
     result.new
     result.compStore = newBlockStore[ArchRow[Comps]](initialSize)
+    result.archetype = archetype
 
 proc spawn*[Archs: enum, Comps: tuple](
     world: var World[Archs],
-    store: var ArchetypeStore[Comps],
+    store: ArchetypeStore[Archs, Comps],
     components: sink Comps
 ): EntityId {.inline.} =
     ## Spawns an entity in this archetype
-    result = world.nextEntityId
-    discard store.compStore.push(ArchRow[Comps](entityId: result, components: components))
+    return newEntity[Archs](world, store.archetype) do (id: EntityId) -> uint:
+        store.compStore.push(ArchRow[Comps](entityId: id, components: components))
 
-proc asView*[ArchetypeComps: tuple, ViewComps: tuple](
-    input: ArchetypeStore[ArchetypeComps],
+proc asView*[Archs: enum, ArchetypeComps: tuple, ViewComps: tuple](
+    input: ArchetypeStore[Archs, ArchetypeComps],
     convert: proc (input: ptr ArchetypeComps): ViewComps
 ): ArchView[ViewComps] =
     ## Creates an iterable view into this component that uses the given converter
@@ -43,3 +48,7 @@ iterator pairs*[ViewComps: tuple](view: ArchView[ViewComps]): (EntityId, ViewCom
     let instance = view.buildIterator()
     for row in instance():
         yield row
+
+proc getComps*[Comps: tuple](store: var ArchetypeStore, index: uint): ptr Comps =
+    ## Return the components for an archetype
+    unsafeAddr store.compStore[index].components

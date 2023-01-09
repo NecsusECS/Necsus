@@ -9,6 +9,7 @@ proc createSpawnProcs*(codeGenInfo: CodeGenInfo): NimNode =
     for (name, spawnDef) in codeGenInfo.spawns:
         let ident = name.ident
         let comps = ident("comps")
+        let spawnCompsIdent = ident("spawnComps")
 
         let spawnTuple = spawnDef.args.toSeq.asTupleType
 
@@ -17,9 +18,10 @@ proc createSpawnProcs*(codeGenInfo: CodeGenInfo): NimNode =
 
         let copyTuple = comps.copyTuple(spawnDef.items.toSeq, archetype.items.toSeq)
 
+
         result.add quote do:
-            proc `ident`(spawnComps: sink `spawnTuple`): EntityId =
-                let `comps` = spawnComps
+            proc `ident`(`spawnCompsIdent`: sink `spawnTuple`): EntityId =
+                let `comps` = `spawnCompsIdent`
                 spawn(`worldIdent`, `archetypeIdent`, `copyTuple`)
 
 # let comps {.compileTime.} = ident("comps")

@@ -5,11 +5,13 @@ import ../util/fixedSizeTable, ../runtime/[world, archetypeStore]
 proc createArchetypeInstances*(genInfo: CodeGenInfo): NimNode =
     ## Creates variables for storing archetypes
     result = newStmtList()
+    let archetypeEnum = genInfo.archetypeEnum.enumSymbol
     for archetype in genInfo.archetypes:
         let ident = archetype.ident
         let storageType = archetype.asStorageTuple
+        let archetypeRef = genInfo.archetypeEnum.enumRef(archetype)
         result.add quote do:
-            var `ident` = newArchetypeStore[`storageType`](`confIdent`.componentSize)
+            var `ident` = newArchetypeStore[`archetypeEnum`, `storageType`](`archetypeRef`, `confIdent`.componentSize)
 
 proc createConfig*(genInfo: CodeGenInfo): NimNode =
     nnkLetSection.newTree(nnkIdentDefs.newTree(`confIdent`, newEmptyNode(), genInfo.config))

@@ -1,7 +1,7 @@
 import hashes
 
 type
-    EntityId* = distinct int32
+    EntityId* = distinct uint
         ## Identity of an entity
 
 proc `$`*(entityId: EntityId): string =
@@ -10,7 +10,10 @@ proc `$`*(entityId: EntityId): string =
 
 proc `==`*(a, b: EntityId): bool =
     ## Compare two entities
-    a.int32 == b.int32
+    a.uint == b.uint
 
 proc hash*(entityId: EntityId): Hash =
     Hash(entityId.uint * 7)
+
+proc toInt*(entityId: EntityId): uint =
+    entityId.uint

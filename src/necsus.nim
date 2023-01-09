@@ -1,6 +1,6 @@
 import necsus / runtime / [ entityId, query, systemVar, inbox, directives, necsusConf, archetypeStore ]
 import necsus / compiletime / [
-    parse, codeGenInfo, worldGen, worldEnum, spawnGen, queryGen, tickGen, sysVarGen, eventGen
+    parse, codeGenInfo, worldGen, worldEnum, spawnGen, queryGen, tickGen, sysVarGen, eventGen, lookupGen
 ]
 import sequtils, macros, options
 
@@ -54,8 +54,7 @@ proc buildApp(
         codeGenInfo.createArchetypeInstances(),
         codeGenInfo.createSpawnProcs(),
         codeGenInfo.createQueryInstances(),
-        # codeGenInfo.createLookups(),
-        # codeGenInfo.createSpawns(),
+        codeGenInfo.createLookups(),
         # codeGenInfo.createAttaches(),
         # codeGenInfo.createDetaches(),
         # codeGenInfo.createDeleteProc(),
