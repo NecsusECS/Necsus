@@ -21,7 +21,7 @@ suite "Creating archetypes":
         builder.attachable([ "C", "D" ])
         let archetypes = builder.build()
 
-        check(archetypes.toSeq.mapIt($it) == [ "{A}", "{A, B}", "{A, B, C}", "{A, B, C, D}", "{A, C, D}" ])
+        check(archetypes.toSeq.mapIt($it) == [ "{A}", "{A, B, C}", "{A, C, D}", "{A, B, C, D}", "{A, B}" ])
 
     test "Allowing for detaching new components to existing archetypes":
         var builder = newArchetypeBuilder[string]()
@@ -36,5 +36,5 @@ suite "Creating archetypes":
         let archetypes = builder.build()
 
         check(archetypes.toSeq.mapIt($it) == [
-            "{A}", "{A, B}", "{A, B, C}", "{A, B, C, D}", "{A, D}", "{B, C, D}", "{B}", "{D}", "{B, C}"
+            "{A}", "{A, D}", "{A, B, C}", "{B}", "{B, C, D}", "{D}", "{B, C}", "{A, B, C, D}", "{A, B}"
         ])
