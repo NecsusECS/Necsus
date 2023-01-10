@@ -31,9 +31,10 @@ proc spawn*[Archs: enum, Comps: tuple](
 ): EntityId =
     ## Spawns an entity in this archetype
     return newEntity[Archs](world, store.archetype) do (id: EntityId) -> uint:
-        store.compStore.reserve do (index: uint, target: var ArchRow[Comps]):
-            target.entityId = id
-            populate(id, target.components)
+        store.compStore.reserve:
+            var row = ArchRow[Comps](entityId: id)
+            populate(id, row.components)
+            row
 
 proc asView*[Archs: enum, ArchetypeComps: tuple, ViewComps: tuple](
     input: ArchetypeStore[Archs, ArchetypeComps],

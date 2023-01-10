@@ -16,18 +16,18 @@ proc newBlockStore*[V](size: SomeInteger): BlockStore[V] =
     result.recycle = newRingBuffer[uint](size)
     result.data = newArrayBlock[Entry[V]](size)
 
-proc reserve*[V](blockstore: var BlockStore[V], construct: proc (i: uint, value: var V)): uint {.inline.} =
+template reserve*[V](blockstore: var BlockStore[V], construct: untyped): uint =
     ## Adds a value and returns an index to it
-    let recycled = tryShift(blockstore.recycle)
-    let index = if isSome(recycled): unsafeGet(recycled) else: fetchAdd(blockstore.nextId, 1)
-    construct(index, blockstore.data[index].value)
-    store(blockstore.data[index].alive, true)
-    index
+    block:
+        let recycled = tryShift(blockstore.recycle)
+        let index {.inject.} = if isSome(recycled): unsafeGet(recycled) else: fetchAdd(blockstore.nextId, 1)
+        blockstore.data[index].value = construct
+        store(blockstore.data[index].alive, true)
+        index
 
 proc push*[V](store: var BlockStore[V], value: sink V): uint =
     ## Adds a value and returns an index to it
-    return store.reserve do (i: uint, storage: var V) -> void:
-        storage = value
+    return store.reserve: value
 
 proc del*[V](store: var BlockStore[V], idx: uint) =
     ## Deletes a field

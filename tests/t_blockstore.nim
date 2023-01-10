@@ -67,15 +67,15 @@ suite "BlockStore":
     test "Reserving values":
         var store = newBlockStore[string](50)
 
-        let id1 = store.reserve do (index: uint, value: var string) -> void:
+        let id1 = store.reserve:
             check(index == 0)
-            value = "foo"
+            "foo"
 
         check(store[id1] == "foo")
         check(store.items.toSeq == @["foo"])
 
-        let id2 = store.reserve do (index: uint, value: var string) -> void:
+        let id2 = store.reserve:
             check(index == 1)
-            value = "bar"
+            "bar"
         check(store[id2] == "bar")
         check(store.items.toSeq == @["foo", "bar"])

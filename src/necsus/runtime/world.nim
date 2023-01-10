@@ -21,9 +21,8 @@ proc newEntity*[Archs](
     saveComponents: proc (entityId: EntityId): uint
 ): EntityId =
     ## Constructs a new entity and invokes
-    let eid = reserve(world.entityIndex) do (index: uint, value: var EntityIndex[Archs]) -> void:
-        value.archetype = archetype
-        value.archetypeIndex = saveComponents(EntityId(index))
+    let eid = reserve(world.entityIndex):
+        EntityIndex[Archs](archetype: archetype, archetypeIndex: saveComponents(EntityId(index)))
     return EntityId(eid)
 
 proc `[]`*[Archs: enum](world: World[Archs], entityId: EntityId): lent EntityIndex[Archs] =
