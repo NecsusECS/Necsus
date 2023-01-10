@@ -19,7 +19,7 @@ proc setup(
     boolean: var Shared[WithStatic[true]],
     character: var Shared[WithStatic['a']],
 ) =
-    discard spawn((Wrap[A](value: A(a: "Foo")), Wrap[B](value: B(b: "Bar"))))
+    discard spawn.with(Wrap[A](value: A(a: "Foo")), Wrap[B](value: B(b: "Bar")))
     shared.set(Wrap[A](value: A(a: "Baz")))
 
     ordinal.set(WithStatic[123](value: 123))

@@ -2,10 +2,6 @@ import entityId, options
 
 type
 
-    Spawn*[C: tuple] = proc(components: sink C): EntityId
-        ## Describes a type that is able to create new entities. Where `C` is a tuple
-        ## with all the components to initially attach to this entity
-
     Delete* = proc(entityId: EntityId)
         ## Deletes an entity and all associated components
 

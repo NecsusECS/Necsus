@@ -8,7 +8,7 @@ proc run(initialSize: int) =
 
     proc system(spawn: Spawn[(Dummy, )]) =
         for i in 1..initialSize:
-            discard spawn((Dummy(), ))
+            discard spawn.with(Dummy())
 
     proc myApp() {.necsus(runner, [], [~system], [], newNecsusConf(initialSize, initialSize)).}
 

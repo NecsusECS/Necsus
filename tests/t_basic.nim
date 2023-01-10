@@ -9,17 +9,17 @@ type
         age*: int
 
 proc setup1(spawn: Spawn[(Person, Name)], spawnAll: Spawn[(Person, Name, Age)]) =
-    discard spawn((Person(), Name(name: "Jack")))
-    discard spawn((Person(), Name(name: "Jill")))
-    discard spawnAll((Person(), Name(name: "John"), Age(age: 40)))
+    discard spawn.with(Person(), Name(name: "Jack"))
+    discard spawn.with(Person(), Name(name: "Jill"))
+    discard spawnAll.with(Person(), Name(name: "John"), Age(age: 40))
 
 proc setup2(spawnAge: Spawn[(Age, )], spawnPerson: Spawn[(Person, )]) =
-    discard spawnAge((Age(age: 39), ))
-    discard spawnPerson((Person(), ))
-    discard spawnPerson((Person(), ))
+    discard spawnAge.with(Age(age: 39))
+    discard spawnPerson.with(Person())
+    discard spawnPerson.with(Person())
 
 proc spawnMore(spawn: Spawn[(Person, Name)]) =
-    discard spawn((Person(), Name(name: "Joe")))
+    discard spawn.with(Person(), Name(name: "Joe"))
 
 proc assertion(
     people: Query[tuple[person: Person, name: Name]],

@@ -6,7 +6,7 @@ type
         value*: int
 
 proc exec(i: int, create: Spawn[(Num, )]) =
-    discard create((Num(value: i), ))
+    discard create.with(Num(value: i))
 
 proc setup(create: Spawn[(Num, )]) =
     parallel:

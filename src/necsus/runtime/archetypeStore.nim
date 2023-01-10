@@ -1,4 +1,4 @@
-import world, entityId, ../util/blockstore
+import world, entityId, ../util/blockstore, spawn
 
 type
     ArchRow[Comps: tuple] = object
@@ -27,11 +27,13 @@ proc newArchetypeStore*[Archs: enum, Comps: tuple](
 proc spawn*[Archs: enum, Comps: tuple](
     world: var World[Archs],
     store: ArchetypeStore[Archs, Comps],
-    components: sink Comps
-): EntityId {.inline.} =
+    populate: SpawnFill[Comps]
+): EntityId =
     ## Spawns an entity in this archetype
     return newEntity[Archs](world, store.archetype) do (id: EntityId) -> uint:
-        store.compStore.push(ArchRow[Comps](entityId: id, components: components))
+        store.compStore.reserve do (index: uint, target: var ArchRow[Comps]):
+            target.entityId = id
+            populate(id, target.components)
 
 proc asView*[Archs: enum, ArchetypeComps: tuple, ViewComps: tuple](
     input: ArchetypeStore[Archs, ArchetypeComps],

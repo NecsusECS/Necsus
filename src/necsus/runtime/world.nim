@@ -19,7 +19,7 @@ proc newEntity*[Archs](
     world: var World[Archs],
     archetype: Archs,
     saveComponents: proc (entityId: EntityId): uint
-): EntityId {.inline.} =
+): EntityId =
     ## Constructs a new entity and invokes
     let eid = reserve(world.entityIndex) do (index: uint, value: var EntityIndex[Archs]) -> void:
         value.archetype = archetype
