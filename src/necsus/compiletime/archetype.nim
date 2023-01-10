@@ -1,4 +1,4 @@
-import tables, sets, hashes, strutils, sequtils, algorithm, componentDef, macros
+import tables, sets, hashes, strutils, sequtils, componentDef, macros
 
 type
     Archetype*[T] = ref object
@@ -13,7 +13,7 @@ type
 proc newArchetype*[T](values: openarray[T]): Archetype[T] =
     ## Create an archetype
     result.new
-    result.values = values.toSeq.sorted.deduplicate
+    result.values = values.toSeq.deduplicate
     result.lookup = initTable[T, int](result.values.len)
     for i, value in result.values:
         result.lookup[value] = i
@@ -50,6 +50,9 @@ proc `+`*[T](archetype: Archetype[T], other: Archetype[T]): Archetype[T] =
 
 proc len*[T](archetype: Archetype[T]): auto = archetype.values.len
     ## The number of values in this archetype
+
+proc asHashSet*[T](archetype: Archetype[T]): auto = toHashSet(archetype.values)
+    ## Create a hash set from this archetype
 
 proc name*(archetype: Archetype[ComponentDef]): string =
     ## Stringify a Archetype

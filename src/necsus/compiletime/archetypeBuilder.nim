@@ -3,11 +3,43 @@ import tables, sets, sequtils, archetype
 export archetype
 
 type
+    ArchetypeTable[T] = object
+        ## A table for normalizing archetypes as they are added
+        lookup: Table[HashSet[T], Archetype[T]]
+
     ArchetypeBuilder*[T] = object
         ## A builder for creating a list of all known archetypes
-        archetypes: HashSet[Archetype[T]]
+        archetypes: ArchetypeTable[T]
         attachable: HashSet[Archetype[T]]
         detachable: HashSet[Archetype[T]]
+
+    JumbledArchetype* = object of Defect
+        ## Thrown when the values in an archetype are out of order
+
+
+proc init[T](table: var ArchetypeTable[T]) =
+    table.lookup = initTable[HashSet[T], Archetype[T]]()
+
+proc addIfAbsent[T](table: var ArchetypeTable[T], arch: Archetype[T]): bool =
+    ## Adds an archetype if it doesnt exist in the table already. Returns true if the archetype wasn't in the table
+    let asSet = arch.asHashSet
+    result = asSet notin table.lookup or table.lookup[asSet] == arch
+    if result:
+        table.lookup[asSet] = arch
+
+proc add[T](table: var ArchetypeTable[T], arch: Archetype[T]) =
+    ## Add an archetype, assuming it hasn't been added before
+    if not table.addIfAbsent(arch):
+        raise newException(
+            JumbledArchetype,
+            "Archetype exists, but in a different order: " & $table.lookup[arch.asHashSet] &
+            " (Tried to add as " & $arch & ")"
+        )
+
+iterator items[T](table: ArchetypeTable[T]): Archetype[T] =
+    for _, value in table.lookup.pairs: yield value
+
+proc len[T](table: ArchetypeTable[T]): int = table.lookup.len
 
 proc newArchetypeBuilder*[T](): ArchetypeBuilder[T] =
     ## Creates a new ArchetypeBuilder
@@ -17,7 +49,7 @@ proc newArchetypeBuilder*[T](): ArchetypeBuilder[T] =
 
 proc define*[T](builder: var ArchetypeBuilder[T], values: openarray[T]) =
     ## Adds a new archetype with specific values
-    builder.archetypes.incl(values.newArchetype)
+    builder.archetypes.add(values.newArchetype)
 
 proc attachable*[T](builder: var ArchetypeBuilder[T], values: openarray[T]) =
     ## Describes components that can be attached to entities to create new archetypes
@@ -30,18 +62,19 @@ proc detachable*[T](builder: var ArchetypeBuilder[T], values: openarray[T]) =
 proc build*[T](builder: ArchetypeBuilder[T]): ArchetypeSet[T] =
     ## Constructs the final set of archetypes
 
-    var resultArchetypes = initHashSet[Archetype[T]]()
+    var resultArchetypes: ArchetypeTable[T]
+    resultArchetypes.init()
 
     # Add in all the baseline archetypes
-    for archetype in items(builder.archetypes):
-        resultArchetypes.incl(archetype)
+    for archetype in builder.archetypes.items:
+        resultArchetypes.add(archetype)
 
     # Now we need to modify those archetypes with attachables and detachables
     # to cover any transitions between archetypes that might be possible. We keep
     # modifying the set of archetypes until we reach a stable state
     var size = 0
-    while resultArchetypes.card != size:
-        size = resultArchetypes.card
+    while resultArchetypes.len != size:
+        size = resultArchetypes.len
 
         # Collect any new archetype variations that need to be considered
         var newArchetypes = newSeq[Archetype[T]]()
@@ -58,6 +91,6 @@ proc build*[T](builder: ArchetypeBuilder[T]): ArchetypeSet[T] =
 
         for newArchetype in newArchetypes:
             if newArchetype.len > 0:
-                resultArchetypes.incl(newArchetype)
+                discard resultArchetypes.addIfAbsent(newArchetype)
 
     result = newArchetypeSet(resultArchetypes.items.toSeq)

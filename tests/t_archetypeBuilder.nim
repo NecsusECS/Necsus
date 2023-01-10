@@ -1,4 +1,4 @@
-import unittest, necsus/compiletime/archetypeBuilder, sequtils
+import unittest, necsus/compiletime/archetypeBuilder, sequtils, sets
 
 suite "Creating archetypes":
     test "Creating archetypes of values":
@@ -10,7 +10,7 @@ suite "Creating archetypes":
         builder.define([ "A", "B", "C" ])
         let archetypes = builder.build()
 
-        check(archetypes.toSeq.mapIt($it) == [ "{A}", "{A, B}", "{A, B, C}" ])
+        check(archetypes.toSeq.mapIt($it).toHashSet == [ "{A}", "{A, B}", "{A, B, C}" ].toHashSet)
 
     test "Allowing for attaching new components to existing archetypes":
         var builder = newArchetypeBuilder[string]()
@@ -21,7 +21,9 @@ suite "Creating archetypes":
         builder.attachable([ "C", "D" ])
         let archetypes = builder.build()
 
-        check(archetypes.toSeq.mapIt($it) == [ "{A}", "{A, B, C}", "{A, C, D}", "{A, B, C, D}", "{A, B}" ])
+        check(archetypes.toSeq.mapIt($it).toHashSet == toHashSet([
+            "{A}", "{A, B, C}", "{A, C, D}", "{A, B, C, D}", "{A, B}"
+        ]))
 
     test "Allowing for detaching new components to existing archetypes":
         var builder = newArchetypeBuilder[string]()
@@ -35,6 +37,16 @@ suite "Creating archetypes":
         builder.detachable([ "C", "D" ])
         let archetypes = builder.build()
 
-        check(archetypes.toSeq.mapIt($it) == [
-            "{A}", "{A, D}", "{A, B, C}", "{B}", "{B, C, D}", "{D}", "{B, C}", "{A, B, C, D}", "{A, B}"
-        ])
+        check(archetypes.toSeq.mapIt($it).toHashSet == toHashSet([
+            "{A}", "{A, D}", "{A, B, C}", "{B}", "{D}", "{B, C, D}", "{B, C}", "{A, B, C, D}", "{A, B}"
+        ]))
+
+    test "Require that the same archetype be added with elements in the same order":
+        var builder = newArchetypeBuilder[string]()
+        builder.define([ "B", "C", "A" ])
+        builder.define([ "B", "C", "A" ])
+
+        expect(JumbledArchetype):
+            builder.define([ "A", "B", "C" ])
+
+        check(builder.build().toSeq.mapIt($it).toHashSet == [ "{B, C, A}" ].toHashSet)
