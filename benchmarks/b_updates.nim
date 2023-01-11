@@ -20,7 +20,7 @@ proc exec(entityCount: int) =
     proc setup(spawn: Spawn[(Position, Direction, Comflabulation)]) =
         benchmark "Creating " & $entityCount & " entities", entityCount:
             for i in 1..entityCount:
-                discard spawn.with(Position(), Direction(), Comflabulation())
+                discard spawn.set((Position(), Direction(), Comflabulation()))
 
     proc movement(dt: TimeDelta, entities: Query[tuple[pos: ptr Position, dir: Direction]]) =
         for comp in entities:

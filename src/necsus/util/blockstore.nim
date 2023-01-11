@@ -19,20 +19,20 @@ proc newBlockStore*[V](size: SomeInteger): BlockStore[V] =
     result.recycle = newRingBuffer[uint](size)
     result.data = newArrayBlock[EntryData[V]](size)
 
-proc reserve*[V](blockstore: var BlockStore[V]): Entry[V] =
+proc reserve*[V](blockstore: var BlockStore[V]): Entry[V] {.inline.} =
     ## Reserves a slot for a value
     let recycled = tryShift(blockstore.recycle)
     let index = if isSome(recycled): unsafeGet(recycled) else: fetchAdd(blockstore.nextId, 1)
     result = addr blockstore.data[index]
     result.idx = index
 
-template index*[V](entry: Entry[V]): uint = entry.idx
+proc index*[V](entry: Entry[V]): uint {.inline} = entry.idx
     ## Returns the index of an entry
 
-template value*[V](entry: Entry[V]): var V = entry.value
+proc value*[V](entry: Entry[V]): var V {.inline.} = entry.value
     ## Returns the value of an entry
 
-template commit*[V](entry: Entry[V]) =
+proc commit*[V](entry: Entry[V]) {.inline.} =
     ## Marks that an entry is ready to be used
     store(entry.alive, true)
 

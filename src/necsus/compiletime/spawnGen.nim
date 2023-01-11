@@ -1,6 +1,6 @@
 import macros, sequtils, sets
 import tools, codeGenInfo, directiveSet, tupleDirective, archetype, commonVars
-import ../runtime/[archetypeStore, spawn]
+import ../runtime/spawn
 
 proc createSpawnProcs*(codeGenInfo: CodeGenInfo): NimNode =
     ## Creates a `proc` for spawning an entity with a specific set of components
@@ -11,11 +11,8 @@ proc createSpawnProcs*(codeGenInfo: CodeGenInfo): NimNode =
         let spawnTuple = spawnDef.args.toSeq.asTupleType
         let archetype = codeGenInfo.archetypes[spawnDef.items.toSeq]
         let archetypeIdent = archetype.ident
-        let populateIdent = ident("populate")
-
         result.add quote do:
-            proc `ident`(`populateIdent`: SpawnFill[`spawnTuple`]): EntityId =
-                return spawn(`worldIdent`, `archetypeIdent`, `populateIdent`)
+            let `ident` = newSpawn[`spawnTuple`](proc(): auto = beginSpawn(`worldIdent`, `archetypeIdent`))
 
 # let comps {.compileTime.} = ident("comps")
 #

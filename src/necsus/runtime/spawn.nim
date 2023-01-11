@@ -1,30 +1,36 @@
-import entityId, macros
+import entityId, world, archetypeStore, macros
 
 type
-    SpawnFill*[C: tuple] = proc (entityId: EntityId, components: var C)
+    RawSpawn*[C: tuple] = proc(): NewArchSlot[C]
         ## A callback for populating a component with values
 
-    Spawn*[C: tuple] = proc(populate: SpawnFill[C]): EntityId
+    Spawn*[C: tuple] = ref object
         ## Describes a type that is able to create new entities. Where `C` is a tuple
         ## with all the components to initially attach to this entity
+        rawSpawn: RawSpawn[C]
 
-macro buildAssignment(componentType: untyped, values: varargs[untyped]): untyped =
-    let slotIdent = ident("slot")
-    var assignments = newStmtList()
-    for i, elem in values:
-        assignments.add(newAssignment(nnkBracketExpr.newTree(slotIdent, newLit(i)), elem))
+proc newSpawn*[C: tuple](rawSpawn: RawSpawn[C]): Spawn[C] =
+    ## Creates a new spawn instance
+    result.new
+    result.rawSpawn = rawSpawn
 
-    result = newProc(
-        procType = nnkLambda,
-        params = [
-            "void".ident,
-            newIdentDefs("entityId".ident, bindSym("EntityId")),
-            newIdentDefs("slot".ident, nnkVarTy.newTree(componentType))
-        ],
-        body = assignments
-    )
+proc beginSpawn*[Archs: enum, Comps: tuple](
+    world: var World[Archs],
+    store: var ArchetypeStore[Archs, Comps]
+): NewArchSlot[Comps] {.inline.} =
+    ## Spawns an entity in this archetype
+    var newEntity = world.newEntity
+    result = store.newSlot(newEntity.entityId)
+    newEntity.setArchetypeDetails(store.archetype, result.index)
 
+proc set*[C: tuple](spawn: Spawn[C], values: sink C): EntityId {.inline.} =
+    ## Spawns an entity with the given components
+    spawn.rawSpawn().set(values)
 
-template with*[C: tuple](spawn: Spawn[C], values: varargs[untyped]): EntityId =
+macro buildTuple(values: varargs[untyped]): untyped =
+    result = nnkTupleConstr.newTree()
+    for elem in values: result.add(elem)
+
+template with*[C: tuple](spawn: Spawn[C], values: varargs[typed]): EntityId =
     ## spawns the given values
-    spawn(buildAssignment(C, values))
+    set(spawn, buildTuple(values))

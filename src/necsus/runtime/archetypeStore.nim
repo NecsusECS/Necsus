@@ -1,4 +1,4 @@
-import world, entityId, ../util/blockstore, spawn
+import world, entityId, ../util/blockstore
 
 type
     ArchRow[Comps: tuple] = object
@@ -6,7 +6,7 @@ type
         entityId: EntityId
         components: Comps
 
-    ArchetypeStore[Archs: enum, Comps: tuple] = ref object
+    ArchetypeStore*[Archs: enum, Comps: tuple] = ref object
         ## Stores a specific archetype shape
         archetype: Archs
         compStore: BlockStore[ArchRow[Comps]]
@@ -14,6 +14,8 @@ type
     ArchView*[ViewComps: tuple] = object
         ## An object able to iterate over an archetype using a specific view of the data
         buildIterator: proc(): iterator(): (EntityId, ViewComps)
+
+    NewArchSlot*[Comps: tuple] = distinct Entry[ArchRow[Comps]]
 
 proc newArchetypeStore*[Archs: enum, Comps: tuple](
     archetype: Archs,
@@ -24,17 +26,26 @@ proc newArchetypeStore*[Archs: enum, Comps: tuple](
     result.compStore = newBlockStore[ArchRow[Comps]](initialSize)
     result.archetype = archetype
 
-proc spawn*[Archs: enum, Comps: tuple](
-    world: var World[Archs],
-    store: ArchetypeStore[Archs, Comps],
-    populate: SpawnFill[Comps]
-): EntityId =
-    ## Spawns an entity in this archetype
-    return newEntity[Archs](world, store.archetype) do (id: EntityId) -> uint:
-        store.compStore.reserve:
-            var row = ArchRow[Comps](entityId: id)
-            populate(id, row.components)
-            row
+proc archetype*[Archs: enum, Comps: tuple](store: ArchetypeStore[Archs, Comps]): Archs {.inline.} = store.archetype
+    ## Accessor for the archetype of a store
+
+proc newSlot*[Archs: enum, Comps: tuple](
+    store: var ArchetypeStore[Archs, Comps],
+    entityId: EntityId
+): NewArchSlot[Comps] {.inline.} =
+    ## Reserves a slot for storing a new component
+    let slot = store.compStore.reserve
+    slot.value.entityId = entityId
+    return NewArchSlot[Comps](slot)
+
+proc index*[Comps: tuple](entry: NewArchSlot[Comps]): uint {.inline.} = Entry[ArchRow[Comps]](entry).index
+
+proc set*[Comps: tuple](entry: NewArchSlot[Comps], comps: sink Comps): EntityId {.inline.} =
+    ## Stores an entity and its components into this slot
+    let entry = Entry[ArchRow[Comps]](entry)
+    entry.value.components = comps
+    entry.commit
+    return entry.value.entityId
 
 proc asView*[Archs: enum, ArchetypeComps: tuple, ViewComps: tuple](
     input: ArchetypeStore[Archs, ArchetypeComps],
