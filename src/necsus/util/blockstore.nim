@@ -11,6 +11,7 @@ type
     BlockStore*[V] = object
         ## Stores a block of packed values
         nextId: Atomic[uint]
+        hasRecycledValues: bool
         recycle: RingBuffer[uint]
         data: ArrayBlock[EntryData[V]]
 
@@ -19,10 +20,20 @@ proc newBlockStore*[V](size: SomeInteger): BlockStore[V] =
     result.recycle = newRingBuffer[uint](size)
     result.data = newArrayBlock[EntryData[V]](size)
 
-proc reserve*[V](blockstore: var BlockStore[V]): Entry[V] {.inline.} =
+proc reserve*[V](blockstore: var BlockStore[V]): Entry[V] =
     ## Reserves a slot for a value
-    let recycled = tryShift(blockstore.recycle)
-    let index = if isSome(recycled): unsafeGet(recycled) else: fetchAdd(blockstore.nextId, 1)
+    var index: uint
+
+    if blockstore.hasRecycledValues:
+        let recycled = tryShift(blockstore.recycle)
+        if isSome(recycled):
+            index = unsafeGet(recycled)
+        else:
+            blockstore.hasRecycledValues = false
+            index = fetchAdd(blockstore.nextId, 1)
+    else:
+        index = fetchAdd(blockstore.nextId, 1)
+
     result = addr blockstore.data[index]
     result.idx = index
 
@@ -52,6 +63,7 @@ proc del*[V](store: var BlockStore[V], idx: uint) =
     var falsey = true
     if store.data[idx].alive.compareExchange(falsey, false):
         discard store.recycle.tryPush(idx)
+        store.hasRecycledValues = true
 
 proc `[]`*[V](store: BlockStore[V], idx: uint): lent V =
     ## Reads a field
