@@ -40,7 +40,7 @@ proc reserve*[V](blockstore: var BlockStore[V]): Entry[V] =
 proc index*[V](entry: Entry[V]): uint {.inline} = entry.idx
     ## Returns the index of an entry
 
-proc value*[V](entry: Entry[V]): var V {.inline.} = entry.value
+template value*[V](entry: Entry[V]): var V = entry.value
     ## Returns the value of an entry
 
 proc commit*[V](entry: Entry[V]) {.inline.} =

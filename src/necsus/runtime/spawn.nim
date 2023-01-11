@@ -23,9 +23,9 @@ proc beginSpawn*[Archs: enum, Comps: tuple](
     result = store.newSlot(newEntity.entityId)
     newEntity.setArchetypeDetails(store.archetype, result.index)
 
-proc set*[C: tuple](spawn: Spawn[C], values: sink C): EntityId {.inline.} =
+template set*[C: tuple](spawn: Spawn[C], values: C): EntityId =
     ## Spawns an entity with the given components
-    spawn.rawSpawn().set(values)
+    setComp(spawn.rawSpawn(), values)
 
 macro buildTuple(values: varargs[untyped]): untyped =
     result = nnkTupleConstr.newTree()

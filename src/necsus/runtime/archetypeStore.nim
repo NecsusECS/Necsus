@@ -40,12 +40,13 @@ proc newSlot*[Archs: enum, Comps: tuple](
 
 proc index*[Comps: tuple](entry: NewArchSlot[Comps]): uint {.inline.} = Entry[ArchRow[Comps]](entry).index
 
-proc set*[Comps: tuple](entry: NewArchSlot[Comps], comps: sink Comps): EntityId {.inline.} =
+template setComp*[Comps: tuple](slot: NewArchSlot[Comps], comps: Comps): EntityId =
     ## Stores an entity and its components into this slot
-    let entry = Entry[ArchRow[Comps]](entry)
-    entry.value.components = comps
-    entry.commit
-    return entry.value.entityId
+    block:
+        let entry = Entry[ArchRow[Comps]](slot)
+        value(entry).components = comps
+        commit(entry)
+        value(entry).entityId
 
 proc asView*[Archs: enum, ArchetypeComps: tuple, ViewComps: tuple](
     input: ArchetypeStore[Archs, ArchetypeComps],
