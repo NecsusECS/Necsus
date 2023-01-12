@@ -36,6 +36,9 @@ proc contains*[T](archetype: Archetype[T], value: T): bool =
     ## Whether an archetype contains all the given value
     archetype.lookup.hasKey(value)
 
+proc indexOf*[T](archetype: Archetype[T], value: T): int = archetype.lookup[value]
+    ## Whether an archetype contains all the given value
+
 proc containsAllOf*[T](archetype: Archetype[T], other: Archetype[T]): bool =
     ## Whether an archetype contains all the given values
     other.values.allIt(it in archetype)
@@ -44,9 +47,13 @@ proc `-`*[T](archetype: Archetype[T], other: Archetype[T]): Archetype[T] =
     ## Removes components in an archetype
     archetype.values.filterIt(not other.lookup.hasKey(it)).newArchetype
 
+proc `+`*[T](archetype: Archetype[T], other: openarray[T]): Archetype[T] =
+    ## Adds values to an archetype
+    concat(archetype.values, other.toSeq).newArchetype
+
 proc `+`*[T](archetype: Archetype[T], other: Archetype[T]): Archetype[T] =
     ## Joins together two archetypes
-    concat(archetype.values, other.values).newArchetype
+    archetype + other.values
 
 proc len*[T](archetype: Archetype[T]): auto = archetype.values.len
     ## The number of values in this archetype
