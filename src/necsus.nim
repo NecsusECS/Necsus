@@ -4,7 +4,7 @@ import necsus / compiletime / [
 ]
 import sequtils, macros, options
 
-export entityId, query, archetypeStore.pairs, necsusConf, systemVar, inbox, directives, spawn
+export entityId, query, archetypeStore.items, necsusConf, systemVar, inbox, directives, spawn
 
 type
     SystemFlag* = object

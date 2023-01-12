@@ -20,9 +20,10 @@ proc newQuery*[Comps: tuple](archetypes: sink seq[ArchView[Comps]]): Query[Comps
 
 iterator pairs*[Comps: tuple](query: Query[Comps]): QueryItem[Comps] {.inline.} =
     ## Iterates through the entities in a query
-    for view in query.archetypes:
-        for entityId, components in view:
-            yield (entityId, components)
+    var slot: Comps
+    for view in query.archetypes.items:
+        for entityId in view.items(slot):
+            yield (entityId, slot)
 
 iterator items*[Comps: tuple](query: Query[Comps]): Comps {.inline.} =
     ## Iterates through the entities in a query
