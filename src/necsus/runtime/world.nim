@@ -35,6 +35,6 @@ proc setArchetypeDetails*[Archs](newEntity: NewEntity[Archs], archetype: Archs, 
     entry.value.archetypeIndex = index
     entry.commit
 
-proc `[]`*[Archs: enum](world: World[Archs], entityId: EntityId): lent EntityIndex[Archs] =
+proc `[]`*[Archs: enum](world: World[Archs], entityId: EntityId): ptr EntityIndex[Archs] =
     ## Look up entity information based on an entity ID
-    world.entityIndex[entityId.uint]
+    addr world.entityIndex[entityId.uint]

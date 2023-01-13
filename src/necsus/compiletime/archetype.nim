@@ -9,6 +9,7 @@ type
     ArchetypeSet*[T] = object
         ## A set of all known archetypes
         archetypes: HashSet[Archetype[T]]
+        lookup: Table[HashSet[T], Archetype[T]]
 
 proc newArchetype*[T](values: openarray[T]): Archetype[T] =
     ## Create an archetype
@@ -81,6 +82,8 @@ iterator items*[T](archetype: Archetype[T]): T =
 proc newArchetypeSet*[T](values: openarray[Archetype[T]]): ArchetypeSet[T] =
     ## Creates a set of archetypes
     result.archetypes = values.toHashSet
+    for archetype in values:
+        result.lookup[archetype.asHashSet] = archetype
 
 iterator items*[T](archetypes: ArchetypeSet[T]): Archetype[T] =
     ## Produces all the archetypes
@@ -89,6 +92,7 @@ iterator items*[T](archetypes: ArchetypeSet[T]): Archetype[T] =
 
 proc `[]`*[T](archetypes: ArchetypeSet[T], search: openarray[T]): Archetype[T] =
     ## Returns the archetype containing the given values
-    result = newArchetype(search)
-    if result notin archetypes.archetypes:
+    let asSet = search.toHashSet
+    if asSet notin archetypes.lookup:
         raise newException(KeyError, "Could not find archetype: " & join(search, ", "))
+    return archetypes.lookup[asSet]

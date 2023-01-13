@@ -65,6 +65,25 @@ iterator items*[ViewComps: tuple](view: ArchView[ViewComps], comps: var ViewComp
     for entityId in instance(comps):
         yield entityId
 
-proc getComps*[Comps: tuple](store: var ArchetypeStore, index: uint): ptr Comps =
+proc getComps*[Archs: enum, Comps: tuple](store: var ArchetypeStore[Archs, Comps], index: uint): ptr Comps =
     ## Return the components for an archetype
     unsafeAddr store.compStore[index].components
+
+proc del*(store: var ArchetypeStore, index: uint) =
+    ## Return the components for an archetype
+    store.compStore.del(index)
+
+proc moveEntity*[Archs: enum, FromArch: tuple, ToArch: tuple](
+    world: var World[Archs],
+    entityIndex: ptr EntityIndex[Archs],
+    fromArch: var ArchetypeStore[Archs, FromArch],
+    toArch: var ArchetypeStore[Archs, ToArch],
+    convert: proc (input: ptr FromArch): ToArch
+) {.inline.} =
+    ## Moves the components for an entity from one archetype to another
+    let existing = getComps[Archs, FromArch](fromArch, entityIndex.archetypeIndex)
+    let newSlot = newSlot[Archs, ToArch](toArch, entityIndex.entityId)
+    discard setComp(newSlot, convert(existing))
+    fromArch.del(entityIndex.archetypeIndex)
+    entityIndex.archetype = toArch.archetype
+    entityIndex.archetypeIndex = newSlot.index

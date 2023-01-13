@@ -10,11 +10,12 @@ proc buildArchetypeLookup(codeGenInfo: CodeGenInfo, lookup: LookupDef, archetype
 
     let archetypeType = archetype.asStorageTuple
     let archetypeIdent = archetype.ident
+    let archetypeEnum = codeGenInfo.archetypeEnum.enumSymbol
     let compsIdent = ident("comps")
     let createTuple = compsIdent.copyTuple(archetype.items.toSeq, lookup.args)
 
     return quote do:
-        let `compsIdent` = getComps[`archetypeType`](`archetypeIdent`, `entityIndex`.archetypeIndex)
+        let `compsIdent` = getComps[`archetypeEnum`, `archetypeType`](`archetypeIdent`, `entityIndex`.archetypeIndex)
         return some(`createTuple`)
 
 proc canCreateFrom(lookup: LookupDef, archetype: Archetype[ComponentDef]): bool =

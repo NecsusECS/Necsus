@@ -71,6 +71,20 @@ template createDirective(typ: untyped) =
 
     proc hash*(directive: typ): Hash = hash(directive.args)
 
+    proc indexOf*(directive: typ, comp: ComponentDef): int =
+        ## Returns the index of a component in this directive
+        for i, arg in directive.args:
+            if arg.component == comp:
+                return i
+        raise newException(KeyError, "Could not find component: " & $comp)
+
+    proc contains*(directive: typ, comp: ComponentDef): bool =
+        ## Returns the index of a component in this directive
+        for i, arg in directive.args:
+            if arg.component == comp:
+                return true
+        return false
+
 createDirective(QueryDef)
 createDirective(SpawnDef)
 createDirective(AttachDef)

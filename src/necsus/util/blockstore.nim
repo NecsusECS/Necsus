@@ -65,9 +65,13 @@ proc del*[V](store: var BlockStore[V], idx: uint) =
         discard store.recycle.tryPush(idx)
         store.hasRecycledValues = true
 
-proc `[]`*[V](store: BlockStore[V], idx: uint): lent V =
+proc `[]`*[V](store: BlockStore[V], idx: uint): var V =
     ## Reads a field
     store.data[idx].value
+
+template `[]=`*[V](store: BlockStore[V], idx: uint, newValue: V) =
+    ## Sets a new value for a key
+    store.data[idx].value = newValue
 
 iterator items*[V](store: var BlockStore[V]): var V =
     ## Iterate through all values in this BlockStore
