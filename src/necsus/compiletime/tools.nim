@@ -13,7 +13,7 @@ proc copyTuple*(fromVar: NimNode, fromArch: Archetype[ComponentDef], directive: 
     for arg in directive.args:
         case arg.kind
         of DirectiveArgKind.Exclude:
-            result.add(newLit(0))
+            result.add(newCall(nnkBracketExpr.newTree(bindSym("Not"), arg.type), newLit(0'i8)))
         of DirectiveArgKind.Include:
             result.add(arg.read)
         of DirectiveArgKind.Optional:

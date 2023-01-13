@@ -2,10 +2,17 @@ import tables, macros, sequtils
 import codeGenInfo, directiveSet, tupleDirective, archetype, componentDef, tools
 import ../runtime/archetypeStore
 
+proc argMatchesQuery(archetype: Archetype[ComponentDef], arg: DirectiveArg): bool =
+    ## Returns whether a directive is part of an archetype
+    case arg.kind
+    of DirectiveArgKind.Optional: true
+    of DirectiveArgKind.Include: arg.component in archetype
+    of DirectiveArgKind.Exclude: arg.component notin archetype
+
 iterator selectArchetypes(codeGenInfo: CodeGenInfo, query: QueryDef): Archetype[ComponentDef] =
     ## Iterates through the archetypes that contribute to a query
     for archetype in codeGenInfo.archetypes:
-        if query.args.allIt(it.component in archetype or it.kind != DirectiveArgKind.Include):
+        if query.args.allIt(argMatchesQuery(archetype, it)):
             yield archetype
 
 proc createArchetypeViews(codeGenInfo: CodeGenInfo, query: QueryDef): NimNode =
