@@ -1,31 +1,26 @@
-import tables, macros, sequtils, options
+import tables, macros, options
 import tupleDirective, componentDef, codeGenInfo, archetype, worldEnum
 import ../runtime/query
 
-proc copyTuple*[T](
-    fromVar: NimNode,
-    fromTuple: openarray[T],
-    toTuple: openarray[tuple[entry: T, isPointer: bool]]
-): NimNode =
+proc copyTuple*(fromVar: NimNode, fromArch: Archetype[ComponentDef], directive: TupleDirective): NimNode =
     ## Generates code for copying from one tuple to another
-    var indexes = initTable[T, int](fromTuple.len)
-    for i, fromValue in fromTuple: indexes[fromValue] = i
-
     result = nnkTupleConstr.newTree()
-    for (toEntry, isPointer) in toTuple:
-        let readExpr = nnkBracketExpr.newTree(fromVar, newLit(indexes[toEntry]))
-        if isPointer:
-            result.add(nnkAddr.newTree(readExpr))
-        else:
-            result.add(readExpr)
 
-proc copyTuple*[T](fromVar: NimNode, fromTuple: openarray[T], toTuple: openarray[T]): NimNode =
-    ## Generates code for copying from one tuple to another
-    fromVar.copyTuple(fromTuple, toTuple.toSeq.mapIt((it, false)))
+    proc read(arg: DirectiveArg): auto =
+        let readExpr = nnkBracketExpr.newTree(fromVar, newLit(fromArch.indexOf(arg.component)))
+        return if arg.isPointer: nnkAddr.newTree(readExpr) else: readExpr
 
-proc copyTuple*(fromVar: NimNode, fromTuple: openarray[ComponentDef], toTuple: openarray[DirectiveArg]): NimNode =
-    ## Generates code for copying from one tuple to another
-    fromVar.copyTuple(fromTuple, toTuple.toSeq.mapIt((it.component, it.isPointer)))
+    for arg in directive.args:
+        case arg.kind
+        of DirectiveArgKind.Exclude:
+            result.add(newLit(0))
+        of DirectiveArgKind.Include:
+            result.add(arg.read)
+        of DirectiveArgKind.Optional:
+            if arg.component in fromArch:
+                result.add(newCall(bindSym("some"), arg.read))
+            else:
+                result.add(newCall(bindSym("none"), arg.type))
 
 proc asTupleType*(args: openarray[DirectiveArg]): NimNode =
     ## Creates a tuple type from a list of components

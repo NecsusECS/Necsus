@@ -1,4 +1,4 @@
-import macros, sequtils, options
+import macros, sequtils, options, tables
 import codeGenInfo, tupleDirective, tools, directiveSet, commonVars, archetype, componentDef, worldEnum
 
 let entityId {.compileTime.} = ident("entityId")
@@ -12,7 +12,7 @@ proc buildArchetypeLookup(codeGenInfo: CodeGenInfo, lookup: LookupDef, archetype
     let archetypeIdent = archetype.ident
     let archetypeEnum = codeGenInfo.archetypeEnum.enumSymbol
     let compsIdent = ident("comps")
-    let createTuple = compsIdent.copyTuple(archetype.items.toSeq, lookup.args)
+    let createTuple = compsIdent.copyTuple(archetype, lookup)
 
     return quote do:
         let `compsIdent` = getComps[`archetypeEnum`, `archetypeType`](`archetypeIdent`, `entityIndex`.archetypeIndex)

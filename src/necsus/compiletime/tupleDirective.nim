@@ -1,4 +1,4 @@
-import componentDef, hashes, sequtils
+import componentDef, hashes, sequtils, macros
 
 type
     DirectiveArgKind* = enum
@@ -31,6 +31,10 @@ proc `<`*(a, b: DirectiveArg): auto =
 
 proc hash*(arg: DirectiveArg): Hash = hash(arg.component)
     ## Generate a unique hash
+
+proc type*(def: DirectiveArg): NimNode =
+    ## The type of this component
+    if def.isPointer: nnkPtrTy.newTree(NimNode(def.component)) else: NimNode(def.component)
 
 iterator items*(directive: TupleDirective): ComponentDef =
     ## Produce all components in a directive
