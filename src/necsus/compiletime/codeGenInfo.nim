@@ -33,9 +33,9 @@ proc calculateArchetypes(
     ## Given all the directives, creates a set of required archetypes
     var builder = newArchetypeBuilder[ComponentDef]()
 
-    for spawn in spawns: builder.define(spawn.value.items.toSeq)
-    for attach in attaches: builder.attachable(attach.value.items.toSeq)
-    for detach in detaches: builder.attachable(detach.value.items.toSeq)
+    for spawn in spawns: builder.define(spawn.value.comps)
+    for attach in attaches: builder.attachable(attach.value.comps)
+    for detach in detaches: builder.detachable(detach.value.comps)
 
     return builder.build()
 

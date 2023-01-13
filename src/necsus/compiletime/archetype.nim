@@ -40,9 +40,13 @@ proc contains*[T](archetype: Archetype[T], value: T): bool =
 proc indexOf*[T](archetype: Archetype[T], value: T): int = archetype.lookup[value]
     ## Whether an archetype contains all the given value
 
+proc containsAllOf*[T](archetype: Archetype[T], other: openarray[T]): bool =
+    ## Whether an archetype contains all the given values
+    other.allIt(it in archetype)
+
 proc containsAllOf*[T](archetype: Archetype[T], other: Archetype[T]): bool =
     ## Whether an archetype contains all the given values
-    other.values.allIt(it in archetype)
+    containsAllOf(archetype, other.values)
 
 proc `-`*[T](archetype: Archetype[T], other: Archetype[T]): Archetype[T] =
     ## Removes components in an archetype
@@ -78,6 +82,10 @@ proc asStorageTuple*(archetype: Archetype[ComponentDef]): NimNode =
 iterator items*[T](archetype: Archetype[T]): T =
     ## Produces all the archetype values
     for value in archetype.values: yield value
+
+proc values*[T](archetype: Archetype[T]): seq[T] = archetype.values
+    ## Produces all the archetype values
+
 
 proc newArchetypeSet*[T](values: openarray[Archetype[T]]): ArchetypeSet[T] =
     ## Creates a set of archetypes

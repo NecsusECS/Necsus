@@ -13,6 +13,10 @@ type
         isPointer*: bool
         kind*: DirectiveArgKind
 
+    TupleDirective* = object of RootObj
+        ## Parent type for all tuple based directives
+        args*: seq[DirectiveArg]
+
 proc newDirectiveArg*(component: ComponentDef, isPointer: bool, kind: DirectiveArgKind): auto =
     ## Creates a DirectiveArg
     DirectiveArg(component: component, isPointer: isPointer, kind: kind)
@@ -28,12 +32,47 @@ proc `<`*(a, b: DirectiveArg): auto =
 proc hash*(arg: DirectiveArg): Hash = hash(arg.component)
     ## Generate a unique hash
 
+iterator items*(directive: TupleDirective): ComponentDef =
+    ## Produce all components in a directive
+    for arg in directive.args: yield arg.component
+
+proc comps*(directive: TupleDirective): seq[ComponentDef] =
+    ## Produce all components in a directive
+    directive.items.toSeq
+
+iterator args*(directive: TupleDirective): DirectiveArg =
+    ## Produce all args in a directive
+    for arg in directive.args: yield arg
+
+proc generateName*(directive: TupleDirective): string =
+    ## Produces a readable name describing this directive
+    directive.items.toSeq.generateName
+
+proc name*(directive: TupleDirective): string =
+    ## Produces a readable name describing this directive
+    directive.generateName
+
+proc hash*(directive: TupleDirective): Hash = hash(directive.args)
+
+proc indexOf*(directive: TupleDirective, comp: ComponentDef): int =
+    ## Returns the index of a component in this directive
+    for i, arg in directive.args:
+        if arg.component == comp:
+            return i
+    raise newException(KeyError, "Could not find component: " & $comp)
+
+proc contains*(directive: TupleDirective, comp: ComponentDef): bool =
+    ## Returns the index of a component in this directive
+    for i, arg in directive.args:
+        if arg.component == comp:
+            return true
+    return false
+
 template createDirective(typ: untyped) =
 
     type
-        typ* = object
+        typ* = object of TupleDirective
             ## A single directive definition
-            args*: seq[DirectiveArg]
 
     proc `new typ`*(args: seq[DirectiveArg]): typ =
         typ(args: args)
@@ -51,38 +90,6 @@ template createDirective(typ: untyped) =
                 return true
             elif a.args[i] != b.args[i]:
                 return false
-        return false
-
-    iterator items*(directive: typ): ComponentDef =
-        ## Produce all components in a directive
-        for arg in directive.args: yield arg.component
-
-    iterator args*(directive: typ): DirectiveArg =
-        ## Produce all args in a directive
-        for arg in directive.args: yield arg
-
-    proc generateName*(directive: typ): string =
-        ## Produces a readable name describing this directive
-        directive.items.toSeq.generateName
-
-    proc name*(directive: typ): string =
-        ## Produces a readable name describing this directive
-        directive.generateName
-
-    proc hash*(directive: typ): Hash = hash(directive.args)
-
-    proc indexOf*(directive: typ, comp: ComponentDef): int =
-        ## Returns the index of a component in this directive
-        for i, arg in directive.args:
-            if arg.component == comp:
-                return i
-        raise newException(KeyError, "Could not find component: " & $comp)
-
-    proc contains*(directive: typ, comp: ComponentDef): bool =
-        ## Returns the index of a component in this directive
-        for i, arg in directive.args:
-            if arg.component == comp:
-                return true
         return false
 
 createDirective(QueryDef)

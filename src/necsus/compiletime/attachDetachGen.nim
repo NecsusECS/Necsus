@@ -25,7 +25,7 @@ proc createArchUpdate(genInfo: CodeGenInfo, attach: AttachDef, archetype: Archet
 
 proc createArchMove(
     genInfo: CodeGenInfo,
-    attach: AttachDef,
+    directive: TupleDirective,
     fromArch: Archetype[ComponentDef],
     toArch: Archetype[ComponentDef]
 ): NimNode =
@@ -39,8 +39,8 @@ proc createArchMove(
 
     let createNewTuple = nnkTupleConstr.newTree()
     for comp in toArch.items:
-        if comp in attach:
-            createNewTuple.add(nnkBracketExpr.newTree(newComps, newLit(attach.indexOf(comp))))
+        if comp in directive:
+            createNewTuple.add(nnkBracketExpr.newTree(newComps, newLit(directive.indexOf(comp))))
         else:
             createNewTuple.add(nnkBracketExpr.newTree(existing, newLit(fromArch.indexOf(comp))))
 
@@ -50,25 +50,18 @@ proc createArchMove(
             proc (`existing`: ptr `fromArchTuple`): auto = `createNewTuple`
         )
 
-proc createArchetypeBranch(genInfo: CodeGenInfo, attach: AttachDef, fromArch: Archetype[ComponentDef]): NimNode =
-    ## Creates code for for copying from one archetype to another
-    let toArch = genInfo.archetypes[concat(fromArch.items.toSeq, attach.items.toSeq)]
-
-    let work = if fromArch == toArch:
-        createArchUpdate(genInfo, attach, toArch)
-    else:
-        genInfo.createArchMove(attach, fromArch, toArch)
-
-    return nnkOfBranch.newTree(genInfo.archetypeEnum.enumRef(fromArch), work)
-
 proc createAttachProc(genInfo: CodeGenInfo, name: string, attach: AttachDef): NimNode =
     ## Generates a proc to update components for an entity
     let procName = ident(name)
     let componentTuple = attach.args.toSeq.asTupleType
 
-    let cases = nnkCaseStmt.newTree(newDotExpr(entityIndex, ident("archetype")))
-    for archetype in genInfo.archetypes:
-        cases.add(genInfo.createArchetypeBranch(attach, archetype))
+    ## Generate a cases statement to do the work for each kind of archetype
+    let cases = genInfo.createArchetypeCase(newDotExpr(entityIndex, ident("archetype"))) do (fromArch: auto) -> auto:
+        let toArch = genInfo.archetypes[concat(fromArch.values, attach.comps)]
+        return if fromArch == toArch:
+            genInfo.createArchUpdate(attach, toArch)
+        else:
+            genInfo.createArchMove(attach, fromArch, toArch)
 
     result = quote:
         proc `procName`(`entityId`: EntityId, `newComps`: `componentTuple`) {.used.} =
@@ -80,3 +73,27 @@ proc createAttachProcs*(genInfo: CodeGenInfo): NimNode =
     result = newStmtList()
     for (name, attach) in genInfo.attaches:
         result.add(genInfo.createAttachProc(name, attach))
+
+proc createDetachProc*(genInfo: CodeGenInfo, name: string, detach: DetachDef): NimNode =
+    ## Creates a proc for detaching components
+    let procName = ident(name)
+
+    let cases = genInfo.createArchetypeCase(newDotExpr(entityIndex, ident("archetype"))) do (fromArch: auto) -> auto:
+        if fromArch.containsAllOf(detach.comps):
+            # echo fromArch, " - ", detach.comps, " = ", fromArch.values.filterIt(it notin detach.comps)
+            # return quote: discard
+            let toArch = genInfo.archetypes[fromArch.values.filterIt(it notin detach.comps)]
+            return genInfo.createArchMove(detach, fromArch, toArch)
+        else:
+            return quote: discard
+
+    result = quote:
+        proc `procName`(`entityId`: EntityId) =
+            let `entityIndex` = `worldIdent`[`entityId`]
+            `cases`
+
+proc createDetachProcs*(genInfo: CodeGenInfo): NimNode =
+    ## Creates the procs necessary to attach new components to an entity
+    result = newStmtList()
+    for (name, attach) in genInfo.detaches:
+        result.add(genInfo.createDetachProc(name, attach))
