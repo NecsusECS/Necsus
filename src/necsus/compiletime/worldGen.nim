@@ -1,5 +1,5 @@
 import macros, sequtils, options, tables
-import worldEnum, codeGenInfo, directiveSet, monoDirective, codeGenInfo, archetype, commonVars
+import worldEnum, codeGenInfo, directiveSet, monoDirective, codeGenInfo, archetype, commonVars, tools
 import ../util/fixedSizeTable, ../runtime/[world, archetypeStore]
 
 proc createArchetypeInstances*(genInfo: CodeGenInfo): NimNode =
@@ -29,3 +29,19 @@ proc createAppReturn*(genInfo: CodeGenInfo): NimNode =
             return get(`sharedVarIdent`)
     else:
         return newEmptyNode()
+
+proc createDeleteProc*(genInfo: CodeGenInfo): NimNode =
+    ## Generates all the procs for updating entities
+    let archetypeEnum = genInfo.archetypeEnum.enumSymbol
+    let entity = ident("entity")
+    let entityIndex = ident("entityIndex")
+
+    let cases = genInfo.createArchetypeCase(newDotExpr(entityIndex, ident("archetype"))) do (fromArch: auto) -> auto:
+        let archIdent = fromArch.ident
+        quote:
+            del(`archIdent`, `entityIndex`.archetypeIndex)
+
+    result = quote do:
+        proc `deleteProc`(`entity`: EntityId) {.used.} =
+            let `entityIndex` = del[`archetypeEnum`](`worldIdent`, `entity`)
+            `cases`

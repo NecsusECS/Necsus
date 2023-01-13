@@ -58,7 +58,7 @@ proc buildApp(
         codeGenInfo.createLookups(),
         codeGenInfo.createAttachProcs(),
         codeGenInfo.createDetachProcs(),
-        # codeGenInfo.createDeleteProc(),
+        codeGenInfo.createDeleteProc(),
         codeGenInfo.createSharedVars(),
         codeGenInfo.createLocalVars(),
         codeGenInfo.createEventDeclarations(),

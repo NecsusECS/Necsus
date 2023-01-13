@@ -38,3 +38,8 @@ proc setArchetypeDetails*[Archs](newEntity: NewEntity[Archs], archetype: Archs, 
 proc `[]`*[Archs: enum](world: World[Archs], entityId: EntityId): ptr EntityIndex[Archs] =
     ## Look up entity information based on an entity ID
     addr world.entityIndex[entityId.uint]
+
+proc del*[Archs: enum](world: var World[Archs], entityId: EntityId): EntityIndex[Archs] =
+    ## Deletes an entity and returns the archetype and index that also needs to be deleted
+    result = world.entityIndex[entityId.uint]
+    world.entityIndex.del(entityId.uint)
