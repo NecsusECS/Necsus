@@ -9,7 +9,7 @@ type
 
 proc setup(spawn: Spawn[(A, B, C, D, E)]) =
     for i in 1..1000:
-        discard spawn((A(i), B(i), C(i), D(i), E(i)))
+        discard spawn.with(A(i), B(i), C(i), D(i), E(i))
 
 template setupSystem(typ: typedesc) =
     proc `modify typ`(query: Query[(typ, )], attach: Attach[(typ, )]) =
@@ -23,7 +23,7 @@ setupSystem(D)
 setupSystem(E)
 
 proc runner(tick: proc(): void) =
-    benchmark "Packed iteration with 1 query and 5 systems", 5000:
+    benchmark "Packed iteration with 1 query and 5 systems: https://github.com/noctjs/ecs-benchmark/", 5000:
         tick()
 
 proc myApp() {.necsus(
