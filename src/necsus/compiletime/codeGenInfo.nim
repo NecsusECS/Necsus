@@ -15,7 +15,6 @@ type CodeGenInfo* = object
     lookups*: DirectiveSet[LookupDef]
     inboxes*: DirectiveSet[InboxDef]
     outboxes*: DirectiveSet[OutboxDef]
-    components*: ComponentEnum
     archetypes*: ArchetypeSet[ComponentDef]
     archetypeEnum*: ArchetypeEnum
 
@@ -53,6 +52,5 @@ proc newCodeGenInfo*(name: NimNode, config: NimNode, app: ParsedApp, allSystems:
     result.lookups = directives[LookupDef](name, app, allSystems, lookups)
     result.inboxes = directives[InboxDef](name, app, allSystems, inboxes)
     result.outboxes = directives[OutboxDef](name, app, allSystems, outboxes)
-    result.components = componentEnum(name.strVal, app, allSystems)
     result.archetypes = calculateArchetypes(result.spawns, result.attaches, result.detaches)
     result.archetypeEnum = archetypeEnum(name.strVal, result.archetypes)

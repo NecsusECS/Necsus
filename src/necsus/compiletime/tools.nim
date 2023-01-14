@@ -41,6 +41,6 @@ proc createArchetypeCase*(
     if genInfo.archetypes.len > 0:
         result = nnkCaseStmt.newTree(readArchetype)
         for archetype in genInfo.archetypes:
-            result.add(nnkOfBranch.newTree(genInfo.archetypeEnum.enumRef(archetype), branch(archetype)))
+            result.add(nnkOfBranch.newTree(genInfo.archetypeEnum.ident(archetype), branch(archetype)))
     else:
         result = newEmptyNode()

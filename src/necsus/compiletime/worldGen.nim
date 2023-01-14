@@ -5,11 +5,11 @@ import ../runtime/[world, archetypeStore]
 proc createArchetypeInstances*(genInfo: CodeGenInfo): NimNode =
     ## Creates variables for storing archetypes
     result = newStmtList()
-    let archetypeEnum = genInfo.archetypeEnum.enumSymbol
+    let archetypeEnum = genInfo.archetypeEnum.ident
     for archetype in genInfo.archetypes:
         let ident = archetype.ident
         let storageType = archetype.asStorageTuple
-        let archetypeRef = genInfo.archetypeEnum.enumRef(archetype)
+        let archetypeRef = genInfo.archetypeEnum.ident(archetype)
         result.add quote do:
             var `ident` = newArchetypeStore[`archetypeEnum`, `storageType`](`archetypeRef`, `confIdent`.componentSize)
 
@@ -17,7 +17,7 @@ proc createConfig*(genInfo: CodeGenInfo): NimNode =
     nnkLetSection.newTree(nnkIdentDefs.newTree(`confIdent`, newEmptyNode(), genInfo.config))
 
 proc createWorldInstance*(genInfo: CodeGenInfo): NimNode =
-    let archetypeEnum = genInfo.archetypeEnum.enumSymbol
+    let archetypeEnum = genInfo.archetypeEnum.ident
     result = quote:
         var `worldIdent` = newWorld[`archetypeEnum`](`confIdent`.entitySize)
 
@@ -32,7 +32,7 @@ proc createAppReturn*(genInfo: CodeGenInfo): NimNode =
 
 proc createDeleteProc*(genInfo: CodeGenInfo): NimNode =
     ## Generates all the procs for updating entities
-    let archetypeEnum = genInfo.archetypeEnum.enumSymbol
+    let archetypeEnum = genInfo.archetypeEnum.ident
     let entity = ident("entity")
     let entityIndex = ident("entityIndex")
 

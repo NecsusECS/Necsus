@@ -11,7 +11,7 @@ proc buildArchetypeLookup(codeGenInfo: CodeGenInfo, lookup: LookupDef, archetype
 
     let archetypeType = archetype.asStorageTuple
     let archetypeIdent = archetype.ident
-    let archetypeEnum = codeGenInfo.archetypeEnum.enumSymbol
+    let archetypeEnum = codeGenInfo.archetypeEnum.ident
     let compsIdent = ident("comps")
     let createTuple = compsIdent.copyTuple(archetype, lookup)
 

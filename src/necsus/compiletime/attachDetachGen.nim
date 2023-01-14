@@ -12,7 +12,7 @@ proc createArchUpdate(genInfo: CodeGenInfo, attach: AttachDef, archetype: Archet
 
     let archIdent = archetype.ident
     let archTuple = archetype.asStorageTuple
-    let archetypeEnum = genInfo.archetypeEnum.enumSymbol
+    let archetypeEnum = genInfo.archetypeEnum.ident
 
     let existing = ident("existing")
     result.add quote do:
@@ -34,7 +34,7 @@ proc createArchMove(
     let fromArchTuple = fromArch.asStorageTuple
     let toArchTuple = toArch.asStorageTuple
     let toArchIdent = toArch.ident
-    let archetypeEnum = genInfo.archetypeEnum.enumSymbol
+    let archetypeEnum = genInfo.archetypeEnum.ident
     let existing = ident("existing")
 
     let createNewTuple = nnkTupleConstr.newTree()
