@@ -1,4 +1,4 @@
-import threading/atomics, sharedVector
+import atomics, sharedVector
 
 ##
 ## A simple mailbox of messages. This is not currently thread safe

@@ -8,7 +8,7 @@ srcDir = "src"
 
 # Dependencies
 
-requires "nim >= 1.6.0", "threading >= 0.1.0", "sync >= 1.5.0"
+requires "nim >= 1.6.0", "sync >= 1.5.0"
 
 import os
 
