@@ -109,13 +109,9 @@ window.addEventListener('DOMContentLoaded', main);
   <ul class="simple simple-toc-section">
       <li><a class="reference" href="#ArchetypeEnum"
     title="ArchetypeEnum = WorldEnum[Archetype[ComponentDef]]">ArchetypeEnum</a></li>
-  <li><a class="reference" href="#ComponentEnum"
-    title="ComponentEnum = WorldEnum[ComponentDef]">ComponentEnum</a></li>
-  <li><a class="reference" href="#QueryEnum"
-    title="QueryEnum = WorldEnum[QueryDef]">QueryEnum</a></li>
   <li><a class="reference" href="#WorldEnum"
     title="WorldEnum[T] = object
-  enumSymbol: NimNode
+  ident: NimNode
   values: seq[T]">WorldEnum</a></li>
 
   </ul>
@@ -133,24 +129,11 @@ window.addEventListener('DOMContentLoaded', main);
     title="codeGen[T](worldEnum: WorldEnum[T]): NimNode">codeGen[T](worldEnum: WorldEnum[T]): NimNode</a></li>
 
   </ul>
-  <ul class="simple nested-toc-section">componentEnum
-      <li><a class="reference" href="#componentEnum%2Cstring%2CParsedApp%2CopenArray%5BParsedSystem%5D"
-    title="componentEnum(prefix: string; app: ParsedApp; systems: openArray[ParsedSystem]): ComponentEnum">componentEnum(prefix: string; app: ParsedApp; systems: openArray[ParsedSystem]): ComponentEnum</a></li>
-
-  </ul>
-  <ul class="simple nested-toc-section">enumRef
-      <li><a class="reference" href="#enumRef%2CWorldEnum%5BT%5D%2CT"
-    title="enumRef[T](worldEnum: WorldEnum[T]; value: T): NimNode">enumRef[T](worldEnum: WorldEnum[T]; value: T): NimNode</a></li>
-
-  </ul>
-  <ul class="simple nested-toc-section">enumSymbol
-      <li><a class="reference" href="#enumSymbol%2CWorldEnum%5BT%5D"
-    title="enumSymbol[T](worldEnum: WorldEnum[T]): auto">enumSymbol[T](worldEnum: WorldEnum[T]): auto</a></li>
-
-  </ul>
-  <ul class="simple nested-toc-section">queryEnum
-      <li><a class="reference" href="#queryEnum%2Cstring%2CDirectiveSet%5BQueryDef%5D"
-    title="queryEnum(prefix: string; queries: DirectiveSet[QueryDef]): QueryEnum">queryEnum(prefix: string; queries: DirectiveSet[QueryDef]): QueryEnum</a></li>
+  <ul class="simple nested-toc-section">ident
+      <li><a class="reference" href="#ident%2CWorldEnum%5BT%5D"
+    title="ident[T](worldEnum: WorldEnum[T]): auto">ident[T](worldEnum: WorldEnum[T]): auto</a></li>
+  <li><a class="reference" href="#ident%2CWorldEnum%5BT%5D%2CT"
+    title="ident[T](worldEnum: WorldEnum[T]; value: T): NimNode">ident[T](worldEnum: WorldEnum[T]; value: T): NimNode</a></li>
 
   </ul>
 
@@ -179,7 +162,7 @@ window.addEventListener('DOMContentLoaded', main);
   <div class="section" id="6">
 <h1><a class="toc-backref" href="#6">Imports</a></h1>
 <dl class="item">
-<a class="reference external" href="componentDef.html">componentDef</a>, <a class="reference external" href="parse.html">parse</a>, <a class="reference external" href="tupleDirective.html">tupleDirective</a>, <a class="reference external" href="directiveSet.html">directiveSet</a>, <a class="reference external" href="archetypeBuilder.html">archetypeBuilder</a>
+<a class="reference external" href="componentDef.html">componentDef</a>, <a class="reference external" href="tupleDirective.html">tupleDirective</a>, <a class="reference external" href="archetypeBuilder.html">archetypeBuilder</a>
 </dl></div>
 <div class="section" id="7">
 <h1><a class="toc-backref" href="#7">Types</a></h1>
@@ -192,25 +175,9 @@ An enum describing the different archetypes in a world
 
 </dd>
 </div>
-<div id="ComponentEnum">
-<dt><pre><a href="worldEnum.html#ComponentEnum"><span class="Identifier">ComponentEnum</span></a> <span class="Other">=</span> <a href="worldEnum.html#WorldEnum"><span class="Identifier">WorldEnum</span></a><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span></pre></dt>
-<dd>
-
-An enum where every component in an app has a value
-
-</dd>
-</div>
-<div id="QueryEnum">
-<dt><pre><a href="worldEnum.html#QueryEnum"><span class="Identifier">QueryEnum</span></a> <span class="Other">=</span> <a href="worldEnum.html#WorldEnum"><span class="Identifier">WorldEnum</span></a><span class="Other">[</span><a href="tupleDirective.html#QueryDef"><span class="Identifier">QueryDef</span></a><span class="Other">]</span></pre></dt>
-<dd>
-
-An enum where every query in an app has a value
-
-</dd>
-</div>
 <div id="WorldEnum">
 <dt><pre><a href="worldEnum.html#WorldEnum"><span class="Identifier">WorldEnum</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">object</span>
-  <span class="Identifier">enumSymbol</span><span class="Other">:</span> <span class="Identifier">NimNode</span>
+  <span class="Identifier">ident</span><span class="Other">:</span> <span class="Identifier">NimNode</span>
   <span class="Identifier">values</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span>
 </pre></dt>
 <dd>
@@ -241,38 +208,19 @@ Creates code for representing this enum
 
 </dd>
 </div>
-<div id="componentEnum,string,ParsedApp,openArray[ParsedSystem]">
-<dt><pre><span class="Keyword">proc</span> <a href="#componentEnum%2Cstring%2CParsedApp%2CopenArray%5BParsedSystem%5D"><span class="Identifier">componentEnum</span></a><span class="Other">(</span><span class="Identifier">prefix</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">app</span><span class="Other">:</span> <a href="parse.html#ParsedApp"><span class="Identifier">ParsedApp</span></a><span class="Other">;</span>
-                   <span class="Identifier">systems</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><a href="parse.html#ParsedSystem"><span class="Identifier">ParsedSystem</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="worldEnum.html#ComponentEnum"><span class="Identifier">ComponentEnum</span></a> {.
-    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
-<dd>
-
-Pulls all unique components from a set of parsed systems
-
-</dd>
-</div>
-<div id="enumRef,WorldEnum[T],T">
-<dt><pre><span class="Keyword">proc</span> <a href="#enumRef%2CWorldEnum%5BT%5D%2CT"><span class="Identifier">enumRef</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">worldEnum</span><span class="Other">:</span> <a href="worldEnum.html#WorldEnum"><span class="Identifier">WorldEnum</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span></pre></dt>
-<dd>
-
-Creates a reference to a component enum value
-
-</dd>
-</div>
-<div id="enumSymbol,WorldEnum[T]">
-<dt><pre><span class="Keyword">proc</span> <a href="#enumSymbol%2CWorldEnum%5BT%5D"><span class="Identifier">enumSymbol</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">worldEnum</span><span class="Other">:</span> <a href="worldEnum.html#WorldEnum"><span class="Identifier">WorldEnum</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">auto</span></pre></dt>
+<div id="ident,WorldEnum[T]">
+<dt><pre><span class="Keyword">proc</span> <a href="#ident%2CWorldEnum%5BT%5D"><span class="Identifier">ident</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">worldEnum</span><span class="Other">:</span> <a href="worldEnum.html#WorldEnum"><span class="Identifier">WorldEnum</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">auto</span></pre></dt>
 <dd>
 
 Returns the symbol used to reference an enum in code
 
 </dd>
 </div>
-<div id="queryEnum,string,DirectiveSet[QueryDef]">
-<dt><pre><span class="Keyword">proc</span> <a href="#queryEnum%2Cstring%2CDirectiveSet%5BQueryDef%5D"><span class="Identifier">queryEnum</span></a><span class="Other">(</span><span class="Identifier">prefix</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">queries</span><span class="Other">:</span> <a href="directiveSet.html#DirectiveSet"><span class="Identifier">DirectiveSet</span></a><span class="Other">[</span><a href="tupleDirective.html#QueryDef"><span class="Identifier">QueryDef</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="worldEnum.html#QueryEnum"><span class="Identifier">QueryEnum</span></a> {.
-    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<div id="ident,WorldEnum[T],T">
+<dt><pre><span class="Keyword">proc</span> <a href="#ident%2CWorldEnum%5BT%5D%2CT"><span class="Identifier">ident</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">worldEnum</span><span class="Other">:</span> <a href="worldEnum.html#WorldEnum"><span class="Identifier">WorldEnum</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span></pre></dt>
 <dd>
 
-Pulls all unique components from a set of parsed systems
+Creates a reference to a component enum value
 
 </dd>
 </div>
@@ -299,7 +247,7 @@ Iterates over all elements in a component set
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-01-14 23:06:08 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-01-14 23:19:13 UTC</small>
       </div>
     </div>
   </div>

@@ -1,11 +1,7 @@
 WorldEnum	necsus/compiletime/worldEnum.html#WorldEnum	worldEnum: WorldEnum	
 ArchetypeEnum	necsus/compiletime/worldEnum.html#ArchetypeEnum	worldEnum: ArchetypeEnum	
-ComponentEnum	necsus/compiletime/worldEnum.html#ComponentEnum	worldEnum: ComponentEnum	
-QueryEnum	necsus/compiletime/worldEnum.html#QueryEnum	worldEnum: QueryEnum	
-enumSymbol	necsus/compiletime/worldEnum.html#enumSymbol,WorldEnum[T]	worldEnum: enumSymbol[T](worldEnum: WorldEnum[T]): auto	
+ident	necsus/compiletime/worldEnum.html#ident,WorldEnum[T]	worldEnum: ident[T](worldEnum: WorldEnum[T]): auto	
+ident	necsus/compiletime/worldEnum.html#ident,WorldEnum[T],T	worldEnum: ident[T](worldEnum: WorldEnum[T]; value: T): NimNode	
 archetypeEnum	necsus/compiletime/worldEnum.html#archetypeEnum,string,ArchetypeSet[ComponentDef]	worldEnum: archetypeEnum(prefix: string; archetypes: ArchetypeSet[ComponentDef]): ArchetypeEnum	
-componentEnum	necsus/compiletime/worldEnum.html#componentEnum,string,ParsedApp,openArray[ParsedSystem]	worldEnum: componentEnum(prefix: string; app: ParsedApp; systems: openArray[ParsedSystem]): ComponentEnum	
-queryEnum	necsus/compiletime/worldEnum.html#queryEnum,string,DirectiveSet[QueryDef]	worldEnum: queryEnum(prefix: string; queries: DirectiveSet[QueryDef]): QueryEnum	
 items	necsus/compiletime/worldEnum.html#items.i,WorldEnum[T]	worldEnum: items[T](worldEnum: WorldEnum[T]): T	
-enumRef	necsus/compiletime/worldEnum.html#enumRef,WorldEnum[T],T	worldEnum: enumRef[T](worldEnum: WorldEnum[T]; value: T): NimNode	
 codeGen	necsus/compiletime/worldEnum.html#codeGen,WorldEnum[T]	worldEnum: codeGen[T](worldEnum: WorldEnum[T]): NimNode	
