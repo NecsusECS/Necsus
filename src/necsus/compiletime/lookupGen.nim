@@ -1,5 +1,6 @@
 import macros, sequtils, options, tables
 import codeGenInfo, tupleDirective, tools, directiveSet, commonVars, archetype, componentDef, worldEnum
+import ../runtime/[world, archetypeStore]
 
 let entityId {.compileTime.} = ident("entityId")
 

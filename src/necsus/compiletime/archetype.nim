@@ -93,6 +93,8 @@ proc newArchetypeSet*[T](values: openarray[Archetype[T]]): ArchetypeSet[T] =
     for archetype in values:
         result.lookup[archetype.asHashSet] = archetype
 
+proc len*[T](archetypes: ArchetypeSet[T]): int = archetypes.archetypes.card
+
 iterator items*[T](archetypes: ArchetypeSet[T]): Archetype[T] =
     ## Produces all the archetypes
     for archetype in items(archetypes.archetypes):

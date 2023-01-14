@@ -38,6 +38,9 @@ proc createArchetypeCase*(
     branch: proc (arch: Archetype[ComponentDef]): NimNode
 ): NimNode =
     ## Creates a case statement for all possible archetypes
-    result = nnkCaseStmt.newTree(readArchetype)
-    for archetype in genInfo.archetypes:
-        result.add(nnkOfBranch.newTree(genInfo.archetypeEnum.enumRef(archetype), branch(archetype)))
+    if genInfo.archetypes.len > 0:
+        result = nnkCaseStmt.newTree(readArchetype)
+        for archetype in genInfo.archetypes:
+            result.add(nnkOfBranch.newTree(genInfo.archetypeEnum.enumRef(archetype), branch(archetype)))
+    else:
+        result = newEmptyNode()
