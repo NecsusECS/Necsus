@@ -1,0 +1,2 @@
+NecsusConf	necsus/runtime/necsusConf.html#NecsusConf	necsusConf: NecsusConf	
+newNecsusConf	necsus/runtime/necsusConf.html#newNecsusConf,int,int,int	necsusConf: newNecsusConf(entitySize: int = 1000;\n              componentSize: int = ceilDiv(entitySize, 3);\n              eventQueueSize: int = ceilDiv(entitySize, 10)): NecsusConf	

@@ -99,6 +99,12 @@ window.addEventListener('DOMContentLoaded', main);
   </div>
   <ul class="simple simple-toc" id="toc-list">
 <li>
+  <a class="reference reference-toplevel" href="#6" id="56">Imports</a>
+  <ul class="simple simple-toc-section">
+    
+  </ul>
+</li>
+<li>
   <a class="reference reference-toplevel" href="#7" id="57">Types</a>
   <ul class="simple simple-toc-section">
       <li><a class="reference" href="#RingBuffer"
@@ -124,7 +130,7 @@ window.addEventListener('DOMContentLoaded', main);
                  ## and the mask of the producer will be in its own L2 cache line
                  ## avoiding &quot;false sharings&quot;
   pad2: array[13, uint]      ## More padding to prevent false sharing
-  data: ptr UncheckedArray[T]
+  data: ArrayBlock[T]
   size: uint                 ## The length of data being stored">RingBuffer</a></li>
 
   </ul>
@@ -135,11 +141,6 @@ window.addEventListener('DOMContentLoaded', main);
       <ul class="simple nested-toc-section">$
       <li><a class="reference" href="#%24%2CRingBuffer%5BT%5D"
     title="`$`[T](ring: var RingBuffer[T]): string">`$`[T](ring: var RingBuffer[T]): string</a></li>
-
-  </ul>
-  <ul class="simple nested-toc-section">=destroy
-      <li><a class="reference" href="#%3Ddestroy%2CRingBuffer%5BT%5D"
-    title="`=destroy`[T](ring: var RingBuffer[T])">`=destroy`[T](ring: var RingBuffer[T])</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">capacity
@@ -191,7 +192,12 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference external" href="https://github.com/eldipa/loki">https://github.com/eldipa/loki</a></li>
 </ul>
 </p>
-  <div class="section" id="7">
+  <div class="section" id="6">
+<h1><a class="toc-backref" href="#6">Imports</a></h1>
+<dl class="item">
+<a class="reference external" href="arrayblock.html">arrayblock</a>
+</dl></div>
+<div class="section" id="7">
 <h1><a class="toc-backref" href="#7">Types</a></h1>
 <dl class="item">
 <div id="RingBuffer">
@@ -217,7 +223,7 @@ window.addEventListener('DOMContentLoaded', main);
                  <span class="Comment">## and the mask of the producer will be in its own L2 cache line</span>
                  <span class="Comment">## avoiding &quot;false sharings&quot;</span>
   <span class="Identifier">pad2</span><span class="Other">:</span> <span class="Identifier">array</span><span class="Other">[</span><span class="DecNumber">13</span><span class="Other">,</span> <span class="Identifier">uint</span><span class="Other">]</span>      <span class="Comment">## More padding to prevent false sharing</span>
-  <span class="Identifier">data</span><span class="Other">:</span> <span class="Keyword">ptr</span> <span class="Identifier">UncheckedArray</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span>
+  <span class="Identifier">data</span><span class="Other">:</span> <a href="arrayblock.html#ArrayBlock"><span class="Identifier">ArrayBlock</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span>
   <span class="Identifier">size</span><span class="Other">:</span> <span class="Identifier">uint</span>                 <span class="Comment">## The length of data being stored</span>
   </pre></dt>
 <dd>
@@ -233,14 +239,6 @@ Ring buffer instance
 <dl class="item">
 <div id="$,RingBuffer[T]">
 <dt><pre><span class="Keyword">proc</span> <a href="#%24%2CRingBuffer%5BT%5D"><span class="Identifier">`$`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">ring</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="ringbuffer.html#RingBuffer"><span class="Identifier">RingBuffer</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span></pre></dt>
-<dd>
-
-
-
-</dd>
-</div>
-<div id="=destroy,RingBuffer[T]">
-<dt><pre><span class="Keyword">proc</span> <a href="#%3Ddestroy%2CRingBuffer%5BT%5D"><span class="Identifier">`=destroy`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">ring</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="ringbuffer.html#RingBuffer"><span class="Identifier">RingBuffer</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span></pre></dt>
 <dd>
 
 
@@ -305,7 +303,7 @@ Shifts a value from the ring
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2022-04-12 03:53:28 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-01-14 23:06:07 UTC</small>
       </div>
     </div>
   </div>

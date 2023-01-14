@@ -1,0 +1,24 @@
+Archetype	necsus/compiletime/archetype.html#Archetype	archetype: Archetype	
+ArchetypeSet	necsus/compiletime/archetype.html#ArchetypeSet	archetype: ArchetypeSet	
+newArchetype	necsus/compiletime/archetype.html#newArchetype,openArray[T]	archetype: newArchetype[T](values: openArray[T]): Archetype[T]	
+hash	necsus/compiletime/archetype.html#hash,Archetype[T]	archetype: hash[T](archetype: Archetype[T]): Hash	
+`==`	necsus/compiletime/archetype.html#==,Archetype[T],Archetype[T]	archetype: `==`[T](a, b: Archetype[T]): bool	
+`$`	necsus/compiletime/archetype.html#$,Archetype[T]	archetype: `$`[T](archetype: Archetype[T]): string	
+contains	necsus/compiletime/archetype.html#contains,Archetype[T],T	archetype: contains[T](archetype: Archetype[T]; value: T): bool	
+indexOf	necsus/compiletime/archetype.html#indexOf,Archetype[T],T	archetype: indexOf[T](archetype: Archetype[T]; value: T): int	
+containsAllOf	necsus/compiletime/archetype.html#containsAllOf,Archetype[T],openArray[T]	archetype: containsAllOf[T](archetype: Archetype[T]; other: openArray[T]): bool	
+containsAllOf	necsus/compiletime/archetype.html#containsAllOf,Archetype[T],Archetype[T]	archetype: containsAllOf[T](archetype: Archetype[T]; other: Archetype[T]): bool	
+`-`	necsus/compiletime/archetype.html#-,Archetype[T],Archetype[T]	archetype: `-`[T](archetype: Archetype[T]; other: Archetype[T]): Archetype[T]	
+`+`	necsus/compiletime/archetype.html#+,Archetype[T],openArray[T]	archetype: `+`[T](archetype: Archetype[T]; other: openArray[T]): Archetype[T]	
+`+`	necsus/compiletime/archetype.html#+,Archetype[T],Archetype[T]	archetype: `+`[T](archetype: Archetype[T]; other: Archetype[T]): Archetype[T]	
+len	necsus/compiletime/archetype.html#len,Archetype[T]	archetype: len[T](archetype: Archetype[T]): auto	
+asHashSet	necsus/compiletime/archetype.html#asHashSet,Archetype[T]	archetype: asHashSet[T](archetype: Archetype[T]): auto	
+name	necsus/compiletime/archetype.html#name,Archetype[ComponentDef]	archetype: name(archetype: Archetype[ComponentDef]): string	
+ident	necsus/compiletime/archetype.html#ident,Archetype[ComponentDef]	archetype: ident(archetype: Archetype[ComponentDef]): NimNode	
+asStorageTuple	necsus/compiletime/archetype.html#asStorageTuple,Archetype[ComponentDef]	archetype: asStorageTuple(archetype: Archetype[ComponentDef]): NimNode	
+items	necsus/compiletime/archetype.html#items.i,Archetype[T]	archetype: items[T](archetype: Archetype[T]): T	
+values	necsus/compiletime/archetype.html#values,Archetype[T]	archetype: values[T](archetype: Archetype[T]): seq[T]	
+newArchetypeSet	necsus/compiletime/archetype.html#newArchetypeSet,openArray[Archetype[T]]	archetype: newArchetypeSet[T](values: openArray[Archetype[T]]): ArchetypeSet[T]	
+len	necsus/compiletime/archetype.html#len,ArchetypeSet[T]	archetype: len[T](archetypes: ArchetypeSet[T]): int	
+items	necsus/compiletime/archetype.html#items.i,ArchetypeSet[T]	archetype: items[T](archetypes: ArchetypeSet[T]): Archetype[T]	
+`[]`	necsus/compiletime/archetype.html#[],ArchetypeSet[T],openArray[T]	archetype: `[]`[T](archetypes: ArchetypeSet[T]; search: openArray[T]): Archetype[T]	

@@ -1,5 +1,0 @@
-createComponentEnum	necsus/compiletime/codegen.html#createComponentEnum,ComponentEnum	codegen: createComponentEnum(components: ComponentEnum): NimNode	
-createComponentInstances	necsus/compiletime/codegen.html#createComponentInstances,CodeGenInfo	codegen: createComponentInstances(genInfo: CodeGenInfo): NimNode	
-createConfig	necsus/compiletime/codegen.html#createConfig,CodeGenInfo	codegen: createConfig(genInfo: CodeGenInfo): NimNode	
-createWorldInstance	necsus/compiletime/codegen.html#createWorldInstance,CodeGenInfo	codegen: createWorldInstance(genInfo: CodeGenInfo): NimNode	
-createAppReturn	necsus/compiletime/codegen.html#createAppReturn,CodeGenInfo	codegen: createAppReturn(genInfo: CodeGenInfo): NimNode	

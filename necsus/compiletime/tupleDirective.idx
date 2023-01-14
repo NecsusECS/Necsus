@@ -3,41 +3,37 @@ Exclude	necsus/compiletime/tupleDirective.html#Exclude	DirectiveArgKind.Exclude
 Optional	necsus/compiletime/tupleDirective.html#Optional	DirectiveArgKind.Optional	
 DirectiveArgKind	necsus/compiletime/tupleDirective.html#DirectiveArgKind	tupleDirective: DirectiveArgKind	
 DirectiveArg	necsus/compiletime/tupleDirective.html#DirectiveArg	tupleDirective: DirectiveArg	
+TupleDirective	necsus/compiletime/tupleDirective.html#TupleDirective	tupleDirective: TupleDirective	
 newDirectiveArg	necsus/compiletime/tupleDirective.html#newDirectiveArg,ComponentDef,bool,DirectiveArgKind	tupleDirective: newDirectiveArg(component: ComponentDef; isPointer: bool; kind: DirectiveArgKind): auto	
 `==`	necsus/compiletime/tupleDirective.html#==,DirectiveArg,DirectiveArg	tupleDirective: `==`(a, b: DirectiveArg): auto	
+`&lt;`	necsus/compiletime/tupleDirective.html#<,DirectiveArg,DirectiveArg	tupleDirective: `&lt;`(a, b: DirectiveArg): auto	
 hash	necsus/compiletime/tupleDirective.html#hash,DirectiveArg	tupleDirective: hash(arg: DirectiveArg): Hash	
+`type`	necsus/compiletime/tupleDirective.html#type,DirectiveArg	tupleDirective: `type`(def: DirectiveArg): NimNode	
+items	necsus/compiletime/tupleDirective.html#items.i,TupleDirective	tupleDirective: items(directive: TupleDirective): ComponentDef	
+comps	necsus/compiletime/tupleDirective.html#comps,TupleDirective	tupleDirective: comps(directive: TupleDirective): seq[ComponentDef]	
+args	necsus/compiletime/tupleDirective.html#args.i,TupleDirective	tupleDirective: args(directive: TupleDirective): DirectiveArg	
+generateName	necsus/compiletime/tupleDirective.html#generateName,TupleDirective	tupleDirective: generateName(directive: TupleDirective): string	
+name	necsus/compiletime/tupleDirective.html#name,TupleDirective	tupleDirective: name(directive: TupleDirective): string	
+hash	necsus/compiletime/tupleDirective.html#hash,TupleDirective	tupleDirective: hash(directive: TupleDirective): Hash	
+indexOf	necsus/compiletime/tupleDirective.html#indexOf,TupleDirective,ComponentDef	tupleDirective: indexOf(directive: TupleDirective; comp: ComponentDef): int	
+contains	necsus/compiletime/tupleDirective.html#contains,TupleDirective,ComponentDef	tupleDirective: contains(directive: TupleDirective; comp: ComponentDef): bool	
 QueryDef	necsus/compiletime/tupleDirective.html#QueryDef	tupleDirective: QueryDef	
-newQueryDef	necsus/compiletime/tupleDirective.html#newQueryDef	tupleDirective: newQueryDef(args`gensym0: seq[DirectiveArg]): QueryDef	
-`==`	necsus/compiletime/tupleDirective.html#==,QueryDef,QueryDef	tupleDirective: `==`(a`gensym0, b`gensym0: QueryDef): auto	
-items	necsus/compiletime/tupleDirective.html#items.i,QueryDef	tupleDirective: items(directive`gensym0: QueryDef): ComponentDef	
-args	necsus/compiletime/tupleDirective.html#args.i,QueryDef	tupleDirective: args(directive`gensym0: QueryDef): DirectiveArg	
-generateName	necsus/compiletime/tupleDirective.html#generateName,QueryDef	tupleDirective: generateName(directive`gensym0: QueryDef): string	
-hash	necsus/compiletime/tupleDirective.html#hash,QueryDef	tupleDirective: hash(directive`gensym0: QueryDef): Hash	
+newQueryDef	necsus/compiletime/tupleDirective.html#newQueryDef	tupleDirective: newQueryDef(args`gensym7: seq[DirectiveArg]): QueryDef	
+`==`	necsus/compiletime/tupleDirective.html#==,QueryDef,QueryDef	tupleDirective: `==`(a`gensym7, b`gensym7: QueryDef): auto	
+`&lt;`	necsus/compiletime/tupleDirective.html#<,QueryDef,QueryDef	tupleDirective: `&lt;`(a`gensym7, b`gensym7: QueryDef): auto	
 SpawnDef	necsus/compiletime/tupleDirective.html#SpawnDef	tupleDirective: SpawnDef	
-newSpawnDef	necsus/compiletime/tupleDirective.html#newSpawnDef	tupleDirective: newSpawnDef(args`gensym4: seq[DirectiveArg]): SpawnDef	
-`==`	necsus/compiletime/tupleDirective.html#==,SpawnDef,SpawnDef	tupleDirective: `==`(a`gensym4, b`gensym4: SpawnDef): auto	
-items	necsus/compiletime/tupleDirective.html#items.i,SpawnDef	tupleDirective: items(directive`gensym4: SpawnDef): ComponentDef	
-args	necsus/compiletime/tupleDirective.html#args.i,SpawnDef	tupleDirective: args(directive`gensym4: SpawnDef): DirectiveArg	
-generateName	necsus/compiletime/tupleDirective.html#generateName,SpawnDef	tupleDirective: generateName(directive`gensym4: SpawnDef): string	
-hash	necsus/compiletime/tupleDirective.html#hash,SpawnDef	tupleDirective: hash(directive`gensym4: SpawnDef): Hash	
+newSpawnDef	necsus/compiletime/tupleDirective.html#newSpawnDef	tupleDirective: newSpawnDef(args`gensym9: seq[DirectiveArg]): SpawnDef	
+`==`	necsus/compiletime/tupleDirective.html#==,SpawnDef,SpawnDef	tupleDirective: `==`(a`gensym9, b`gensym9: SpawnDef): auto	
+`&lt;`	necsus/compiletime/tupleDirective.html#<,SpawnDef,SpawnDef	tupleDirective: `&lt;`(a`gensym9, b`gensym9: SpawnDef): auto	
 AttachDef	necsus/compiletime/tupleDirective.html#AttachDef	tupleDirective: AttachDef	
-newAttachDef	necsus/compiletime/tupleDirective.html#newAttachDef	tupleDirective: newAttachDef(args`gensym6: seq[DirectiveArg]): AttachDef	
-`==`	necsus/compiletime/tupleDirective.html#==,AttachDef,AttachDef	tupleDirective: `==`(a`gensym6, b`gensym6: AttachDef): auto	
-items	necsus/compiletime/tupleDirective.html#items.i,AttachDef	tupleDirective: items(directive`gensym6: AttachDef): ComponentDef	
-args	necsus/compiletime/tupleDirective.html#args.i,AttachDef	tupleDirective: args(directive`gensym6: AttachDef): DirectiveArg	
-generateName	necsus/compiletime/tupleDirective.html#generateName,AttachDef	tupleDirective: generateName(directive`gensym6: AttachDef): string	
-hash	necsus/compiletime/tupleDirective.html#hash,AttachDef	tupleDirective: hash(directive`gensym6: AttachDef): Hash	
+newAttachDef	necsus/compiletime/tupleDirective.html#newAttachDef	tupleDirective: newAttachDef(args`gensym11: seq[DirectiveArg]): AttachDef	
+`==`	necsus/compiletime/tupleDirective.html#==,AttachDef,AttachDef	tupleDirective: `==`(a`gensym11, b`gensym11: AttachDef): auto	
+`&lt;`	necsus/compiletime/tupleDirective.html#<,AttachDef,AttachDef	tupleDirective: `&lt;`(a`gensym11, b`gensym11: AttachDef): auto	
 DetachDef	necsus/compiletime/tupleDirective.html#DetachDef	tupleDirective: DetachDef	
-newDetachDef	necsus/compiletime/tupleDirective.html#newDetachDef	tupleDirective: newDetachDef(args`gensym8: seq[DirectiveArg]): DetachDef	
-`==`	necsus/compiletime/tupleDirective.html#==,DetachDef,DetachDef	tupleDirective: `==`(a`gensym8, b`gensym8: DetachDef): auto	
-items	necsus/compiletime/tupleDirective.html#items.i,DetachDef	tupleDirective: items(directive`gensym8: DetachDef): ComponentDef	
-args	necsus/compiletime/tupleDirective.html#args.i,DetachDef	tupleDirective: args(directive`gensym8: DetachDef): DirectiveArg	
-generateName	necsus/compiletime/tupleDirective.html#generateName,DetachDef	tupleDirective: generateName(directive`gensym8: DetachDef): string	
-hash	necsus/compiletime/tupleDirective.html#hash,DetachDef	tupleDirective: hash(directive`gensym8: DetachDef): Hash	
+newDetachDef	necsus/compiletime/tupleDirective.html#newDetachDef	tupleDirective: newDetachDef(args`gensym13: seq[DirectiveArg]): DetachDef	
+`==`	necsus/compiletime/tupleDirective.html#==,DetachDef,DetachDef	tupleDirective: `==`(a`gensym13, b`gensym13: DetachDef): auto	
+`&lt;`	necsus/compiletime/tupleDirective.html#<,DetachDef,DetachDef	tupleDirective: `&lt;`(a`gensym13, b`gensym13: DetachDef): auto	
 LookupDef	necsus/compiletime/tupleDirective.html#LookupDef	tupleDirective: LookupDef	
-newLookupDef	necsus/compiletime/tupleDirective.html#newLookupDef	tupleDirective: newLookupDef(args`gensym10: seq[DirectiveArg]): LookupDef	
-`==`	necsus/compiletime/tupleDirective.html#==,LookupDef,LookupDef	tupleDirective: `==`(a`gensym10, b`gensym10: LookupDef): auto	
-items	necsus/compiletime/tupleDirective.html#items.i,LookupDef	tupleDirective: items(directive`gensym10: LookupDef): ComponentDef	
-args	necsus/compiletime/tupleDirective.html#args.i,LookupDef	tupleDirective: args(directive`gensym10: LookupDef): DirectiveArg	
-generateName	necsus/compiletime/tupleDirective.html#generateName,LookupDef	tupleDirective: generateName(directive`gensym10: LookupDef): string	
-hash	necsus/compiletime/tupleDirective.html#hash,LookupDef	tupleDirective: hash(directive`gensym10: LookupDef): Hash	
+newLookupDef	necsus/compiletime/tupleDirective.html#newLookupDef	tupleDirective: newLookupDef(args`gensym15: seq[DirectiveArg]): LookupDef	
+`==`	necsus/compiletime/tupleDirective.html#==,LookupDef,LookupDef	tupleDirective: `==`(a`gensym15, b`gensym15: LookupDef): auto	
+`&lt;`	necsus/compiletime/tupleDirective.html#<,LookupDef,LookupDef	tupleDirective: `&lt;`(a`gensym15, b`gensym15: LookupDef): auto	

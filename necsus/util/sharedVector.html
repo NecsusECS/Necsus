@@ -99,13 +99,19 @@ window.addEventListener('DOMContentLoaded', main);
   </div>
   <ul class="simple simple-toc" id="toc-list">
 <li>
+  <a class="reference reference-toplevel" href="#6" id="56">Imports</a>
+  <ul class="simple simple-toc-section">
+    
+  </ul>
+</li>
+<li>
   <a class="reference reference-toplevel" href="#7" id="57">Types</a>
   <ul class="simple simple-toc-section">
       <li><a class="reference" href="#SharedVector"
     title="SharedVector[T] {.byref.} = object
   resizeLock: SpinLock
   size: uint
-  buckets: array[32, ptr UncheckedArray[T]]">SharedVector</a></li>
+  buckets: array[32, ArrayBlock[T]]">SharedVector</a></li>
 
   </ul>
 </li>
@@ -117,9 +123,9 @@ window.addEventListener('DOMContentLoaded', main);
     title="`=copy`[T](dest: var SharedVector[T]; src: SharedVector[T])">`=copy`[T](dest: var SharedVector[T]; src: SharedVector[T])</a></li>
 
   </ul>
-  <ul class="simple nested-toc-section">=destroy
-      <li><a class="reference" href="#%3Ddestroy%2CSharedVector%5BT%5D"
-    title="`=destroy`[T](vector: var SharedVector[T])">`=destroy`[T](vector: var SharedVector[T])</a></li>
+  <ul class="simple nested-toc-section">=sink
+      <li><a class="reference" href="#%3Dsink%2CSharedVector%5BT%5D%2CSharedVector%5BT%5D"
+    title="`=sink`[T](dest: var SharedVector[T]; src: SharedVector[T])">`=sink`[T](dest: var SharedVector[T]; src: SharedVector[T])</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">[]
@@ -184,14 +190,19 @@ window.addEventListener('DOMContentLoaded', main);
   <p class="module-desc"><p>Resizable array of values stored in large buckets of memory. The benefit of this over using a resizable array is that values don't change their address when the array gets resized. Only acquires a lock when resizing.</p>
 <p>Based on <a class="reference external" href="https://philosopherdeveloper.com/posts/how-to-build-a-thread-safe-lock-free-resizable-array.html">https://philosopherdeveloper.com/posts/how-to-build-a-thread-safe-lock-free-resizable-array.html</a> </p>
 </p>
-  <div class="section" id="7">
+  <div class="section" id="6">
+<h1><a class="toc-backref" href="#6">Imports</a></h1>
+<dl class="item">
+<a class="reference external" href="arrayblock.html">arrayblock</a>
+</dl></div>
+<div class="section" id="7">
 <h1><a class="toc-backref" href="#7">Types</a></h1>
 <dl class="item">
 <div id="SharedVector">
 <dt><pre><a href="sharedVector.html#SharedVector"><span class="Identifier">SharedVector</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> {.<span class="Identifier">byref</span>.} <span class="Other">=</span> <span class="Keyword">object</span>
   <span class="Identifier">resizeLock</span><span class="Other">:</span> <span class="Identifier">SpinLock</span>
   <span class="Identifier">size</span><span class="Other">:</span> <span class="Identifier">uint</span>
-  <span class="Identifier">buckets</span><span class="Other">:</span> <span class="Identifier">array</span><span class="Other">[</span><span class="DecNumber">32</span><span class="Other">,</span> <span class="Keyword">ptr</span> <span class="Identifier">UncheckedArray</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">]</span>
+  <span class="Identifier">buckets</span><span class="Other">:</span> <span class="Identifier">array</span><span class="Other">[</span><span class="DecNumber">32</span><span class="Other">,</span> <a href="arrayblock.html#ArrayBlock"><span class="Identifier">ArrayBlock</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">]</span>
 </pre></dt>
 <dd>
 
@@ -212,8 +223,8 @@ Resizable vector of values
 
 </dd>
 </div>
-<div id="=destroy,SharedVector[T]">
-<dt><pre><span class="Keyword">proc</span> <a href="#%3Ddestroy%2CSharedVector%5BT%5D"><span class="Identifier">`=destroy`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">vector</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="sharedVector.html#SharedVector"><span class="Identifier">SharedVector</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span></pre></dt>
+<div id="=sink,SharedVector[T],SharedVector[T]">
+<dt><pre><span class="Keyword">proc</span> <a href="#%3Dsink%2CSharedVector%5BT%5D%2CSharedVector%5BT%5D"><span class="Identifier">`=sink`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">dest</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="sharedVector.html#SharedVector"><span class="Identifier">SharedVector</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">src</span><span class="Other">:</span> <a href="sharedVector.html#SharedVector"><span class="Identifier">SharedVector</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span></pre></dt>
 <dd>
 
 
@@ -308,7 +319,7 @@ Iterate through all values in this vector
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2022-04-12 03:53:27 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-01-14 23:06:07 UTC</small>
       </div>
     </div>
   </div>

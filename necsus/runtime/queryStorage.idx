@@ -1,7 +1,0 @@
-QueryStorage	necsus/runtime/queryStorage.html#QueryStorage	queryStorage: QueryStorage	
-newQueryStorage	necsus/runtime/queryStorage.html#newQueryStorage,int,QueryFilter[C]	queryStorage: newQueryStorage[C, M](initialSize: int; filter: QueryFilter[C]): QueryStorage[C,\n    M]	
-addToQuery	necsus/runtime/queryStorage.html#addToQuery,QueryStorage[C,M],EntityId,sinkM	queryStorage: addToQuery[C, M](storage: var QueryStorage[C, M]; entityId: EntityId;\n                 componentRefs: sink M)	
-removeFromQuery	necsus/runtime/queryStorage.html#removeFromQuery,QueryStorage[C,M],EntityId	queryStorage: removeFromQuery[C, M](storage: var QueryStorage[C, M]; entityId: EntityId)	
-updateEntity	necsus/runtime/queryStorage.html#updateEntity,QueryStorage[C,M],EntityId,set[C]	queryStorage: updateEntity[C, M](storage: var QueryStorage[C, M]; entityId: EntityId;\n                   components: set[C]): bool	
-values	necsus/runtime/queryStorage.html#values.i,QueryStorage[C,M]	queryStorage: values[C, M](storage: var QueryStorage[C, M]): (EntityId, M)	
-finalizeDeletes	necsus/runtime/queryStorage.html#finalizeDeletes,QueryStorage[C,M]	queryStorage: finalizeDeletes[C, M](query: var QueryStorage[C, M])	

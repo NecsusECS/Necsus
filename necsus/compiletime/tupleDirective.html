@@ -108,11 +108,9 @@ window.addEventListener('DOMContentLoaded', main);
   <a class="reference reference-toplevel" href="#7" id="57">Types</a>
   <ul class="simple simple-toc-section">
       <li><a class="reference" href="#AttachDef"
-    title="AttachDef = object
-  args*: seq[DirectiveArg]">AttachDef</a></li>
+    title="AttachDef = object of TupleDirective">AttachDef</a></li>
   <li><a class="reference" href="#DetachDef"
-    title="DetachDef = object
-  args*: seq[DirectiveArg]">DetachDef</a></li>
+    title="DetachDef = object of TupleDirective">DetachDef</a></li>
   <li><a class="reference" href="#DirectiveArg"
     title="DirectiveArg = object
   component*: ComponentDef
@@ -122,71 +120,90 @@ window.addEventListener('DOMContentLoaded', main);
     title="DirectiveArgKind = enum
   Include, Exclude, Optional">DirectiveArgKind</a></li>
   <li><a class="reference" href="#LookupDef"
-    title="LookupDef = object
-  args*: seq[DirectiveArg]">LookupDef</a></li>
+    title="LookupDef = object of TupleDirective">LookupDef</a></li>
   <li><a class="reference" href="#QueryDef"
-    title="QueryDef = object
-  args*: seq[DirectiveArg]">QueryDef</a></li>
+    title="QueryDef = object of TupleDirective">QueryDef</a></li>
   <li><a class="reference" href="#SpawnDef"
-    title="SpawnDef = object
-  args*: seq[DirectiveArg]">SpawnDef</a></li>
+    title="SpawnDef = object of TupleDirective">SpawnDef</a></li>
+  <li><a class="reference" href="#TupleDirective"
+    title="TupleDirective = object of RootObj
+  args*: seq[DirectiveArg]">TupleDirective</a></li>
 
   </ul>
 </li>
 <li>
   <a class="reference reference-toplevel" href="#12" id="62">Procs</a>
   <ul class="simple simple-toc-section">
-      <ul class="simple nested-toc-section">==
+      <ul class="simple nested-toc-section"><
+      <li><a class="reference" href="#%3C%2CDirectiveArg%2CDirectiveArg"
+    title="`&lt;`(a, b: DirectiveArg): auto">`&lt;`(a, b: DirectiveArg): auto</a></li>
+  <li><a class="reference" href="#%3C%2CQueryDef%2CQueryDef"
+    title="`&lt;`(a`gensym7, b`gensym7: QueryDef): auto">`&lt;`(a`gensym7, b`gensym7: QueryDef): auto</a></li>
+  <li><a class="reference" href="#%3C%2CSpawnDef%2CSpawnDef"
+    title="`&lt;`(a`gensym9, b`gensym9: SpawnDef): auto">`&lt;`(a`gensym9, b`gensym9: SpawnDef): auto</a></li>
+  <li><a class="reference" href="#%3C%2CAttachDef%2CAttachDef"
+    title="`&lt;`(a`gensym11, b`gensym11: AttachDef): auto">`&lt;`(a`gensym11, b`gensym11: AttachDef): auto</a></li>
+  <li><a class="reference" href="#%3C%2CDetachDef%2CDetachDef"
+    title="`&lt;`(a`gensym13, b`gensym13: DetachDef): auto">`&lt;`(a`gensym13, b`gensym13: DetachDef): auto</a></li>
+  <li><a class="reference" href="#%3C%2CLookupDef%2CLookupDef"
+    title="`&lt;`(a`gensym15, b`gensym15: LookupDef): auto">`&lt;`(a`gensym15, b`gensym15: LookupDef): auto</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">==
       <li><a class="reference" href="#%3D%3D%2CDirectiveArg%2CDirectiveArg"
     title="`==`(a, b: DirectiveArg): auto">`==`(a, b: DirectiveArg): auto</a></li>
   <li><a class="reference" href="#%3D%3D%2CQueryDef%2CQueryDef"
-    title="`==`(a`gensym0, b`gensym0: QueryDef): auto">`==`(a`gensym0, b`gensym0: QueryDef): auto</a></li>
+    title="`==`(a`gensym7, b`gensym7: QueryDef): auto">`==`(a`gensym7, b`gensym7: QueryDef): auto</a></li>
   <li><a class="reference" href="#%3D%3D%2CSpawnDef%2CSpawnDef"
-    title="`==`(a`gensym4, b`gensym4: SpawnDef): auto">`==`(a`gensym4, b`gensym4: SpawnDef): auto</a></li>
+    title="`==`(a`gensym9, b`gensym9: SpawnDef): auto">`==`(a`gensym9, b`gensym9: SpawnDef): auto</a></li>
   <li><a class="reference" href="#%3D%3D%2CAttachDef%2CAttachDef"
-    title="`==`(a`gensym6, b`gensym6: AttachDef): auto">`==`(a`gensym6, b`gensym6: AttachDef): auto</a></li>
+    title="`==`(a`gensym11, b`gensym11: AttachDef): auto">`==`(a`gensym11, b`gensym11: AttachDef): auto</a></li>
   <li><a class="reference" href="#%3D%3D%2CDetachDef%2CDetachDef"
-    title="`==`(a`gensym8, b`gensym8: DetachDef): auto">`==`(a`gensym8, b`gensym8: DetachDef): auto</a></li>
+    title="`==`(a`gensym13, b`gensym13: DetachDef): auto">`==`(a`gensym13, b`gensym13: DetachDef): auto</a></li>
   <li><a class="reference" href="#%3D%3D%2CLookupDef%2CLookupDef"
-    title="`==`(a`gensym10, b`gensym10: LookupDef): auto">`==`(a`gensym10, b`gensym10: LookupDef): auto</a></li>
+    title="`==`(a`gensym15, b`gensym15: LookupDef): auto">`==`(a`gensym15, b`gensym15: LookupDef): auto</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">comps
+      <li><a class="reference" href="#comps%2CTupleDirective"
+    title="comps(directive: TupleDirective): seq[ComponentDef]">comps(directive: TupleDirective): seq[ComponentDef]</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">contains
+      <li><a class="reference" href="#contains%2CTupleDirective%2CComponentDef"
+    title="contains(directive: TupleDirective; comp: ComponentDef): bool">contains(directive: TupleDirective; comp: ComponentDef): bool</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">generateName
-      <li><a class="reference" href="#generateName%2CQueryDef"
-    title="generateName(directive`gensym0: QueryDef): string">generateName(directive`gensym0: QueryDef): string</a></li>
-  <li><a class="reference" href="#generateName%2CSpawnDef"
-    title="generateName(directive`gensym4: SpawnDef): string">generateName(directive`gensym4: SpawnDef): string</a></li>
-  <li><a class="reference" href="#generateName%2CAttachDef"
-    title="generateName(directive`gensym6: AttachDef): string">generateName(directive`gensym6: AttachDef): string</a></li>
-  <li><a class="reference" href="#generateName%2CDetachDef"
-    title="generateName(directive`gensym8: DetachDef): string">generateName(directive`gensym8: DetachDef): string</a></li>
-  <li><a class="reference" href="#generateName%2CLookupDef"
-    title="generateName(directive`gensym10: LookupDef): string">generateName(directive`gensym10: LookupDef): string</a></li>
+      <li><a class="reference" href="#generateName%2CTupleDirective"
+    title="generateName(directive: TupleDirective): string">generateName(directive: TupleDirective): string</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">hash
       <li><a class="reference" href="#hash%2CDirectiveArg"
     title="hash(arg: DirectiveArg): Hash">hash(arg: DirectiveArg): Hash</a></li>
-  <li><a class="reference" href="#hash%2CQueryDef"
-    title="hash(directive`gensym0: QueryDef): Hash">hash(directive`gensym0: QueryDef): Hash</a></li>
-  <li><a class="reference" href="#hash%2CSpawnDef"
-    title="hash(directive`gensym4: SpawnDef): Hash">hash(directive`gensym4: SpawnDef): Hash</a></li>
-  <li><a class="reference" href="#hash%2CAttachDef"
-    title="hash(directive`gensym6: AttachDef): Hash">hash(directive`gensym6: AttachDef): Hash</a></li>
-  <li><a class="reference" href="#hash%2CDetachDef"
-    title="hash(directive`gensym8: DetachDef): Hash">hash(directive`gensym8: DetachDef): Hash</a></li>
-  <li><a class="reference" href="#hash%2CLookupDef"
-    title="hash(directive`gensym10: LookupDef): Hash">hash(directive`gensym10: LookupDef): Hash</a></li>
+  <li><a class="reference" href="#hash%2CTupleDirective"
+    title="hash(directive: TupleDirective): Hash">hash(directive: TupleDirective): Hash</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">indexOf
+      <li><a class="reference" href="#indexOf%2CTupleDirective%2CComponentDef"
+    title="indexOf(directive: TupleDirective; comp: ComponentDef): int">indexOf(directive: TupleDirective; comp: ComponentDef): int</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">name
+      <li><a class="reference" href="#name%2CTupleDirective"
+    title="name(directive: TupleDirective): string">name(directive: TupleDirective): string</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">newAttachDef
       <li><a class="reference" href="#newAttachDef"
-    title="newAttachDef(args`gensym6: seq[DirectiveArg]): AttachDef">newAttachDef(args`gensym6: seq[DirectiveArg]): AttachDef</a></li>
+    title="newAttachDef(args`gensym11: seq[DirectiveArg]): AttachDef">newAttachDef(args`gensym11: seq[DirectiveArg]): AttachDef</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">newDetachDef
       <li><a class="reference" href="#newDetachDef"
-    title="newDetachDef(args`gensym8: seq[DirectiveArg]): DetachDef">newDetachDef(args`gensym8: seq[DirectiveArg]): DetachDef</a></li>
+    title="newDetachDef(args`gensym13: seq[DirectiveArg]): DetachDef">newDetachDef(args`gensym13: seq[DirectiveArg]): DetachDef</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">newDirectiveArg
@@ -196,17 +213,22 @@ window.addEventListener('DOMContentLoaded', main);
   </ul>
   <ul class="simple nested-toc-section">newLookupDef
       <li><a class="reference" href="#newLookupDef"
-    title="newLookupDef(args`gensym10: seq[DirectiveArg]): LookupDef">newLookupDef(args`gensym10: seq[DirectiveArg]): LookupDef</a></li>
+    title="newLookupDef(args`gensym15: seq[DirectiveArg]): LookupDef">newLookupDef(args`gensym15: seq[DirectiveArg]): LookupDef</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">newQueryDef
       <li><a class="reference" href="#newQueryDef"
-    title="newQueryDef(args`gensym0: seq[DirectiveArg]): QueryDef">newQueryDef(args`gensym0: seq[DirectiveArg]): QueryDef</a></li>
+    title="newQueryDef(args`gensym7: seq[DirectiveArg]): QueryDef">newQueryDef(args`gensym7: seq[DirectiveArg]): QueryDef</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">newSpawnDef
       <li><a class="reference" href="#newSpawnDef"
-    title="newSpawnDef(args`gensym4: seq[DirectiveArg]): SpawnDef">newSpawnDef(args`gensym4: seq[DirectiveArg]): SpawnDef</a></li>
+    title="newSpawnDef(args`gensym9: seq[DirectiveArg]): SpawnDef">newSpawnDef(args`gensym9: seq[DirectiveArg]): SpawnDef</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">type
+      <li><a class="reference" href="#type%2CDirectiveArg"
+    title="`type`(def: DirectiveArg): NimNode">`type`(def: DirectiveArg): NimNode</a></li>
 
   </ul>
 
@@ -216,29 +238,13 @@ window.addEventListener('DOMContentLoaded', main);
   <a class="reference reference-toplevel" href="#15" id="65">Iterators</a>
   <ul class="simple simple-toc-section">
       <ul class="simple nested-toc-section">args
-      <li><a class="reference" href="#args.i%2CQueryDef"
-    title="args(directive`gensym0: QueryDef): DirectiveArg">args(directive`gensym0: QueryDef): DirectiveArg</a></li>
-  <li><a class="reference" href="#args.i%2CSpawnDef"
-    title="args(directive`gensym4: SpawnDef): DirectiveArg">args(directive`gensym4: SpawnDef): DirectiveArg</a></li>
-  <li><a class="reference" href="#args.i%2CAttachDef"
-    title="args(directive`gensym6: AttachDef): DirectiveArg">args(directive`gensym6: AttachDef): DirectiveArg</a></li>
-  <li><a class="reference" href="#args.i%2CDetachDef"
-    title="args(directive`gensym8: DetachDef): DirectiveArg">args(directive`gensym8: DetachDef): DirectiveArg</a></li>
-  <li><a class="reference" href="#args.i%2CLookupDef"
-    title="args(directive`gensym10: LookupDef): DirectiveArg">args(directive`gensym10: LookupDef): DirectiveArg</a></li>
+      <li><a class="reference" href="#args.i%2CTupleDirective"
+    title="args(directive: TupleDirective): DirectiveArg">args(directive: TupleDirective): DirectiveArg</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">items
-      <li><a class="reference" href="#items.i%2CQueryDef"
-    title="items(directive`gensym0: QueryDef): ComponentDef">items(directive`gensym0: QueryDef): ComponentDef</a></li>
-  <li><a class="reference" href="#items.i%2CSpawnDef"
-    title="items(directive`gensym4: SpawnDef): ComponentDef">items(directive`gensym4: SpawnDef): ComponentDef</a></li>
-  <li><a class="reference" href="#items.i%2CAttachDef"
-    title="items(directive`gensym6: AttachDef): ComponentDef">items(directive`gensym6: AttachDef): ComponentDef</a></li>
-  <li><a class="reference" href="#items.i%2CDetachDef"
-    title="items(directive`gensym8: DetachDef): ComponentDef">items(directive`gensym8: DetachDef): ComponentDef</a></li>
-  <li><a class="reference" href="#items.i%2CLookupDef"
-    title="items(directive`gensym10: LookupDef): ComponentDef">items(directive`gensym10: LookupDef): ComponentDef</a></li>
+      <li><a class="reference" href="#items.i%2CTupleDirective"
+    title="items(directive: TupleDirective): ComponentDef">items(directive: TupleDirective): ComponentDef</a></li>
 
   </ul>
 
@@ -262,9 +268,8 @@ window.addEventListener('DOMContentLoaded', main);
 <h1><a class="toc-backref" href="#7">Types</a></h1>
 <dl class="item">
 <div id="AttachDef">
-<dt><pre><a href="tupleDirective.html#AttachDef"><span class="Identifier">AttachDef</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
-  <span class="Identifier">args</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="tupleDirective.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a><span class="Other">]</span>
-</pre></dt>
+<dt><pre><a href="tupleDirective.html#AttachDef"><span class="Identifier">AttachDef</span></a> <span class="Other">=</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a>
+  </pre></dt>
 <dd>
 
 A single directive definition
@@ -272,9 +277,8 @@ A single directive definition
 </dd>
 </div>
 <div id="DetachDef">
-<dt><pre><a href="tupleDirective.html#DetachDef"><span class="Identifier">DetachDef</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
-  <span class="Identifier">args</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="tupleDirective.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a><span class="Other">]</span>
-</pre></dt>
+<dt><pre><a href="tupleDirective.html#DetachDef"><span class="Identifier">DetachDef</span></a> <span class="Other">=</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a>
+  </pre></dt>
 <dd>
 
 A single directive definition
@@ -303,9 +307,8 @@ Indicates the behavior of a directive
 </dd>
 </div>
 <div id="LookupDef">
-<dt><pre><a href="tupleDirective.html#LookupDef"><span class="Identifier">LookupDef</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
-  <span class="Identifier">args</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="tupleDirective.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a><span class="Other">]</span>
-</pre></dt>
+<dt><pre><a href="tupleDirective.html#LookupDef"><span class="Identifier">LookupDef</span></a> <span class="Other">=</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a>
+  </pre></dt>
 <dd>
 
 A single directive definition
@@ -313,9 +316,8 @@ A single directive definition
 </dd>
 </div>
 <div id="QueryDef">
-<dt><pre><a href="tupleDirective.html#QueryDef"><span class="Identifier">QueryDef</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
-  <span class="Identifier">args</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="tupleDirective.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a><span class="Other">]</span>
-</pre></dt>
+<dt><pre><a href="tupleDirective.html#QueryDef"><span class="Identifier">QueryDef</span></a> <span class="Other">=</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a>
+  </pre></dt>
 <dd>
 
 A single directive definition
@@ -323,12 +325,21 @@ A single directive definition
 </dd>
 </div>
 <div id="SpawnDef">
-<dt><pre><a href="tupleDirective.html#SpawnDef"><span class="Identifier">SpawnDef</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
+<dt><pre><a href="tupleDirective.html#SpawnDef"><span class="Identifier">SpawnDef</span></a> <span class="Other">=</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a>
+  </pre></dt>
+<dd>
+
+A single directive definition
+
+</dd>
+</div>
+<div id="TupleDirective">
+<dt><pre><a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a> <span class="Other">=</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <span class="Identifier">RootObj</span>
   <span class="Identifier">args</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="tupleDirective.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a><span class="Other">]</span>
 </pre></dt>
 <dd>
 
-A single directive definition
+Parent type for all tuple based directives
 
 </dd>
 </div>
@@ -337,6 +348,54 @@ A single directive definition
 <div class="section" id="12">
 <h1><a class="toc-backref" href="#12">Procs</a></h1>
 <dl class="item">
+<div id="<,DirectiveArg,DirectiveArg">
+<dt><pre><span class="Keyword">proc</span> <a href="#%3C%2CDirectiveArg%2CDirectiveArg"><span class="Identifier">`&lt;`</span></a><span class="Other">(</span><span class="Identifier">a</span><span class="Other">,</span> <span class="Identifier">b</span><span class="Other">:</span> <a href="tupleDirective.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">auto</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+Allow deterministic sorting of directives
+
+</dd>
+</div>
+<div id="<,QueryDef,QueryDef">
+<dt><pre><span class="Keyword">proc</span> <a href="#%3C%2CQueryDef%2CQueryDef"><span class="Identifier">`&lt;`</span></a><span class="Other">(</span><span class="Identifier">a`gensym7</span><span class="Other">,</span> <span class="Identifier">b`gensym7</span><span class="Other">:</span> <a href="tupleDirective.html#QueryDef"><span class="Identifier">QueryDef</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">auto</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+Compare two Directive instances
+
+</dd>
+</div>
+<div id="<,SpawnDef,SpawnDef">
+<dt><pre><span class="Keyword">proc</span> <a href="#%3C%2CSpawnDef%2CSpawnDef"><span class="Identifier">`&lt;`</span></a><span class="Other">(</span><span class="Identifier">a`gensym9</span><span class="Other">,</span> <span class="Identifier">b`gensym9</span><span class="Other">:</span> <a href="tupleDirective.html#SpawnDef"><span class="Identifier">SpawnDef</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">auto</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+Compare two Directive instances
+
+</dd>
+</div>
+<div id="<,AttachDef,AttachDef">
+<dt><pre><span class="Keyword">proc</span> <a href="#%3C%2CAttachDef%2CAttachDef"><span class="Identifier">`&lt;`</span></a><span class="Other">(</span><span class="Identifier">a`gensym11</span><span class="Other">,</span> <span class="Identifier">b`gensym11</span><span class="Other">:</span> <a href="tupleDirective.html#AttachDef"><span class="Identifier">AttachDef</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">auto</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+Compare two Directive instances
+
+</dd>
+</div>
+<div id="<,DetachDef,DetachDef">
+<dt><pre><span class="Keyword">proc</span> <a href="#%3C%2CDetachDef%2CDetachDef"><span class="Identifier">`&lt;`</span></a><span class="Other">(</span><span class="Identifier">a`gensym13</span><span class="Other">,</span> <span class="Identifier">b`gensym13</span><span class="Other">:</span> <a href="tupleDirective.html#DetachDef"><span class="Identifier">DetachDef</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">auto</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+Compare two Directive instances
+
+</dd>
+</div>
+<div id="<,LookupDef,LookupDef">
+<dt><pre><span class="Keyword">proc</span> <a href="#%3C%2CLookupDef%2CLookupDef"><span class="Identifier">`&lt;`</span></a><span class="Other">(</span><span class="Identifier">a`gensym15</span><span class="Other">,</span> <span class="Identifier">b`gensym15</span><span class="Other">:</span> <a href="tupleDirective.html#LookupDef"><span class="Identifier">LookupDef</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">auto</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+Compare two Directive instances
+
+</dd>
+</div>
 <div id="==,DirectiveArg,DirectiveArg">
 <dt><pre><span class="Keyword">proc</span> <a href="#%3D%3D%2CDirectiveArg%2CDirectiveArg"><span class="Identifier">`==`</span></a><span class="Other">(</span><span class="Identifier">a</span><span class="Other">,</span> <span class="Identifier">b</span><span class="Other">:</span> <a href="tupleDirective.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">auto</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
@@ -346,7 +405,7 @@ Compare two Directive instances
 </dd>
 </div>
 <div id="==,QueryDef,QueryDef">
-<dt><pre><span class="Keyword">proc</span> <a href="#%3D%3D%2CQueryDef%2CQueryDef"><span class="Identifier">`==`</span></a><span class="Other">(</span><span class="Identifier">a`gensym0</span><span class="Other">,</span> <span class="Identifier">b`gensym0</span><span class="Other">:</span> <a href="tupleDirective.html#QueryDef"><span class="Identifier">QueryDef</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">auto</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dt><pre><span class="Keyword">proc</span> <a href="#%3D%3D%2CQueryDef%2CQueryDef"><span class="Identifier">`==`</span></a><span class="Other">(</span><span class="Identifier">a`gensym7</span><span class="Other">,</span> <span class="Identifier">b`gensym7</span><span class="Other">:</span> <a href="tupleDirective.html#QueryDef"><span class="Identifier">QueryDef</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">auto</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 Compare two Directive instances
@@ -354,7 +413,7 @@ Compare two Directive instances
 </dd>
 </div>
 <div id="==,SpawnDef,SpawnDef">
-<dt><pre><span class="Keyword">proc</span> <a href="#%3D%3D%2CSpawnDef%2CSpawnDef"><span class="Identifier">`==`</span></a><span class="Other">(</span><span class="Identifier">a`gensym4</span><span class="Other">,</span> <span class="Identifier">b`gensym4</span><span class="Other">:</span> <a href="tupleDirective.html#SpawnDef"><span class="Identifier">SpawnDef</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">auto</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dt><pre><span class="Keyword">proc</span> <a href="#%3D%3D%2CSpawnDef%2CSpawnDef"><span class="Identifier">`==`</span></a><span class="Other">(</span><span class="Identifier">a`gensym9</span><span class="Other">,</span> <span class="Identifier">b`gensym9</span><span class="Other">:</span> <a href="tupleDirective.html#SpawnDef"><span class="Identifier">SpawnDef</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">auto</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 Compare two Directive instances
@@ -362,7 +421,7 @@ Compare two Directive instances
 </dd>
 </div>
 <div id="==,AttachDef,AttachDef">
-<dt><pre><span class="Keyword">proc</span> <a href="#%3D%3D%2CAttachDef%2CAttachDef"><span class="Identifier">`==`</span></a><span class="Other">(</span><span class="Identifier">a`gensym6</span><span class="Other">,</span> <span class="Identifier">b`gensym6</span><span class="Other">:</span> <a href="tupleDirective.html#AttachDef"><span class="Identifier">AttachDef</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">auto</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dt><pre><span class="Keyword">proc</span> <a href="#%3D%3D%2CAttachDef%2CAttachDef"><span class="Identifier">`==`</span></a><span class="Other">(</span><span class="Identifier">a`gensym11</span><span class="Other">,</span> <span class="Identifier">b`gensym11</span><span class="Other">:</span> <a href="tupleDirective.html#AttachDef"><span class="Identifier">AttachDef</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">auto</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 Compare two Directive instances
@@ -370,7 +429,7 @@ Compare two Directive instances
 </dd>
 </div>
 <div id="==,DetachDef,DetachDef">
-<dt><pre><span class="Keyword">proc</span> <a href="#%3D%3D%2CDetachDef%2CDetachDef"><span class="Identifier">`==`</span></a><span class="Other">(</span><span class="Identifier">a`gensym8</span><span class="Other">,</span> <span class="Identifier">b`gensym8</span><span class="Other">:</span> <a href="tupleDirective.html#DetachDef"><span class="Identifier">DetachDef</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">auto</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dt><pre><span class="Keyword">proc</span> <a href="#%3D%3D%2CDetachDef%2CDetachDef"><span class="Identifier">`==`</span></a><span class="Other">(</span><span class="Identifier">a`gensym13</span><span class="Other">,</span> <span class="Identifier">b`gensym13</span><span class="Other">:</span> <a href="tupleDirective.html#DetachDef"><span class="Identifier">DetachDef</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">auto</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 Compare two Directive instances
@@ -378,51 +437,40 @@ Compare two Directive instances
 </dd>
 </div>
 <div id="==,LookupDef,LookupDef">
-<dt><pre><span class="Keyword">proc</span> <a href="#%3D%3D%2CLookupDef%2CLookupDef"><span class="Identifier">`==`</span></a><span class="Other">(</span><span class="Identifier">a`gensym10</span><span class="Other">,</span> <span class="Identifier">b`gensym10</span><span class="Other">:</span> <a href="tupleDirective.html#LookupDef"><span class="Identifier">LookupDef</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">auto</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dt><pre><span class="Keyword">proc</span> <a href="#%3D%3D%2CLookupDef%2CLookupDef"><span class="Identifier">`==`</span></a><span class="Other">(</span><span class="Identifier">a`gensym15</span><span class="Other">,</span> <span class="Identifier">b`gensym15</span><span class="Other">:</span> <a href="tupleDirective.html#LookupDef"><span class="Identifier">LookupDef</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">auto</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 Compare two Directive instances
 
 </dd>
 </div>
-<div id="generateName,QueryDef">
-<dt><pre><span class="Keyword">proc</span> <a href="#generateName%2CQueryDef"><span class="Identifier">generateName</span></a><span class="Other">(</span><span class="Identifier">directive`gensym0</span><span class="Other">:</span> <a href="tupleDirective.html#QueryDef"><span class="Identifier">QueryDef</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<div id="type,DirectiveArg">
+<dt><pre><span class="Keyword">proc</span> <a href="#type%2CDirectiveArg"><span class="Identifier">`type`</span></a><span class="Other">(</span><span class="Identifier">def</span><span class="Other">:</span> <a href="tupleDirective.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
-Produces a readable name describing this directive
+The type of this component
 
 </dd>
 </div>
-<div id="generateName,SpawnDef">
-<dt><pre><span class="Keyword">proc</span> <a href="#generateName%2CSpawnDef"><span class="Identifier">generateName</span></a><span class="Other">(</span><span class="Identifier">directive`gensym4</span><span class="Other">:</span> <a href="tupleDirective.html#SpawnDef"><span class="Identifier">SpawnDef</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<div id="comps,TupleDirective">
+<dt><pre><span class="Keyword">proc</span> <a href="#comps%2CTupleDirective"><span class="Identifier">comps</span></a><span class="Other">(</span><span class="Identifier">directive</span><span class="Other">:</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
-Produces a readable name describing this directive
+Produce all components in a directive
 
 </dd>
 </div>
-<div id="generateName,AttachDef">
-<dt><pre><span class="Keyword">proc</span> <a href="#generateName%2CAttachDef"><span class="Identifier">generateName</span></a><span class="Other">(</span><span class="Identifier">directive`gensym6</span><span class="Other">:</span> <a href="tupleDirective.html#AttachDef"><span class="Identifier">AttachDef</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span>
+<div id="contains,TupleDirective,ComponentDef">
+<dt><pre><span class="Keyword">proc</span> <a href="#contains%2CTupleDirective%2CComponentDef"><span class="Identifier">contains</span></a><span class="Other">(</span><span class="Identifier">directive</span><span class="Other">:</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a><span class="Other">;</span> <span class="Identifier">comp</span><span class="Other">:</span> <a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
-Produces a readable name describing this directive
+Returns the index of a component in this directive
 
 </dd>
 </div>
-<div id="generateName,DetachDef">
-<dt><pre><span class="Keyword">proc</span> <a href="#generateName%2CDetachDef"><span class="Identifier">generateName</span></a><span class="Other">(</span><span class="Identifier">directive`gensym8</span><span class="Other">:</span> <a href="tupleDirective.html#DetachDef"><span class="Identifier">DetachDef</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
-<dd>
-
-Produces a readable name describing this directive
-
-</dd>
-</div>
-<div id="generateName,LookupDef">
-<dt><pre><span class="Keyword">proc</span> <a href="#generateName%2CLookupDef"><span class="Identifier">generateName</span></a><span class="Other">(</span><span class="Identifier">directive`gensym10</span><span class="Other">:</span> <a href="tupleDirective.html#LookupDef"><span class="Identifier">LookupDef</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span>
+<div id="generateName,TupleDirective">
+<dt><pre><span class="Keyword">proc</span> <a href="#generateName%2CTupleDirective"><span class="Identifier">generateName</span></a><span class="Other">(</span><span class="Identifier">directive</span><span class="Other">:</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
@@ -438,48 +486,33 @@ Generate a unique hash
 
 </dd>
 </div>
-<div id="hash,QueryDef">
-<dt><pre><span class="Keyword">proc</span> <a href="#hash%2CQueryDef"><span class="Identifier">hash</span></a><span class="Other">(</span><span class="Identifier">directive`gensym0</span><span class="Other">:</span> <a href="tupleDirective.html#QueryDef"><span class="Identifier">QueryDef</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Hash</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<div id="hash,TupleDirective">
+<dt><pre><span class="Keyword">proc</span> <a href="#hash%2CTupleDirective"><span class="Identifier">hash</span></a><span class="Other">(</span><span class="Identifier">directive</span><span class="Other">:</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Hash</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 
 
 </dd>
 </div>
-<div id="hash,SpawnDef">
-<dt><pre><span class="Keyword">proc</span> <a href="#hash%2CSpawnDef"><span class="Identifier">hash</span></a><span class="Other">(</span><span class="Identifier">directive`gensym4</span><span class="Other">:</span> <a href="tupleDirective.html#SpawnDef"><span class="Identifier">SpawnDef</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Hash</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<div id="indexOf,TupleDirective,ComponentDef">
+<dt><pre><span class="Keyword">proc</span> <a href="#indexOf%2CTupleDirective%2CComponentDef"><span class="Identifier">indexOf</span></a><span class="Other">(</span><span class="Identifier">directive</span><span class="Other">:</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a><span class="Other">;</span> <span class="Identifier">comp</span><span class="Other">:</span> <a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int</span> {.
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
-
+Returns the index of a component in this directive
 
 </dd>
 </div>
-<div id="hash,AttachDef">
-<dt><pre><span class="Keyword">proc</span> <a href="#hash%2CAttachDef"><span class="Identifier">hash</span></a><span class="Other">(</span><span class="Identifier">directive`gensym6</span><span class="Other">:</span> <a href="tupleDirective.html#AttachDef"><span class="Identifier">AttachDef</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Hash</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<div id="name,TupleDirective">
+<dt><pre><span class="Keyword">proc</span> <a href="#name%2CTupleDirective"><span class="Identifier">name</span></a><span class="Other">(</span><span class="Identifier">directive</span><span class="Other">:</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
-
-
-</dd>
-</div>
-<div id="hash,DetachDef">
-<dt><pre><span class="Keyword">proc</span> <a href="#hash%2CDetachDef"><span class="Identifier">hash</span></a><span class="Other">(</span><span class="Identifier">directive`gensym8</span><span class="Other">:</span> <a href="tupleDirective.html#DetachDef"><span class="Identifier">DetachDef</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Hash</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
-<dd>
-
-
-
-</dd>
-</div>
-<div id="hash,LookupDef">
-<dt><pre><span class="Keyword">proc</span> <a href="#hash%2CLookupDef"><span class="Identifier">hash</span></a><span class="Other">(</span><span class="Identifier">directive`gensym10</span><span class="Other">:</span> <a href="tupleDirective.html#LookupDef"><span class="Identifier">LookupDef</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Hash</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
-<dd>
-
-
+Produces a readable name describing this directive
 
 </dd>
 </div>
 <div id="newAttachDef">
-<dt><pre><span class="Keyword">proc</span> <a href="#newAttachDef"><span class="Identifier">newAttachDef</span></a><span class="Other">(</span><span class="Identifier">args`gensym6</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="tupleDirective.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="tupleDirective.html#AttachDef"><span class="Identifier">AttachDef</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+<dt><pre><span class="Keyword">proc</span> <a href="#newAttachDef"><span class="Identifier">newAttachDef</span></a><span class="Other">(</span><span class="Identifier">args`gensym11</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="tupleDirective.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="tupleDirective.html#AttachDef"><span class="Identifier">AttachDef</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
@@ -488,7 +521,7 @@ Generate a unique hash
 </dd>
 </div>
 <div id="newDetachDef">
-<dt><pre><span class="Keyword">proc</span> <a href="#newDetachDef"><span class="Identifier">newDetachDef</span></a><span class="Other">(</span><span class="Identifier">args`gensym8</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="tupleDirective.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="tupleDirective.html#DetachDef"><span class="Identifier">DetachDef</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+<dt><pre><span class="Keyword">proc</span> <a href="#newDetachDef"><span class="Identifier">newDetachDef</span></a><span class="Other">(</span><span class="Identifier">args`gensym13</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="tupleDirective.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="tupleDirective.html#DetachDef"><span class="Identifier">DetachDef</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
@@ -506,7 +539,7 @@ Creates a DirectiveArg
 </dd>
 </div>
 <div id="newLookupDef">
-<dt><pre><span class="Keyword">proc</span> <a href="#newLookupDef"><span class="Identifier">newLookupDef</span></a><span class="Other">(</span><span class="Identifier">args`gensym10</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="tupleDirective.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="tupleDirective.html#LookupDef"><span class="Identifier">LookupDef</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+<dt><pre><span class="Keyword">proc</span> <a href="#newLookupDef"><span class="Identifier">newLookupDef</span></a><span class="Other">(</span><span class="Identifier">args`gensym15</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="tupleDirective.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="tupleDirective.html#LookupDef"><span class="Identifier">LookupDef</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
@@ -515,7 +548,7 @@ Creates a DirectiveArg
 </dd>
 </div>
 <div id="newQueryDef">
-<dt><pre><span class="Keyword">proc</span> <a href="#newQueryDef"><span class="Identifier">newQueryDef</span></a><span class="Other">(</span><span class="Identifier">args`gensym0</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="tupleDirective.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="tupleDirective.html#QueryDef"><span class="Identifier">QueryDef</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+<dt><pre><span class="Keyword">proc</span> <a href="#newQueryDef"><span class="Identifier">newQueryDef</span></a><span class="Other">(</span><span class="Identifier">args`gensym7</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="tupleDirective.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="tupleDirective.html#QueryDef"><span class="Identifier">QueryDef</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
@@ -524,7 +557,7 @@ Creates a DirectiveArg
 </dd>
 </div>
 <div id="newSpawnDef">
-<dt><pre><span class="Keyword">proc</span> <a href="#newSpawnDef"><span class="Identifier">newSpawnDef</span></a><span class="Other">(</span><span class="Identifier">args`gensym4</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="tupleDirective.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="tupleDirective.html#SpawnDef"><span class="Identifier">SpawnDef</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+<dt><pre><span class="Keyword">proc</span> <a href="#newSpawnDef"><span class="Identifier">newSpawnDef</span></a><span class="Other">(</span><span class="Identifier">args`gensym9</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="tupleDirective.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="tupleDirective.html#SpawnDef"><span class="Identifier">SpawnDef</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
@@ -537,84 +570,16 @@ Creates a DirectiveArg
 <div class="section" id="15">
 <h1><a class="toc-backref" href="#15">Iterators</a></h1>
 <dl class="item">
-<div id="args.i,QueryDef">
-<dt><pre><span class="Keyword">iterator</span> <a href="#args.i%2CQueryDef"><span class="Identifier">args</span></a><span class="Other">(</span><span class="Identifier">directive`gensym0</span><span class="Other">:</span> <a href="tupleDirective.html#QueryDef"><span class="Identifier">QueryDef</span></a><span class="Other">)</span><span class="Other">:</span> <a href="tupleDirective.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<div id="args.i,TupleDirective">
+<dt><pre><span class="Keyword">iterator</span> <a href="#args.i%2CTupleDirective"><span class="Identifier">args</span></a><span class="Other">(</span><span class="Identifier">directive</span><span class="Other">:</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a><span class="Other">)</span><span class="Other">:</span> <a href="tupleDirective.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 Produce all args in a directive
 
 </dd>
 </div>
-<div id="args.i,SpawnDef">
-<dt><pre><span class="Keyword">iterator</span> <a href="#args.i%2CSpawnDef"><span class="Identifier">args</span></a><span class="Other">(</span><span class="Identifier">directive`gensym4</span><span class="Other">:</span> <a href="tupleDirective.html#SpawnDef"><span class="Identifier">SpawnDef</span></a><span class="Other">)</span><span class="Other">:</span> <a href="tupleDirective.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
-<dd>
-
-Produce all args in a directive
-
-</dd>
-</div>
-<div id="args.i,AttachDef">
-<dt><pre><span class="Keyword">iterator</span> <a href="#args.i%2CAttachDef"><span class="Identifier">args</span></a><span class="Other">(</span><span class="Identifier">directive`gensym6</span><span class="Other">:</span> <a href="tupleDirective.html#AttachDef"><span class="Identifier">AttachDef</span></a><span class="Other">)</span><span class="Other">:</span> <a href="tupleDirective.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
-<dd>
-
-Produce all args in a directive
-
-</dd>
-</div>
-<div id="args.i,DetachDef">
-<dt><pre><span class="Keyword">iterator</span> <a href="#args.i%2CDetachDef"><span class="Identifier">args</span></a><span class="Other">(</span><span class="Identifier">directive`gensym8</span><span class="Other">:</span> <a href="tupleDirective.html#DetachDef"><span class="Identifier">DetachDef</span></a><span class="Other">)</span><span class="Other">:</span> <a href="tupleDirective.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
-<dd>
-
-Produce all args in a directive
-
-</dd>
-</div>
-<div id="args.i,LookupDef">
-<dt><pre><span class="Keyword">iterator</span> <a href="#args.i%2CLookupDef"><span class="Identifier">args</span></a><span class="Other">(</span><span class="Identifier">directive`gensym10</span><span class="Other">:</span> <a href="tupleDirective.html#LookupDef"><span class="Identifier">LookupDef</span></a><span class="Other">)</span><span class="Other">:</span> <a href="tupleDirective.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
-<dd>
-
-Produce all args in a directive
-
-</dd>
-</div>
-<div id="items.i,QueryDef">
-<dt><pre><span class="Keyword">iterator</span> <a href="#items.i%2CQueryDef"><span class="Identifier">items</span></a><span class="Other">(</span><span class="Identifier">directive`gensym0</span><span class="Other">:</span> <a href="tupleDirective.html#QueryDef"><span class="Identifier">QueryDef</span></a><span class="Other">)</span><span class="Other">:</span> <a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
-<dd>
-
-Produce all components in a directive
-
-</dd>
-</div>
-<div id="items.i,SpawnDef">
-<dt><pre><span class="Keyword">iterator</span> <a href="#items.i%2CSpawnDef"><span class="Identifier">items</span></a><span class="Other">(</span><span class="Identifier">directive`gensym4</span><span class="Other">:</span> <a href="tupleDirective.html#SpawnDef"><span class="Identifier">SpawnDef</span></a><span class="Other">)</span><span class="Other">:</span> <a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
-<dd>
-
-Produce all components in a directive
-
-</dd>
-</div>
-<div id="items.i,AttachDef">
-<dt><pre><span class="Keyword">iterator</span> <a href="#items.i%2CAttachDef"><span class="Identifier">items</span></a><span class="Other">(</span><span class="Identifier">directive`gensym6</span><span class="Other">:</span> <a href="tupleDirective.html#AttachDef"><span class="Identifier">AttachDef</span></a><span class="Other">)</span><span class="Other">:</span> <a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
-<dd>
-
-Produce all components in a directive
-
-</dd>
-</div>
-<div id="items.i,DetachDef">
-<dt><pre><span class="Keyword">iterator</span> <a href="#items.i%2CDetachDef"><span class="Identifier">items</span></a><span class="Other">(</span><span class="Identifier">directive`gensym8</span><span class="Other">:</span> <a href="tupleDirective.html#DetachDef"><span class="Identifier">DetachDef</span></a><span class="Other">)</span><span class="Other">:</span> <a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
-<dd>
-
-Produce all components in a directive
-
-</dd>
-</div>
-<div id="items.i,LookupDef">
-<dt><pre><span class="Keyword">iterator</span> <a href="#items.i%2CLookupDef"><span class="Identifier">items</span></a><span class="Other">(</span><span class="Identifier">directive`gensym10</span><span class="Other">:</span> <a href="tupleDirective.html#LookupDef"><span class="Identifier">LookupDef</span></a><span class="Other">)</span><span class="Other">:</span> <a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<div id="items.i,TupleDirective">
+<dt><pre><span class="Keyword">iterator</span> <a href="#items.i%2CTupleDirective"><span class="Identifier">items</span></a><span class="Other">(</span><span class="Identifier">directive</span><span class="Other">:</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a><span class="Other">)</span><span class="Other">:</span> <a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 Produce all components in a directive
@@ -631,7 +596,7 @@ Produce all components in a directive
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2022-04-12 03:53:28 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-01-14 23:06:07 UTC</small>
       </div>
     </div>
   </div>

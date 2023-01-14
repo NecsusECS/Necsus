@@ -1,7 +1,7 @@
 SharedVector	necsus/util/sharedVector.html#SharedVector	sharedVector: SharedVector	
 `=copy`	necsus/util/sharedVector.html#=copy,SharedVector[T],SharedVector[T]	sharedVector: `=copy`[T](dest: var SharedVector[T]; src: SharedVector[T])	
+`=sink`	necsus/util/sharedVector.html#=sink,SharedVector[T],SharedVector[T]	sharedVector: `=sink`[T](dest: var SharedVector[T]; src: SharedVector[T])	
 bucketDetails	necsus/util/sharedVector.html#bucketDetails.i,SharedVector[T]	sharedVector: bucketDetails[T](vector: SharedVector[T]): tuple[index: uint, size: uint]	
-`=destroy`	necsus/util/sharedVector.html#=destroy,SharedVector[T]	sharedVector: `=destroy`[T](vector: var SharedVector[T])	
 reserve	necsus/util/sharedVector.html#reserve,SharedVector[T],uint	sharedVector: reserve[T](vector: var SharedVector[T]; size: uint)	
 newSharedVector	necsus/util/sharedVector.html#newSharedVector,uint	sharedVector: newSharedVector[T](initialSize: uint): SharedVector[T]	
 len	necsus/util/sharedVector.html#len,SharedVector[T]	sharedVector: len[T](vector: SharedVector[T]): uint	

@@ -1,0 +1,7 @@
+ArchetypeBuilder	necsus/compiletime/archetypeBuilder.html#ArchetypeBuilder	archetypeBuilder: ArchetypeBuilder	
+JumbledArchetype	necsus/compiletime/archetypeBuilder.html#JumbledArchetype	archetypeBuilder: JumbledArchetype	
+newArchetypeBuilder	necsus/compiletime/archetypeBuilder.html#newArchetypeBuilder	archetypeBuilder: newArchetypeBuilder[T](): ArchetypeBuilder[T]	
+define	necsus/compiletime/archetypeBuilder.html#define,ArchetypeBuilder[T],openArray[T]	archetypeBuilder: define[T](builder: var ArchetypeBuilder[T]; values: openArray[T])	
+attachable	necsus/compiletime/archetypeBuilder.html#attachable,ArchetypeBuilder[T],openArray[T]	archetypeBuilder: attachable[T](builder: var ArchetypeBuilder[T]; values: openArray[T])	
+detachable	necsus/compiletime/archetypeBuilder.html#detachable,ArchetypeBuilder[T],openArray[T]	archetypeBuilder: detachable[T](builder: var ArchetypeBuilder[T]; values: openArray[T])	
+build	necsus/compiletime/archetypeBuilder.html#build,ArchetypeBuilder[T]	archetypeBuilder: build[T](builder: ArchetypeBuilder[T]): ArchetypeSet[T]	

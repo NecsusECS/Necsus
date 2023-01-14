@@ -1,0 +1,9 @@
+ArrayBlock	necsus/util/arrayblock.html#ArrayBlock	arrayblock: ArrayBlock	
+newArrayBlock	necsus/util/arrayblock.html#newArrayBlock,SomeInteger	arrayblock: newArrayBlock[T](len: SomeInteger): ArrayBlock[T]	
+`=destroy`	necsus/util/arrayblock.html#=destroy,ArrayBlock[T]	arrayblock: `=destroy`[T](ary: var ArrayBlock[T])	
+`=copy`	necsus/util/arrayblock.html#=copy,ArrayBlock[T],ArrayBlock[T]	arrayblock: `=copy`[T](target: var ArrayBlock[T]; source: ArrayBlock[T])	
+`=sink`	necsus/util/arrayblock.html#=sink,ArrayBlock[T],ArrayBlock[T]	arrayblock: `=sink`[T](target: var ArrayBlock[T]; source: ArrayBlock[T])	
+isNil	necsus/util/arrayblock.html#isNil,ArrayBlock[T]	arrayblock: isNil[T](ary: ArrayBlock[T]): bool	
+`[]`	necsus/util/arrayblock.html#[],ArrayBlock[T],SomeInteger	arrayblock: `[]`[T](ary: ArrayBlock[T]; index: SomeInteger): var T	
+`[]=`	necsus/util/arrayblock.html#[]=,ArrayBlock[T],SomeInteger,sinkT	arrayblock: `[]=`[T](ary: ArrayBlock[T]; index: SomeInteger; value: sink T)	
+items	necsus/util/arrayblock.html#items.i,ArrayBlock[T]	arrayblock: items[T](ary: var ArrayBlock[T]): var T	

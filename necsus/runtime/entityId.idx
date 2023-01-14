@@ -2,3 +2,4 @@ EntityId	necsus/runtime/entityId.html#EntityId	entityId: EntityId
 `$`	necsus/runtime/entityId.html#$,EntityId	entityId: `$`(entityId: EntityId): string	
 `==`	necsus/runtime/entityId.html#==,EntityId,EntityId	entityId: `==`(a, b: EntityId): bool	
 hash	necsus/runtime/entityId.html#hash,EntityId	entityId: hash(entityId: EntityId): Hash	
+toInt	necsus/runtime/entityId.html#toInt,EntityId	entityId: toInt(entityId: EntityId): uint	

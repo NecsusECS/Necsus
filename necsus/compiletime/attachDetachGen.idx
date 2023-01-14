@@ -1,0 +1,3 @@
+createAttachProcs	necsus/compiletime/attachDetachGen.html#createAttachProcs,CodeGenInfo	attachDetachGen: createAttachProcs(genInfo: CodeGenInfo): NimNode	
+createDetachProc	necsus/compiletime/attachDetachGen.html#createDetachProc,CodeGenInfo,string,DetachDef	attachDetachGen: createDetachProc(genInfo: CodeGenInfo; name: string; detach: DetachDef): NimNode	
+createDetachProcs	necsus/compiletime/attachDetachGen.html#createDetachProcs,CodeGenInfo	attachDetachGen: createDetachProcs(genInfo: CodeGenInfo): NimNode	
