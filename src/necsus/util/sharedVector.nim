@@ -1,4 +1,4 @@
-import macros, sync/spinlock, arrayblock
+import macros, std/locks, arrayblock
 
 ##
 ## Resizable array of values stored in large buckets of memory. The benefit of this
@@ -11,7 +11,7 @@ import macros, sync/spinlock, arrayblock
 type
     SharedVector*[T] {.byref.} = object
         ## Resizable vector of values
-        resizeLock: SpinLock # A SpinLock to work around: https://github.com/nim-lang/Nim/issues/14873
+        resizeLock: Lock
         size: uint
         buckets: array[32, ArrayBlock[T]]
 
