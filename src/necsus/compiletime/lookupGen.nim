@@ -23,30 +23,23 @@ proc canCreateFrom(lookup: LookupDef, archetype: Archetype[ComponentDef]): bool 
     ## Returns whether a lookup can be created from an archetype
     lookup.items.toSeq.allIt(it in archetype)
 
-proc createLookupProc(codeGenInfo: CodeGenInfo, name: string, lookup: LookupDef): NimNode =
+proc createLookupProc(genInfo: CodeGenInfo, name: string, lookup: LookupDef): NimNode =
     ## Create the proc for performing a single lookup
 
     let procName = ident(name)
     let tupleType = lookup.args.toSeq.asTupleType
 
     # Create a case statement where each branch is one of the archetypes
-    let archetypeCases = nnkCaseStmt.newTree(newDotExpr(entityIndex, ident("archetype")))
-    for archetype in codeGenInfo.archetypes:
-        if lookup.canCreateFrom(archetype):
-            archetypeCases.add(
-                nnkOfBranch.newTree(
-                    codeGenInfo.archetypeEnum.enumRef(archetype),
-                    buildArchetypeLookup(codeGenInfo, lookup, archetype)
-                )
-            )
-
-    if codeGenInfo.archetypes.anyIt(not canCreateFrom(lookup, it)):
-        archetypeCases.add(nnkElse.newTree(nnkReturnStmt.newTree(newCall(bindSym("none"), tupleType))))
+    let cases = genInfo.createArchetypeCase(newDotExpr(entityIndex, ident("archetype"))) do (fromArch: auto) -> auto:
+        if lookup.canCreateFrom(fromArch):
+            genInfo.buildArchetypeLookup(lookup, fromArch)
+        else:
+            quote: return none(`tupleType`)
 
     return quote:
         proc `procName`(`entityId`: EntityId): Option[`tupleType`] =
             let `entityIndex` = `worldIdent`[`entityId`]
-            `archetypeCases`
+            `cases`
 
 proc createLookups*(codeGenInfo: CodeGenInfo): NimNode =
     # Creates the methods needed to look up an entity

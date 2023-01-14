@@ -41,10 +41,10 @@ type
 proc create(spawn: Spawn[(Position, Velocity)]) =
     ## Creates a handful entities at random positions with random velocities
     for _ in 1..10:
-        discard spawn((
+        discard spawn.with(
             Position(x: rand(0.0..100.0), y: rand(0.0..100.0)),
             Velocity(dx: rand(0.0..10.0), dy: rand(0.0..10.0))
-        ))
+        )
 
 proc move(dt: TimeDelta, entities: Query[(ptr Position, Velocity)]) =
     ## Updates the positions of each component
@@ -197,7 +197,7 @@ type
 
 proc spawningSystem(spawn: Spawn[(A, B)]) =
     for i in 1..10:
-        let spawnedEntityId = spawn((A(), B()))
+        let spawnedEntityId = spawn.with(A(), B())
         echo "Spawned a new entity with ID: ", spawnedEntityId
 
 proc myApp() {.necsus([~spawningSystem], [], [], newNecsusConf()).}
