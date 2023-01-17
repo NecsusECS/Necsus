@@ -162,7 +162,7 @@ proc parseSystemArg(identDef: NimNode): SystemArg =
 proc parseSystem(ident: NimNode, phase: SystemPhase): ParsedSystem =
     ## Parses a single system proc
     ident.expectKind(nnkSym)
-    let args = ident.getImpl.params.toSeq
+    let args = ident.getTypeImpl[0].toSeq
         .filterIt(it.kind == nnkIdentDefs)
         .mapIt(it.parseSystemArg)
     return ParsedSystem(phase: phase, symbol: ident.strVal, args: args)
