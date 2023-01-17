@@ -14,6 +14,7 @@ type
     ArchView*[ViewComps: tuple] = object
         ## An object able to iterate over an archetype using a specific view of the data
         buildIterator: proc(): iterator(slot: var ViewComps): EntityId
+        length: proc(): uint
 
     NewArchSlot*[Comps: tuple] = distinct Entry[ArchRow[Comps]]
 
@@ -58,12 +59,17 @@ proc asView*[Archs: enum, ArchetypeComps: tuple, ViewComps: tuple](
             for row in items(input.compStore):
                 comps = convert(addr row.components)
                 yield row.entityId
+    result.length = proc(): auto = input.compStore.len
 
 iterator items*[ViewComps: tuple](view: ArchView[ViewComps], comps: var ViewComps): EntityId {.inline.} =
     ## Iterates over the components in a view
     let instance = view.buildIterator()
     for entityId in instance(comps):
         yield entityId
+
+proc len*[ViewComps: tuple](view: ArchView[ViewComps]): uint {.inline.} =
+    ## Iterates over the components in a view
+    view.length()
 
 proc getComps*[Archs: enum, Comps: tuple](store: var ArchetypeStore[Archs, Comps], index: uint): ptr Comps =
     ## Return the components for an archetype

@@ -14,11 +14,15 @@ type
         hasRecycledValues: bool
         recycle: RingBuffer[uint]
         data: ArrayBlock[EntryData[V]]
+        len: Atomic[uint]
 
 proc newBlockStore*[V](size: SomeInteger): BlockStore[V] =
     ## Instantiates a new BlockStore
     result.recycle = newRingBuffer[uint](size)
     result.data = newArrayBlock[EntryData[V]](size)
+
+proc len*[V](blockstore: var BlockStore[V]): uint = blockstore.len.load
+    ## Returns the length of this blockstore
 
 proc reserve*[V](blockstore: var BlockStore[V]): Entry[V] =
     ## Reserves a slot for a value
@@ -34,6 +38,7 @@ proc reserve*[V](blockstore: var BlockStore[V]): Entry[V] =
     else:
         index = fetchAdd(blockstore.nextId, 1)
 
+    blockstore.len.atomicInc(1)
     result = addr blockstore.data[index]
     result.idx = index
 
@@ -64,6 +69,7 @@ proc del*[V](store: var BlockStore[V], idx: uint) =
     if store.data[idx].alive.compareExchange(falsey, false):
         discard store.recycle.tryPush(idx)
         store.hasRecycledValues = true
+    store.len.atomicDec(1)
 
 proc `[]`*[V](store: BlockStore[V], idx: uint): var V =
     ## Reads a field

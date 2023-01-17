@@ -28,3 +28,7 @@ iterator pairs*[Comps: tuple](query: Query[Comps]): QueryItem[Comps] {.inline.} 
 iterator items*[Comps: tuple](query: Query[Comps]): Comps {.inline.} =
     ## Iterates through the entities in a query
     for (_, components) in query.pairs: yield components
+
+proc len*[Comps: tuple](query: Query[Comps]): uint =
+    ## Returns the number of entities in this query
+    for arch in query.archetypes: result += arch.len

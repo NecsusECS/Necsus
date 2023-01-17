@@ -4,21 +4,26 @@ suite "BlockStore":
 
     test "Pushing values":
         var store = newBlockStore[string](50)
+        check(store.len == 0)
 
         let id1 = store.push("foo")
         check(store[id1] == "foo")
         check(store.items.toSeq == @["foo"])
+        check(store.len == 1)
 
         let id2 = store.push("bar")
         check(store[id1] == "foo")
         check(store[id2] == "bar")
         check(store.items.toSeq == @["foo", "bar"])
+        check(store.len == 2)
+
 
         let id3 = store.push("baz")
         check(store[id1] == "foo")
         check(store[id2] == "bar")
         check(store[id3] == "baz")
         check(store.items.toSeq == @["foo", "bar", "baz"])
+        check(store.len == 3)
 
     test "Deleting values":
         var store = newBlockStore[int](50)
@@ -29,18 +34,23 @@ suite "BlockStore":
         let id3 = store.push(3)
 
         check(store.items.toSeq == @[0, 1, 2, 3])
+        check(store.len == 4)
 
         store.del(id2)
         check(store.items.toSeq == @[0, 1, 3])
+        check(store.len == 3)
 
         store.del(id0)
         check(store.items.toSeq == @[1, 3])
+        check(store.len == 2)
 
         store.del(id3)
         check(store.items.toSeq == @[1])
+        check(store.len == 1)
 
         store.del(id1)
         check(store.items.toSeq == newSeq[int]())
+        check(store.len == 0)
 
     test "Fail when indexes are out of bounds":
         var store = newBlockStore[string](5)
