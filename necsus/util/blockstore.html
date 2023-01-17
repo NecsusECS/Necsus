@@ -112,7 +112,8 @@ window.addEventListener('DOMContentLoaded', main);
   nextId: Atomic[uint]
   hasRecycledValues: bool
   recycle: RingBuffer[uint]
-  data: ArrayBlock[EntryData[V]]">BlockStore</a></li>
+  data: ArrayBlock[EntryData[V]]
+  len: Atomic[uint]">BlockStore</a></li>
   <li><a class="reference" href="#Entry"
     title="Entry[V] = ptr EntryData[V]">Entry</a></li>
 
@@ -139,6 +140,11 @@ window.addEventListener('DOMContentLoaded', main);
   <ul class="simple nested-toc-section">index
       <li><a class="reference" href="#index%2CEntry%5BV%5D"
     title="index[V](entry: Entry[V]): uint">index[V](entry: Entry[V]): uint</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">len
+      <li><a class="reference" href="#len%2CBlockStore%5BV%5D"
+    title="len[V](blockstore: var BlockStore[V]): uint">len[V](blockstore: var BlockStore[V]): uint</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">newBlockStore
@@ -214,6 +220,7 @@ window.addEventListener('DOMContentLoaded', main);
   <span class="Identifier">hasRecycledValues</span><span class="Other">:</span> <span class="Identifier">bool</span>
   <span class="Identifier">recycle</span><span class="Other">:</span> <a href="ringbuffer.html#RingBuffer"><span class="Identifier">RingBuffer</span></a><span class="Other">[</span><span class="Identifier">uint</span><span class="Other">]</span>
   <span class="Identifier">data</span><span class="Other">:</span> <a href="arrayblock.html#ArrayBlock"><span class="Identifier">ArrayBlock</span></a><span class="Other">[</span><span class="Identifier">EntryData</span><span class="Other">[</span><span class="Identifier">V</span><span class="Other">]</span><span class="Other">]</span>
+  <span class="Identifier">len</span><span class="Other">:</span> <span class="Identifier">Atomic</span><span class="Other">[</span><span class="Identifier">uint</span><span class="Other">]</span>
 </pre></dt>
 <dd>
 
@@ -263,6 +270,14 @@ Deletes a field
 <dd>
 
 Returns the index of an entry
+
+</dd>
+</div>
+<div id="len,BlockStore[V]">
+<dt><pre><span class="Keyword">proc</span> <a href="#len%2CBlockStore%5BV%5D"><span class="Identifier">len</span></a><span class="Other">[</span><span class="Identifier">V</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">blockstore</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="blockstore.html#BlockStore"><span class="Identifier">BlockStore</span></a><span class="Other">[</span><span class="Identifier">V</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">uint</span></pre></dt>
+<dd>
+
+Returns the length of this blockstore
 
 </dd>
 </div>
@@ -342,7 +357,7 @@ Returns the value of an entry
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-01-14 23:40:24 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-01-17 03:40:47 UTC</small>
       </div>
     </div>
   </div>

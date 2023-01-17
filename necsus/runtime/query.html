@@ -120,7 +120,12 @@ window.addEventListener('DOMContentLoaded', main);
 <li>
   <a class="reference reference-toplevel" href="#12" id="62">Procs</a>
   <ul class="simple simple-toc-section">
-      <ul class="simple nested-toc-section">newQuery
+      <ul class="simple nested-toc-section">len
+      <li><a class="reference" href="#len%2CQuery%5BComps%3A%20tuple%5D"
+    title="len[Comps: tuple](query: Query[Comps]): uint">len[Comps: tuple](query: Query[Comps]): uint</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">newQuery
       <li><a class="reference" href="#newQuery%2Csinkseq%5BArchView%5BComps%3A%20tuple%5D%5D"
     title="newQuery[Comps: tuple](archetypes: sink seq[ArchView[Comps]]): Query[Comps]">newQuery[Comps: tuple](archetypes: sink seq[ArchView[Comps]]): Query[Comps]</a></li>
 
@@ -192,6 +197,14 @@ An individual value yielded by a query. Where <tt class="docutils literal"><span
 <div class="section" id="12">
 <h1><a class="toc-backref" href="#12">Procs</a></h1>
 <dl class="item">
+<div id="len,Query[Comps: tuple]">
+<dt><pre><span class="Keyword">proc</span> <a href="#len%2CQuery%5BComps%3A%20tuple%5D"><span class="Identifier">len</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">query</span><span class="Other">:</span> <a href="query.html#Query"><span class="Identifier">Query</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">uint</span></pre></dt>
+<dd>
+
+Returns the number of entities in this query
+
+</dd>
+</div>
 <div id="newQuery,sinkseq[ArchView[Comps: tuple]]">
 <dt><pre><span class="Keyword">proc</span> <a href="#newQuery%2Csinkseq%5BArchView%5BComps%3A%20tuple%5D%5D"><span class="Identifier">newQuery</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">archetypes</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="archetypeStore.html#ArchView"><span class="Identifier">ArchView</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="query.html#Query"><span class="Identifier">Query</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span></pre></dt>
 <dd>
@@ -231,7 +244,7 @@ Iterates through the entities in a query
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-01-14 23:40:24 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-01-17 03:40:47 UTC</small>
       </div>
     </div>
   </div>

@@ -113,7 +113,8 @@ window.addEventListener('DOMContentLoaded', main);
   compStore: BlockStore[ArchRow[Comps]]">ArchetypeStore</a></li>
   <li><a class="reference" href="#ArchView"
     title="ArchView[ViewComps] = object
-  buildIterator: proc (): iterator (slot: var ViewComps): EntityId">ArchView</a></li>
+  buildIterator: proc (): iterator (slot: var ViewComps): EntityId
+  length: proc (): uint">ArchView</a></li>
   <li><a class="reference" href="#NewArchSlot"
     title="NewArchSlot[Comps] = distinct Entry[ArchRow[Comps]]">NewArchSlot</a></li>
 
@@ -151,6 +152,11 @@ window.addEventListener('DOMContentLoaded', main);
   <ul class="simple nested-toc-section">index
       <li><a class="reference" href="#index%2CNewArchSlot%5BComps%3A%20tuple%5D"
     title="index[Comps: tuple](entry: NewArchSlot[Comps]): uint">index[Comps: tuple](entry: NewArchSlot[Comps]): uint</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">len
+      <li><a class="reference" href="#len%2CArchView%5BViewComps%3A%20tuple%5D"
+    title="len[ViewComps: tuple](view: ArchView[ViewComps]): uint">len[ViewComps: tuple](view: ArchView[ViewComps]): uint</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">moveEntity
@@ -236,6 +242,7 @@ Stores a specific archetype shape
 <div id="ArchView">
 <dt><pre><a href="archetypeStore.html#ArchView"><span class="Identifier">ArchView</span></a><span class="Other">[</span><span class="Identifier">ViewComps</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">object</span>
   <span class="Identifier">buildIterator</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Keyword">iterator</span> <span class="Other">(</span><span class="Identifier">slot</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">ViewComps</span><span class="Other">)</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a>
+  <span class="Identifier">length</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">uint</span>
 </pre></dt>
 <dd>
 
@@ -297,6 +304,14 @@ Return the components for an archetype
 <dd>
 
 
+
+</dd>
+</div>
+<div id="len,ArchView[ViewComps: tuple]">
+<dt><pre><span class="Keyword">proc</span> <a href="#len%2CArchView%5BViewComps%3A%20tuple%5D"><span class="Identifier">len</span></a><span class="Other">[</span><span class="Identifier">ViewComps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">view</span><span class="Other">:</span> <a href="archetypeStore.html#ArchView"><span class="Identifier">ArchView</span></a><span class="Other">[</span><span class="Identifier">ViewComps</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">uint</span> {.<span class="Identifier">inline</span>.}</pre></dt>
+<dd>
+
+Iterates over the components in a view
 
 </dd>
 </div>
@@ -368,7 +383,7 @@ Stores an entity and its components into this slot
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-01-14 23:40:24 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-01-17 03:40:47 UTC</small>
       </div>
     </div>
   </div>

@@ -4,3 +4,4 @@ Not	necsus/runtime/query.html#Not	query: Not
 newQuery	necsus/runtime/query.html#newQuery,sinkseq[ArchView[Comps: tuple]]	query: newQuery[Comps: tuple](archetypes: sink seq[ArchView[Comps]]): Query[Comps]	
 pairs	necsus/runtime/query.html#pairs.i,Query[Comps: tuple]	query: pairs[Comps: tuple](query: Query[Comps]): QueryItem[Comps]	
 items	necsus/runtime/query.html#items.i,Query[Comps: tuple]	query: items[Comps: tuple](query: Query[Comps]): Comps	
+len	necsus/runtime/query.html#len,Query[Comps: tuple]	query: len[Comps: tuple](query: Query[Comps]): uint	
