@@ -1,1 +1,1 @@
-createQueryInstances	necsus/compiletime/queryGen.html#createQueryInstances,CodeGenInfo	queryGen: createQueryInstances(codeGenInfo: CodeGenInfo): NimNode	
+queryGenerator	necsus/compiletime/queryGen.html#queryGenerator	queryGen: queryGenerator	

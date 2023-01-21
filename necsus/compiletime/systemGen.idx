@@ -1,0 +1,23 @@
+Outside	necsus/compiletime/systemGen.html#Outside	GenerateHook.Outside	
+Early	necsus/compiletime/systemGen.html#Early	GenerateHook.Early	
+Standard	necsus/compiletime/systemGen.html#Standard	GenerateHook.Standard	
+Late	necsus/compiletime/systemGen.html#Late	GenerateHook.Late	
+BeforeLoop	necsus/compiletime/systemGen.html#BeforeLoop	GenerateHook.BeforeLoop	
+LoopStart	necsus/compiletime/systemGen.html#LoopStart	GenerateHook.LoopStart	
+LoopEnd	necsus/compiletime/systemGen.html#LoopEnd	GenerateHook.LoopEnd	
+GenerateHook	necsus/compiletime/systemGen.html#GenerateHook	systemGen: GenerateHook	
+AppInputs	necsus/compiletime/systemGen.html#AppInputs	systemGen: AppInputs	
+GenerateContext	necsus/compiletime/systemGen.html#GenerateContext	systemGen: GenerateContext	
+DirectiveKind	necsus/compiletime/systemGen.html#DirectiveKind	systemGen: DirectiveKind	
+DirectiveGen	necsus/compiletime/systemGen.html#DirectiveGen	systemGen: DirectiveGen	
+SystemArg	necsus/compiletime/systemGen.html#SystemArg	systemGen: SystemArg	
+newGenerator	necsus/compiletime/systemGen.html#newGenerator,string,proc(seq[DirectiveArg]),proc(GenerateContext,TupleDirective),proc(ArchetypeBuilder[ComponentDef],TupleDirective),proc(string,TupleDirective)	systemGen: newGenerator(ident: string;\n             parse: proc (components: seq[DirectiveArg]): TupleDirective;\n    generate: proc (details: GenerateContext; dir: TupleDirective): NimNode;\n    archetype: proc (builder: var ArchetypeBuilder[ComponentDef];\n                     dir: TupleDirective) = noArchetype; chooseName: proc (\n    uniqId: string; dir: TupleDirective): string = defaultName): DirectiveGen	
+newGenerator	necsus/compiletime/systemGen.html#newGenerator,string,proc(string,NimNode),proc(GenerateContext,MonoDirective),proc(ArchetypeBuilder[ComponentDef],MonoDirective),proc(string,MonoDirective),proc(DirectiveSet[SystemArg],MonoDirective)	systemGen: newGenerator(ident: string;\n             parse: proc (argName: string; component: NimNode): MonoDirective;\n    generate: proc (details: GenerateContext; dir: MonoDirective): NimNode;\n    archetype: proc (builder: var ArchetypeBuilder[ComponentDef];\n                     dir: MonoDirective) = noArchetype; chooseName: proc (\n    uniqId: string; dir: MonoDirective): string = defaultName; systemReturn: proc (\n    args: DirectiveSet[SystemArg]; returns: MonoDirective): Option[NimNode] = defaultSystemReturn): DirectiveGen	
+newGenerator	necsus/compiletime/systemGen.html#newGenerator,string,proc(GenerateContext)	systemGen: newGenerator(ident: string; generate: proc (details: GenerateContext): NimNode): DirectiveGen	
+`==`	necsus/compiletime/systemGen.html#==,DirectiveGen,DirectiveGen	systemGen: `==`(a, b: DirectiveGen): bool	
+hash	necsus/compiletime/systemGen.html#hash,DirectiveGen	systemGen: hash(gen: DirectiveGen): Hash	
+`==`	necsus/compiletime/systemGen.html#==,SystemArg,SystemArg	systemGen: `==`(a, b: SystemArg): bool	
+hash	necsus/compiletime/systemGen.html#hash,SystemArg	systemGen: hash(arg: SystemArg): Hash	
+generateName	necsus/compiletime/systemGen.html#generateName,SystemArg	systemGen: generateName(arg: SystemArg): string	
+buildArchetype	necsus/compiletime/systemGen.html#buildArchetype,ArchetypeBuilder[ComponentDef],SystemArg	systemGen: buildArchetype(builder: var ArchetypeBuilder[ComponentDef]; arg: SystemArg)	
+generateForHook	necsus/compiletime/systemGen.html#generateForHook,SystemArg,GenerateContext	systemGen: generateForHook(arg: SystemArg; details: GenerateContext): NimNode	

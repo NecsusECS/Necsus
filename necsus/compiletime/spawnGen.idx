@@ -1,1 +1,1 @@
-createSpawnProcs	necsus/compiletime/spawnGen.html#createSpawnProcs,CodeGenInfo	spawnGen: createSpawnProcs(codeGenInfo: CodeGenInfo): NimNode	
+spawnGenerator	necsus/compiletime/spawnGen.html#spawnGenerator	spawnGen: spawnGenerator	

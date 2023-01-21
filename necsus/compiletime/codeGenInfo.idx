@@ -1,2 +1,3 @@
 CodeGenInfo	necsus/compiletime/codeGenInfo.html#CodeGenInfo	codeGenInfo: CodeGenInfo	
 newCodeGenInfo	necsus/compiletime/codeGenInfo.html#newCodeGenInfo,NimNode,NimNode,ParsedApp,openArray[ParsedSystem]	codeGenInfo: newCodeGenInfo(name: NimNode; config: NimNode; app: ParsedApp;\n               allSystems: openArray[ParsedSystem]): CodeGenInfo	
+generateForHook	necsus/compiletime/codeGenInfo.html#generateForHook,CodeGenInfo,GenerateHook	codeGenInfo: generateForHook(codeGen: CodeGenInfo; hook: GenerateHook): NimNode	

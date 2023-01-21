@@ -105,13 +105,11 @@ window.addEventListener('DOMContentLoaded', main);
   </ul>
 </li>
 <li>
-  <a class="reference reference-toplevel" href="#12" id="62">Procs</a>
+  <a class="reference reference-toplevel" href="#9" id="59">Lets</a>
   <ul class="simple simple-toc-section">
-      <ul class="simple nested-toc-section">createSpawnProcs
-      <li><a class="reference" href="#createSpawnProcs%2CCodeGenInfo"
-    title="createSpawnProcs(codeGenInfo: CodeGenInfo): NimNode">createSpawnProcs(codeGenInfo: CodeGenInfo): NimNode</a></li>
-
-  </ul>
+      <li><a class="reference" href="#spawnGenerator"
+    title="spawnGenerator = newGenerator(&quot;Spawn&quot;, parseTuple, generateTuple,
+                              archetypeTuple, defaultName)">spawnGenerator</a></li>
 
   </ul>
 </li>
@@ -127,17 +125,17 @@ window.addEventListener('DOMContentLoaded', main);
   <div class="section" id="6">
 <h1><a class="toc-backref" href="#6">Imports</a></h1>
 <dl class="item">
-<a class="reference external" href="tools.html">tools</a>, <a class="reference external" href="codeGenInfo.html">codeGenInfo</a>, <a class="reference external" href="directiveSet.html">directiveSet</a>, <a class="reference external" href="tupleDirective.html">tupleDirective</a>, <a class="reference external" href="archetype.html">archetype</a>, <a class="reference external" href="commonVars.html">commonVars</a>, <a class="reference external" href="../runtime/spawn.html">../runtime/spawn</a>
+<a class="reference external" href="tools.html">tools</a>, <a class="reference external" href="tupleDirective.html">tupleDirective</a>, <a class="reference external" href="archetype.html">archetype</a>, <a class="reference external" href="archetypeBuilder.html">archetypeBuilder</a>, <a class="reference external" href="componentDef.html">componentDef</a>, <a class="reference external" href="commonVars.html">commonVars</a>, <a class="reference external" href="systemGen.html">systemGen</a>, <a class="reference external" href="../runtime/spawn.html">../runtime/spawn</a>
 </dl></div>
-<div class="section" id="12">
-<h1><a class="toc-backref" href="#12">Procs</a></h1>
+<div class="section" id="9">
+<h1><a class="toc-backref" href="#9">Lets</a></h1>
 <dl class="item">
-<div id="createSpawnProcs,CodeGenInfo">
-<dt><pre><span class="Keyword">proc</span> <a href="#createSpawnProcs%2CCodeGenInfo"><span class="Identifier">createSpawnProcs</span></a><span class="Other">(</span><span class="Identifier">codeGenInfo</span><span class="Other">:</span> <a href="codeGenInfo.html#CodeGenInfo"><span class="Identifier">CodeGenInfo</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span> {.
-    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">,</span> <span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<div id="spawnGenerator">
+<dt><pre><a href="spawnGen.html#spawnGenerator"><span class="Identifier">spawnGenerator</span></a> <span class="Other">=</span> <span class="Identifier">newGenerator</span><span class="Other">(</span><span class="StringLit">&quot;Spawn&quot;</span><span class="Other">,</span> <span class="Identifier">parseTuple</span><span class="Other">,</span> <span class="Identifier">generateTuple</span><span class="Other">,</span>
+                              <span class="Identifier">archetypeTuple</span><span class="Other">,</span> <span class="Identifier">defaultName</span><span class="Other">)</span></pre></dt>
 <dd>
 
-Creates a <tt class="docutils literal"><span class="pre"><span class="Keyword">proc</span></span></tt> for spawning an entity with a specific set of components
+
 
 </dd>
 </div>
@@ -151,7 +149,7 @@ Creates a <tt class="docutils literal"><span class="pre"><span class="Keyword">p
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-01-17 03:40:48 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-01-21 23:41:52 UTC</small>
       </div>
     </div>
   </div>
