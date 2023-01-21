@@ -1,5 +1,4 @@
 import unittest, sequtils, necsus
-import std/[math, times], necsus/runtime/[world, archetypeStore]
 
 type
     Person = object

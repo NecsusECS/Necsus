@@ -1,18 +1,19 @@
 import macros, sequtils
-import tools, codeGenInfo, directiveSet, tupleDirective, commonVars, archetype, componentDef, worldEnum
+import tools, tupleDirective, commonVars
+import archetype, componentDef, worldEnum, systemGen, archetypeBuilder
 import ../runtime/[world, archetypeStore]
 
 let entityIndex {.compileTime.} = ident("entityIndex")
 let newComps {.compileTime.} = ident("comps")
 let entityId {.compileTime.} = ident("entityId")
 
-proc createArchUpdate(genInfo: CodeGenInfo, attach: AttachDef, archetype: Archetype[ComponentDef]): NimNode =
+proc createArchUpdate(details: GenerateContext, attach: TupleDirective, archetype: Archetype[ComponentDef]): NimNode =
     ## Creates code for updating archetype information in place
     result = newStmtList()
 
     let archIdent = archetype.ident
     let archTuple = archetype.asStorageTuple
-    let archetypeEnum = genInfo.archetypeEnum.ident
+    let archetypeEnum = details.archetypeEnum.ident
 
     let existing = ident("existing")
     result.add quote do:
@@ -24,7 +25,7 @@ proc createArchUpdate(genInfo: CodeGenInfo, attach: AttachDef, archetype: Archet
             `existing`[`storageIndex`] = `newComps`[`i`]
 
 proc createArchMove(
-    genInfo: CodeGenInfo,
+    details: GenerateContext,
     directive: TupleDirective,
     fromArch: Archetype[ComponentDef],
     toArch: Archetype[ComponentDef]
@@ -34,7 +35,7 @@ proc createArchMove(
     let fromArchTuple = fromArch.asStorageTuple
     let toArchTuple = toArch.asStorageTuple
     let toArchIdent = toArch.ident
-    let archetypeEnum = genInfo.archetypeEnum.ident
+    let archetypeEnum = details.archetypeEnum.ident
     let existing = ident("existing")
 
     let createNewTuple = nnkTupleConstr.newTree()
@@ -50,50 +51,60 @@ proc createArchMove(
             proc (`existing`: ptr `fromArchTuple`): auto = `createNewTuple`
         )
 
-proc createAttachProc(genInfo: CodeGenInfo, name: string, attach: AttachDef): NimNode =
-    ## Generates a proc to update components for an entity
-    let procName = ident(name)
-    let componentTuple = attach.args.toSeq.asTupleType
 
-    ## Generate a cases statement to do the work for each kind of archetype
-    let cases = genInfo.createArchetypeCase(newDotExpr(entityIndex, ident("archetype"))) do (fromArch: auto) -> auto:
-        let toArch = genInfo.archetypes[concat(fromArch.values, attach.comps)]
-        return if fromArch == toArch:
-            genInfo.createArchUpdate(attach, toArch)
-        else:
-            genInfo.createArchMove(attach, fromArch, toArch)
+proc parseAttach(components: seq[DirectiveArg]): TupleDirective = newAttachDef(components)
 
-    result = quote:
-        proc `procName`(`entityId`: EntityId, `newComps`: `componentTuple`) {.used.} =
-            var `entityIndex` = `worldIdent`[`entityId`]
-            `cases`
+proc attachArchetype(builder: var ArchetypeBuilder[ComponentDef], dir: TupleDirective) =
+    builder.attachable(dir.comps)
 
-proc createAttachProcs*(genInfo: CodeGenInfo): NimNode =
-    ## Creates the procs necessary to attach new components to an entity
-    result = newStmtList()
-    for (name, attach) in genInfo.attaches:
-        result.add(genInfo.createAttachProc(name, attach))
+proc generateAttach(details: GenerateContext, attach: TupleDirective): NimNode =
+    ## Generates the code for instantiating queries
+    case details.hook
+    of GenerateHook.Standard:
+        let procName = ident(details.name)
+        let componentTuple = attach.args.toSeq.asTupleType
 
-proc createDetachProc*(genInfo: CodeGenInfo, name: string, detach: DetachDef): NimNode =
-    ## Creates a proc for detaching components
-    let procName = ident(name)
+        ## Generate a cases statement to do the work for each kind of archetype
+        let cases = details.createArchetypeCase(newDotExpr(entityIndex, ident("archetype"))) do (fromArch: auto) -> auto:
+            let toArch = details.archetypes[concat(fromArch.values, attach.comps)]
+            return if fromArch == toArch:
+                details.createArchUpdate(attach, toArch)
+            else:
+                details.createArchMove(attach, fromArch, toArch)
 
-    let cases = genInfo.createArchetypeCase(newDotExpr(entityIndex, ident("archetype"))) do (fromArch: auto) -> auto:
-        if fromArch.containsAllOf(detach.comps):
-            # echo fromArch, " - ", detach.comps, " = ", fromArch.values.filterIt(it notin detach.comps)
-            # return quote: discard
-            let toArch = genInfo.archetypes[fromArch.values.filterIt(it notin detach.comps)]
-            return genInfo.createArchMove(detach, fromArch, toArch)
-        else:
-            return quote: discard
+        return quote:
+            proc `procName`(`entityId`: EntityId, `newComps`: `componentTuple`) {.used.} =
+                var `entityIndex` = `worldIdent`[`entityId`]
+                `cases`
+    else:
+        return newEmptyNode()
 
-    result = quote:
-        proc `procName`(`entityId`: EntityId) =
-            let `entityIndex` = `worldIdent`[`entityId`]
-            `cases`
+let attachGenerator* {.compileTime.} = newGenerator("Attach", parseAttach, generateAttach, attachArchetype)
 
-proc createDetachProcs*(genInfo: CodeGenInfo): NimNode =
-    ## Creates the procs necessary to attach new components to an entity
-    result = newStmtList()
-    for (name, attach) in genInfo.detaches:
-        result.add(genInfo.createDetachProc(name, attach))
+proc parseDetach(components: seq[DirectiveArg]): TupleDirective = newDetachDef(components)
+
+proc detachArchetype(builder: var ArchetypeBuilder[ComponentDef], dir: TupleDirective) =
+    builder.detachable(dir.comps)
+
+proc generateDetach(details: GenerateContext, detach: TupleDirective): NimNode =
+    ## Generates the code for instantiating queries
+    case details.hook
+    of GenerateHook.Standard:
+
+        let procName = ident(details.name)
+
+        let cases = details.createArchetypeCase(newDotExpr(entityIndex, ident("archetype"))) do (fromArch: auto) -> auto:
+            if fromArch.containsAllOf(detach.comps):
+                let toArch = details.archetypes[fromArch.values.filterIt(it notin detach.comps)]
+                return details.createArchMove(detach, fromArch, toArch)
+            else:
+                return quote: discard
+
+        return quote:
+            proc `procName`(`entityId`: EntityId) =
+                let `entityIndex` = `worldIdent`[`entityId`]
+                `cases`
+    else:
+        return newEmptyNode()
+
+let detachGenerator* {.compileTime.} = newGenerator("Detach", parseDetach, generateDetach, detachArchetype)

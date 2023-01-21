@@ -1,6 +1,8 @@
 import tables, macros, sequtils
-import codeGenInfo, directiveSet, tupleDirective, archetype, componentDef, tools
+import tupleDirective, archetype, componentDef, tools, systemGen, archetypeBuilder
 import ../runtime/archetypeStore
+
+proc parseTuple(components: seq[DirectiveArg]): TupleDirective = newQueryDef(components)
 
 proc argMatchesQuery(archetype: Archetype[ComponentDef], arg: DirectiveArg): bool =
     ## Returns whether a directive is part of an archetype
@@ -9,16 +11,16 @@ proc argMatchesQuery(archetype: Archetype[ComponentDef], arg: DirectiveArg): boo
     of DirectiveArgKind.Include: arg.component in archetype
     of DirectiveArgKind.Exclude: arg.component notin archetype
 
-iterator selectArchetypes(codeGenInfo: CodeGenInfo, query: QueryDef): Archetype[ComponentDef] =
+iterator selectArchetypes(details: GenerateContext, query: TupleDirective): Archetype[ComponentDef] =
     ## Iterates through the archetypes that contribute to a query
-    for archetype in codeGenInfo.archetypes:
+    for archetype in details.archetypes:
         if query.args.allIt(argMatchesQuery(archetype, it)):
             yield archetype
 
-proc createArchetypeViews(codeGenInfo: CodeGenInfo, query: QueryDef): NimNode =
+proc createArchetypeViews(details: GenerateContext, query: TupleDirective): NimNode =
     ## Creates the views that bind an archetype to a query
     result = nnkBracket.newTree()
-    for archetype in selectArchetypes(codeGenInfo, query):
+    for archetype in details.selectArchetypes(query):
         let archetypeIdent = archetype.ident
         let compsIdent = ident("comps")
         let tupleCopy = compsIdent.copyTuple(archetype, query)
@@ -27,13 +29,18 @@ proc createArchetypeViews(codeGenInfo: CodeGenInfo, query: QueryDef): NimNode =
         result.add quote do:
             asView(`archetypeIdent`, proc (`compsIdent`: ptr `archTupleType`): `queryTupleType` = `tupleCopy`)
 
-proc createQueryInstances*(codeGenInfo: CodeGenInfo): NimNode =
-    ## Creates the variables required for running a query
+proc generateTuple(details: GenerateContext, dir: TupleDirective): NimNode =
+    ## Generates the code for instantiating queries
     result = newStmtList()
-
-    for (name, queryDef) in codeGenInfo.queries:
-        let ident = name.ident
-        let queryTuple = queryDef.args.toSeq.asTupleType
-        let views = codeGenInfo.createArchetypeViews(queryDef)
+    case details.hook
+    of GenerateHook.Standard:
+        let ident = details.name.ident
+        let queryTuple = dir.args.toSeq.asTupleType
+        let views = details.createArchetypeViews(dir)
         result.add quote do:
             var `ident` = newQuery[`queryTuple`](@`views`)
+    else:
+        discard
+
+let queryGenerator* {.compileTime.} = newGenerator("Query", parseTuple, generateTuple)
+

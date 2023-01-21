@@ -1,17 +1,21 @@
 import macros, sequtils, options, tables
-import codeGenInfo, tupleDirective, tools, directiveSet, commonVars, archetype, componentDef, worldEnum
+import tupleDirective, tools, commonVars, archetype, componentDef, worldEnum, systemGen
 import ../runtime/[world, archetypeStore]
 
 let entityId {.compileTime.} = ident("entityId")
 
 let entityIndex {.compileTime.} = ident("entityIndex")
 
-proc buildArchetypeLookup(codeGenInfo: CodeGenInfo, lookup: LookupDef, archetype: Archetype[ComponentDef]): NimNode =
+proc buildArchetypeLookup(
+    details: GenerateContext,
+    lookup: TupleDirective,
+    archetype: Archetype[ComponentDef]
+): NimNode =
     ## Builds the block of code for pulling a lookup out of a specific archetype
 
     let archetypeType = archetype.asStorageTuple
     let archetypeIdent = archetype.ident
-    let archetypeEnum = codeGenInfo.archetypeEnum.ident
+    let archetypeEnum = details.archetypeEnum.ident
     let compsIdent = ident("comps")
     let createTuple = compsIdent.copyTuple(archetype, lookup)
 
@@ -19,30 +23,32 @@ proc buildArchetypeLookup(codeGenInfo: CodeGenInfo, lookup: LookupDef, archetype
         let `compsIdent` = getComps[`archetypeEnum`, `archetypeType`](`archetypeIdent`, `entityIndex`.archetypeIndex)
         return some(`createTuple`)
 
-proc canCreateFrom(lookup: LookupDef, archetype: Archetype[ComponentDef]): bool =
+proc canCreateFrom(lookup: TupleDirective, archetype: Archetype[ComponentDef]): bool =
     ## Returns whether a lookup can be created from an archetype
     lookup.items.toSeq.allIt(it in archetype)
 
-proc createLookupProc(genInfo: CodeGenInfo, name: string, lookup: LookupDef): NimNode =
-    ## Create the proc for performing a single lookup
+proc parseTuple(components: seq[DirectiveArg]): TupleDirective = newLookupDef(components)
 
-    let procName = ident(name)
-    let tupleType = lookup.args.toSeq.asTupleType
+proc generateTuple(details: GenerateContext, lookup: TupleDirective): NimNode =
+    ## Generates the code for instantiating queries
+    case details.hook
+    of GenerateHook.Standard:
 
-    # Create a case statement where each branch is one of the archetypes
-    let cases = genInfo.createArchetypeCase(newDotExpr(entityIndex, ident("archetype"))) do (fromArch: auto) -> auto:
-        if lookup.canCreateFrom(fromArch):
-            genInfo.buildArchetypeLookup(lookup, fromArch)
-        else:
-            quote: return none(`tupleType`)
+        let procName = ident(details.name)
+        let tupleType = lookup.args.toSeq.asTupleType
 
-    return quote:
-        proc `procName`(`entityId`: EntityId): Option[`tupleType`] =
-            let `entityIndex` = `worldIdent`[`entityId`]
-            `cases`
+        # Create a case statement where each branch is one of the archetypes
+        let cases = details.createArchetypeCase(newDotExpr(entityIndex, ident("archetype"))) do (fromArch: auto) -> auto:
+            if lookup.canCreateFrom(fromArch):
+                details.buildArchetypeLookup(lookup, fromArch)
+            else:
+                quote: return none(`tupleType`)
 
-proc createLookups*(codeGenInfo: CodeGenInfo): NimNode =
-    # Creates the methods needed to look up an entity
-    result = newStmtList()
-    for (name, lookup) in codeGenInfo.lookups:
-        result.add(codeGenInfo.createLookupProc(name, lookup))
+        return quote:
+            proc `procName`(`entityId`: EntityId): Option[`tupleType`] =
+                let `entityIndex` = `worldIdent`[`entityId`]
+                `cases`
+    else:
+        return newEmptyNode()
+
+let lookupGenerator* {.compileTime.} = newGenerator("Lookup", parseTuple, generateTuple)

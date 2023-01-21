@@ -1,4 +1,4 @@
-import unittest, necsus, sequtils
+import unittest, necsus
 
 type
     A = object

@@ -1,5 +1,4 @@
 import unittest, necsus, sequtils
-import std/[math, times], necsus/runtime/[necsusConf, world, archetypeStore]
 
 type
     Name = object

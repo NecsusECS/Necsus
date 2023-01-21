@@ -1,4 +1,4 @@
-import unittest, necsus, sequtils, times
+import unittest, necsus, sequtils
 
 type
     Thingy = object

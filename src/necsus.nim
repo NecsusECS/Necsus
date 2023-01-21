@@ -1,7 +1,7 @@
 import necsus / runtime / [ entityId, query, systemVar, inbox, directives, necsusConf, archetypeStore, spawn ]
 import necsus / compiletime / [
-    parse, codeGenInfo, worldGen, worldEnum, spawnGen, queryGen, tickGen, sysVarGen, eventGen, lookupGen,
-    attachDetachGen
+    parse, systemGen, codeGenInfo, worldGen, worldEnum, spawnGen, queryGen, tickGen, sharedGen, eventGen, lookupGen,
+    attachDetachGen, deleteGen, localGen, timeGen
 ]
 import sequtils, macros, options
 
@@ -23,6 +23,21 @@ proc gameLoop*(exit: Shared[NecsusRun], tick: proc(): void) =
     while exit.get(RunLoop) == RunLoop:
         tick()
 
+let parser {.compileTime.} = newParser(
+    spawnGenerator,
+    queryGenerator,
+    deleteGenerator,
+    attachGenerator,
+    detachGenerator,
+    sharedGenerator,
+    localGenerator,
+    lookupGenerator,
+    inboxGenerator,
+    outboxGenerator,
+    deltaGenerator,
+    elapsedGenerator,
+)
+
 proc buildApp(
     runner: NimNode,
     startup: NimNode,
@@ -34,18 +49,19 @@ proc buildApp(
     ## Creates an ECS world
 
     let parsedSystems = concat(
-        startup.parseSystemList(StartupPhase),
-        systems.parseSystemList(LoopPhase),
-        teardown.parseSystemList(TeardownPhase)
+        parser.parseSystemList(startup, StartupPhase),
+        parser.parseSystemList(systems, LoopPhase),
+        parser.parseSystemList(teardown, TeardownPhase)
     )
 
-    let parsedApp = parseApp(pragmaProc, runner)
+    let parsedApp = parser.parseApp(pragmaProc, runner)
 
     let name = pragmaProc.name
     let codeGenInfo = newCodeGenInfo(name, conf, parsedApp, parsedSystems)
 
     result = newStmtList(
         codeGenInfo.archetypeEnum.codeGen,
+        codeGenInfo.generateForHook(GenerateHook.Outside),
         pragmaProc
     )
 
@@ -53,17 +69,11 @@ proc buildApp(
         codeGenInfo.createConfig(),
         codeGenInfo.createWorldInstance(),
         codeGenInfo.createArchetypeInstances(),
-        codeGenInfo.createSpawnProcs(),
-        codeGenInfo.createQueryInstances(),
-        codeGenInfo.createLookups(),
-        codeGenInfo.createAttachProcs(),
-        codeGenInfo.createDetachProcs(),
-        codeGenInfo.createDeleteProc(),
-        codeGenInfo.createSharedVars(),
-        codeGenInfo.createLocalVars(),
-        codeGenInfo.createEventDeclarations(),
+        codeGenInfo.generateForHook(GenerateHook.Early),
+        codeGenInfo.generateForHook(GenerateHook.Standard),
+        codeGenInfo.generateForHook(GenerateHook.Late),
         codeGenInfo.createTickRunner(runner),
-        codeGenInfo.createAppReturn(),
+        codeGenInfo.createAppReturn(pragmaProc),
     )
 
     when defined(dump):

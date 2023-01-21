@@ -14,7 +14,7 @@ proc newDirectiveSet*[T](prefix: string, values: openarray[T]): DirectiveSet[T] 
     var suffixes = initTable[string, int]()
 
     for value in values.toSeq.deduplicate:
-        let name = toLowerAscii($T) & "_" & value.generateName
+        let name = toLowerAscii(prefix) & "_" & value.generateName
         let suffix = suffixes.mgetOrPut(name, 0)
         suffixes[name] = suffix + 1
         result.values[value] = name & "_" & $suffix
@@ -23,7 +23,7 @@ proc directives*[T](directives: DirectiveSet[T]): seq[T] =
     ## Produce all directives
     directives.values.keys.toSeq
 
-iterator items*[T](directives: DirectiveSet[T]): tuple[name: string, value: T] =
+iterator pairs*[T](directives: DirectiveSet[T]): tuple[name: string, value: T] =
     ## Produce all directives and their property names
     for (value, name) in directives.values.pairs: yield (name, value)
 

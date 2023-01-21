@@ -1,15 +1,23 @@
 import macros, sequtils, sets
-import tools, codeGenInfo, directiveSet, tupleDirective, archetype, commonVars
+import tools, tupleDirective, archetype, archetypeBuilder, componentDef, commonVars, systemGen
 import ../runtime/spawn
 
-proc createSpawnProcs*(codeGenInfo: CodeGenInfo): NimNode =
-    ## Creates a `proc` for spawning an entity with a specific set of components
-    result = newStmtList()
+proc parseTuple(components: seq[DirectiveArg]): TupleDirective = newSpawnDef(components)
 
-    for (name, spawnDef) in codeGenInfo.spawns:
-        let ident = name.ident
-        let spawnTuple = spawnDef.args.toSeq.asTupleType
-        let archetype = codeGenInfo.archetypes[spawnDef.items.toSeq]
+proc archetypeTuple(builder: var ArchetypeBuilder[ComponentDef], dir: TupleDirective) =
+    builder.define(dir.comps)
+
+proc generateTuple(details: GenerateContext, dir: TupleDirective): NimNode =
+    result = newStmtList()
+    case details.hook
+    of Standard:
+        let ident = details.name.ident
+        let spawnTuple = dir.args.toSeq.asTupleType
+        let archetype = details.archetypes[dir.items.toSeq]
         let archetypeIdent = archetype.ident
         result.add quote do:
             let `ident` = newSpawn[`spawnTuple`](proc(): auto = beginSpawn(`worldIdent`, `archetypeIdent`))
+    else:
+        discard
+
+let spawnGenerator* {.compileTime.} = newGenerator("Spawn", parseTuple, generateTuple, archetypeTuple)

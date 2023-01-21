@@ -1,5 +1,5 @@
 import tables, macros, options
-import tupleDirective, componentDef, codeGenInfo, archetype, worldEnum
+import tupleDirective, componentDef, archetype, worldEnum, systemGen
 import ../runtime/query
 
 proc copyTuple*(fromVar: NimNode, fromArch: Archetype[ComponentDef], directive: TupleDirective): NimNode =
@@ -20,7 +20,7 @@ proc copyTuple*(fromVar: NimNode, fromArch: Archetype[ComponentDef], directive: 
             if arg.component in fromArch:
                 result.add(newCall(bindSym("some"), arg.read))
             else:
-                result.add(newCall(bindSym("none"), arg.type))
+                result.add(newCall(nnkBracketExpr.newTree(bindSym("none"), arg.type)))
 
 proc asTupleType*(args: openarray[DirectiveArg]): NimNode =
     ## Creates a tuple type from a list of components
@@ -33,14 +33,14 @@ proc asTupleType*(args: openarray[DirectiveArg]): NimNode =
         of Optional: result.add(nnkBracketExpr.newTree(bindSym("Option"), componentIdent))
 
 proc createArchetypeCase*(
-    genInfo: CodeGenInfo,
+    details: GenerateContext,
     readArchetype: NimNode,
     branch: proc (arch: Archetype[ComponentDef]): NimNode
 ): NimNode =
     ## Creates a case statement for all possible archetypes
-    if genInfo.archetypes.len > 0:
+    if details.archetypes.len > 0:
         result = nnkCaseStmt.newTree(readArchetype)
-        for archetype in genInfo.archetypes:
-            result.add(nnkOfBranch.newTree(genInfo.archetypeEnum.ident(archetype), branch(archetype)))
+        for archetype in details.archetypes:
+            result.add(nnkOfBranch.newTree(details.archetypeEnum.ident(archetype), branch(archetype)))
     else:
         result = newEmptyNode()

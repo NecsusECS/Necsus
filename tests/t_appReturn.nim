@@ -10,8 +10,16 @@ proc appReturnValue(): string {.necsus(runner, [], [~setReturnValue], [], newNec
 test "Use shared values for app return values":
     check(appReturnValue() == "foobar")
 
-proc unsetAppReturnValue(): string {.necsus(runner, [], [], [], newNecsusConf()).}
+test "Fail if the return value isn't provided by a shared variable":
+    when compiles(proc() =
+        proc noAppReturnValue(): string {.necsus(runner, [], [], [], newNecsusConf()).}):
+        fail()
 
-test "Fail if the return value is unset":
+proc declaresReturnValue(returnValue: var Shared[string]) =
+    discard
+
+proc unsetAppReturnValue(): string {.necsus(runner, [], [~declaresReturnValue], [], newNecsusConf()).}
+
+test "Throw if the return value is never set":
     expect UnpackDefect:
         discard unsetAppReturnValue()
