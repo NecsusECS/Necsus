@@ -3,6 +3,9 @@
 [![Build](https://github.com/NecsusECS/Necsus/actions/workflows/build.yml/badge.svg)](https://github.com/NecsusECS/Necsus/actions/workflows/build.yml)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/NecsusECS/Necsus/blob/main/LICENSE)
 
+![](https://github.com/NecsusECS/NecsusParticleDemo/blob/main/demo.gif?raw=true)
+
+
 A "disappearing" ECS (entity component system) library for Nim. Necsus uses Nim macros to generate code for creating
 and executing an ECS based application. Components are just regular objects, systems are regular procs, and everything related
 to entities is handled for you.
