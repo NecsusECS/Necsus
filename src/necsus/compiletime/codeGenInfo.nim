@@ -4,6 +4,7 @@ import macros, sequtils, options, sets, tables
 type CodeGenInfo*  {.byref.} = object
     ## Contains all the information needed to do high level code gen
     config*: NimNode
+    appStateTypeName*: NimNode
     app*: ParsedApp
     systems*: seq[ParsedSystem]
     directives*: Table[DirectiveGen, DirectiveSet[SystemArg]]
@@ -38,6 +39,7 @@ proc newCodeGenInfo*(
     result.config = config
     result.app = app
     result.systems = allSystems.toSeq
+    result.appStateTypeName = ident(name.strVal & "World")
 
     let allArgs = app.runnerArgs.concat(allSystems.args.toSeq)
 
@@ -59,3 +61,9 @@ proc generateForHook*(codeGen: CodeGenInfo, hook: GenerateHook): NimNode =
                 archetypeEnum: codeGen.archetypeEnum
             )
             result.add(arg.generateForHook(details))
+
+proc worldFields*(codeGen: CodeGenInfo): seq[WorldField] =
+    ## Generates the code for a specific code-gen hook
+    for _, argSet in codeGen.directives:
+        for name, arg in argSet:
+            result.add(arg.worldFields(name))

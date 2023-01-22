@@ -1,6 +1,6 @@
 import tables, macros, sequtils
 import tupleDirective, archetype, componentDef, tools, systemGen, archetypeBuilder
-import ../runtime/archetypeStore
+import ../runtime/[archetypeStore, query]
 
 proc argMatchesQuery(archetype: Archetype[ComponentDef], arg: DirectiveArg): bool =
     ## Returns whether a directive is part of an archetype
@@ -27,6 +27,9 @@ proc createArchetypeViews(details: GenerateContext, query: TupleDirective): NimN
         result.add quote do:
             asView(`archetypeIdent`, proc (`compsIdent`: ptr `archTupleType`): `queryTupleType` = `tupleCopy`)
 
+proc worldFields(name: string, dir: TupleDirective): seq[WorldField] =
+     @[ (name, nnkBracketExpr.newTree(bindSym("Query"), dir.asTupleType)) ]
+
 proc generateTuple(details: GenerateContext, dir: TupleDirective): NimNode =
     ## Generates the code for instantiating queries
     result = newStmtList()
@@ -40,5 +43,5 @@ proc generateTuple(details: GenerateContext, dir: TupleDirective): NimNode =
     else:
         discard
 
-let queryGenerator* {.compileTime.} = newGenerator("Query", generateTuple)
+let queryGenerator* {.compileTime.} = newGenerator("Query", generateTuple, worldFields = worldFields)
 

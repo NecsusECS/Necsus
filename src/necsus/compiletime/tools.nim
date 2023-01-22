@@ -1,4 +1,4 @@
-import tables, macros, options
+import tables, macros, options, sequtils
 import tupleDirective, componentDef, archetype, worldEnum, systemGen
 import ../runtime/query
 
@@ -31,6 +31,8 @@ proc asTupleType*(args: openarray[DirectiveArg]): NimNode =
         of Include: result.add(componentIdent)
         of Exclude: result.add(nnkBracketExpr.newTree(bindSym("Not"), componentIdent))
         of Optional: result.add(nnkBracketExpr.newTree(bindSym("Option"), componentIdent))
+
+proc asTupleType*(tupleDir: TupleDirective): NimNode = tupleDir.args.toSeq.asTupleType
 
 proc createArchetypeCase*(
     details: GenerateContext,
