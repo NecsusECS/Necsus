@@ -17,6 +17,7 @@ type
 
     ParsedApp* = object
         ## Parsed information about the application proc itself
+        name*: string
         runnerArgs*: seq[SystemArg]
         inputs*: AppInputs
         returns*: Option[MonoDirective]
@@ -193,6 +194,8 @@ proc parseRunner(parser: Parser, runner: NimNode): seq[SystemArg] =
 
 proc parseApp*(parser: Parser, appProc: NimNode, runner: NimNode): ParsedApp =
     ## Parses the app proc
+    result.name = appProc.name.strVal
+
     result.inputs = @[]
     for param in appProc.params[1..^1]:
         case param.kind

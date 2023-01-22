@@ -1,5 +1,5 @@
-import macros, options, tables
-import worldEnum, codeGenInfo, archetype, commonVars, systemGen, nimNode
+import macros, options, tables, sequtils
+import worldEnum, codeGenInfo, archetype, commonVars, systemGen
 import ../runtime/[world, archetypeStore]
 
 proc createAppStateType*(genInfo: CodeGenInfo): NimNode =
@@ -27,28 +27,9 @@ proc createAppStateType*(genInfo: CodeGenInfo): NimNode =
         nnkTypeDef.newTree(
             genInfo.appStateTypeName,
             newEmptyNode(),
-            nnkObjectTy.newTree(newEmptyNode(), newEmptyNode(), fields)
+            nnkRefTy.newTree(nnkObjectTy.newTree(newEmptyNode(), newEmptyNode(), fields))
         )
     )
-
-proc createArchetypeInstances*(genInfo: CodeGenInfo): NimNode =
-    ## Creates variables for storing archetypes
-    result = newStmtList()
-    let archetypeEnum = genInfo.archetypeEnum.ident
-    for archetype in genInfo.archetypes:
-        let ident = archetype.ident
-        let storageType = archetype.asStorageTuple
-        let archetypeRef = genInfo.archetypeEnum.ident(archetype)
-        result.add quote do:
-            var `ident` = newArchetypeStore[`archetypeEnum`, `storageType`](`archetypeRef`, `confIdent`.componentSize)
-
-proc createConfig*(genInfo: CodeGenInfo): NimNode =
-    nnkLetSection.newTree(nnkIdentDefs.newTree(`confIdent`, newEmptyNode(), genInfo.config))
-
-proc createWorldInstance*(genInfo: CodeGenInfo): NimNode =
-    let archetypeEnum = genInfo.archetypeEnum.ident
-    result = quote:
-        var `worldIdent` = newWorld[`archetypeEnum`](`confIdent`.entitySize)
 
 proc createAppReturn*(genInfo: CodeGenInfo, errorLocation: NimNode): NimNode =
     ## Creates the return statement for the app
@@ -61,3 +42,49 @@ proc createAppReturn*(genInfo: CodeGenInfo, errorLocation: NimNode): NimNode =
                     return nnkReturnStmt.newTree(genReturn.get)
         error("No directives were able to supply a return value", errorLocation)
     return newEmptyNode()
+
+proc createArchetypeState(genInfo: CodeGenInfo): NimNode =
+    ## Creates variables for storing archetypes
+    result = newStmtList()
+    let archetypeEnum = genInfo.archetypeEnum.ident
+    for archetype in genInfo.archetypes:
+        let ident = archetype.ident
+        let storageType = archetype.asStorageTuple
+        let archetypeRef = genInfo.archetypeEnum.ident(archetype)
+        result.add quote do:
+            `appStateIdent`.`ident` =
+                newArchetypeStore[`archetypeEnum`, `storageType`](`archetypeRef`, `confIdent`.componentSize)
+
+proc createAppStateInit*(genInfo: CodeGenInfo): NimNode =
+    ## Creates a proc for initializing the app state object
+    let createConfig = genInfo.config
+    let appStateType = genInfo.appStateTypeName
+    let archetypeEnum = genInfo.archetypeEnum.ident
+    let archetypeDefs = genInfo.createArchetypeState
+    let earlyInit = genInfo.generateForHook(GenerateHook.Early)
+    let stdInit = genInfo.generateForHook(GenerateHook.Standard)
+    let lateInit = genInfo.generateForHook(GenerateHook.Late)
+
+    let initBody = quote:
+        var `appStateIdent` = new(`appStateType`)
+        let `confIdent` = `createConfig`
+        `appStateIdent`.world = newWorld[`archetypeEnum`](`confIdent`.entitySize)
+        `archetypeDefs`
+        `earlyInit`
+        `stdInit`
+        `lateInit`
+        return `appStateIdent`
+
+    let args = genInfo.app.inputs.mapIt(newIdentDefs(it.argName.ident, it.directive.argType))
+
+    return newProc(
+        name = genInfo.appStateInit,
+        params = @[appStateType].concat(args),
+        body = initBody
+    )
+
+proc createAppStateInstance*(genInfo: CodeGenInfo): NimNode =
+    ## Creates the instance of the app state object
+    let invoke = newCall(genInfo.appStateInit, genInfo.app.inputs.mapIt(it.argName.ident))
+    return quote:
+        var `appStateIdent` = `invoke`

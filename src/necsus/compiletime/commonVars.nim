@@ -3,6 +3,9 @@ import macros
 ## The variable used to reference the initial size of any structs
 let confIdent* {.compileTime.} = ident("config")
 
+## The variable holding the app state instance
+let appStateIdent* {.compileTime.} = ident("appState")
+
 ## The variable for identifying the local world
 let worldIdent* {.compileTime.} = ident("world")
 

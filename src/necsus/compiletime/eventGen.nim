@@ -1,10 +1,16 @@
 import macros, strutils, tables
-import directiveSet, monoDirective, nimNode, ../util/mailbox, commonVars, systemGen
+import directiveSet, monoDirective, nimNode, commonVars, systemGen
+import ../util/mailbox, ../runtime/[inbox, directives]
 
 proc eventStorageIdent(event: MonoDirective | NimNode): NimNode =
     ## Returns the name of the identifier that holds the storage for an event
     when event is NimNode: ident(event.symbols.join("_") & "_storage")
     elif event is MonoDirective: eventStorageIdent(event.argType)
+
+proc inboxFields(name: string, dir: MonoDirective): seq[WorldField] = @[
+    (dir.eventStorageIdent.strVal, nnkBracketExpr.newTree(bindSym("Mailbox"), dir.argType)),
+    (name, nnkBracketExpr.newTree(bindSym("Inbox"), dir.argType))
+]
 
 proc generateInbox(details: GenerateContext, inbox: MonoDirective): NimNode =
     case details.hook
@@ -13,16 +19,20 @@ proc generateInbox(details: GenerateContext, inbox: MonoDirective): NimNode =
         let inboxName = details.name.ident
         let eventType = inbox.argType
         return quote:
-            var `storageIdent` = newMailbox[`eventType`](`confIdent`.eventQueueSize)
-            let `inboxName` = newInbox[`eventType`](`storageIdent`)
+            `appStateIdent`.`storageIdent` = newMailbox[`eventType`](`confIdent`.eventQueueSize)
+            `appStateIdent`.`inboxName` = newInbox[`eventType`](`appStateIdent`.`storageIdent`)
     of LoopEnd:
         let eventStore = inbox.eventStorageIdent
         return quote:
-            clear(`eventStore`)
+            clear(`appStateIdent`.`eventStore`)
     else:
         return newEmptyNode()
 
-let inboxGenerator* {.compileTime.} = newGenerator("Inbox", generateInbox)
+let inboxGenerator* {.compileTime.} = newGenerator(
+    ident = "Inbox",
+    generate = generateInbox,
+    worldFields = inboxFields,
+)
 
 proc hasInboxes(details: GenerateContext, outbox: MonoDirective): bool =
     ## Returns whether an outbox has anyone that cares about the messages it sends
@@ -30,6 +40,9 @@ proc hasInboxes(details: GenerateContext, outbox: MonoDirective): bool =
         if directive.monoDir.argType == outbox.argType:
             return true
     return false
+
+proc outboxFields(name: string, dir: MonoDirective): seq[WorldField] =
+    @[ (name, nnkBracketExpr.newTree(bindSym("Outbox"), dir.argType)) ]
 
 proc generateOutbox(details: GenerateContext, outbox: MonoDirective): NimNode =
     case details.hook
@@ -42,14 +55,18 @@ proc generateOutbox(details: GenerateContext, outbox: MonoDirective): NimNode =
         # If there is nobody to listen to this event, just discard it immediately
         let body = if details.hasInboxes(outbox):
             quote:
-                send[`eventType`](`storageIdent`, `event`)
+                send[`eventType`](`appStateIdent`.`storageIdent`, `event`)
         else:
             quote:
                 discard
 
         return quote:
-            proc `procName`(`event`: sink `eventType`) = `body`
+            `appStateIdent`.`procName` = proc(`event`: sink `eventType`) = `body`
     else:
         return newEmptyNode()
 
-let outboxGenerator* {.compileTime.} = newGenerator("Outbox", generateOutbox)
+let outboxGenerator* {.compileTime.} = newGenerator(
+    ident = "Outbox", 
+    generate = generateOutbox,
+    worldFields = outboxFields,
+)

@@ -1,10 +1,9 @@
 import worldEnum, parse, componentDef, archetypeBuilder, systemGen, directiveSet
-import macros, sequtils, options, sets, tables
+import macros, sequtils, options, sets, tables, strutils
 
 type CodeGenInfo*  {.byref.} = object
     ## Contains all the information needed to do high level code gen
     config*: NimNode
-    appStateTypeName*: NimNode
     app*: ParsedApp
     systems*: seq[ParsedSystem]
     directives*: Table[DirectiveGen, DirectiveSet[SystemArg]]
@@ -30,7 +29,6 @@ proc calculateDirectives(args: openarray[SystemArg]): Table[DirectiveGen, Direct
         result[gen] = newDirectiveSet[SystemArg](gen.ident, args)
 
 proc newCodeGenInfo*(
-    name: NimNode,
     config: NimNode,
     app: ParsedApp,
     allSystems: openarray[ParsedSystem]
@@ -39,13 +37,20 @@ proc newCodeGenInfo*(
     result.config = config
     result.app = app
     result.systems = allSystems.toSeq
-    result.appStateTypeName = ident(name.strVal & "World")
 
     let allArgs = app.runnerArgs.concat(allSystems.args.toSeq)
 
     result.archetypes = allArgs.calculateArchetypes()
-    result.archetypeEnum = archetypeEnum(name.strVal, result.archetypes)
+    result.archetypeEnum = archetypeEnum(app.name, result.archetypes)
     result.directives = allArgs.calculateDirectives()
+
+proc appStateTypeName*(genInfo: CodeGenInfo): NimNode =
+    ## The name of the object that contains the state of the app
+    ident(genInfo.app.name & "State")
+
+proc appStateInit*(genInfo: CodeGenInfo): NimNode =
+    ## The name of the object that contains the state of the app
+    ident("init" & genInfo.app.name.capitalizeAscii)
 
 proc generateForHook*(codeGen: CodeGenInfo, hook: GenerateHook): NimNode =
     ## Generates the code for a specific code-gen hook

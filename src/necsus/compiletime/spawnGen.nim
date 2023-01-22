@@ -17,7 +17,9 @@ proc generate(details: GenerateContext, dir: TupleDirective): NimNode =
         let archetype = details.archetypes[dir.items.toSeq]
         let archetypeIdent = archetype.ident
         result.add quote do:
-            let `ident` = newSpawn[`spawnTuple`](proc(): auto = beginSpawn(`worldIdent`, `archetypeIdent`))
+            `appStateIdent`.`ident` = newSpawn[`spawnTuple`](
+                proc(): auto = beginSpawn(`appStateIdent`.`worldIdent`, `appStateIdent`.`archetypeIdent`)
+            )
     else:
         discard
 

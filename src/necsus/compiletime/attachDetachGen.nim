@@ -1,7 +1,7 @@
 import macros, sequtils
 import tools, tupleDirective, commonVars
 import archetype, componentDef, worldEnum, systemGen, archetypeBuilder
-import ../runtime/[world, archetypeStore]
+import ../runtime/[world, archetypeStore, directives]
 
 let entityIndex {.compileTime.} = ident("entityIndex")
 let newComps {.compileTime.} = ident("comps")
@@ -17,7 +17,10 @@ proc createArchUpdate(details: GenerateContext, attach: TupleDirective, archetyp
 
     let existing = ident("existing")
     result.add quote do:
-        let `existing` = getComps[`archetypeEnum`, `archTuple`](`archIdent`, `entityIndex`.archetypeIndex)
+        let `existing` = getComps[`archetypeEnum`, `archTuple`](
+            `appStateIdent`.`archIdent`, 
+            `entityIndex`.archetypeIndex
+        )
 
     for i, component in attach.items.toSeq:
         let storageIndex = archetype.indexOf(component)
@@ -47,12 +50,15 @@ proc createArchMove(
 
     return quote:
         moveEntity[`archetypeEnum`, `fromArchTuple`, `toArchTuple`](
-            `worldIdent`, `entityIndex`, `fromArchIdent`, `toArchIdent`,
+            `appStateIdent`.`worldIdent`, `entityIndex`, `appStateIdent`.`fromArchIdent`, `appStateIdent`.`toArchIdent`,
             proc (`existing`: ptr `fromArchTuple`): auto = `createNewTuple`
         )
 
 proc attachArchetype(builder: var ArchetypeBuilder[ComponentDef], dir: TupleDirective) =
     builder.attachable(dir.comps)
+
+proc attachFields(name: string, dir: TupleDirective): seq[WorldField] =
+    @[ (name, nnkBracketExpr.newTree(bindSym("Attach"), dir.asTupleType)) ]
 
 proc generateAttach(details: GenerateContext, attach: TupleDirective): NimNode =
     ## Generates the code for instantiating queries
@@ -70,16 +76,24 @@ proc generateAttach(details: GenerateContext, attach: TupleDirective): NimNode =
                 details.createArchMove(attach, fromArch, toArch)
 
         return quote:
-            proc `procName`(`entityId`: EntityId, `newComps`: `componentTuple`) {.used.} =
-                var `entityIndex` = `worldIdent`[`entityId`]
+            `appStateIdent`.`procName` = proc(`entityId`: EntityId, `newComps`: `componentTuple`) =
+                var `entityIndex` = `appStateIdent`.`worldIdent`[`entityId`]
                 `cases`
     else:
         return newEmptyNode()
 
-let attachGenerator* {.compileTime.} = newGenerator("Attach", generateAttach, attachArchetype)
+let attachGenerator* {.compileTime.} = newGenerator(
+    ident = "Attach",
+    generate = generateAttach, 
+    archetype = attachArchetype, 
+    worldFields = attachFields
+)
 
 proc detachArchetype(builder: var ArchetypeBuilder[ComponentDef], dir: TupleDirective) =
     builder.detachable(dir.comps)
+
+proc detachFields(name: string, dir: TupleDirective): seq[WorldField] =
+    @[ (name, nnkBracketExpr.newTree(bindSym("Detach"), dir.asTupleType)) ]
 
 proc generateDetach(details: GenerateContext, detach: TupleDirective): NimNode =
     ## Generates the code for instantiating queries
@@ -96,10 +110,15 @@ proc generateDetach(details: GenerateContext, detach: TupleDirective): NimNode =
                 return quote: discard
 
         return quote:
-            proc `procName`(`entityId`: EntityId) =
-                let `entityIndex` = `worldIdent`[`entityId`]
+            `appStateIdent`.`procName` = proc(`entityId`: EntityId) =
+                let `entityIndex` = `appStateIdent`.`worldIdent`[`entityId`]
                 `cases`
     else:
         return newEmptyNode()
 
-let detachGenerator* {.compileTime.} = newGenerator("Detach", generateDetach, detachArchetype)
+let detachGenerator* {.compileTime.} = newGenerator(
+    ident = "Detach",
+    generate = generateDetach,
+    archetype = detachArchetype,
+    worldFields = detachFields,
+)

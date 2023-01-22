@@ -1,12 +1,9 @@
 import macros, sequtils, systemGen, tables, std/times
 import codeGenInfo, parse, directiveSet, tupleDirective, monoDirective, commonVars
 
-let timeDelta {.compileTime.} = ident("timeDelta")
-let timeElapsed {.compileTime.} = ident("timeElapsed")
-
 proc renderSystemArgs(codeGenInfo: CodeGenInfo, args: openarray[SystemArg]): seq[NimNode] =
     ## Renders system arguments down to nim code
-    args.mapIt: codeGenInfo.directives[it.generator].nameOf(it).ident
+    args.mapIt: newDotExpr(appStateIdent, codeGenInfo.directives[it.generator].nameOf(it).ident)
 
 proc callSystems(codeGenInfo: CodeGenInfo, systems: openarray[ParsedSystem]): NimNode =
     ## Generates the code for invoke a list of systems
@@ -42,7 +39,7 @@ proc createTickRunner*(codeGenInfo: CodeGenInfo, runner: NimNode): NimNode =
 
     result = quote do:
         `startups`
-        let `startTime` = epochTime()
+        `appStateIdent`.`startTime` = epochTime()
         `beforeLoop`
         `primaryLoop`
         `teardown`

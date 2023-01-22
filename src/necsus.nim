@@ -56,23 +56,18 @@ proc buildApp(
 
     let parsedApp = parser.parseApp(pragmaProc, runner)
 
-    let name = pragmaProc.name
-    let codeGenInfo = newCodeGenInfo(name, conf, parsedApp, parsedSystems)
+    let codeGenInfo = newCodeGenInfo(conf, parsedApp, parsedSystems)
 
     result = newStmtList(
         codeGenInfo.archetypeEnum.codeGen,
         codeGenInfo.createAppStateType(),
+        codeGenInfo.createAppStateInit(),
         codeGenInfo.generateForHook(GenerateHook.Outside),
         pragmaProc
     )
 
     pragmaProc.body = newStmtList(
-        codeGenInfo.createConfig(),
-        codeGenInfo.createWorldInstance(),
-        codeGenInfo.createArchetypeInstances(),
-        codeGenInfo.generateForHook(GenerateHook.Early),
-        codeGenInfo.generateForHook(GenerateHook.Standard),
-        codeGenInfo.generateForHook(GenerateHook.Late),
+        codeGenInfo.createAppStateInstance(),
         codeGenInfo.createTickRunner(runner),
         codeGenInfo.createAppReturn(pragmaProc),
     )

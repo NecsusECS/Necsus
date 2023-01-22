@@ -1,6 +1,6 @@
 import macros, sequtils, options, tables
 import tupleDirective, tools, commonVars, archetype, componentDef, worldEnum, systemGen
-import ../runtime/[world, archetypeStore]
+import ../runtime/[world, archetypeStore, directives]
 
 let entityId {.compileTime.} = ident("entityId")
 
@@ -20,8 +20,14 @@ proc buildArchetypeLookup(
     let createTuple = compsIdent.copyTuple(archetype, lookup)
 
     return quote do:
-        let `compsIdent` = getComps[`archetypeEnum`, `archetypeType`](`archetypeIdent`, `entityIndex`.archetypeIndex)
+        let `compsIdent` = getComps[`archetypeEnum`, `archetypeType`](
+            `appStateIdent`.`archetypeIdent`, 
+            `entityIndex`.archetypeIndex
+        )
         return some(`createTuple`)
+
+proc worldFields(name: string, dir: TupleDirective): seq[WorldField] =
+     @[ (name, nnkBracketExpr.newTree(bindSym("Lookup"), dir.asTupleType)) ]
 
 proc canCreateFrom(lookup: TupleDirective, archetype: Archetype[ComponentDef]): bool =
     ## Returns whether a lookup can be created from an archetype
@@ -43,10 +49,14 @@ proc generateTuple(details: GenerateContext, lookup: TupleDirective): NimNode =
                 quote: return none(`tupleType`)
 
         return quote:
-            proc `procName`(`entityId`: EntityId): Option[`tupleType`] =
-                let `entityIndex` = `worldIdent`[`entityId`]
+            `appStateIdent`.`procName` = proc(`entityId`: EntityId): Option[`tupleType`] =
+                let `entityIndex` = `appStateIdent`.`worldIdent`[`entityId`]
                 `cases`
     else:
         return newEmptyNode()
 
-let lookupGenerator* {.compileTime.} = newGenerator("Lookup", generateTuple)
+let lookupGenerator* {.compileTime.} = newGenerator(
+    ident = "Lookup", 
+    generate = generateTuple,
+    worldFields = worldFields,
+)

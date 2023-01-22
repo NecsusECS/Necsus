@@ -1,6 +1,8 @@
 import tables, macros
 import archetype, tools, systemGen, archetypeBuilder, worldEnum, commonVars
-import ../runtime/[archetypeStore, world]
+import ../runtime/[archetypeStore, world, directives]
+
+proc worldFields(name: string): seq[WorldField] = @[ (name, bindSym("Delete")) ]
 
 proc generate(details: GenerateContext): NimNode =
     ## Generates the code for instantiating queries
@@ -14,13 +16,13 @@ proc generate(details: GenerateContext): NimNode =
         let cases = details.createArchetypeCase(newDotExpr(entityIndex, ident("archetype"))) do (fromArch: auto) -> auto:
             let archIdent = fromArch.ident
             quote:
-                del(`archIdent`, `entityIndex`.archetypeIndex)
+                del(`appStateIdent`.`archIdent`, `entityIndex`.archetypeIndex)
 
         return quote do:
-            proc `deleteProc`(`entity`: EntityId) {.used.} =
-                let `entityIndex` = del[`archetypeEnum`](`worldIdent`, `entity`)
+            `appStateIdent`.`deleteProc` = proc(`entity`: EntityId) =
+                let `entityIndex` = del[`archetypeEnum`](`appStateIdent`.`worldIdent`, `entity`)
                 `cases`
     else:
         return newEmptyNode()
 
-let deleteGenerator* {.compileTime.} = newGenerator("Delete", generate)
+let deleteGenerator* {.compileTime.} = newGenerator("Delete", generate, worldFields)
