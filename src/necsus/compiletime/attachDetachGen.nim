@@ -51,9 +51,6 @@ proc createArchMove(
             proc (`existing`: ptr `fromArchTuple`): auto = `createNewTuple`
         )
 
-
-proc parseAttach(components: seq[DirectiveArg]): TupleDirective = newAttachDef(components)
-
 proc attachArchetype(builder: var ArchetypeBuilder[ComponentDef], dir: TupleDirective) =
     builder.attachable(dir.comps)
 
@@ -79,9 +76,7 @@ proc generateAttach(details: GenerateContext, attach: TupleDirective): NimNode =
     else:
         return newEmptyNode()
 
-let attachGenerator* {.compileTime.} = newGenerator("Attach", parseAttach, generateAttach, attachArchetype)
-
-proc parseDetach(components: seq[DirectiveArg]): TupleDirective = newDetachDef(components)
+let attachGenerator* {.compileTime.} = newGenerator("Attach", generateAttach, attachArchetype)
 
 proc detachArchetype(builder: var ArchetypeBuilder[ComponentDef], dir: TupleDirective) =
     builder.detachable(dir.comps)
@@ -107,4 +102,4 @@ proc generateDetach(details: GenerateContext, detach: TupleDirective): NimNode =
     else:
         return newEmptyNode()
 
-let detachGenerator* {.compileTime.} = newGenerator("Detach", parseDetach, generateDetach, detachArchetype)
+let detachGenerator* {.compileTime.} = newGenerator("Detach", generateDetach, detachArchetype)

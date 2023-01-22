@@ -82,7 +82,7 @@ proc parseParametricArg(
 
     case gen.kind
     of DirectiveKind.Tuple:
-        let tupleDir = gen.parseTuple(directiveParametric.parseDirectiveArgsFromTuple)
+        let tupleDir = newTupleDir(directiveParametric.parseDirectiveArgsFromTuple)
         return some(SystemArg(
             generator: gen,
             name: gen.chooseNameTuple(uniqName, tupleDir),
@@ -90,7 +90,7 @@ proc parseParametricArg(
             tupleDir: tupleDir
         ))
     of DirectiveKind.Mono:
-        let monoDir = gen.parseMono(argName, directiveParametric)
+        let monoDir = newMonoDir(directiveParametric)
         return some(SystemArg(
             generator: gen,
             name: gen.chooseNameMono(uniqName, monoDir),
@@ -200,9 +200,9 @@ proc parseApp*(parser: Parser, appProc: NimNode, runner: NimNode): ParsedApp =
         of nnkIdentDefs:
             param[0].expectKind(nnkIdent)
             param[1].expectKind(nnkIdent)
-            result.inputs.add((param[0].strVal, newSharedDef(param[1])))
+            result.inputs.add((param[0].strVal, newMonoDir(param[1])))
         else: param.expectKind({nnkEmpty, nnkIdentDefs})
     result.runnerArgs = parser.parseRunner(runner)
 
     let returnNode = appProc.params[0]
-    result.returns = if returnNode.kind == nnkEmpty: none(MonoDirective) else: some(newSharedDef(returnNode))
+    result.returns = if returnNode.kind == nnkEmpty: none(MonoDirective) else: some(newMonoDir(returnNode))

@@ -2,8 +2,6 @@ import tables, macros, sequtils
 import tupleDirective, archetype, componentDef, tools, systemGen, archetypeBuilder
 import ../runtime/archetypeStore
 
-proc parseTuple(components: seq[DirectiveArg]): TupleDirective = newQueryDef(components)
-
 proc argMatchesQuery(archetype: Archetype[ComponentDef], arg: DirectiveArg): bool =
     ## Returns whether a directive is part of an archetype
     case arg.kind
@@ -42,5 +40,5 @@ proc generateTuple(details: GenerateContext, dir: TupleDirective): NimNode =
     else:
         discard
 
-let queryGenerator* {.compileTime.} = newGenerator("Query", parseTuple, generateTuple)
+let queryGenerator* {.compileTime.} = newGenerator("Query", generateTuple)
 

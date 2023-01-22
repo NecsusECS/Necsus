@@ -6,8 +6,6 @@ proc eventStorageIdent(event: MonoDirective | NimNode): NimNode =
     when event is NimNode: ident(event.symbols.join("_") & "_storage")
     elif event is MonoDirective: eventStorageIdent(event.argType)
 
-proc parseInbox(argName: string, component: NimNode): MonoDirective = newInboxDef(component)
-
 proc generateInbox(details: GenerateContext, inbox: MonoDirective): NimNode =
     case details.hook
     of Early:
@@ -24,7 +22,7 @@ proc generateInbox(details: GenerateContext, inbox: MonoDirective): NimNode =
     else:
         return newEmptyNode()
 
-let inboxGenerator* {.compileTime.} = newGenerator("Inbox", parseInbox, generateInbox)
+let inboxGenerator* {.compileTime.} = newGenerator("Inbox", generateInbox)
 
 proc hasInboxes(details: GenerateContext, outbox: MonoDirective): bool =
     ## Returns whether an outbox has anyone that cares about the messages it sends
@@ -32,8 +30,6 @@ proc hasInboxes(details: GenerateContext, outbox: MonoDirective): bool =
         if directive.monoDir.argType == outbox.argType:
             return true
     return false
-
-proc parseOutbox(argName: string, component: NimNode): MonoDirective = newOutboxDef(component)
 
 proc generateOutbox(details: GenerateContext, outbox: MonoDirective): NimNode =
     case details.hook
@@ -56,4 +52,4 @@ proc generateOutbox(details: GenerateContext, outbox: MonoDirective): NimNode =
     else:
         return newEmptyNode()
 
-let outboxGenerator* {.compileTime.} = newGenerator("Outbox", parseOutbox, generateOutbox)
+let outboxGenerator* {.compileTime.} = newGenerator("Outbox", generateOutbox)

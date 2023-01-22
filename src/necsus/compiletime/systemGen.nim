@@ -26,13 +26,11 @@ type
         ident*: string
         case kind*: DirectiveKind
         of DirectiveKind.Mono:
-            parseMono*: proc(argName: string, component: NimNode): MonoDirective
             generateMono*: proc(details: GenerateContext, dir: MonoDirective): NimNode
             archetypeMono*: proc(builder: var ArchetypeBuilder[ComponentDef], dir: MonoDirective)
             chooseNameMono*: proc(uniqId: string, dir: MonoDirective): string
             systemReturn*: proc(args: DirectiveSet[SystemArg], returns: MonoDirective): Option[NimNode]
         of DirectiveKind.Tuple:
-            parseTuple*: proc(components: seq[DirectiveArg]): TupleDirective
             generateTuple*: proc(details: GenerateContext, dir: TupleDirective): NimNode
             archetypeTuple*: proc(builder: var ArchetypeBuilder[ComponentDef], dir: TupleDirective)
             chooseNameTuple*: proc(uniqId: string, dir: TupleDirective): string
@@ -57,7 +55,6 @@ proc defaultName(uniqId: string, dir: MonoDirective | TupleDirective): string = 
 
 proc newGenerator*(
     ident: string,
-    parse: proc(components: seq[DirectiveArg]): TupleDirective,
     generate: proc(details: GenerateContext, dir: TupleDirective): NimNode,
     archetype: proc(builder: var ArchetypeBuilder[ComponentDef], dir: TupleDirective) = noArchetype,
     chooseName: proc(uniqId: string, dir: TupleDirective): string = defaultName
@@ -65,7 +62,6 @@ proc newGenerator*(
     ## Create a tuple based generator
     result.ident = ident
     result.kind = DirectiveKind.Tuple
-    result.parseTuple = parse
     result.generateTuple = generate
     result.archetypeTuple = archetype
     result.chooseNameTuple = chooseName
@@ -74,7 +70,6 @@ proc defaultSystemReturn(args: DirectiveSet[SystemArg], returns: MonoDirective):
 
 proc newGenerator*(
     ident: string,
-    parse: proc(argName: string, component: NimNode): MonoDirective,
     generate: proc(details: GenerateContext, dir: MonoDirective): NimNode,
     archetype: proc(builder: var ArchetypeBuilder[ComponentDef], dir: MonoDirective) = noArchetype,
     chooseName: proc(uniqId: string, dir: MonoDirective): string = defaultName,
@@ -83,7 +78,6 @@ proc newGenerator*(
     ## Creates a mono based generator
     result.ident = ident
     result.kind = DirectiveKind.Mono
-    result.parseMono = parse
     result.generateMono = generate
     result.archetypeMono = archetype
     result.chooseNameMono = chooseName

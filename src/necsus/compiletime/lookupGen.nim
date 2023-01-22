@@ -27,8 +27,6 @@ proc canCreateFrom(lookup: TupleDirective, archetype: Archetype[ComponentDef]): 
     ## Returns whether a lookup can be created from an archetype
     lookup.items.toSeq.allIt(it in archetype)
 
-proc parseTuple(components: seq[DirectiveArg]): TupleDirective = newLookupDef(components)
-
 proc generateTuple(details: GenerateContext, lookup: TupleDirective): NimNode =
     ## Generates the code for instantiating queries
     case details.hook
@@ -51,4 +49,4 @@ proc generateTuple(details: GenerateContext, lookup: TupleDirective): NimNode =
     else:
         return newEmptyNode()
 
-let lookupGenerator* {.compileTime.} = newGenerator("Lookup", parseTuple, generateTuple)
+let lookupGenerator* {.compileTime.} = newGenerator("Lookup", generateTuple)

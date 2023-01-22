@@ -36,6 +36,9 @@ proc type*(def: DirectiveArg): NimNode =
     ## The type of this component
     if def.isPointer: nnkPtrTy.newTree(NimNode(def.component)) else: NimNode(def.component)
 
+proc newTupleDir*(args: openarray[DirectiveArg]): TupleDirective =
+    TupleDirective(args: args.toSeq)
+
 iterator items*(directive: TupleDirective): ComponentDef =
     ## Produce all components in a directive
     for arg in directive.args: yield arg.component
@@ -72,32 +75,17 @@ proc contains*(directive: TupleDirective, comp: ComponentDef): bool =
             return true
     return false
 
-template createDirective(typ: untyped) =
+proc `==`*(a, b: TupleDirective): auto =
+    ## Compare two Directive instances
+    a.args == b.args
 
-    type
-        typ* = object of TupleDirective
-            ## A single directive definition
-
-    proc `new typ`*(args: seq[DirectiveArg]): typ =
-        typ(args: args)
-
-    proc `==`*(a, b: typ): auto =
-        ## Compare two Directive instances
-        a.args == b.args
-
-    proc `<`*(a, b: typ): auto =
-        ## Compare two Directive instances
-        if a.args.len < b.args.len:
+proc `<`*(a, b: TupleDirective): auto =
+    ## Compare two Directive instances
+    if a.args.len < b.args.len:
+        return true
+    for i in 0..<b.args.len:
+        if a.args[i] < b.args[i]:
             return true
-        for i in 0..<b.args.len:
-            if a.args[i] < b.args[i]:
-                return true
-            elif a.args[i] != b.args[i]:
-                return false
-        return false
-
-createDirective(QueryDef)
-createDirective(SpawnDef)
-createDirective(AttachDef)
-createDirective(DetachDef)
-createDirective(LookupDef)
+        elif a.args[i] != b.args[i]:
+            return false
+    return false

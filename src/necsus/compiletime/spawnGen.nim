@@ -2,8 +2,6 @@ import macros, sequtils, sets
 import tools, tupleDirective, archetype, archetypeBuilder, componentDef, commonVars, systemGen
 import ../runtime/spawn
 
-proc parseTuple(components: seq[DirectiveArg]): TupleDirective = newSpawnDef(components)
-
 proc archetypeTuple(builder: var ArchetypeBuilder[ComponentDef], dir: TupleDirective) =
     builder.define(dir.comps)
 
@@ -20,4 +18,4 @@ proc generateTuple(details: GenerateContext, dir: TupleDirective): NimNode =
     else:
         discard
 
-let spawnGenerator* {.compileTime.} = newGenerator("Spawn", parseTuple, generateTuple, archetypeTuple)
+let spawnGenerator* {.compileTime.} = newGenerator("Spawn", generateTuple, archetypeTuple)

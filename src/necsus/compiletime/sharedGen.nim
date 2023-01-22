@@ -1,8 +1,6 @@
 import macros, directiveSet, systemGen, monoDirective, options
 import ../runtime/systemVar
 
-proc parseShared(argName: string, component: NimNode): MonoDirective = newSharedDef(component)
-
 proc generateShared(details: GenerateContext, dir: MonoDirective): NimNode =
     result = newStmtList()
     case details.hook
@@ -29,7 +27,6 @@ proc systemReturn(args: DirectiveSet[SystemArg], returns: MonoDirective): Option
 
 let sharedGenerator* {.compileTime.} = newGenerator(
     ident = "Shared",
-    parse = parseShared,
     generate = generateShared,
     systemReturn = systemReturn
 )
