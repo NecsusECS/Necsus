@@ -61,7 +61,9 @@ proc buildApp(
     result = newStmtList(
         codeGenInfo.archetypeEnum.codeGen,
         codeGenInfo.createAppStateType(),
+        codeGenInfo.createAppStateDestructor(),
         codeGenInfo.createAppStateInit(),
+        codeGenInfo.createTickProc(),
         codeGenInfo.generateForHook(GenerateHook.Outside),
         pragmaProc
     )

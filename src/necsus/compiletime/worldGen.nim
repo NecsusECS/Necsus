@@ -1,33 +1,42 @@
 import macros, options, tables, sequtils
-import worldEnum, codeGenInfo, archetype, commonVars, systemGen
+import worldEnum, codeGenInfo, archetype, commonVars, systemGen, tickGen, parse
 import ../runtime/[world, archetypeStore]
+
+proc fields(genInfo: CodeGenInfo): seq[(NimNode, NimNode)] =
+    ## Produces a list of all fields to attach to the state object
+    let archetypeEnum = genInfo.archetypeEnum.ident
+
+    result.add (worldIdent, nnkBracketExpr.newTree(bindSym"World", archetypeEnum))
+    result.add (thisTime, ident"float")
+    result.add (startTime, ident"float")
+
+    for archetype in genInfo.archetypes:
+        let storageType = archetype.asStorageTuple
+        let typ = nnkBracketExpr.newTree(bindSym("ArchetypeStore"), archetypeEnum, storageType)
+        result.add (archetype.ident, typ)
+
+    for (name, typ) in genInfo.worldFields:
+        result.add (name.ident, typ)
+
 
 proc createAppStateType*(genInfo: CodeGenInfo): NimNode =
     ## Creates a type definition that captures the state of the app
     let archetypeEnum = genInfo.archetypeEnum.ident
 
-    var fields = nnkRecList.newTree(
-        nnkIdentDefs.newTree(worldIdent, nnkBracketExpr.newTree(bindSym("World"), archetypeEnum), newEmptyNode()),
-        nnkIdentDefs.newTree(thisTime, "float".ident, newEmptyNode()),
-        nnkIdentDefs.newTree(startTime, "float".ident, newEmptyNode()),
-    )
-
-    for archetype in genInfo.archetypes:
-        let storageType = archetype.asStorageTuple
-        fields.add nnkIdentDefs.newTree(
-            archetype.ident,
-            nnkBracketExpr.newTree(bindSym("ArchetypeStore"), archetypeEnum, storageType),
-            newEmptyNode()
-        )
-
-    for (name, typ) in genInfo.worldFields:
-        fields.add nnkIdentDefs.newTree(name.ident, typ, newEmptyNode())
+    var fields = nnkRecList.newTree()
+    for (fieldName, fieldTyp) in items(genInfo.fields):
+        fields.add nnkIdentDefs.newTree(fieldName, fieldTyp, newEmptyNode())
 
     return nnkTypeSection.newTree(
         nnkTypeDef.newTree(
+            genInfo.appStateStruct,
+            newEmptyNode(),
+            nnkObjectTy.newTree(newEmptyNode(), newEmptyNode(), fields)
+        ),
+        nnkTypeDef.newTree(
             genInfo.appStateTypeName,
             newEmptyNode(),
-            nnkRefTy.newTree(nnkObjectTy.newTree(newEmptyNode(), newEmptyNode(), fields))
+            nnkRefTy.newTree(genInfo.appStateStruct)
         )
     )
 
@@ -64,6 +73,8 @@ proc createAppStateInit*(genInfo: CodeGenInfo): NimNode =
     let earlyInit = genInfo.generateForHook(GenerateHook.Early)
     let stdInit = genInfo.generateForHook(GenerateHook.Standard)
     let lateInit = genInfo.generateForHook(GenerateHook.Late)
+    let startups = genInfo.callSystems(genInfo.systems.filterIt(it.phase == StartupPhase))
+    let beforeLoop = genInfo.generateForHook(GenerateHook.BeforeLoop)
 
     let initBody = quote:
         var `appStateIdent` = new(`appStateType`)
@@ -73,6 +84,8 @@ proc createAppStateInit*(genInfo: CodeGenInfo): NimNode =
         `earlyInit`
         `stdInit`
         `lateInit`
+        `startups`
+        `beforeLoop`
         return `appStateIdent`
 
     let args = genInfo.app.inputs.mapIt(newIdentDefs(it.argName.ident, it.directive.argType))
@@ -88,3 +101,21 @@ proc createAppStateInstance*(genInfo: CodeGenInfo): NimNode =
     let invoke = newCall(genInfo.appStateInit, genInfo.app.inputs.mapIt(it.argName.ident))
     return quote:
         var `appStateIdent` = `invoke`
+
+proc createAppStateDestructor*(genInfo: CodeGenInfo): NimNode =
+    ## Creates the instance of the app state object
+    let appStateType = genInfo.appStateStruct
+    let destroy = "=destroy".ident
+    let teardowns = genInfo.callSystems(genInfo.systems.filterIt(it.phase == TeardownPhase))
+
+    let destroys = newStmtList()
+
+    for (name, _) in items(genInfo.fields):
+        destroys.add quote do:
+            `destroy`(`appStateIdent`.`name`)
+
+    return quote:
+        proc `destroy`*(`appStateIdent`: var `appStateType`) =
+            `teardowns`
+            `destroys`
+            `appStateIdent`.`worldIdent`.`destroy`()

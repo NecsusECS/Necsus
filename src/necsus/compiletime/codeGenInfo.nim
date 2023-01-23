@@ -44,6 +44,10 @@ proc newCodeGenInfo*(
     result.archetypeEnum = archetypeEnum(app.name, result.archetypes)
     result.directives = allArgs.calculateDirectives()
 
+proc appStateStruct*(genInfo: CodeGenInfo): NimNode =
+    ## The name of the raw struct fo an app state object
+    ident(genInfo.app.name & "Struct")
+
 proc appStateTypeName*(genInfo: CodeGenInfo): NimNode =
     ## The name of the object that contains the state of the app
     ident(genInfo.app.name & "State")

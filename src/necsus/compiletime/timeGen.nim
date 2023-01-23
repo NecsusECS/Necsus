@@ -40,7 +40,7 @@ proc generateElapsed(details: GenerateContext): NimNode =
             `appStateIdent`.`timeElapsed` = 0
     of LoopStart:
         return quote:
-            `appStateIdent`.`timeElapsed` = `thisTime` - `startTime`
+            `appStateIdent`.`timeElapsed` = `thisTime` - `appStateIdent`.`startTime`
     else:
         return newEmptyNode()
 

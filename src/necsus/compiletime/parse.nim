@@ -11,8 +11,8 @@ type
 
     ParsedSystem* = object
         ## Parsed information about a system proc
-        phase: SystemPhase
-        symbol: string
+        phase*: SystemPhase
+        symbol*: string
         args*: seq[SystemArg]
 
     ParsedApp* = object

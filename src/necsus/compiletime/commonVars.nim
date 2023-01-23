@@ -6,6 +6,9 @@ let confIdent* {.compileTime.} = ident("config")
 ## The variable holding the app state instance
 let appStateIdent* {.compileTime.} = ident("appState")
 
+## Property that stores the current lifecycle of the app
+let lifecycle* {.compileTime.} = ident("lifecycle")
+
 ## The variable for identifying the local world
 let worldIdent* {.compileTime.} = ident("world")
 

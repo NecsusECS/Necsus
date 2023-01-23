@@ -492,6 +492,27 @@ proc myApp() {.necsus(customRunner, [], [~incrementer], [], newNecsusConf()).}
 myApp()
 ```
 
+#### Don't call me, I'll call you
+
+There are situations where you may not want Necsus to be in charge of executing the loop. For example, if you are
+integrating with an SDK that is already in charge of executing the loop. For those situations, you can manually
+initialize and invoke the `tick` function that Necsus generates:
+
+```nim
+import necsus
+
+proc myExampleSystem() =
+    discard
+
+proc myApp() {.necsus([], [~myExampleSystem], [], newNecsusConf()).}
+
+# Initialize the app and execute the main loop 3 times
+var app = initMyApp()
+app.tick()
+app.tick()
+app.tick()
+````
+
 ## Debugging
 
 If Necsus isn't behaving as you would expect, the best tool you've got in your toolbox is the ability to dump the code
