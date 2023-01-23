@@ -121,16 +121,36 @@ window.addEventListener('DOMContentLoaded', main);
 <li>
   <a class="reference reference-toplevel" href="#12" id="62">Procs</a>
   <ul class="simple simple-toc-section">
-      <ul class="simple nested-toc-section">generateForHook
+      <ul class="simple nested-toc-section">appStateInit
+      <li><a class="reference" href="#appStateInit%2CCodeGenInfo"
+    title="appStateInit(genInfo: CodeGenInfo): NimNode">appStateInit(genInfo: CodeGenInfo): NimNode</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">appStateStruct
+      <li><a class="reference" href="#appStateStruct%2CCodeGenInfo"
+    title="appStateStruct(genInfo: CodeGenInfo): NimNode">appStateStruct(genInfo: CodeGenInfo): NimNode</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">appStateTypeName
+      <li><a class="reference" href="#appStateTypeName%2CCodeGenInfo"
+    title="appStateTypeName(genInfo: CodeGenInfo): NimNode">appStateTypeName(genInfo: CodeGenInfo): NimNode</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">generateForHook
       <li><a class="reference" href="#generateForHook%2CCodeGenInfo%2CGenerateHook"
     title="generateForHook(codeGen: CodeGenInfo; hook: GenerateHook): NimNode">generateForHook(codeGen: CodeGenInfo; hook: GenerateHook): NimNode</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">newCodeGenInfo
-      <li><a class="reference" href="#newCodeGenInfo%2CNimNode%2CNimNode%2CParsedApp%2CopenArray%5BParsedSystem%5D"
-    title="newCodeGenInfo(name: NimNode; config: NimNode; app: ParsedApp;
-               allSystems: openArray[ParsedSystem]): CodeGenInfo">newCodeGenInfo(name: NimNode; config: NimNode; app: ParsedApp;
+      <li><a class="reference" href="#newCodeGenInfo%2CNimNode%2CParsedApp%2CopenArray%5BParsedSystem%5D"
+    title="newCodeGenInfo(config: NimNode; app: ParsedApp;
+               allSystems: openArray[ParsedSystem]): CodeGenInfo">newCodeGenInfo(config: NimNode; app: ParsedApp;
                allSystems: openArray[ParsedSystem]): CodeGenInfo</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">worldFields
+      <li><a class="reference" href="#worldFields%2CCodeGenInfo"
+    title="worldFields(codeGen: CodeGenInfo): seq[WorldField]">worldFields(codeGen: CodeGenInfo): seq[WorldField]</a></li>
 
   </ul>
 
@@ -173,6 +193,30 @@ Contains all the information needed to do high level code gen
 <div class="section" id="12">
 <h1><a class="toc-backref" href="#12">Procs</a></h1>
 <dl class="item">
+<div id="appStateInit,CodeGenInfo">
+<dt><pre><span class="Keyword">proc</span> <a href="#appStateInit%2CCodeGenInfo"><span class="Identifier">appStateInit</span></a><span class="Other">(</span><span class="Identifier">genInfo</span><span class="Other">:</span> <a href="codeGenInfo.html#CodeGenInfo"><span class="Identifier">CodeGenInfo</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+The name of the object that contains the state of the app
+
+</dd>
+</div>
+<div id="appStateStruct,CodeGenInfo">
+<dt><pre><span class="Keyword">proc</span> <a href="#appStateStruct%2CCodeGenInfo"><span class="Identifier">appStateStruct</span></a><span class="Other">(</span><span class="Identifier">genInfo</span><span class="Other">:</span> <a href="codeGenInfo.html#CodeGenInfo"><span class="Identifier">CodeGenInfo</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+The name of the raw struct fo an app state object
+
+</dd>
+</div>
+<div id="appStateTypeName,CodeGenInfo">
+<dt><pre><span class="Keyword">proc</span> <a href="#appStateTypeName%2CCodeGenInfo"><span class="Identifier">appStateTypeName</span></a><span class="Other">(</span><span class="Identifier">genInfo</span><span class="Other">:</span> <a href="codeGenInfo.html#CodeGenInfo"><span class="Identifier">CodeGenInfo</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+The name of the object that contains the state of the app
+
+</dd>
+</div>
 <div id="generateForHook,CodeGenInfo,GenerateHook">
 <dt><pre><span class="Keyword">proc</span> <a href="#generateForHook%2CCodeGenInfo%2CGenerateHook"><span class="Identifier">generateForHook</span></a><span class="Other">(</span><span class="Identifier">codeGen</span><span class="Other">:</span> <a href="codeGenInfo.html#CodeGenInfo"><span class="Identifier">CodeGenInfo</span></a><span class="Other">;</span> <span class="Identifier">hook</span><span class="Other">:</span> <a href="systemGen.html#GenerateHook"><span class="Identifier">GenerateHook</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span></span>.}</pre></dt>
@@ -182,13 +226,22 @@ Generates the code for a specific code-gen hook
 
 </dd>
 </div>
-<div id="newCodeGenInfo,NimNode,NimNode,ParsedApp,openArray[ParsedSystem]">
-<dt><pre><span class="Keyword">proc</span> <a href="#newCodeGenInfo%2CNimNode%2CNimNode%2CParsedApp%2CopenArray%5BParsedSystem%5D"><span class="Identifier">newCodeGenInfo</span></a><span class="Other">(</span><span class="Identifier">name</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">;</span> <span class="Identifier">config</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">;</span> <span class="Identifier">app</span><span class="Other">:</span> <a href="parse.html#ParsedApp"><span class="Identifier">ParsedApp</span></a><span class="Other">;</span>
+<div id="newCodeGenInfo,NimNode,ParsedApp,openArray[ParsedSystem]">
+<dt><pre><span class="Keyword">proc</span> <a href="#newCodeGenInfo%2CNimNode%2CParsedApp%2CopenArray%5BParsedSystem%5D"><span class="Identifier">newCodeGenInfo</span></a><span class="Other">(</span><span class="Identifier">config</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">;</span> <span class="Identifier">app</span><span class="Other">:</span> <a href="parse.html#ParsedApp"><span class="Identifier">ParsedApp</span></a><span class="Other">;</span>
                     <span class="Identifier">allSystems</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><a href="parse.html#ParsedSystem"><span class="Identifier">ParsedSystem</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="codeGenInfo.html#CodeGenInfo"><span class="Identifier">CodeGenInfo</span></a> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">,</span> <span class="Identifier">ValueError</span><span class="Other">,</span> <span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 Collects data needed for code gen from all the parsed systems
+
+</dd>
+</div>
+<div id="worldFields,CodeGenInfo">
+<dt><pre><span class="Keyword">proc</span> <a href="#worldFields%2CCodeGenInfo"><span class="Identifier">worldFields</span></a><span class="Other">(</span><span class="Identifier">codeGen</span><span class="Other">:</span> <a href="codeGenInfo.html#CodeGenInfo"><span class="Identifier">CodeGenInfo</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="systemGen.html#WorldField"><span class="Identifier">WorldField</span></a><span class="Other">]</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+Generates the code for a specific code-gen hook
 
 </dd>
 </div>
@@ -202,7 +255,7 @@ Collects data needed for code gen from all the parsed systems
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-01-22 00:52:44 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-01-23 23:42:53 UTC</small>
       </div>
     </div>
   </div>

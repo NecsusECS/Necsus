@@ -1,4 +1,6 @@
 confIdent	necsus/compiletime/commonVars.html#confIdent	commonVars: confIdent	
+appStateIdent	necsus/compiletime/commonVars.html#appStateIdent	commonVars: appStateIdent	
+lifecycle	necsus/compiletime/commonVars.html#lifecycle	commonVars: lifecycle	
 worldIdent	necsus/compiletime/commonVars.html#worldIdent	commonVars: worldIdent	
 thisTime	necsus/compiletime/commonVars.html#thisTime	commonVars: thisTime	
 startTime	necsus/compiletime/commonVars.html#startTime	commonVars: startTime	

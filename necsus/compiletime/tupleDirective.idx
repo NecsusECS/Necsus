@@ -9,6 +9,7 @@ newDirectiveArg	necsus/compiletime/tupleDirective.html#newDirectiveArg,Component
 `&lt;`	necsus/compiletime/tupleDirective.html#<,DirectiveArg,DirectiveArg	tupleDirective: `&lt;`(a, b: DirectiveArg): auto	
 hash	necsus/compiletime/tupleDirective.html#hash,DirectiveArg	tupleDirective: hash(arg: DirectiveArg): Hash	
 `type`	necsus/compiletime/tupleDirective.html#type,DirectiveArg	tupleDirective: `type`(def: DirectiveArg): NimNode	
+newTupleDir	necsus/compiletime/tupleDirective.html#newTupleDir,openArray[DirectiveArg]	tupleDirective: newTupleDir(args: openArray[DirectiveArg]): TupleDirective	
 items	necsus/compiletime/tupleDirective.html#items.i,TupleDirective	tupleDirective: items(directive: TupleDirective): ComponentDef	
 comps	necsus/compiletime/tupleDirective.html#comps,TupleDirective	tupleDirective: comps(directive: TupleDirective): seq[ComponentDef]	
 args	necsus/compiletime/tupleDirective.html#args.i,TupleDirective	tupleDirective: args(directive: TupleDirective): DirectiveArg	
@@ -17,23 +18,5 @@ name	necsus/compiletime/tupleDirective.html#name,TupleDirective	tupleDirective: 
 hash	necsus/compiletime/tupleDirective.html#hash,TupleDirective	tupleDirective: hash(directive: TupleDirective): Hash	
 indexOf	necsus/compiletime/tupleDirective.html#indexOf,TupleDirective,ComponentDef	tupleDirective: indexOf(directive: TupleDirective; comp: ComponentDef): int	
 contains	necsus/compiletime/tupleDirective.html#contains,TupleDirective,ComponentDef	tupleDirective: contains(directive: TupleDirective; comp: ComponentDef): bool	
-QueryDef	necsus/compiletime/tupleDirective.html#QueryDef	tupleDirective: QueryDef	
-newQueryDef	necsus/compiletime/tupleDirective.html#newQueryDef	tupleDirective: newQueryDef(args`gensym7: seq[DirectiveArg]): QueryDef	
-`==`	necsus/compiletime/tupleDirective.html#==,QueryDef,QueryDef	tupleDirective: `==`(a`gensym7, b`gensym7: QueryDef): auto	
-`&lt;`	necsus/compiletime/tupleDirective.html#<,QueryDef,QueryDef	tupleDirective: `&lt;`(a`gensym7, b`gensym7: QueryDef): auto	
-SpawnDef	necsus/compiletime/tupleDirective.html#SpawnDef	tupleDirective: SpawnDef	
-newSpawnDef	necsus/compiletime/tupleDirective.html#newSpawnDef	tupleDirective: newSpawnDef(args`gensym9: seq[DirectiveArg]): SpawnDef	
-`==`	necsus/compiletime/tupleDirective.html#==,SpawnDef,SpawnDef	tupleDirective: `==`(a`gensym9, b`gensym9: SpawnDef): auto	
-`&lt;`	necsus/compiletime/tupleDirective.html#<,SpawnDef,SpawnDef	tupleDirective: `&lt;`(a`gensym9, b`gensym9: SpawnDef): auto	
-AttachDef	necsus/compiletime/tupleDirective.html#AttachDef	tupleDirective: AttachDef	
-newAttachDef	necsus/compiletime/tupleDirective.html#newAttachDef	tupleDirective: newAttachDef(args`gensym11: seq[DirectiveArg]): AttachDef	
-`==`	necsus/compiletime/tupleDirective.html#==,AttachDef,AttachDef	tupleDirective: `==`(a`gensym11, b`gensym11: AttachDef): auto	
-`&lt;`	necsus/compiletime/tupleDirective.html#<,AttachDef,AttachDef	tupleDirective: `&lt;`(a`gensym11, b`gensym11: AttachDef): auto	
-DetachDef	necsus/compiletime/tupleDirective.html#DetachDef	tupleDirective: DetachDef	
-newDetachDef	necsus/compiletime/tupleDirective.html#newDetachDef	tupleDirective: newDetachDef(args`gensym13: seq[DirectiveArg]): DetachDef	
-`==`	necsus/compiletime/tupleDirective.html#==,DetachDef,DetachDef	tupleDirective: `==`(a`gensym13, b`gensym13: DetachDef): auto	
-`&lt;`	necsus/compiletime/tupleDirective.html#<,DetachDef,DetachDef	tupleDirective: `&lt;`(a`gensym13, b`gensym13: DetachDef): auto	
-LookupDef	necsus/compiletime/tupleDirective.html#LookupDef	tupleDirective: LookupDef	
-newLookupDef	necsus/compiletime/tupleDirective.html#newLookupDef	tupleDirective: newLookupDef(args`gensym15: seq[DirectiveArg]): LookupDef	
-`==`	necsus/compiletime/tupleDirective.html#==,LookupDef,LookupDef	tupleDirective: `==`(a`gensym15, b`gensym15: LookupDef): auto	
-`&lt;`	necsus/compiletime/tupleDirective.html#<,LookupDef,LookupDef	tupleDirective: `&lt;`(a`gensym15, b`gensym15: LookupDef): auto	
+`==`	necsus/compiletime/tupleDirective.html#==,TupleDirective,TupleDirective	tupleDirective: `==`(a, b: TupleDirective): auto	
+`&lt;`	necsus/compiletime/tupleDirective.html#<,TupleDirective,TupleDirective	tupleDirective: `&lt;`(a, b: TupleDirective): auto	

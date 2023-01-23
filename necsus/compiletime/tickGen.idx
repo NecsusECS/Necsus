@@ -1,1 +1,3 @@
-createTickRunner	necsus/compiletime/tickGen.html#createTickRunner,CodeGenInfo,NimNode	tickGen: createTickRunner(codeGenInfo: CodeGenInfo; runner: NimNode): NimNode	
+callSystems	necsus/compiletime/tickGen.html#callSystems,CodeGenInfo,openArray[ParsedSystem]	tickGen: callSystems(codeGenInfo: CodeGenInfo; systems: openArray[ParsedSystem]): NimNode	
+createTickProc	necsus/compiletime/tickGen.html#createTickProc,CodeGenInfo	tickGen: createTickProc(genInfo: CodeGenInfo): NimNode	
+createTickRunner	necsus/compiletime/tickGen.html#createTickRunner,CodeGenInfo,NimNode	tickGen: createTickRunner(genInfo: CodeGenInfo; runner: NimNode): NimNode	

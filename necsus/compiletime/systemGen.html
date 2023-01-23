@@ -114,23 +114,26 @@ window.addEventListener('DOMContentLoaded', main);
   ident*: string
   case kind*: DirectiveKind
   of DirectiveKind.Mono:
-      parseMono*: proc (argName: string; component: NimNode): MonoDirective
       generateMono*: proc (details: GenerateContext; dir: MonoDirective): NimNode
       archetypeMono*: proc (builder: var ArchetypeBuilder[ComponentDef];
                             dir: MonoDirective)
       chooseNameMono*: proc (uniqId: string; dir: MonoDirective): string
       systemReturn*: proc (args: DirectiveSet[SystemArg]; returns: MonoDirective): Option[
           NimNode]
+      worldFieldsMono*: proc (name: string; returns: MonoDirective): seq[
+          WorldField]
 
   of DirectiveKind.Tuple:
-      parseTuple*: proc (components: seq[DirectiveArg]): TupleDirective
       generateTuple*: proc (details: GenerateContext; dir: TupleDirective): NimNode
       archetypeTuple*: proc (builder: var ArchetypeBuilder[ComponentDef];
                              dir: TupleDirective)
       chooseNameTuple*: proc (uniqId: string; dir: TupleDirective): string
+      worldFieldsTuple*: proc (name: string; returns: TupleDirective): seq[
+          WorldField]
 
   of DirectiveKind.None:
-      generateNone*: proc (details: GenerateContext): NimNode">DirectiveGen</a></li>
+      generateNone*: proc (details: GenerateContext): NimNode
+      worldFieldsNone: proc (name: string): seq[WorldField]">DirectiveGen</a></li>
   <li><a class="reference" href="#DirectiveKind"
     title="DirectiveKind {.pure.} = enum
   Tuple, Mono, None">DirectiveKind</a></li>
@@ -158,6 +161,8 @@ window.addEventListener('DOMContentLoaded', main);
 
   of DirectiveKind.None:
       nil">SystemArg</a></li>
+  <li><a class="reference" href="#WorldField"
+    title="WorldField = tuple[name: string, typ: NimNode]">WorldField</a></li>
 
   </ul>
 </li>
@@ -194,34 +199,39 @@ window.addEventListener('DOMContentLoaded', main);
 
   </ul>
   <ul class="simple nested-toc-section">newGenerator
-      <li><a class="reference" href="#newGenerator%2Cstring%2Cproc%28string%2CNimNode%29%2Cproc%28GenerateContext%2CMonoDirective%29%2Cproc%28ArchetypeBuilder%5BComponentDef%5D%2CMonoDirective%29%2Cproc%28string%2CMonoDirective%29%2Cproc%28DirectiveSet%5BSystemArg%5D%2CMonoDirective%29"
-    title="newGenerator(ident: string;
-             parse: proc (argName: string; component: NimNode): MonoDirective;
-    generate: proc (details: GenerateContext; dir: MonoDirective): NimNode;
-    archetype: proc (builder: var ArchetypeBuilder[ComponentDef];
-                     dir: MonoDirective) = noArchetype; chooseName: proc (
-    uniqId: string; dir: MonoDirective): string = defaultName; systemReturn: proc (
-    args: DirectiveSet[SystemArg]; returns: MonoDirective): Option[NimNode] = defaultSystemReturn): DirectiveGen">newGenerator(ident: string;
-             parse: proc (argName: string; component: NimNode): MonoDirective;
-    generate: proc (details: GenerateContext; dir: MonoDirective): NimNode;
-    archetype: proc (builder: var ArchetypeBuilder[ComponentDef];
-                     dir: MonoDirective) = noArchetype; chooseName: proc (
-    uniqId: string; dir: MonoDirective): string = defaultName; systemReturn: proc (
-    args: DirectiveSet[SystemArg]; returns: MonoDirective): Option[NimNode] = defaultSystemReturn): DirectiveGen</a></li>
-  <li><a class="reference" href="#newGenerator%2Cstring%2Cproc%28seq%5BDirectiveArg%5D%29%2Cproc%28GenerateContext%2CTupleDirective%29%2Cproc%28ArchetypeBuilder%5BComponentDef%5D%2CTupleDirective%29%2Cproc%28string%2CTupleDirective%29"
-    title="newGenerator(ident: string;
-             parse: proc (components: seq[DirectiveArg]): TupleDirective;
-    generate: proc (details: GenerateContext; dir: TupleDirective): NimNode;
-    archetype: proc (builder: var ArchetypeBuilder[ComponentDef];
-                     dir: TupleDirective) = noArchetype; chooseName: proc (
-    uniqId: string; dir: TupleDirective): string = defaultName): DirectiveGen">newGenerator(ident: string;
-             parse: proc (components: seq[DirectiveArg]): TupleDirective;
-    generate: proc (details: GenerateContext; dir: TupleDirective): NimNode;
-    archetype: proc (builder: var ArchetypeBuilder[ComponentDef];
-                     dir: TupleDirective) = noArchetype; chooseName: proc (
-    uniqId: string; dir: TupleDirective): string = defaultName): DirectiveGen</a></li>
-  <li><a class="reference" href="#newGenerator%2Cstring%2Cproc%28GenerateContext%29"
-    title="newGenerator(ident: string; generate: proc (details: GenerateContext): NimNode): DirectiveGen">newGenerator(ident: string; generate: proc (details: GenerateContext): NimNode): DirectiveGen</a></li>
+      <li><a class="reference" href="#newGenerator%2Cstring%2Cproc%28GenerateContext%29%2Cproc%28string%29"
+    title="newGenerator(ident: string; generate: proc (details: GenerateContext): NimNode;
+    worldFields: proc (name: string): seq[WorldField] = defaultWorldFieldNone): DirectiveGen">newGenerator(ident: string; generate: proc (details: GenerateContext): NimNode;
+    worldFields: proc (name: string): seq[WorldField] = defaultWorldFieldNone): DirectiveGen</a></li>
+  <li><a class="reference" href="#newGenerator%2Cstring%2Cproc%28GenerateContext%2CMonoDirective%29%2Cproc%28ArchetypeBuilder%5BComponentDef%5D%2CMonoDirective%29%2Cproc%28string%2CMonoDirective%29%2Cproc%28DirectiveSet%5BSystemArg%5D%2CMonoDirective%29%2Cproc%28string%2CMonoDirective%29"
+    title="newGenerator(ident: string; generate: proc (details: GenerateContext;
+    dir: MonoDirective): NimNode; archetype: proc (
+    builder: var ArchetypeBuilder[ComponentDef]; dir: MonoDirective) = noArchetype;
+    chooseName: proc (uniqId: string; dir: MonoDirective): string = defaultName;
+    systemReturn: proc (args: DirectiveSet[SystemArg]; returns: MonoDirective): Option[
+    NimNode] = defaultSystemReturn; worldFields: proc (name: string;
+    dir: MonoDirective): seq[WorldField] = defaultWorldField): DirectiveGen">newGenerator(ident: string; generate: proc (details: GenerateContext;
+    dir: MonoDirective): NimNode; archetype: proc (
+    builder: var ArchetypeBuilder[ComponentDef]; dir: MonoDirective) = noArchetype;
+    chooseName: proc (uniqId: string; dir: MonoDirective): string = defaultName;
+    systemReturn: proc (args: DirectiveSet[SystemArg]; returns: MonoDirective): Option[
+    NimNode] = defaultSystemReturn; worldFields: proc (name: string;
+    dir: MonoDirective): seq[WorldField] = defaultWorldField): DirectiveGen</a></li>
+  <li><a class="reference" href="#newGenerator%2Cstring%2Cproc%28GenerateContext%2CTupleDirective%29%2Cproc%28ArchetypeBuilder%5BComponentDef%5D%2CTupleDirective%29%2Cproc%28string%2CTupleDirective%29%2Cproc%28string%2CTupleDirective%29"
+    title="newGenerator(ident: string; generate: proc (details: GenerateContext;
+    dir: TupleDirective): NimNode; archetype: proc (
+    builder: var ArchetypeBuilder[ComponentDef]; dir: TupleDirective) = noArchetype;
+    chooseName: proc (uniqId: string; dir: TupleDirective): string = defaultName;
+    worldFields: proc (name: string; dir: TupleDirective): seq[WorldField] = defaultWorldField): DirectiveGen">newGenerator(ident: string; generate: proc (details: GenerateContext;
+    dir: TupleDirective): NimNode; archetype: proc (
+    builder: var ArchetypeBuilder[ComponentDef]; dir: TupleDirective) = noArchetype;
+    chooseName: proc (uniqId: string; dir: TupleDirective): string = defaultName;
+    worldFields: proc (name: string; dir: TupleDirective): seq[WorldField] = defaultWorldField): DirectiveGen</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">worldFields
+      <li><a class="reference" href="#worldFields%2CSystemArg%2Cstring"
+    title="worldFields(arg: SystemArg; name: string): seq[WorldField]">worldFields(arg: SystemArg; name: string): seq[WorldField]</a></li>
 
   </ul>
 
@@ -257,23 +267,26 @@ The list of arguments passed into the app
   <span class="Identifier">ident</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">string</span>
   <span class="Keyword">case</span> <span class="Identifier">kind</span><span class="Operator">*</span><span class="Other">:</span> <a href="systemGen.html#DirectiveKind"><span class="Identifier">DirectiveKind</span></a>
   <span class="Keyword">of</span> <span class="Identifier">DirectiveKind</span><span class="Other">.</span><span class="Identifier">Mono</span><span class="Other">:</span>
-      <span class="Identifier">parseMono</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">argName</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">component</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">)</span><span class="Other">:</span> <a href="monoDirective.html#MonoDirective"><span class="Identifier">MonoDirective</span></a>
       <span class="Identifier">generateMono</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">details</span><span class="Other">:</span> <a href="systemGen.html#GenerateContext"><span class="Identifier">GenerateContext</span></a><span class="Other">;</span> <span class="Identifier">dir</span><span class="Other">:</span> <a href="monoDirective.html#MonoDirective"><span class="Identifier">MonoDirective</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span>
       <span class="Identifier">archetypeMono</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">builder</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeBuilder.html#ArchetypeBuilder"><span class="Identifier">ArchetypeBuilder</span></a><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span><span class="Other">;</span>
                             <span class="Identifier">dir</span><span class="Other">:</span> <a href="monoDirective.html#MonoDirective"><span class="Identifier">MonoDirective</span></a><span class="Other">)</span>
       <span class="Identifier">chooseNameMono</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">uniqId</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">dir</span><span class="Other">:</span> <a href="monoDirective.html#MonoDirective"><span class="Identifier">MonoDirective</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span>
       <span class="Identifier">systemReturn</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">args</span><span class="Other">:</span> <a href="directiveSet.html#DirectiveSet"><span class="Identifier">DirectiveSet</span></a><span class="Other">[</span><a href="systemGen.html#SystemArg"><span class="Identifier">SystemArg</span></a><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">returns</span><span class="Other">:</span> <a href="monoDirective.html#MonoDirective"><span class="Identifier">MonoDirective</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Option</span><span class="Other">[</span>
           <span class="Identifier">NimNode</span><span class="Other">]</span>
+      <span class="Identifier">worldFieldsMono</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">name</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">returns</span><span class="Other">:</span> <a href="monoDirective.html#MonoDirective"><span class="Identifier">MonoDirective</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span>
+          <a href="systemGen.html#WorldField"><span class="Identifier">WorldField</span></a><span class="Other">]</span>
 
   <span class="Keyword">of</span> <span class="Identifier">DirectiveKind</span><span class="Other">.</span><span class="Identifier">Tuple</span><span class="Other">:</span>
-      <span class="Identifier">parseTuple</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">components</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="tupleDirective.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a>
       <span class="Identifier">generateTuple</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">details</span><span class="Other">:</span> <a href="systemGen.html#GenerateContext"><span class="Identifier">GenerateContext</span></a><span class="Other">;</span> <span class="Identifier">dir</span><span class="Other">:</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span>
       <span class="Identifier">archetypeTuple</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">builder</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeBuilder.html#ArchetypeBuilder"><span class="Identifier">ArchetypeBuilder</span></a><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span><span class="Other">;</span>
                              <span class="Identifier">dir</span><span class="Other">:</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a><span class="Other">)</span>
       <span class="Identifier">chooseNameTuple</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">uniqId</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">dir</span><span class="Other">:</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span>
+      <span class="Identifier">worldFieldsTuple</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">name</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">returns</span><span class="Other">:</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span>
+          <a href="systemGen.html#WorldField"><span class="Identifier">WorldField</span></a><span class="Other">]</span>
 
   <span class="Keyword">of</span> <span class="Identifier">DirectiveKind</span><span class="Other">.</span><span class="Identifier">None</span><span class="Other">:</span>
       <span class="Identifier">generateNone</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">details</span><span class="Other">:</span> <a href="systemGen.html#GenerateContext"><span class="Identifier">GenerateContext</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span>
+      <span class="Identifier">worldFieldsNone</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">name</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="systemGen.html#WorldField"><span class="Identifier">WorldField</span></a><span class="Other">]</span>
 
   </pre></dt>
 <dd>
@@ -333,6 +346,14 @@ The different points at which code can be hooked
 <dd>
 
 A single arg within a system proc
+
+</dd>
+</div>
+<div id="WorldField">
+<dt><pre><a href="systemGen.html#WorldField"><span class="Identifier">WorldField</span></a> <span class="Other">=</span> <span class="Keyword">tuple</span><span class="Other">[</span><span class="Identifier">name</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">,</span> <span class="Identifier">typ</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">]</span></pre></dt>
+<dd>
+
+A field to add to the world object
 
 </dd>
 </div>
@@ -399,27 +420,38 @@ Generates the code for a specific hook
 
 </dd>
 </div>
-<div id="newGenerator,string,proc(string,NimNode),proc(GenerateContext,MonoDirective),proc(ArchetypeBuilder[ComponentDef],MonoDirective),proc(string,MonoDirective),proc(DirectiveSet[SystemArg],MonoDirective)">
-<dt><pre><span class="Keyword">proc</span> <a href="#newGenerator%2Cstring%2Cproc%28string%2CNimNode%29%2Cproc%28GenerateContext%2CMonoDirective%29%2Cproc%28ArchetypeBuilder%5BComponentDef%5D%2CMonoDirective%29%2Cproc%28string%2CMonoDirective%29%2Cproc%28DirectiveSet%5BSystemArg%5D%2CMonoDirective%29"><span class="Identifier">newGenerator</span></a><span class="Other">(</span><span class="Identifier">ident</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">parse</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">argName</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span>
-    <span class="Identifier">component</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">)</span><span class="Other">:</span> <a href="monoDirective.html#MonoDirective"><span class="Identifier">MonoDirective</span></a><span class="Other">;</span> <span class="Identifier">generate</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span>
-    <span class="Identifier">details</span><span class="Other">:</span> <a href="systemGen.html#GenerateContext"><span class="Identifier">GenerateContext</span></a><span class="Other">;</span> <span class="Identifier">dir</span><span class="Other">:</span> <a href="monoDirective.html#MonoDirective"><span class="Identifier">MonoDirective</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">;</span> <span class="Identifier">archetype</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span>
+<div id="newGenerator,string,proc(GenerateContext),proc(string)">
+<dt><pre><span class="Keyword">proc</span> <a href="#newGenerator%2Cstring%2Cproc%28GenerateContext%29%2Cproc%28string%29"><span class="Identifier">newGenerator</span></a><span class="Other">(</span><span class="Identifier">ident</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span>
+                  <span class="Identifier">generate</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">details</span><span class="Other">:</span> <a href="systemGen.html#GenerateContext"><span class="Identifier">GenerateContext</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">;</span>
+    <span class="Identifier">worldFields</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">name</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="systemGen.html#WorldField"><span class="Identifier">WorldField</span></a><span class="Other">]</span> <span class="Other">=</span> <span class="Identifier">defaultWorldFieldNone</span><span class="Other">)</span><span class="Other">:</span> <a href="systemGen.html#DirectiveGen"><span class="Identifier">DirectiveGen</span></a> {.
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+Creates a 'none' generator
+
+</dd>
+</div>
+<div id="newGenerator,string,proc(GenerateContext,MonoDirective),proc(ArchetypeBuilder[ComponentDef],MonoDirective),proc(string,MonoDirective),proc(DirectiveSet[SystemArg],MonoDirective),proc(string,MonoDirective)">
+<dt><pre><span class="Keyword">proc</span> <a href="#newGenerator%2Cstring%2Cproc%28GenerateContext%2CMonoDirective%29%2Cproc%28ArchetypeBuilder%5BComponentDef%5D%2CMonoDirective%29%2Cproc%28string%2CMonoDirective%29%2Cproc%28DirectiveSet%5BSystemArg%5D%2CMonoDirective%29%2Cproc%28string%2CMonoDirective%29"><span class="Identifier">newGenerator</span></a><span class="Other">(</span><span class="Identifier">ident</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">generate</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">details</span><span class="Other">:</span> <a href="systemGen.html#GenerateContext"><span class="Identifier">GenerateContext</span></a><span class="Other">;</span>
+    <span class="Identifier">dir</span><span class="Other">:</span> <a href="monoDirective.html#MonoDirective"><span class="Identifier">MonoDirective</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">;</span> <span class="Identifier">archetype</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span>
     <span class="Identifier">builder</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeBuilder.html#ArchetypeBuilder"><span class="Identifier">ArchetypeBuilder</span></a><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">dir</span><span class="Other">:</span> <a href="monoDirective.html#MonoDirective"><span class="Identifier">MonoDirective</span></a><span class="Other">)</span> <span class="Other">=</span> <span class="Identifier">noArchetype</span><span class="Other">;</span>
     <span class="Identifier">chooseName</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">uniqId</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">dir</span><span class="Other">:</span> <a href="monoDirective.html#MonoDirective"><span class="Identifier">MonoDirective</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> <span class="Other">=</span> <span class="Identifier">defaultName</span><span class="Other">;</span>
     <span class="Identifier">systemReturn</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">args</span><span class="Other">:</span> <a href="directiveSet.html#DirectiveSet"><span class="Identifier">DirectiveSet</span></a><span class="Other">[</span><a href="systemGen.html#SystemArg"><span class="Identifier">SystemArg</span></a><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">returns</span><span class="Other">:</span> <a href="monoDirective.html#MonoDirective"><span class="Identifier">MonoDirective</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Option</span><span class="Other">[</span>
-    <span class="Identifier">NimNode</span><span class="Other">]</span> <span class="Other">=</span> <span class="Identifier">defaultSystemReturn</span><span class="Other">)</span><span class="Other">:</span> <a href="systemGen.html#DirectiveGen"><span class="Identifier">DirectiveGen</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+    <span class="Identifier">NimNode</span><span class="Other">]</span> <span class="Other">=</span> <span class="Identifier">defaultSystemReturn</span><span class="Other">;</span> <span class="Identifier">worldFields</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">name</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span>
+    <span class="Identifier">dir</span><span class="Other">:</span> <a href="monoDirective.html#MonoDirective"><span class="Identifier">MonoDirective</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="systemGen.html#WorldField"><span class="Identifier">WorldField</span></a><span class="Other">]</span> <span class="Other">=</span> <span class="Identifier">defaultWorldField</span><span class="Other">)</span><span class="Other">:</span> <a href="systemGen.html#DirectiveGen"><span class="Identifier">DirectiveGen</span></a> {.
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 Creates a mono based generator
 
 </dd>
 </div>
-<div id="newGenerator,string,proc(seq[DirectiveArg]),proc(GenerateContext,TupleDirective),proc(ArchetypeBuilder[ComponentDef],TupleDirective),proc(string,TupleDirective)">
-<dt><pre><span class="Keyword">proc</span> <a href="#newGenerator%2Cstring%2Cproc%28seq%5BDirectiveArg%5D%29%2Cproc%28GenerateContext%2CTupleDirective%29%2Cproc%28ArchetypeBuilder%5BComponentDef%5D%2CTupleDirective%29%2Cproc%28string%2CTupleDirective%29"><span class="Identifier">newGenerator</span></a><span class="Other">(</span><span class="Identifier">ident</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span>
-                  <span class="Identifier">parse</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">components</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="tupleDirective.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a><span class="Other">;</span>
-    <span class="Identifier">generate</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">details</span><span class="Other">:</span> <a href="systemGen.html#GenerateContext"><span class="Identifier">GenerateContext</span></a><span class="Other">;</span> <span class="Identifier">dir</span><span class="Other">:</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">;</span>
-    <span class="Identifier">archetype</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">builder</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeBuilder.html#ArchetypeBuilder"><span class="Identifier">ArchetypeBuilder</span></a><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span><span class="Other">;</span>
-                     <span class="Identifier">dir</span><span class="Other">:</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a><span class="Other">)</span> <span class="Other">=</span> <span class="Identifier">noArchetype</span><span class="Other">;</span> <span class="Identifier">chooseName</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span>
-    <span class="Identifier">uniqId</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">dir</span><span class="Other">:</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> <span class="Other">=</span> <span class="Identifier">defaultName</span><span class="Other">)</span><span class="Other">:</span> <a href="systemGen.html#DirectiveGen"><span class="Identifier">DirectiveGen</span></a> {.
+<div id="newGenerator,string,proc(GenerateContext,TupleDirective),proc(ArchetypeBuilder[ComponentDef],TupleDirective),proc(string,TupleDirective),proc(string,TupleDirective)">
+<dt><pre><span class="Keyword">proc</span> <a href="#newGenerator%2Cstring%2Cproc%28GenerateContext%2CTupleDirective%29%2Cproc%28ArchetypeBuilder%5BComponentDef%5D%2CTupleDirective%29%2Cproc%28string%2CTupleDirective%29%2Cproc%28string%2CTupleDirective%29"><span class="Identifier">newGenerator</span></a><span class="Other">(</span><span class="Identifier">ident</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">generate</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">details</span><span class="Other">:</span> <a href="systemGen.html#GenerateContext"><span class="Identifier">GenerateContext</span></a><span class="Other">;</span>
+    <span class="Identifier">dir</span><span class="Other">:</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">;</span> <span class="Identifier">archetype</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span>
+    <span class="Identifier">builder</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeBuilder.html#ArchetypeBuilder"><span class="Identifier">ArchetypeBuilder</span></a><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">dir</span><span class="Other">:</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a><span class="Other">)</span> <span class="Other">=</span> <span class="Identifier">noArchetype</span><span class="Other">;</span>
+    <span class="Identifier">chooseName</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">uniqId</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">dir</span><span class="Other">:</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> <span class="Other">=</span> <span class="Identifier">defaultName</span><span class="Other">;</span>
+    <span class="Identifier">worldFields</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">name</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">dir</span><span class="Other">:</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="systemGen.html#WorldField"><span class="Identifier">WorldField</span></a><span class="Other">]</span> <span class="Other">=</span> <span class="Identifier">defaultWorldField</span><span class="Other">)</span><span class="Other">:</span> <a href="systemGen.html#DirectiveGen"><span class="Identifier">DirectiveGen</span></a> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
@@ -427,13 +459,12 @@ Create a tuple based generator
 
 </dd>
 </div>
-<div id="newGenerator,string,proc(GenerateContext)">
-<dt><pre><span class="Keyword">proc</span> <a href="#newGenerator%2Cstring%2Cproc%28GenerateContext%29"><span class="Identifier">newGenerator</span></a><span class="Other">(</span><span class="Identifier">ident</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span>
-                  <span class="Identifier">generate</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">details</span><span class="Other">:</span> <a href="systemGen.html#GenerateContext"><span class="Identifier">GenerateContext</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">)</span><span class="Other">:</span> <a href="systemGen.html#DirectiveGen"><span class="Identifier">DirectiveGen</span></a> {.
-    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<div id="worldFields,SystemArg,string">
+<dt><pre><span class="Keyword">proc</span> <a href="#worldFields%2CSystemArg%2Cstring"><span class="Identifier">worldFields</span></a><span class="Other">(</span><span class="Identifier">arg</span><span class="Other">:</span> <a href="systemGen.html#SystemArg"><span class="Identifier">SystemArg</span></a><span class="Other">;</span> <span class="Identifier">name</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="systemGen.html#WorldField"><span class="Identifier">WorldField</span></a><span class="Other">]</span> {.
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
-Creates a 'none' generator
+Generates the code for a specific hook
 
 </dd>
 </div>
@@ -447,7 +478,7 @@ Creates a 'none' generator
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-01-22 00:52:44 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-01-23 23:42:53 UTC</small>
       </div>
     </div>
   </div>

@@ -1,3 +1,7 @@
 CodeGenInfo	necsus/compiletime/codeGenInfo.html#CodeGenInfo	codeGenInfo: CodeGenInfo	
-newCodeGenInfo	necsus/compiletime/codeGenInfo.html#newCodeGenInfo,NimNode,NimNode,ParsedApp,openArray[ParsedSystem]	codeGenInfo: newCodeGenInfo(name: NimNode; config: NimNode; app: ParsedApp;\n               allSystems: openArray[ParsedSystem]): CodeGenInfo	
+newCodeGenInfo	necsus/compiletime/codeGenInfo.html#newCodeGenInfo,NimNode,ParsedApp,openArray[ParsedSystem]	codeGenInfo: newCodeGenInfo(config: NimNode; app: ParsedApp;\n               allSystems: openArray[ParsedSystem]): CodeGenInfo	
+appStateStruct	necsus/compiletime/codeGenInfo.html#appStateStruct,CodeGenInfo	codeGenInfo: appStateStruct(genInfo: CodeGenInfo): NimNode	
+appStateTypeName	necsus/compiletime/codeGenInfo.html#appStateTypeName,CodeGenInfo	codeGenInfo: appStateTypeName(genInfo: CodeGenInfo): NimNode	
+appStateInit	necsus/compiletime/codeGenInfo.html#appStateInit,CodeGenInfo	codeGenInfo: appStateInit(genInfo: CodeGenInfo): NimNode	
 generateForHook	necsus/compiletime/codeGenInfo.html#generateForHook,CodeGenInfo,GenerateHook	codeGenInfo: generateForHook(codeGen: CodeGenInfo; hook: GenerateHook): NimNode	
+worldFields	necsus/compiletime/codeGenInfo.html#worldFields,CodeGenInfo	codeGenInfo: worldFields(codeGen: CodeGenInfo): seq[WorldField]	

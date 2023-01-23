@@ -1,8 +1,5 @@
 MonoDirective	necsus/compiletime/monoDirective.html#MonoDirective	monoDirective: MonoDirective	
+newMonoDir	necsus/compiletime/monoDirective.html#newMonoDir,NimNode	monoDirective: newMonoDir(argType: NimNode): MonoDirective	
 generateName	necsus/compiletime/monoDirective.html#generateName,MonoDirective	monoDirective: generateName(directive: MonoDirective): string	
 hash	necsus/compiletime/monoDirective.html#hash,MonoDirective	monoDirective: hash(directive: MonoDirective): Hash	
 `==`	necsus/compiletime/monoDirective.html#==,MonoDirective,MonoDirective	monoDirective: `==`(a, b: MonoDirective): bool	
-newSharedDef	necsus/compiletime/monoDirective.html#newSharedDef,NimNode	monoDirective: newSharedDef(argType`gensym0: NimNode): MonoDirective	
-newLocalDef	necsus/compiletime/monoDirective.html#newLocalDef,NimNode	monoDirective: newLocalDef(argType`gensym1: NimNode): MonoDirective	
-newInboxDef	necsus/compiletime/monoDirective.html#newInboxDef,NimNode	monoDirective: newInboxDef(argType`gensym2: NimNode): MonoDirective	
-newOutboxDef	necsus/compiletime/monoDirective.html#newOutboxDef,NimNode	monoDirective: newOutboxDef(argType`gensym3: NimNode): MonoDirective	

@@ -131,24 +131,9 @@ window.addEventListener('DOMContentLoaded', main);
     title="hash(directive: MonoDirective): Hash">hash(directive: MonoDirective): Hash</a></li>
 
   </ul>
-  <ul class="simple nested-toc-section">newInboxDef
-      <li><a class="reference" href="#newInboxDef%2CNimNode"
-    title="newInboxDef(argType`gensym2: NimNode): MonoDirective">newInboxDef(argType`gensym2: NimNode): MonoDirective</a></li>
-
-  </ul>
-  <ul class="simple nested-toc-section">newLocalDef
-      <li><a class="reference" href="#newLocalDef%2CNimNode"
-    title="newLocalDef(argType`gensym1: NimNode): MonoDirective">newLocalDef(argType`gensym1: NimNode): MonoDirective</a></li>
-
-  </ul>
-  <ul class="simple nested-toc-section">newOutboxDef
-      <li><a class="reference" href="#newOutboxDef%2CNimNode"
-    title="newOutboxDef(argType`gensym3: NimNode): MonoDirective">newOutboxDef(argType`gensym3: NimNode): MonoDirective</a></li>
-
-  </ul>
-  <ul class="simple nested-toc-section">newSharedDef
-      <li><a class="reference" href="#newSharedDef%2CNimNode"
-    title="newSharedDef(argType`gensym0: NimNode): MonoDirective">newSharedDef(argType`gensym0: NimNode): MonoDirective</a></li>
+  <ul class="simple nested-toc-section">newMonoDir
+      <li><a class="reference" href="#newMonoDir%2CNimNode"
+    title="newMonoDir(argType: NimNode): MonoDirective">newMonoDir(argType: NimNode): MonoDirective</a></li>
 
   </ul>
 
@@ -211,34 +196,8 @@ Parsed definition of a mono directive
 
 </dd>
 </div>
-<div id="newInboxDef,NimNode">
-<dt><pre><span class="Keyword">proc</span> <a href="#newInboxDef%2CNimNode"><span class="Identifier">newInboxDef</span></a><span class="Other">(</span><span class="Identifier">argType`gensym2</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">)</span><span class="Other">:</span> <a href="monoDirective.html#MonoDirective"><span class="Identifier">MonoDirective</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
-<dd>
-
-Create a new mono directive
-
-</dd>
-</div>
-<div id="newLocalDef,NimNode">
-<dt><pre><span class="Keyword">proc</span> <a href="#newLocalDef%2CNimNode"><span class="Identifier">newLocalDef</span></a><span class="Other">(</span><span class="Identifier">argType`gensym1</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">)</span><span class="Other">:</span> <a href="monoDirective.html#MonoDirective"><span class="Identifier">MonoDirective</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
-<dd>
-
-Create a new mono directive
-
-</dd>
-</div>
-<div id="newOutboxDef,NimNode">
-<dt><pre><span class="Keyword">proc</span> <a href="#newOutboxDef%2CNimNode"><span class="Identifier">newOutboxDef</span></a><span class="Other">(</span><span class="Identifier">argType`gensym3</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">)</span><span class="Other">:</span> <a href="monoDirective.html#MonoDirective"><span class="Identifier">MonoDirective</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
-<dd>
-
-Create a new mono directive
-
-</dd>
-</div>
-<div id="newSharedDef,NimNode">
-<dt><pre><span class="Keyword">proc</span> <a href="#newSharedDef%2CNimNode"><span class="Identifier">newSharedDef</span></a><span class="Other">(</span><span class="Identifier">argType`gensym0</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">)</span><span class="Other">:</span> <a href="monoDirective.html#MonoDirective"><span class="Identifier">MonoDirective</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<div id="newMonoDir,NimNode">
+<dt><pre><span class="Keyword">proc</span> <a href="#newMonoDir%2CNimNode"><span class="Identifier">newMonoDir</span></a><span class="Other">(</span><span class="Identifier">argType</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">)</span><span class="Other">:</span> <a href="monoDirective.html#MonoDirective"><span class="Identifier">MonoDirective</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 Create a new mono directive
@@ -255,7 +214,7 @@ Create a new mono directive
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-01-22 00:52:43 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-01-23 23:42:53 UTC</small>
       </div>
     </div>
   </div>

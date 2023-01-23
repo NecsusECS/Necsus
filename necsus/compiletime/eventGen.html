@@ -108,11 +108,11 @@ window.addEventListener('DOMContentLoaded', main);
   <a class="reference reference-toplevel" href="#9" id="59">Lets</a>
   <ul class="simple simple-toc-section">
       <li><a class="reference" href="#inboxGenerator"
-    title="inboxGenerator = newGenerator(&quot;Inbox&quot;, parseInbox, generateInbox, noArchetype,
-                              defaultName, defaultSystemReturn)">inboxGenerator</a></li>
+    title="inboxGenerator = newGenerator(&quot;Inbox&quot;, generateInbox, noArchetype, defaultName,
+                              defaultSystemReturn, inboxFields)">inboxGenerator</a></li>
   <li><a class="reference" href="#outboxGenerator"
-    title="outboxGenerator = newGenerator(&quot;Outbox&quot;, parseOutbox, generateOutbox,
-                               noArchetype, defaultName, defaultSystemReturn)">outboxGenerator</a></li>
+    title="outboxGenerator = newGenerator(&quot;Outbox&quot;, generateOutbox, noArchetype,
+                               defaultName, defaultSystemReturn, outboxFields)">outboxGenerator</a></li>
 
   </ul>
 </li>
@@ -128,14 +128,14 @@ window.addEventListener('DOMContentLoaded', main);
   <div class="section" id="6">
 <h1><a class="toc-backref" href="#6">Imports</a></h1>
 <dl class="item">
-<a class="reference external" href="directiveSet.html">directiveSet</a>, <a class="reference external" href="monoDirective.html">monoDirective</a>, <a class="reference external" href="nimNode.html">nimNode</a>, <a class="reference external" href="../util/mailbox.html">../util/mailbox</a>, <a class="reference external" href="commonVars.html">commonVars</a>, <a class="reference external" href="systemGen.html">systemGen</a>
+<a class="reference external" href="directiveSet.html">directiveSet</a>, <a class="reference external" href="monoDirective.html">monoDirective</a>, <a class="reference external" href="nimNode.html">nimNode</a>, <a class="reference external" href="commonVars.html">commonVars</a>, <a class="reference external" href="systemGen.html">systemGen</a>, <a class="reference external" href="../util/mailbox.html">../util/mailbox</a>, <a class="reference external" href="../runtime/inbox.html">../runtime/inbox</a>, <a class="reference external" href="../runtime/directives.html">../runtime/directives</a>
 </dl></div>
 <div class="section" id="9">
 <h1><a class="toc-backref" href="#9">Lets</a></h1>
 <dl class="item">
 <div id="inboxGenerator">
-<dt><pre><a href="eventGen.html#inboxGenerator"><span class="Identifier">inboxGenerator</span></a> <span class="Other">=</span> <span class="Identifier">newGenerator</span><span class="Other">(</span><span class="StringLit">&quot;Inbox&quot;</span><span class="Other">,</span> <span class="Identifier">parseInbox</span><span class="Other">,</span> <span class="Identifier">generateInbox</span><span class="Other">,</span> <span class="Identifier">noArchetype</span><span class="Other">,</span>
-                              <span class="Identifier">defaultName</span><span class="Other">,</span> <span class="Identifier">defaultSystemReturn</span><span class="Other">)</span></pre></dt>
+<dt><pre><a href="eventGen.html#inboxGenerator"><span class="Identifier">inboxGenerator</span></a> <span class="Other">=</span> <span class="Identifier">newGenerator</span><span class="Other">(</span><span class="StringLit">&quot;Inbox&quot;</span><span class="Other">,</span> <span class="Identifier">generateInbox</span><span class="Other">,</span> <span class="Identifier">noArchetype</span><span class="Other">,</span> <span class="Identifier">defaultName</span><span class="Other">,</span>
+                              <span class="Identifier">defaultSystemReturn</span><span class="Other">,</span> <span class="Identifier">inboxFields</span><span class="Other">)</span></pre></dt>
 <dd>
 
 
@@ -143,8 +143,8 @@ window.addEventListener('DOMContentLoaded', main);
 </dd>
 </div>
 <div id="outboxGenerator">
-<dt><pre><a href="eventGen.html#outboxGenerator"><span class="Identifier">outboxGenerator</span></a> <span class="Other">=</span> <span class="Identifier">newGenerator</span><span class="Other">(</span><span class="StringLit">&quot;Outbox&quot;</span><span class="Other">,</span> <span class="Identifier">parseOutbox</span><span class="Other">,</span> <span class="Identifier">generateOutbox</span><span class="Other">,</span>
-                               <span class="Identifier">noArchetype</span><span class="Other">,</span> <span class="Identifier">defaultName</span><span class="Other">,</span> <span class="Identifier">defaultSystemReturn</span><span class="Other">)</span></pre></dt>
+<dt><pre><a href="eventGen.html#outboxGenerator"><span class="Identifier">outboxGenerator</span></a> <span class="Other">=</span> <span class="Identifier">newGenerator</span><span class="Other">(</span><span class="StringLit">&quot;Outbox&quot;</span><span class="Other">,</span> <span class="Identifier">generateOutbox</span><span class="Other">,</span> <span class="Identifier">noArchetype</span><span class="Other">,</span>
+                               <span class="Identifier">defaultName</span><span class="Other">,</span> <span class="Identifier">defaultSystemReturn</span><span class="Other">,</span> <span class="Identifier">outboxFields</span><span class="Other">)</span></pre></dt>
 <dd>
 
 
@@ -161,7 +161,7 @@ window.addEventListener('DOMContentLoaded', main);
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-01-22 00:52:44 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-01-23 23:42:54 UTC</small>
       </div>
     </div>
   </div>

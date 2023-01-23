@@ -1,4 +1,5 @@
-createArchetypeInstances	necsus/compiletime/worldGen.html#createArchetypeInstances,CodeGenInfo	worldGen: createArchetypeInstances(genInfo: CodeGenInfo): NimNode	
-createConfig	necsus/compiletime/worldGen.html#createConfig,CodeGenInfo	worldGen: createConfig(genInfo: CodeGenInfo): NimNode	
-createWorldInstance	necsus/compiletime/worldGen.html#createWorldInstance,CodeGenInfo	worldGen: createWorldInstance(genInfo: CodeGenInfo): NimNode	
+createAppStateType	necsus/compiletime/worldGen.html#createAppStateType,CodeGenInfo	worldGen: createAppStateType(genInfo: CodeGenInfo): NimNode	
 createAppReturn	necsus/compiletime/worldGen.html#createAppReturn,CodeGenInfo,NimNode	worldGen: createAppReturn(genInfo: CodeGenInfo; errorLocation: NimNode): NimNode	
+createAppStateInit	necsus/compiletime/worldGen.html#createAppStateInit,CodeGenInfo	worldGen: createAppStateInit(genInfo: CodeGenInfo): NimNode	
+createAppStateInstance	necsus/compiletime/worldGen.html#createAppStateInstance,CodeGenInfo	worldGen: createAppStateInstance(genInfo: CodeGenInfo): NimNode	
+createAppStateDestructor	necsus/compiletime/worldGen.html#createAppStateDestructor,CodeGenInfo	worldGen: createAppStateDestructor(genInfo: CodeGenInfo): NimNode	

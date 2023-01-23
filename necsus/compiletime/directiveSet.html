@@ -123,10 +123,10 @@ window.addEventListener('DOMContentLoaded', main);
 
   </ul>
   <ul class="simple nested-toc-section">containing
-      <li><a class="reference" href="#containing%2CDirectiveSet%5BQueryDef%5D%2CopenArray%5BComponentDef%5D"
-    title="containing(queries: DirectiveSet[QueryDef]; components: openArray[ComponentDef]): seq[
-    QueryDef]">containing(queries: DirectiveSet[QueryDef]; components: openArray[ComponentDef]): seq[
-    QueryDef]</a></li>
+      <li><a class="reference" href="#containing%2CDirectiveSet%5BTupleDirective%5D%2CopenArray%5BComponentDef%5D"
+    title="containing(queries: DirectiveSet[TupleDirective];
+           components: openArray[ComponentDef]): seq[TupleDirective]">containing(queries: DirectiveSet[TupleDirective];
+           components: openArray[ComponentDef]): seq[TupleDirective]</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">directives
@@ -135,10 +135,10 @@ window.addEventListener('DOMContentLoaded', main);
 
   </ul>
   <ul class="simple nested-toc-section">mentioning
-      <li><a class="reference" href="#mentioning%2CDirectiveSet%5BQueryDef%5D%2CopenArray%5BComponentDef%5D"
-    title="mentioning(queries: DirectiveSet[QueryDef]; components: openArray[ComponentDef]): seq[
-    QueryDef]">mentioning(queries: DirectiveSet[QueryDef]; components: openArray[ComponentDef]): seq[
-    QueryDef]</a></li>
+      <li><a class="reference" href="#mentioning%2CDirectiveSet%5BTupleDirective%5D%2CopenArray%5BComponentDef%5D"
+    title="mentioning(queries: DirectiveSet[TupleDirective];
+           components: openArray[ComponentDef]): seq[TupleDirective]">mentioning(queries: DirectiveSet[TupleDirective];
+           components: openArray[ComponentDef]): seq[TupleDirective]</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">nameOf
@@ -211,9 +211,9 @@ Returns the name of this query set
 
 </dd>
 </div>
-<div id="containing,DirectiveSet[QueryDef],openArray[ComponentDef]">
-<dt><pre><span class="Keyword">proc</span> <a href="#containing%2CDirectiveSet%5BQueryDef%5D%2CopenArray%5BComponentDef%5D"><span class="Identifier">containing</span></a><span class="Other">(</span><span class="Identifier">queries</span><span class="Other">:</span> <a href="directiveSet.html#DirectiveSet"><span class="Identifier">DirectiveSet</span></a><span class="Other">[</span><a href="tupleDirective.html#QueryDef"><span class="Identifier">QueryDef</span></a><span class="Other">]</span><span class="Other">;</span>
-                <span class="Identifier">components</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="tupleDirective.html#QueryDef"><span class="Identifier">QueryDef</span></a><span class="Other">]</span> {.
+<div id="containing,DirectiveSet[TupleDirective],openArray[ComponentDef]">
+<dt><pre><span class="Keyword">proc</span> <a href="#containing%2CDirectiveSet%5BTupleDirective%5D%2CopenArray%5BComponentDef%5D"><span class="Identifier">containing</span></a><span class="Other">(</span><span class="Identifier">queries</span><span class="Other">:</span> <a href="directiveSet.html#DirectiveSet"><span class="Identifier">DirectiveSet</span></a><span class="Other">[</span><a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a><span class="Other">]</span><span class="Other">;</span>
+                <span class="Identifier">components</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a><span class="Other">]</span> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
@@ -229,9 +229,9 @@ Produce all directives
 
 </dd>
 </div>
-<div id="mentioning,DirectiveSet[QueryDef],openArray[ComponentDef]">
-<dt><pre><span class="Keyword">proc</span> <a href="#mentioning%2CDirectiveSet%5BQueryDef%5D%2CopenArray%5BComponentDef%5D"><span class="Identifier">mentioning</span></a><span class="Other">(</span><span class="Identifier">queries</span><span class="Other">:</span> <a href="directiveSet.html#DirectiveSet"><span class="Identifier">DirectiveSet</span></a><span class="Other">[</span><a href="tupleDirective.html#QueryDef"><span class="Identifier">QueryDef</span></a><span class="Other">]</span><span class="Other">;</span>
-                <span class="Identifier">components</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="tupleDirective.html#QueryDef"><span class="Identifier">QueryDef</span></a><span class="Other">]</span> {.
+<div id="mentioning,DirectiveSet[TupleDirective],openArray[ComponentDef]">
+<dt><pre><span class="Keyword">proc</span> <a href="#mentioning%2CDirectiveSet%5BTupleDirective%5D%2CopenArray%5BComponentDef%5D"><span class="Identifier">mentioning</span></a><span class="Other">(</span><span class="Identifier">queries</span><span class="Other">:</span> <a href="directiveSet.html#DirectiveSet"><span class="Identifier">DirectiveSet</span></a><span class="Other">[</span><a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a><span class="Other">]</span><span class="Other">;</span>
+                <span class="Identifier">components</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a><span class="Other">]</span> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
@@ -286,7 +286,7 @@ Produce all directives and their property names
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-01-22 00:52:44 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-01-23 23:42:53 UTC</small>
       </div>
     </div>
   </div>

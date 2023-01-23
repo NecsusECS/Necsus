@@ -4,6 +4,6 @@ directives	necsus/compiletime/directiveSet.html#directives,DirectiveSet[T]	direc
 pairs	necsus/compiletime/directiveSet.html#pairs.i,DirectiveSet[T]	directiveSet: pairs[T](directives: DirectiveSet[T]): tuple[name: string, value: T]	
 symbol	necsus/compiletime/directiveSet.html#symbol,DirectiveSet[T]	directiveSet: symbol[T](directives: DirectiveSet[T]): string	
 `$`	necsus/compiletime/directiveSet.html#$,DirectiveSet[T]	directiveSet: `$`[T](directives: DirectiveSet[T]): string	
-containing	necsus/compiletime/directiveSet.html#containing,DirectiveSet[QueryDef],openArray[ComponentDef]	directiveSet: containing(queries: DirectiveSet[QueryDef]; components: openArray[ComponentDef]): seq[\n    QueryDef]	
-mentioning	necsus/compiletime/directiveSet.html#mentioning,DirectiveSet[QueryDef],openArray[ComponentDef]	directiveSet: mentioning(queries: DirectiveSet[QueryDef]; components: openArray[ComponentDef]): seq[\n    QueryDef]	
+containing	necsus/compiletime/directiveSet.html#containing,DirectiveSet[TupleDirective],openArray[ComponentDef]	directiveSet: containing(queries: DirectiveSet[TupleDirective];\n           components: openArray[ComponentDef]): seq[TupleDirective]	
+mentioning	necsus/compiletime/directiveSet.html#mentioning,DirectiveSet[TupleDirective],openArray[ComponentDef]	directiveSet: mentioning(queries: DirectiveSet[TupleDirective];\n           components: openArray[ComponentDef]): seq[TupleDirective]	
 nameOf	necsus/compiletime/directiveSet.html#nameOf,DirectiveSet[T],T	directiveSet: nameOf[T](directives: DirectiveSet[T]; value: T): string	

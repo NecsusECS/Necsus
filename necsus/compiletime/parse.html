@@ -109,13 +109,14 @@ window.addEventListener('DOMContentLoaded', main);
   <ul class="simple simple-toc-section">
       <li><a class="reference" href="#ParsedApp"
     title="ParsedApp = object
+  name*: string
   runnerArgs*: seq[SystemArg]
   inputs*: AppInputs
   returns*: Option[MonoDirective]">ParsedApp</a></li>
   <li><a class="reference" href="#ParsedSystem"
     title="ParsedSystem = object
-  phase: SystemPhase
-  symbol: string
+  phase*: SystemPhase
+  symbol*: string
   args*: seq[SystemArg]">ParsedSystem</a></li>
   <li><a class="reference" href="#SystemPhase"
     title="SystemPhase = enum
@@ -202,6 +203,7 @@ window.addEventListener('DOMContentLoaded', main);
 <dl class="item">
 <div id="ParsedApp">
 <dt><pre><a href="parse.html#ParsedApp"><span class="Identifier">ParsedApp</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
+  <span class="Identifier">name</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">string</span>
   <span class="Identifier">runnerArgs</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="systemGen.html#SystemArg"><span class="Identifier">SystemArg</span></a><span class="Other">]</span>
   <span class="Identifier">inputs</span><span class="Operator">*</span><span class="Other">:</span> <a href="systemGen.html#AppInputs"><span class="Identifier">AppInputs</span></a>
   <span class="Identifier">returns</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">Option</span><span class="Other">[</span><a href="monoDirective.html#MonoDirective"><span class="Identifier">MonoDirective</span></a><span class="Other">]</span>
@@ -214,8 +216,8 @@ Parsed information about the application proc itself
 </div>
 <div id="ParsedSystem">
 <dt><pre><a href="parse.html#ParsedSystem"><span class="Identifier">ParsedSystem</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
-  <span class="Identifier">phase</span><span class="Other">:</span> <a href="parse.html#SystemPhase"><span class="Identifier">SystemPhase</span></a>
-  <span class="Identifier">symbol</span><span class="Other">:</span> <span class="Identifier">string</span>
+  <span class="Identifier">phase</span><span class="Operator">*</span><span class="Other">:</span> <a href="parse.html#SystemPhase"><span class="Identifier">SystemPhase</span></a>
+  <span class="Identifier">symbol</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">string</span>
   <span class="Identifier">args</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="systemGen.html#SystemArg"><span class="Identifier">SystemArg</span></a><span class="Other">]</span>
 </pre></dt>
 <dd>
@@ -256,7 +258,7 @@ Creates a new parser
 </div>
 <div id="parseApp,Parser,NimNode,NimNode">
 <dt><pre><span class="Keyword">proc</span> <a href="#parseApp%2CParser%2CNimNode%2CNimNode"><span class="Identifier">parseApp</span></a><span class="Other">(</span><span class="Identifier">parser</span><span class="Other">:</span> <span class="Identifier">Parser</span><span class="Other">;</span> <span class="Identifier">appProc</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">;</span> <span class="Identifier">runner</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">)</span><span class="Other">:</span> <a href="parse.html#ParsedApp"><span class="Identifier">ParsedApp</span></a> {.
-    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">KeyError</span><span class="Other">,</span> <span class="Identifier">Exception</span><span class="Other">,</span> <span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span></span>.}</pre></dt>
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">KeyError</span><span class="Other">,</span> <span class="Identifier">ValueError</span><span class="Other">,</span> <span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 Parses the app proc
@@ -265,7 +267,7 @@ Parses the app proc
 </div>
 <div id="parseSystemList,Parser,NimNode,SystemPhase">
 <dt><pre><span class="Keyword">proc</span> <a href="#parseSystemList%2CParser%2CNimNode%2CSystemPhase"><span class="Identifier">parseSystemList</span></a><span class="Other">(</span><span class="Identifier">parser</span><span class="Other">:</span> <span class="Identifier">Parser</span><span class="Other">;</span> <span class="Identifier">list</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">;</span> <span class="Identifier">phase</span><span class="Other">:</span> <a href="parse.html#SystemPhase"><span class="Identifier">SystemPhase</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span>
-    <a href="parse.html#ParsedSystem"><span class="Identifier">ParsedSystem</span></a><span class="Other">]</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">KeyError</span><span class="Other">,</span> <span class="Identifier">Exception</span><span class="Other">,</span> <span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span>
+    <a href="parse.html#ParsedSystem"><span class="Identifier">ParsedSystem</span></a><span class="Other">]</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">KeyError</span><span class="Other">,</span> <span class="Identifier">ValueError</span><span class="Other">,</span> <span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span>
                     <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
@@ -346,7 +348,7 @@ Pulls all components from a list of parsed systems
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-01-22 00:52:44 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-01-23 23:42:53 UTC</small>
       </div>
     </div>
   </div>
