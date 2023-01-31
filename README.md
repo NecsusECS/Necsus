@@ -7,8 +7,8 @@
 
 
 A "disappearing" ECS (entity component system) library for Nim. Necsus uses Nim macros to generate code for creating
-and executing an ECS based application. Components are just regular objects, systems are regular procs, and everything related
-to entities is handled for you.
+and executing an ECS based application. Components are just regular objects, systems are regular procs, and everything
+related to entities is handled for you.
 
 More details about how ECS architectures work can be found here:
 
@@ -96,12 +96,12 @@ proc myApp() {.necsus([], [], [], newNecsusConf()).}
 ```
 
 That's it. At this point you have a functioning ECS setup, though it won't do much without systems attached. If you
-call `myApp` it would just loop infinitely.
+were to call `myApp` it would just loop infinitely.
 
 ### Adding systems
 
 To make your application do useful work, you need to wire up systems. Creating a system is easy -- it's just a `proc`.
-That `proc` name is then prefixed with a `~` and passed into the `necsus` pragma:
+The name of that `proc` then prefixed with a `~` and passed into the `necsus` pragma:
 
 ```nim
 import necsus
@@ -164,7 +164,8 @@ proc myApp(input: string) {.necsus(
 ### Exiting
 
 Exiting the primary system loop is done through a `Shared` directive. Directives will be covered in more details below,
-but all you need to know in this case is that it's sending a signal to the execution loop by changing a bit of shared state:
+but all you need to know in this case is that it's sending a signal to the loop executor by changing a bit of shared
+state:
 
 ```nim
 import necsus
@@ -227,8 +228,8 @@ proc myApp() {.necsus([], [~queryingSystem], [], newNecsusConf()).}
 
 #### Queries with Pointers
 
-If you want to looping through a set of entities and update the values of their components, the most efficient mechanism
-available is to update those values in place. This is accomplished by requested pointers when doing a query:
+If you want to loop through a set of entities and update the values of their components, the most efficient
+mechanism available is to update those values in place. This is accomplished by requested pointers when doing a query:
 
 ```nim
 import necsus
@@ -408,8 +409,8 @@ proc myApp() {.necsus([], [~updateCount, ~printCount], [], newNecsusConf()).}
 
 #### Inbox/Outbox (aka Events)
 
-`Inbox` and `Outbox` represent the eventing system in Necsus. Events are published using the Outbox and read using the
-`Inbox`. Any `Inbox` or `Outbox` with the same type will shared the same underlying mailbox.
+`Inbox` and `Outbox` represent the eventing system in Necsus. Events are published using the `Outbox` and read using 
+the `Inbox`. Any `Inbox` or `Outbox` with the same type will shared the same underlying mailbox.
 
 ```nim
 import necsus
@@ -495,8 +496,8 @@ myApp()
 #### Don't call me, I'll call you
 
 There are situations where you may not want Necsus to be in charge of executing the loop. For example, if you are
-integrating with an SDK that is already in charge of executing the loop. For those situations, you can manually
-initialize and invoke the `tick` function that Necsus generates:
+integrating with an SDK that uses a callback mechanism for controlling the main game loop. For those situations,
+you can manually initialize your app and invoke the `tick` function that Necsus generates:
 
 ```nim
 import necsus
@@ -517,7 +518,7 @@ app.tick()
 
 If Necsus isn't behaving as you would expect, the best tool you've got in your toolbox is the ability to dump the code
 that it generates. This allows you to walk through what is happening, or even substitute the generated code into your
-app and execute it. This can be achieved by compiling with the `-d:dump` flag set.
+app and execute it. This can be enabled by compiling with the `-d:dump` flag set.
 
 # License
 
