@@ -19,7 +19,7 @@ proc generateInbox(details: GenerateContext, inbox: MonoDirective): NimNode =
         let inboxName = details.name.ident
         let eventType = inbox.argType
         return quote:
-            `appStateIdent`.`storageIdent` = newMailbox[`eventType`](`confIdent`.eventQueueSize)
+            `appStateIdent`.`storageIdent` = newMailbox[`eventType`](`appStateIdent`.`confIdent`.eventQueueSize)
             `appStateIdent`.`inboxName` = newInbox[`eventType`](`appStateIdent`.`storageIdent`)
     of LoopEnd:
         let eventStore = inbox.eventStorageIdent

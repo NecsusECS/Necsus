@@ -1,14 +1,15 @@
 import macros, options, tables, sequtils
 import worldEnum, codeGenInfo, archetype, commonVars, systemGen, tickGen, parse
-import ../runtime/[world, archetypeStore]
+import ../runtime/[world, archetypeStore, necsusConf]
 
 proc fields(genInfo: CodeGenInfo): seq[(NimNode, NimNode)] =
     ## Produces a list of all fields to attach to the state object
     let archetypeEnum = genInfo.archetypeEnum.ident
 
-    result.add (worldIdent, nnkBracketExpr.newTree(bindSym"World", archetypeEnum))
-    result.add (thisTime, ident"float")
-    result.add (startTime, ident"float")
+    result.add (confIdent, bindSym("NecsusConf"))
+    result.add (worldIdent, nnkBracketExpr.newTree(bindSym("World"), archetypeEnum))
+    result.add (thisTime, ident("float"))
+    result.add (startTime, ident("float"))
 
     for archetype in genInfo.archetypes:
         let storageType = archetype.asStorageTuple
@@ -60,7 +61,10 @@ proc createArchetypeState(genInfo: CodeGenInfo): NimNode =
         let archetypeRef = genInfo.archetypeEnum.ident(archetype)
         result.add quote do:
             `appStateIdent`.`ident` =
-                newArchetypeStore[`archetypeEnum`, `storageType`](`archetypeRef`, `confIdent`.componentSize)
+                newArchetypeStore[`archetypeEnum`, `storageType`](
+                    `archetypeRef`,
+                    `appStateIdent`.`confIdent`.componentSize
+                )
 
 proc createAppStateInit*(genInfo: CodeGenInfo): NimNode =
     ## Creates a proc for initializing the app state object
@@ -76,8 +80,8 @@ proc createAppStateInit*(genInfo: CodeGenInfo): NimNode =
 
     let initBody = quote:
         var `appStateIdent` = new(`appStateType`)
-        let `confIdent` = `createConfig`
-        `appStateIdent`.world = newWorld[`archetypeEnum`](`confIdent`.entitySize)
+        `appStateIdent`.`confIdent` =  `createConfig`
+        `appStateIdent`.`worldIdent` = newWorld[`archetypeEnum`](`appStateIdent`.`confIdent`.entitySize)
         `archetypeDefs`
         `earlyInit`
         `stdInit`

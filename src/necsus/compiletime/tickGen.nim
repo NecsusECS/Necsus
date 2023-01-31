@@ -1,4 +1,4 @@
-import macros, sequtils, systemGen, tables, std/times
+import macros, sequtils, systemGen, tables
 import codeGenInfo, parse, directiveSet, tupleDirective, monoDirective, commonVars
 
 proc renderSystemArgs(codeGenInfo: CodeGenInfo, args: openarray[SystemArg]): seq[NimNode] =
@@ -22,7 +22,7 @@ proc createTickProc*(genInfo: CodeGenInfo): NimNode =
 
     return quote:
         proc tick(`appStateIdent`: var `appStateType`) =
-            let `thisTime` = epochTime()
+            let `thisTime` = `appStateIdent`.`confIdent`.getTime()
             `loopStart`
             block:
                 `loopSystems`
