@@ -105,7 +105,8 @@ window.addEventListener('DOMContentLoaded', main);
     title="NecsusConf = object
   entitySize*: int
   componentSize*: int
-  eventQueueSize*: int">NecsusConf</a></li>
+  eventQueueSize*: int
+  getTime*: proc (): float">NecsusConf</a></li>
 
   </ul>
 </li>
@@ -117,6 +118,12 @@ window.addEventListener('DOMContentLoaded', main);
     title="newNecsusConf(entitySize: int = 1000;
               componentSize: int = ceilDiv(entitySize, 3);
               eventQueueSize: int = ceilDiv(entitySize, 10)): NecsusConf">newNecsusConf(entitySize: int = 1000;
+              componentSize: int = ceilDiv(entitySize, 3);
+              eventQueueSize: int = ceilDiv(entitySize, 10)): NecsusConf</a></li>
+  <li><a class="reference" href="#newNecsusConf%2Cproc%29%2Cint%2Cint%2Cint"
+    title="newNecsusConf(getTime: proc (): float; entitySize: int = 1000;
+              componentSize: int = ceilDiv(entitySize, 3);
+              eventQueueSize: int = ceilDiv(entitySize, 10)): NecsusConf">newNecsusConf(getTime: proc (): float; entitySize: int = 1000;
               componentSize: int = ceilDiv(entitySize, 3);
               eventQueueSize: int = ceilDiv(entitySize, 10)): NecsusConf</a></li>
 
@@ -141,6 +148,7 @@ window.addEventListener('DOMContentLoaded', main);
   <span class="Identifier">entitySize</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span>
   <span class="Identifier">componentSize</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span>
   <span class="Identifier">eventQueueSize</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span>
+  <span class="Identifier">getTime</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">float</span>
 </pre></dt>
 <dd>
 
@@ -155,6 +163,17 @@ Used to configure
 <dl class="item">
 <div id="newNecsusConf,int,int,int">
 <dt><pre><span class="Keyword">proc</span> <a href="#newNecsusConf%2Cint%2Cint%2Cint"><span class="Identifier">newNecsusConf</span></a><span class="Other">(</span><span class="Identifier">entitySize</span><span class="Other">:</span> <span class="Identifier">int</span> <span class="Other">=</span> <span class="DecNumber">1000</span><span class="Other">;</span>
+                   <span class="Identifier">componentSize</span><span class="Other">:</span> <span class="Identifier">int</span> <span class="Other">=</span> <span class="Identifier">ceilDiv</span><span class="Other">(</span><span class="Identifier">entitySize</span><span class="Other">,</span> <span class="DecNumber">3</span><span class="Other">)</span><span class="Other">;</span>
+                   <span class="Identifier">eventQueueSize</span><span class="Other">:</span> <span class="Identifier">int</span> <span class="Other">=</span> <span class="Identifier">ceilDiv</span><span class="Other">(</span><span class="Identifier">entitySize</span><span class="Other">,</span> <span class="DecNumber">10</span><span class="Other">)</span><span class="Other">)</span><span class="Other">:</span> <a href="necsusConf.html#NecsusConf"><span class="Identifier">NecsusConf</span></a> {.
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">TimeEffect</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+Create a necsus configuration
+
+</dd>
+</div>
+<div id="newNecsusConf,proc),int,int,int">
+<dt><pre><span class="Keyword">proc</span> <a href="#newNecsusConf%2Cproc%29%2Cint%2Cint%2Cint"><span class="Identifier">newNecsusConf</span></a><span class="Other">(</span><span class="Identifier">getTime</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">float</span><span class="Other">;</span> <span class="Identifier">entitySize</span><span class="Other">:</span> <span class="Identifier">int</span> <span class="Other">=</span> <span class="DecNumber">1000</span><span class="Other">;</span>
                    <span class="Identifier">componentSize</span><span class="Other">:</span> <span class="Identifier">int</span> <span class="Other">=</span> <span class="Identifier">ceilDiv</span><span class="Other">(</span><span class="Identifier">entitySize</span><span class="Other">,</span> <span class="DecNumber">3</span><span class="Other">)</span><span class="Other">;</span>
                    <span class="Identifier">eventQueueSize</span><span class="Other">:</span> <span class="Identifier">int</span> <span class="Other">=</span> <span class="Identifier">ceilDiv</span><span class="Other">(</span><span class="Identifier">entitySize</span><span class="Other">,</span> <span class="DecNumber">10</span><span class="Other">)</span><span class="Other">)</span><span class="Other">:</span> <a href="necsusConf.html#NecsusConf"><span class="Identifier">NecsusConf</span></a> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
@@ -174,7 +193,7 @@ Create a necsus configuration
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-01-23 23:42:53 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-01-31 03:01:25 UTC</small>
       </div>
     </div>
   </div>
