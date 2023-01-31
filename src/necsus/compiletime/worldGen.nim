@@ -21,8 +21,6 @@ proc fields(genInfo: CodeGenInfo): seq[(NimNode, NimNode)] =
 
 proc createAppStateType*(genInfo: CodeGenInfo): NimNode =
     ## Creates a type definition that captures the state of the app
-    let archetypeEnum = genInfo.archetypeEnum.ident
-
     var fields = nnkRecList.newTree()
     for (fieldName, fieldTyp) in items(genInfo.fields):
         fields.add nnkIdentDefs.newTree(fieldName, fieldTyp, newEmptyNode())
