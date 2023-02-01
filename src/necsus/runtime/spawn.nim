@@ -4,15 +4,16 @@ type
     RawSpawn*[C: tuple] = proc(): NewArchSlot[C]
         ## A callback for populating a component with values
 
-    Spawn*[C: tuple] = ref object
+    Spawn*[C: tuple] {.byref.} = object
         ## Describes a type that is able to create new entities. Where `C` is a tuple
         ## with all the components to initially attach to this entity
         rawSpawn: RawSpawn[C]
 
 proc newSpawn*[C: tuple](rawSpawn: RawSpawn[C]): Spawn[C] =
     ## Creates a new spawn instance
-    result.new
     result.rawSpawn = rawSpawn
+
+proc `=copy`*[C](target: var Spawn[C], source: Spawn[C]) {.error.}
 
 proc beginSpawn*[Archs: enum, Comps: tuple](
     world: var World[Archs],
