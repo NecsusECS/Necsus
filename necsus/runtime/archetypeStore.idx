@@ -5,7 +5,7 @@ newArchetypeStore	necsus/runtime/archetypeStore.html#newArchetypeStore,Archs,Som
 archetype	necsus/runtime/archetypeStore.html#archetype,ArchetypeStore[Archs: enum,Comps: tuple]	archetypeStore: archetype[Archs: enum; Comps: tuple](store: ArchetypeStore[Archs, Comps]): Archs	
 newSlot	necsus/runtime/archetypeStore.html#newSlot,ArchetypeStore[Archs: enum,Comps: tuple],EntityId	archetypeStore: newSlot[Archs: enum; Comps: tuple](store: var ArchetypeStore[Archs, Comps];\n                                   entityId: EntityId): NewArchSlot[Comps]	
 index	necsus/runtime/archetypeStore.html#index,NewArchSlot[Comps: tuple]	archetypeStore: index[Comps: tuple](entry: NewArchSlot[Comps]): uint	
-setComp	necsus/runtime/archetypeStore.html#setComp.t,NewArchSlot[Comps: tuple],Comps	archetypeStore: setComp[Comps: tuple](slot: NewArchSlot[Comps]; comps: Comps): EntityId	
+setComp	necsus/runtime/archetypeStore.html#setComp,NewArchSlot[Comps: tuple],Comps	archetypeStore: setComp[Comps: tuple](slot: NewArchSlot[Comps]; comps: Comps): EntityId	
 asView	necsus/runtime/archetypeStore.html#asView,ArchetypeStore[Archs: enum,ArchetypeComps: tuple],proc(ptr.ArchetypeComps)	archetypeStore: asView[Archs: enum; ArchetypeComps: tuple; ViewComps: tuple](\n    input: ArchetypeStore[Archs, ArchetypeComps];\n    convert: proc (input: ptr ArchetypeComps): ViewComps): ArchView[ViewComps]	
 items	necsus/runtime/archetypeStore.html#items.i,ArchView[ViewComps: tuple],ViewComps	archetypeStore: items[ViewComps: tuple](view: ArchView[ViewComps]; comps: var ViewComps): EntityId	
 len	necsus/runtime/archetypeStore.html#len,ArchView[ViewComps: tuple]	archetypeStore: len[ViewComps: tuple](view: ArchView[ViewComps]): uint	
