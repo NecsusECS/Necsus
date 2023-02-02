@@ -9,7 +9,10 @@ proc worldFields(name: string, dir: TupleDirective): seq[WorldField] =
     @[ (name, nnkBracketExpr.newTree(bindSym("RawSpawn"), dir.asTupleType)) ]
 
 proc systemArg(name: string, dir: TupleDirective): NimNode =
-    nnkAddr.newTree(newDotExpr(appStateIdent, name.ident))
+    let sysIdent = name.ident
+    let tupleType = dir.asTupleType
+    return quote do:
+        Spawn[`tupleType`](`appStateIdent`.`sysIdent`)
 
 proc generate(details: GenerateContext, dir: TupleDirective): NimNode =
     result = newStmtList()
