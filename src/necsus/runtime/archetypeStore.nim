@@ -23,9 +23,10 @@ proc newArchetypeStore*[Archs: enum, Comps: tuple](
     initialSize: SomeInteger
 ): ArchetypeStore[Archs, Comps] =
     ## Creates a new storage block for an archetype
-    result.new
-    result.compStore = newBlockStore[ArchRow[Comps]](initialSize)
-    result.archetype = archetype
+    let inst = new(ArchetypeStore[Archs, Comps])
+    inst.compStore = newBlockStore[ArchRow[Comps]](initialSize)
+    inst.archetype = archetype
+    return inst
 
 proc archetype*[Archs: enum, Comps: tuple](store: ArchetypeStore[Archs, Comps]): Archs {.inline.} = store.archetype
     ## Accessor for the archetype of a store
@@ -41,13 +42,12 @@ proc newSlot*[Archs: enum, Comps: tuple](
 
 proc index*[Comps: tuple](entry: NewArchSlot[Comps]): uint {.inline.} = Entry[ArchRow[Comps]](entry).index
 
-template setComp*[Comps: tuple](slot: NewArchSlot[Comps], comps: Comps): EntityId =
+proc setComp*[Comps: tuple](slot: NewArchSlot[Comps], comps: Comps): EntityId {.inline.} =
     ## Stores an entity and its components into this slot
-    block:
-        let entry = Entry[ArchRow[Comps]](slot)
-        value(entry).components = comps
-        commit(entry)
-        value(entry).entityId
+    let entry = Entry[ArchRow[Comps]](slot)
+    value(entry).components = comps
+    commit(entry)
+    return value(entry).entityId
 
 proc asView*[Archs: enum, ArchetypeComps: tuple, ViewComps: tuple](
     input: ArchetypeStore[Archs, ArchetypeComps],

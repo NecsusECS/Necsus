@@ -4,14 +4,12 @@ type
     RawSpawn*[C: tuple] = proc(): NewArchSlot[C]
         ## A callback for populating a component with values
 
-    Spawn*[C: tuple] = ref object
+    Spawn*[C: tuple] = ptr RawSpawn[C]
         ## Describes a type that is able to create new entities. Where `C` is a tuple
         ## with all the components to initially attach to this entity
-        rawSpawn: RawSpawn[C]
 
-proc newSpawn*[C: tuple](rawSpawn: RawSpawn[C]): Spawn[C] =
+proc newSpawn*[C: tuple](rawSpawn: ptr RawSpawn[C]): Spawn[C] =
     ## Creates a new spawn instance
-    result.new
     result.rawSpawn = rawSpawn
 
 proc beginSpawn*[Archs: enum, Comps: tuple](
@@ -23,9 +21,9 @@ proc beginSpawn*[Archs: enum, Comps: tuple](
     result = store.newSlot(newEntity.entityId)
     newEntity.setArchetypeDetails(store.archetype, result.index)
 
-template set*[C: tuple](spawn: Spawn[C], values: C): EntityId =
+proc set*[C: tuple](spawn: Spawn[C], values: C): EntityId {.inline.} =
     ## Spawns an entity with the given components
-    setComp(spawn.rawSpawn(), values)
+    setComp(spawn[](), values)
 
 macro buildTuple(values: varargs[untyped]): untyped =
     result = nnkTupleConstr.newTree()

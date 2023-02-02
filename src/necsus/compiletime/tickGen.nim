@@ -3,7 +3,7 @@ import codeGenInfo, parse, directiveSet, tupleDirective, monoDirective, commonVa
 
 proc renderSystemArgs(codeGenInfo: CodeGenInfo, args: openarray[SystemArg]): seq[NimNode] =
     ## Renders system arguments down to nim code
-    args.mapIt: newDotExpr(appStateIdent, codeGenInfo.directives[it.generator].nameOf(it).ident)
+    args.mapIt: it.systemArg(codeGenInfo.directives[it.generator].nameOf(it))
 
 proc callSystems*(codeGenInfo: CodeGenInfo, systems: openarray[ParsedSystem]): NimNode =
     ## Generates the code for invoke a list of systems
