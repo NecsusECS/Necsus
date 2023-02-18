@@ -2,3 +2,4 @@ depends	necsus/runtime/pragmas.html#depends.t,varargs[typed]	pragmas: depends(de
 startupSys	necsus/runtime/pragmas.html#startupSys.t	pragmas: startupSys()	
 teardownSys	necsus/runtime/pragmas.html#teardownSys.t	pragmas: teardownSys()	
 loopSys	necsus/runtime/pragmas.html#loopSys.t	pragmas: loopSys()	
+instanced	necsus/runtime/pragmas.html#instanced.t	pragmas: instanced()	

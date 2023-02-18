@@ -15,3 +15,4 @@ args	necsus/compiletime/parse.html#args.i,ParsedSystem	parse: args(system: Parse
 args	necsus/compiletime/parse.html#args.i,openArray[ParsedSystem]	parse: args(systems: openArray[ParsedSystem]): SystemArg	
 components	necsus/compiletime/parse.html#components.i,ParsedApp	parse: components(app: ParsedApp): ComponentDef	
 parseApp	necsus/compiletime/parse.html#parseApp,Parser,NimNode,NimNode	parse: parseApp(parser: Parser; appProc: NimNode; runner: NimNode): ParsedApp	
+instancedInfo	necsus/compiletime/parse.html#instancedInfo,ParsedSystem	parse: instancedInfo(system: ParsedSystem): Option[\n    tuple[fieldName: NimNode, typ: NimNode]]	
