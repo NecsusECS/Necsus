@@ -26,6 +26,12 @@ proc createAppStateType*(genInfo: CodeGenInfo): NimNode =
     for (fieldName, fieldTyp) in items(genInfo.fields):
         fields.add nnkIdentDefs.newTree(fieldName, fieldTyp, newEmptyNode())
 
+    # Add in any instanced systems
+    for system in genInfo.systems:
+        if system.instanced.isSome:
+            let (fieldName, fieldType) = system.instancedInfo().unsafeGet
+            fields.add nnkIdentDefs.newTree(fieldName, fieldType, newEmptyNode())
+
     return nnkTypeSection.newTree(
         nnkTypeDef.newTree(
             genInfo.appStateStruct,
@@ -75,7 +81,7 @@ proc createAppStateInit*(genInfo: CodeGenInfo): NimNode =
     let earlyInit = genInfo.generateForHook(GenerateHook.Early)
     let stdInit = genInfo.generateForHook(GenerateHook.Standard)
     let lateInit = genInfo.generateForHook(GenerateHook.Late)
-    let startups = genInfo.callSystems(genInfo.systems.filterIt(it.phase == StartupPhase))
+    let startups = genInfo.callSystems(StartupPhase)
     let beforeLoop = genInfo.generateForHook(GenerateHook.BeforeLoop)
 
     let initBody = quote:
@@ -108,7 +114,7 @@ proc createAppStateDestructor*(genInfo: CodeGenInfo): NimNode =
     ## Creates the instance of the app state object
     let appStateType = genInfo.appStateStruct
     let destroy = "=destroy".ident
-    let teardowns = genInfo.callSystems(genInfo.systems.filterIt(it.phase == TeardownPhase))
+    let teardowns = genInfo.callSystems(TeardownPhase)
 
     let destroys = newStmtList()
 

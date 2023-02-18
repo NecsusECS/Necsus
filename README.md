@@ -202,6 +202,57 @@ proc teardownSystem() {.teardownSys} =
 proc myApp() {.necsus([], [~startupSystem, ~loopSystem, ~teardownSystem], [], newNecsusConf()).}
 ```
 
+#### Instancing systems
+
+For systems that need to maintain state, it can be convenient to hold on to an instance between invocations. The
+first step to setting is up is to mark a system with the `instanced` pragma. Then, you've got two options:
+
+**Option 1: Return a Proc**
+
+If your system returns a `proc`, that proc will get created during the startup phase, then invoked
+for every tick. The `proc` itself that gets returned here cannot take any arguments. For example:
+
+```
+import unittest, necsus
+
+proc someSystem(create: Spawn[(string, )], query: Query[(string,)]): auto {.instanced.} =
+    discard create.with("foo")
+    return proc() =
+        for (str,) in query:
+            echo str
+
+proc myApp() {.necsus([], [~someSystem], [], newNecsusConf()).}
+```
+
+Obviously, this makes it easier to capture the pragmas from your parent system as closure variables,
+which can then be freely used.
+
+**Option 2: Return an Object**
+
+Your other option is to return an object. The system proc will get invoked during the startup phase,
+then a `tick` proc will get invoked as part of the main loop. This also allows you to create a `=destroy`
+proc that gets invoked during teardown:
+
+```
+import necsus
+
+type SystemInstance = object
+    query: Query[(string,)]
+
+proc someSystem(create: Spawn[(string, )], query: Query[(string,)]): SystemInstance {.instanced.} =
+    discard create.with("foo")
+    result.query = query
+
+proc tick(system: var SystemInstance) =
+    for (str,) in system.query:
+        echo str
+
+proc `=destroy`(system: var SystemInstance) =
+    echo "Destroying system"
+
+proc myApp() {.necsus([], [~someSystem], [], newNecsusConf()).}
+```
+
 ### Exiting
 
 Exiting the primary system loop is done through a `Shared` directive. Directives will be covered in more details below,

@@ -16,6 +16,7 @@ type
         symbol*: string
         args*: seq[SystemArg]
         depends: seq[NimNode]
+        instanced*: Option[NimNode]
 
     ParsedApp* = object
         ## Parsed information about the application proc itself
@@ -185,10 +186,17 @@ proc choosePhase(typeNode: NimNode, default: SystemPhase): SystemPhase =
                 return TeardownPhase
     return default
 
+proc determineInstancing(nodeImpl: NimNode, nodeTypeImpl: NimNode): Option[NimNode] =
+    ## Determines whether a system is instanced, and returns the type to use for instancing
+    for child in nodeImpl.findPragma:
+        if child == bindSym("instanced"):
+            return some(nodeTypeImpl[0][0])
+
 proc parseSystem(parser: Parser, ident: NimNode, phase: SystemPhase): ParsedSystem =
     ## Parses a single system proc
     ident.expectKind(nnkSym)
-    let args = ident.getTypeImpl[0].toSeq
+    let typeImpl = ident.getTypeImpl
+    let args = typeImpl[0].toSeq
         .filterIt(it.kind == nnkIdentDefs)
         .mapIt(parser.parseSystemArg(it))
     let impl = ident.getImpl
@@ -196,7 +204,8 @@ proc parseSystem(parser: Parser, ident: NimNode, phase: SystemPhase): ParsedSyst
         phase: impl.choosePhase(phase),
         symbol: ident.strVal,
         args: args,
-        depends: impl.readDependencies()
+        depends: impl.readDependencies(),
+        instanced: determineInstancing(impl, typeImpl)
     )
 
 proc parseSystems(parser: Parser, systems: NimNode, phase: SystemPhase, into: var seq[ParsedSystem]) =
@@ -279,3 +288,7 @@ proc parseApp*(parser: Parser, appProc: NimNode, runner: NimNode): ParsedApp =
 
     let returnNode = appProc.params[0]
     result.returns = if returnNode.kind == nnkEmpty: none(MonoDirective) else: some(newMonoDir(returnNode))
+
+proc instancedInfo*(system: ParsedSystem): Option[tuple[fieldName: NimNode, typ: NimNode]] =
+    ## Returns details about the instancing configuration for a type
+    system.instanced.map(proc (typ: auto): auto = (ident("instance_" & system.symbol), typ))
