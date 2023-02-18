@@ -106,6 +106,21 @@ window.addEventListener('DOMContentLoaded', main);
     title="depends(dependencies: varargs[typed])">depends(dependencies: varargs[typed])</a></li>
 
   </ul>
+  <ul class="simple nested-toc-section">loopSys
+      <li><a class="reference" href="#loopSys.t"
+    title="loopSys()">loopSys()</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">startupSys
+      <li><a class="reference" href="#startupSys.t"
+    title="startupSys()">startupSys()</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">teardownSys
+      <li><a class="reference" href="#teardownSys.t"
+    title="teardownSys()">teardownSys()</a></li>
+
+  </ul>
 
   </ul>
 </li>
@@ -129,6 +144,30 @@ Marks that a system depends on another system
 
 </dd>
 </div>
+<div id="loopSys.t">
+<dt><pre><span class="Keyword">template</span> <a href="#loopSys.t"><span class="Identifier">loopSys</span></a><span class="Other">(</span><span class="Other">)</span> {.<span class="Identifier">pragma</span>.}</pre></dt>
+<dd>
+
+Marks that a system should always be added as part of the standard loop
+
+</dd>
+</div>
+<div id="startupSys.t">
+<dt><pre><span class="Keyword">template</span> <a href="#startupSys.t"><span class="Identifier">startupSys</span></a><span class="Other">(</span><span class="Other">)</span> {.<span class="Identifier">pragma</span>.}</pre></dt>
+<dd>
+
+Marks that a system should always be added as a setup system
+
+</dd>
+</div>
+<div id="teardownSys.t">
+<dt><pre><span class="Keyword">template</span> <a href="#teardownSys.t"><span class="Identifier">teardownSys</span></a><span class="Other">(</span><span class="Other">)</span> {.<span class="Identifier">pragma</span>.}</pre></dt>
+<dd>
+
+Marks that a system should always be added as a teardown
+
+</dd>
+</div>
 
 </dl></div>
 
@@ -139,7 +178,7 @@ Marks that a system depends on another system
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-02-18 06:47:40 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-02-18 18:21:26 UTC</small>
       </div>
     </div>
   </div>
