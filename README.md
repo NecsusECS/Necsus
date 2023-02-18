@@ -161,6 +161,47 @@ proc myApp(input: string) {.necsus(
 ).}
 ```
 
+#### Dependencies between systems
+
+A system may require that another system always be paired with it. This can be accomplished by adding the  `depends`
+pragma, which declares that relationship:
+
+```nim
+import necsus
+
+proc runFirst() =
+    ## No-op system, but it gets run first
+    discard
+
+proc runSecond() {.depends(runFirst).} =
+    ## No-op system that gets run second
+    discard
+
+proc myApp() {.necsus([], [~runSecond], [], newNecsusConf()).}
+```
+
+#### Marking systems for explicit phases
+
+If you have a system that should always be run during a specific phase, you can explicitly mark it with a phase
+pragma to ensure that it is always added where you expect it to be added. This is particularly useful when
+paired with dependencies, as it allows you to depend on setup or teardown phases. It can also be used to enforce
+the order of execution for a phase.
+
+```nim
+import necsus
+
+proc startupSystem() {.startupSys.}=
+    discard
+
+proc loopSystem() {.loopSys.} =
+    discard
+
+proc teardownSystem() {.teardownSys} =
+    discard
+
+proc myApp() {.necsus([], [~startupSystem, ~loopSystem, ~teardownSystem], [], newNecsusConf()).}
+```
+
 ### Exiting
 
 Exiting the primary system loop is done through a `Shared` directive. Directives will be covered in more details below,
@@ -177,25 +218,6 @@ proc immediateExit(exit: var Shared[NecsusRun]) =
 proc myApp() {.necsus([], [~immediateExit], [], newNecsusConf()).}
 
 myApp()
-```
-
-### Dependencies
-
-A system can declare that it requires another system by adding the `depends` pragma, which declares that
-relationship:
-
-```nim
-import necsus
-
-proc runFirst() =
-    ## No-op system, but it gets run first
-    discard
-
-proc runSecond() {.depends(runFirst).} =
-    ## No-op system that gets run second
-    discard
-
-proc myApp() {.necsus([], [~runSecond], [], newNecsusConf()).}
 ```
 
 ### Directives

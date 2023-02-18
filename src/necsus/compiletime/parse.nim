@@ -161,11 +161,29 @@ proc findPragma(node: NimNode): NimNode =
     of nnkSym: newEmptyNode()
     else: node.pragma
 
-proc readSystemRefs(typeNode: NimNode, pragma: NimNode): seq[NimNode] =
+proc readDependencies(typeNode: NimNode): seq[NimNode] =
     ## Reads the systems referenced by a pragma attached to another system
+    let depends = bindSym("depends")
     for child in typeNode.findPragma:
-        if child.kind == nnkCall and sameType(pragma, child[0]):
+        if child.kind == nnkCall and depends == child[0]:
             findChildSyms(child[1], result)
+
+proc choosePhase(typeNode: NimNode, default: SystemPhase): SystemPhase =
+    ## Reads the systems referenced by a pragma attached to another system
+
+    let startupPragma = bindSym("startupSys")
+    let loopSysPragma = bindSym("loopSys")
+    let teardownSysPragma = bindSym("teardownSys")
+
+    for child in typeNode.findPragma:
+        if child.kind == nnkSym:
+            if startupPragma == child:
+                return StartupPhase
+            elif loopSysPragma == child:
+                return LoopPhase
+            elif teardownSysPragma == child:
+                return TeardownPhase
+    return default
 
 proc parseSystem(parser: Parser, ident: NimNode, phase: SystemPhase): ParsedSystem =
     ## Parses a single system proc
@@ -175,10 +193,10 @@ proc parseSystem(parser: Parser, ident: NimNode, phase: SystemPhase): ParsedSyst
         .mapIt(parser.parseSystemArg(it))
     let impl = ident.getImpl
     return ParsedSystem(
-        phase: phase,
+        phase: impl.choosePhase(phase),
         symbol: ident.strVal,
         args: args,
-        depends: impl.readSystemRefs(bindSym("depends"))
+        depends: impl.readDependencies()
     )
 
 proc parseSystems(parser: Parser, systems: NimNode, phase: SystemPhase, into: var seq[ParsedSystem]) =
