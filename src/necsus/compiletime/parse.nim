@@ -1,5 +1,6 @@
 import macros, sequtils, strformat, options, tables
 import componentDef, tupleDirective, monoDirective, systemGen
+import ../runtime/pragmas
 
 type
     Parser = object
@@ -14,6 +15,7 @@ type
         phase*: SystemPhase
         symbol*: string
         args*: seq[SystemArg]
+        depends: seq[NimNode]
 
     ParsedApp* = object
         ## Parsed information about the application proc itself
@@ -136,20 +138,70 @@ proc parseSystemArg(parser: Parser, identDef: NimNode): SystemArg =
     identDef.expectKind(nnkIdentDefs)
     return parser.parseArgType(identDef[0].strVal, identDef[1], identDef[1])
 
+proc findChildSyms(node: NimNode, output: var seq[NimNode]) =
+    ## Finds all symbols in the children of a node and returns them
+    if node.kind == nnkSym:
+        output.add(node)
+    elif node.kind == nnkEmpty:
+        discard
+    elif node.len == 0:
+        error("Expecting a system symbol, but got: " & node.repr, node)
+    else:
+        for child in node.children:
+            findChildSyms(child, output)
+
+proc findPragma(node: NimNode): NimNode =
+    ## Finds the pragma node attached to a nim node
+    case node.kind
+    of nnkIdentDefs:
+        if node[0].kind == nnkPragmaExpr:
+            node[0][1]
+        else:
+            newEmptyNode()
+    of nnkSym: newEmptyNode()
+    else: node.pragma
+
+proc readSystemRefs(typeNode: NimNode, pragma: NimNode): seq[NimNode] =
+    ## Reads the systems referenced by a pragma attached to another system
+    for child in typeNode.findPragma:
+        if child.kind == nnkCall and sameType(pragma, child[0]):
+            findChildSyms(child[1], result)
+
 proc parseSystem(parser: Parser, ident: NimNode, phase: SystemPhase): ParsedSystem =
     ## Parses a single system proc
     ident.expectKind(nnkSym)
     let args = ident.getTypeImpl[0].toSeq
         .filterIt(it.kind == nnkIdentDefs)
         .mapIt(parser.parseSystemArg(it))
-    return ParsedSystem(phase: phase, symbol: ident.strVal, args: args)
+    let impl = ident.getImpl
+    return ParsedSystem(
+        phase: phase,
+        symbol: ident.strVal,
+        args: args,
+        depends: impl.readSystemRefs(bindSym("depends"))
+    )
 
-proc parseSystemList*(parser: Parser, list: NimNode, phase: SystemPhase): seq[ParsedSystem] =
-    # Parses an inputted list of system procs into a digesteable format
-    list.expectKind(nnkBracket)
-    for wrappedArg in list.children:
-        wrappedArg.expectKind(nnkPrefix)
-        result.add(parser.parseSystem(wrappedArg[1], phase))
+proc parseSystems(parser: Parser, systems: NimNode, phase: SystemPhase, into: var seq[ParsedSystem]) =
+    # Recursively collects a list of systems
+    case systems.kind
+    of nnkSym:
+        let parsed = parser.parseSystem(systems, phase)
+        if into.allIt(it.symbol != parsed.symbol):
+            for depends in parsed.depends:
+                parser.parseSystems(depends, phase, into)
+            into.add(parsed)
+    of nnkPrefix:
+        parser.parseSystems(systems[1], phase, into)
+    of nnkBracket:
+        for wrapped in systems.children:
+            parseSystems(parser, wrapped, phase, into)
+    else:
+        systems.expectKind({nnkBracket, nnkPrefix, nnkSym})
+
+proc parseSystemList*(parser: Parser, systems: NimNode, phase: SystemPhase): seq[ParsedSystem] =
+    # Parses an list of system procs into a digesteable format
+    systems.expectKind(nnkBracket)
+    parser.parseSystems(systems, phase, result)
 
 iterator components*(arg: SystemArg): ComponentDef =
     ## Pulls all components out of an argument

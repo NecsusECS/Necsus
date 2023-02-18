@@ -1,11 +1,11 @@
-import necsus / runtime / [ entityId, query, systemVar, inbox, directives, necsusConf, archetypeStore, spawn ]
+import necsus / runtime / [ entityId, query, systemVar, inbox, directives, necsusConf, archetypeStore, spawn, pragmas ]
 import necsus / compiletime / [
     parse, systemGen, codeGenInfo, worldGen, worldEnum, spawnGen, queryGen, tickGen, sharedGen, eventGen, lookupGen,
     attachDetachGen, deleteGen, localGen, timeGen
 ]
 import sequtils, macros, options
 
-export entityId, query, archetypeStore.items, necsusConf, systemVar, inbox, directives, spawn
+export entityId, query, archetypeStore.items, necsusConf, systemVar, inbox, directives, spawn, pragmas
 
 type
     SystemFlag* = object

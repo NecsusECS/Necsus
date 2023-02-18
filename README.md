@@ -179,6 +179,25 @@ proc myApp() {.necsus([], [~immediateExit], [], newNecsusConf()).}
 myApp()
 ```
 
+### Dependencies
+
+A system can declare that it requires another system by adding the `depends` pragma, which declares that
+relationship:
+
+```nim
+import necsus
+
+proc runFirst() =
+    ## No-op system, but it gets run first
+    discard
+
+proc runSecond() {.depends(runFirst).} =
+    ## No-op system that gets run second
+    discard
+
+proc myApp() {.necsus([], [~runSecond], [], newNecsusConf()).}
+```
+
 ### Directives
 
 Systems interact with the rest of an app by using special method arguments, called `Directives`. These directives are
