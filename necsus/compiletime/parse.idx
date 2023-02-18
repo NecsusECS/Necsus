@@ -8,7 +8,7 @@ newParser	necsus/compiletime/parse.html#newParser,varargs[DirectiveGen]	parse: n
 phase	necsus/compiletime/parse.html#phase,ParsedSystem	parse: phase(system: ParsedSystem): auto	
 symbol	necsus/compiletime/parse.html#symbol,ParsedSystem	parse: symbol(system: ParsedSystem): auto	
 kind	necsus/compiletime/parse.html#kind,SystemArg	parse: kind(arg: SystemArg): auto	
-parseSystemList	necsus/compiletime/parse.html#parseSystemList,Parser,NimNode,SystemPhase	parse: parseSystemList(parser: Parser; list: NimNode; phase: SystemPhase): seq[\n    ParsedSystem]	
+parseSystemList	necsus/compiletime/parse.html#parseSystemList,Parser,NimNode,SystemPhase	parse: parseSystemList(parser: Parser; systems: NimNode; phase: SystemPhase): seq[\n    ParsedSystem]	
 components	necsus/compiletime/parse.html#components.i,SystemArg	parse: components(arg: SystemArg): ComponentDef	
 components	necsus/compiletime/parse.html#components.i,openArray[ParsedSystem]	parse: components(systems: openArray[ParsedSystem]): ComponentDef	
 args	necsus/compiletime/parse.html#args.i,ParsedSystem	parse: args(system: ParsedSystem): SystemArg	
