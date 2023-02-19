@@ -121,14 +121,18 @@ window.addEventListener('DOMContentLoaded', main);
 
   </ul>
   <ul class="simple nested-toc-section">get
-      <li><a class="reference" href="#get"
+      <li><a class="reference" href="#get_2"
     title="get[T](sysvar`gensym0: Local[T]): lent T">get[T](sysvar`gensym0: Local[T]): lent T</a></li>
   <li><a class="reference" href="#get%2C%2CT"
     title="get[T](sysvar`gensym0: Local[T]; default`gensym0: T): T">get[T](sysvar`gensym0: Local[T]; default`gensym0: T): T</a></li>
-  <li><a class="reference" href="#get_2"
+  <li><a class="reference" href="#get"
+    title="get[T](sysvar`gensym0: var Local[T]): var T">get[T](sysvar`gensym0: var Local[T]): var T</a></li>
+  <li><a class="reference" href="#get_4"
     title="get[T](sysvar`gensym1: Shared[T]): lent T">get[T](sysvar`gensym1: Shared[T]): lent T</a></li>
   <li><a class="reference" href="#get%2C%2CT_2"
     title="get[T](sysvar`gensym1: Shared[T]; default`gensym1: T): T">get[T](sysvar`gensym1: Shared[T]; default`gensym1: T): T</a></li>
+  <li><a class="reference" href="#get_3"
+    title="get[T](sysvar`gensym1: var Shared[T]): var T">get[T](sysvar`gensym1: var Shared[T]): var T</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">isEmpty
@@ -211,8 +215,8 @@ A system variable
 
 </dd>
 </div>
-<div id="get">
-<dt><pre><span class="Keyword">proc</span> <a href="#get"><span class="Identifier">get</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">sysvar`gensym0</span><span class="Other">:</span> <a href="systemVar.html#Local"><span class="Identifier">Local</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">lent</span> <span class="Identifier">T</span> {.<span class="Identifier">inline</span>.}</pre></dt>
+<div id="get_2">
+<dt><pre><span class="Keyword">proc</span> <a href="#get_2"><span class="Identifier">get</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">sysvar`gensym0</span><span class="Other">:</span> <a href="systemVar.html#Local"><span class="Identifier">Local</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">lent</span> <span class="Identifier">T</span> {.<span class="Identifier">inline</span>.}</pre></dt>
 <dd>
 
 Returns the value in a system variable
@@ -227,8 +231,16 @@ Returns the value in a system variable
 
 </dd>
 </div>
-<div id="get_2">
-<dt><pre><span class="Keyword">proc</span> <a href="#get_2"><span class="Identifier">get</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">sysvar`gensym1</span><span class="Other">:</span> <a href="systemVar.html#Shared"><span class="Identifier">Shared</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">lent</span> <span class="Identifier">T</span> {.<span class="Identifier">inline</span>.}</pre></dt>
+<div id="get">
+<dt><pre><span class="Keyword">proc</span> <a href="#get"><span class="Identifier">get</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">sysvar`gensym0</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="systemVar.html#Local"><span class="Identifier">Local</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">T</span> {.<span class="Identifier">inline</span>.}</pre></dt>
+<dd>
+
+Returns the value in a system variable
+
+</dd>
+</div>
+<div id="get_4">
+<dt><pre><span class="Keyword">proc</span> <a href="#get_4"><span class="Identifier">get</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">sysvar`gensym1</span><span class="Other">:</span> <a href="systemVar.html#Shared"><span class="Identifier">Shared</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">lent</span> <span class="Identifier">T</span> {.<span class="Identifier">inline</span>.}</pre></dt>
 <dd>
 
 Returns the value in a system variable
@@ -237,6 +249,14 @@ Returns the value in a system variable
 </div>
 <div id="get,,T_2">
 <dt><pre><span class="Keyword">proc</span> <a href="#get%2C%2CT_2"><span class="Identifier">get</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">sysvar`gensym1</span><span class="Other">:</span> <a href="systemVar.html#Shared"><span class="Identifier">Shared</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">default`gensym1</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">T</span> {.<span class="Identifier">inline</span>.}</pre></dt>
+<dd>
+
+Returns the value in a system variable
+
+</dd>
+</div>
+<div id="get_3">
+<dt><pre><span class="Keyword">proc</span> <a href="#get_3"><span class="Identifier">get</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">sysvar`gensym1</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="systemVar.html#Shared"><span class="Identifier">Shared</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">T</span> {.<span class="Identifier">inline</span>.}</pre></dt>
 <dd>
 
 Returns the value in a system variable
@@ -301,7 +321,7 @@ Sets the value in a system variable
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-02-18 23:25:37 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-02-19 17:55:24 UTC</small>
       </div>
     </div>
   </div>

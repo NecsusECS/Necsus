@@ -2,13 +2,15 @@ Local	necsus/runtime/systemVar.html#Local	systemVar: Local
 newLocal	necsus/runtime/systemVar.html#newLocal	systemVar: newLocal[T](): Local[T]	
 isEmpty	necsus/runtime/systemVar.html#isEmpty	systemVar: isEmpty[T](sysvar`gensym0: Local[T]): bool	
 set	necsus/runtime/systemVar.html#set,,sinkT	systemVar: set[T](sysvar`gensym0: var Local[T]; value`gensym0: sink T)	
-get	necsus/runtime/systemVar.html#get	systemVar: get[T](sysvar`gensym0: Local[T]): lent T	
+get	necsus/runtime/systemVar.html#get	systemVar: get[T](sysvar`gensym0: var Local[T]): var T	
+get	necsus/runtime/systemVar.html#get_2	systemVar: get[T](sysvar`gensym0: Local[T]): lent T	
 get	necsus/runtime/systemVar.html#get,,T	systemVar: get[T](sysvar`gensym0: Local[T]; default`gensym0: T): T	
 `$`	necsus/runtime/systemVar.html#$	systemVar: `$`[T](sysvar`gensym0: Local[T]): string	
 Shared	necsus/runtime/systemVar.html#Shared	systemVar: Shared	
 newShared	necsus/runtime/systemVar.html#newShared	systemVar: newShared[T](): Shared[T]	
 isEmpty	necsus/runtime/systemVar.html#isEmpty_2	systemVar: isEmpty[T](sysvar`gensym1: Shared[T]): bool	
 set	necsus/runtime/systemVar.html#set,,sinkT_2	systemVar: set[T](sysvar`gensym1: var Shared[T]; value`gensym1: sink T)	
-get	necsus/runtime/systemVar.html#get_2	systemVar: get[T](sysvar`gensym1: Shared[T]): lent T	
+get	necsus/runtime/systemVar.html#get_3	systemVar: get[T](sysvar`gensym1: var Shared[T]): var T	
+get	necsus/runtime/systemVar.html#get_4	systemVar: get[T](sysvar`gensym1: Shared[T]): lent T	
 get	necsus/runtime/systemVar.html#get,,T_2	systemVar: get[T](sysvar`gensym1: Shared[T]; default`gensym1: T): T	
 `$`	necsus/runtime/systemVar.html#$_2	systemVar: `$`[T](sysvar`gensym1: Shared[T]): string	
