@@ -20,6 +20,10 @@ template defineSystemVar(typ: untyped) =
         ## Sets the value in a system variable
         sysvar.value = some(value)
 
+    proc get*[T](sysvar: var typ[T]): var T {.inline.} =
+        ## Returns the value in a system variable
+        sysvar.value.get()
+
     proc get*[T](sysvar: typ[T]): lent T {.inline.} =
         ## Returns the value in a system variable
         sysvar.value.get()
