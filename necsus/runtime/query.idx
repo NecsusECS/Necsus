@@ -5,3 +5,4 @@ newQuery	necsus/runtime/query.html#newQuery,sinkseq[ArchView[Comps: tuple]]	quer
 pairs	necsus/runtime/query.html#pairs.i,Query[Comps: tuple]	query: pairs[Comps: tuple](query: Query[Comps]): QueryItem[Comps]	
 items	necsus/runtime/query.html#items.i,Query[Comps: tuple]	query: items[Comps: tuple](query: Query[Comps]): Comps	
 len	necsus/runtime/query.html#len,Query[Comps: tuple]	query: len[Comps: tuple](query: Query[Comps]): uint	
+single	necsus/runtime/query.html#single,Query[Comps: tuple]	query: single[Comps: tuple](query: Query[Comps]): Option[Comps]	
