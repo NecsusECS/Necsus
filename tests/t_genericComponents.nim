@@ -12,12 +12,12 @@ type
 
 proc setup(
     spawn: Spawn[(Wrap[A], Wrap[B])],
-    shared: var Shared[Wrap[A]],
-    ordinal: var Shared[WithStatic[123]],
-    decimal: var Shared[WithStatic[3.14]],
-    str: var Shared[WithStatic["asdf"]],
-    boolean: var Shared[WithStatic[true]],
-    character: var Shared[WithStatic['a']],
+    shared: Shared[Wrap[A]],
+    ordinal: Shared[WithStatic[123]],
+    decimal: Shared[WithStatic[3.14]],
+    str: Shared[WithStatic["asdf"]],
+    boolean: Shared[WithStatic[true]],
+    character: Shared[WithStatic['a']],
 ) =
     discard spawn.with(Wrap[A](value: A(a: "Foo")), Wrap[B](value: B(b: "Bar")))
     shared.set(Wrap[A](value: A(a: "Baz")))

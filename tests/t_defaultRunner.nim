@@ -1,6 +1,6 @@
 import unittest, necsus
 
-proc system(iterations: var Local[int], exit: var Shared[NecsusRun]) =
+proc system(iterations: Local[int], exit: Shared[NecsusRun]) =
     if iterations.get(0) >= 10:
         exit.set(ExitLoop)
     else:

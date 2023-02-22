@@ -4,7 +4,7 @@ import ../runtime/systemVar
 proc chooseLocalName(uniqId: string, local: MonoDirective): string = uniqId
 
 proc worldFields(name: string, dir: MonoDirective): seq[WorldField] =
-    @[ (name, nnkBracketExpr.newTree(bindSym("Local"), dir.argType)) ]
+    @[ (name, nnkBracketExpr.newTree(bindSym("SystemVarData"), dir.argType)) ]
 
 proc generateLocal(details: GenerateContext, dir: MonoDirective): NimNode =
     case details.hook
@@ -12,13 +12,19 @@ proc generateLocal(details: GenerateContext, dir: MonoDirective): NimNode =
         let varIdent = ident(details.name)
         let argType = dir.argType
         return quote:
-            `appStateIdent`.`varIdent` = newLocal[`argType`]()
+            `appStateIdent`.`varIdent` = newSystemVar[`argType`]()
     else:
         return newEmptyNode()
+
+proc systemArg(name: string, dir: MonoDirective): NimNode =
+    let nameIdent = name.ident
+    return quote:
+        Local(addr `appStateIdent`.`nameIdent`)
 
 let localGenerator* {.compileTime.} = newGenerator(
     ident = "Local",
     generate = generateLocal,
     chooseName = chooseLocalName,
-    worldFields = worldFields
+    worldFields = worldFields,
+    systemArg = systemArg
 )

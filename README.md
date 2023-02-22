@@ -60,7 +60,7 @@ proc report(entities: Query[(Position, )]) =
     for eid, comp in entities:
         echo eid, " is at ", comp[0]
 
-proc exiter(iterations: var Local[int], exit: var Shared[NecsusRun]) =
+proc exiter(iterations: Local[int], exit: Shared[NecsusRun]) =
     ## Keeps track of the number of iterations through the system and eventually exits
     if iterations.get(0) >= 100:
         exit.set(ExitLoop)
@@ -262,7 +262,7 @@ state:
 ```nim
 import necsus
 
-proc immediateExit(exit: var Shared[NecsusRun]) =
+proc immediateExit(exit: Shared[NecsusRun]) =
     ## Immediately exit the first time this system is called
     exit.set(ExitLoop)
 
@@ -491,7 +491,7 @@ system that declares them as arguments.
 ```nim
 import necsus
 
-proc localVars(executionCount: var Local[int]) =
+proc localVars(executionCount: Local[int]) =
     echo "Total executions so far: ", executionCount.get(0)
     executionCount.set(executionCount.get(0) + 1)
 
@@ -506,7 +506,7 @@ underlying value.
 ```nim
 import necsus
 
-proc updateCount(count: var Shared[int]) =
+proc updateCount(count: Shared[int]) =
     count.set(count.get(0) + 1)
 
 proc printCount(count: Shared[int]) =
@@ -559,7 +559,7 @@ If an app has a return value, it can be set in a system via a `Shared` argument:
 ```nim
 import necsus
 
-proc setAppReturn(appReturns: var Shared[string]) =
+proc setAppReturn(appReturns: Shared[string]) =
     appReturns.set("Return value from app")
 
 proc myApp(): string {.necsus([], [~setAppReturn], [], newNecsusConf()).}
@@ -593,7 +593,7 @@ proc customRunner*(count: Shared[int], tick: proc(): void) =
     while count.get(0) < 1_000:
         tick()
 
-proc incrementer(count: var Shared[int]) =
+proc incrementer(count: Shared[int]) =
     count.set(count.get(0) + 1)
 
 proc myApp() {.necsus(customRunner, [], [~incrementer], [], newNecsusConf()).}

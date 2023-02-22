@@ -1,12 +1,12 @@
 import unittest, necsus
 
-proc system1(someVar: var Shared[string]) =
+proc system1(someVar: Shared[string]) =
     someVar.set("foo")
 
-proc system2(someVar: var Shared[string]) =
+proc system2(someVar: Shared[string]) =
     someVar.get &= "bar"
 
-proc assertion(someVar: var Shared[string]) =
+proc assertion(someVar: Shared[string]) =
     check(someVar.get() == "foobar")
 
 proc runner(tick: proc(): void) =

@@ -1,38 +1,38 @@
 import options
 
-template defineSystemVar(typ: untyped) =
-    ## Creates the implementation for system vars
+type
+    SystemVarData*[T] = object
+        ## A system variable
+        value: Option[T]
 
-    type
-        typ*[T] {.byref.} = object
-            ## A system variable
-            value: Option[T]
+    Shared*[T] = distinct ptr SystemVarData[T]
+        ## Wrapper around data that is shared across all systems
 
-    proc `new typ`*[T](): typ[T] =
-        ## Constructor
-        typ[T](value: none(T))
+    Local*[T] = distinct ptr SystemVarData[T]
+        ## Wrapper around data that is specific to a single system
 
-    proc isEmpty*[T](sysvar: typ[T]): bool {.inline.} =
-        ## Returns whether a system variable has a value
-        sysvar.value.isNone
+    SystemVar*[T] = Shared[T] | Local[T]
 
-    proc set*[T](sysvar: var typ[T], value: sink T) {.inline.} =
-        ## Sets the value in a system variable
-        sysvar.value = some(value)
+proc unwrap[T](sysvar: SystemVar[T]): ptr SystemVarData[T] {.inline.} = cast[ptr SystemVarData[T]](sysvar)
 
-    proc get*[T](sysvar: var typ[T]): var T {.inline.} =
-        ## Returns the value in a system variable
-        sysvar.value.get()
+proc newSystemVar*[T](): SystemVarData[T] =
+    ## Constructor
+    SystemVarData[T](value: none(T))
 
-    proc get*[T](sysvar: typ[T]): lent T {.inline.} =
-        ## Returns the value in a system variable
-        sysvar.value.get()
+proc isEmpty*[T](sysvar: SystemVar[T]): bool {.inline.} =
+    ## Returns whether a system variable has a value
+    sysvar.unwrap.value.isNone
 
-    proc get*[T](sysvar: typ[T], default: T): T {.inline.} =
-        ## Returns the value in a system variable
-        sysvar.value.get(default)
+proc set*[T](sysvar: SystemVar[T], value: sink T) {.inline.} =
+    ## Sets the value in a system variable
+    sysvar.unwrap.value = some(value)
 
-    proc `$`*[T](sysvar: typ[T]): string = $sysvar.value
+proc get*[T](sysvar: SystemVar[T]): var T {.inline.} =
+    ## Returns the value in a system variable
+    sysvar.unwrap.value.get()
 
-defineSystemVar(Local)
-defineSystemVar(Shared)
+proc get*[T](sysvar: SystemVar[T], default: T): T {.inline.} =
+    ## Returns the value in a system variable
+    sysvar.unwrap.value.get(default)
+
+proc `$`*[T](sysvar: SystemVar[T]): string = $sysvar.unwrap.value

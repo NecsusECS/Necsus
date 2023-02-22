@@ -1,6 +1,6 @@
 import unittest, necsus, options
 
-proc setReturnValue(returnValue: var Shared[string]) =
+proc setReturnValue(returnValue: Shared[string]) =
     returnValue.set("foobar")
 
 proc runner(tick: proc(): void) = tick()
@@ -15,7 +15,7 @@ test "Fail if the return value isn't provided by a shared variable":
         proc noAppReturnValue(): string {.necsus(runner, [], [], [], newNecsusConf()).}):
         fail()
 
-proc declaresReturnValue(returnValue: var Shared[string]) =
+proc declaresReturnValue(returnValue: Shared[string]) =
     discard
 
 proc unsetAppReturnValue(): string {.necsus(runner, [], [~declaresReturnValue], [], newNecsusConf()).}

@@ -9,7 +9,7 @@ type
     E = object
         value: int
 
-proc setup(sharedVar: var Shared[string], spawn: Spawn[(B, D, E)]) =
+proc setup(sharedVar: Shared[string], spawn: Spawn[(B, D, E)]) =
     sharedVar.set("foo")
     discard spawn.with(B(), D(), E(value: 789))
 

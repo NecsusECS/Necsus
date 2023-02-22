@@ -1,6 +1,6 @@
 import necsus, unittest
 
-proc exit(exit: var Shared[NecsusRun]) =
+proc exit(exit: Shared[NecsusRun]) =
     exit.set(ExitLoop)
 
 proc noRunner() {.necsus([], [~exit], [], newNecsusConf()).}
