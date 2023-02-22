@@ -1,4 +1,4 @@
-import entityId, archetypeStore
+import entityId, archetypeStore, options
 
 type
     QueryItem*[Comps: tuple] = tuple[entityId: EntityId, components: Comps]
@@ -32,3 +32,8 @@ iterator items*[Comps: tuple](query: Query[Comps]): Comps {.inline.} =
 proc len*[Comps: tuple](query: Query[Comps]): uint =
     ## Returns the number of entities in this query
     for arch in query.archetypes: result += arch.len
+
+proc single*[Comps: tuple](query: Query[Comps]): Option[Comps] =
+    ## Returns a single element from a query
+    for comps in query:
+        return some(comps)

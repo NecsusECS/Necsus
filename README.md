@@ -381,6 +381,22 @@ proc optionalB(query: Query[(A, Option[B])]) =
 proc myApp() {.necsus([], [~optionalB], [], newNecsusConf()).}
 ```
 
+### Query for a single value
+
+For situations where you have a singleton instance, you can use the `single` method to pull it from a query:
+
+```nim
+import necsus, options
+
+type A = object
+
+proc oneInstance(query: Query[(A, )]) =
+    let (a) = query.single.get
+    echo a
+
+proc myApp() {.necsus([], [~oneInstance], [], newNecsusConf()).}
+```
+
 #### Delete
 
 Deleting is the opposite of spawning -- it deletes an entity and all the associated components:
