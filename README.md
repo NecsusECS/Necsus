@@ -213,7 +213,7 @@ If your system returns a `proc`, that proc will get created during the startup p
 for every tick. The `proc` itself that gets returned here cannot take any arguments. For example:
 
 ```
-import unittest, necsus
+import necsus
 
 proc someSystem(create: Spawn[(string, )], query: Query[(string,)]): auto {.instanced.} =
     discard create.with("foo")
