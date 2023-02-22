@@ -36,9 +36,10 @@ let inboxGenerator* {.compileTime.} = newGenerator(
 
 proc hasInboxes(details: GenerateContext, outbox: MonoDirective): bool =
     ## Returns whether an outbox has anyone that cares about the messages it sends
-    for _, directive in details.directives[inboxGenerator]:
-        if directive.monoDir.argType == outbox.argType:
-            return true
+    if inboxGenerator in details.directives:
+        for _, directive in details.directives[inboxGenerator]:
+            if directive.monoDir.argType == outbox.argType:
+                return true
     return false
 
 proc outboxFields(name: string, dir: MonoDirective): seq[WorldField] =
