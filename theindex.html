@@ -81,9 +81,7 @@ window.addEventListener('DOMContentLoaded', main);
           <li><a class="reference external"
           data-doc-search-tag="entityId: `$`(entityId: EntityId): string" href="necsus/runtime/entityId.html#%24%2CEntityId">entityId: `$`(entityId: EntityId): string</a></li>
           <li><a class="reference external"
-          data-doc-search-tag="systemVar: `$`[T](sysvar`gensym0: Local[T]): string" href="necsus/runtime/systemVar.html#%24">systemVar: `$`[T](sysvar`gensym0: Local[T]): string</a></li>
-          <li><a class="reference external"
-          data-doc-search-tag="systemVar: `$`[T](sysvar`gensym1: Shared[T]): string" href="necsus/runtime/systemVar.html#%24_2">systemVar: `$`[T](sysvar`gensym1: Shared[T]): string</a></li>
+          data-doc-search-tag="systemVar: `$`[T](sysvar: SystemVar[T]): string" href="necsus/runtime/systemVar.html#%24%2CSystemVar%5BT%5D">systemVar: `$`[T](sysvar: SystemVar[T]): string</a></li>
           <li><a class="reference external"
           data-doc-search-tag="ringbuffer: `$`[T](ring: var RingBuffer[T]): string" href="necsus/util/ringbuffer.html#%24%2CRingBuffer%5BT%5D">ringbuffer: `$`[T](ring: var RingBuffer[T]): string</a></li>
           </ul></dd>
@@ -535,17 +533,9 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="get" href="#get"><span>get:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="systemVar: get[T](sysvar`gensym0: var Local[T]): var T" href="necsus/runtime/systemVar.html#get">systemVar: get[T](sysvar`gensym0: var Local[T]): var T</a></li>
+          data-doc-search-tag="systemVar: get[T](sysvar: SystemVar[T]): var T" href="necsus/runtime/systemVar.html#get%2CSystemVar%5BT%5D">systemVar: get[T](sysvar: SystemVar[T]): var T</a></li>
           <li><a class="reference external"
-          data-doc-search-tag="systemVar: get[T](sysvar`gensym0: Local[T]; default`gensym0: T): T" href="necsus/runtime/systemVar.html#get%2C%2CT">systemVar: get[T](sysvar`gensym0: Local[T]; default`gensym0: T): T</a></li>
-          <li><a class="reference external"
-          data-doc-search-tag="systemVar: get[T](sysvar`gensym1: Shared[T]; default`gensym1: T): T" href="necsus/runtime/systemVar.html#get%2C%2CT_2">systemVar: get[T](sysvar`gensym1: Shared[T]; default`gensym1: T): T</a></li>
-          <li><a class="reference external"
-          data-doc-search-tag="systemVar: get[T](sysvar`gensym0: Local[T]): lent T" href="necsus/runtime/systemVar.html#get_2">systemVar: get[T](sysvar`gensym0: Local[T]): lent T</a></li>
-          <li><a class="reference external"
-          data-doc-search-tag="systemVar: get[T](sysvar`gensym1: var Shared[T]): var T" href="necsus/runtime/systemVar.html#get_3">systemVar: get[T](sysvar`gensym1: var Shared[T]): var T</a></li>
-          <li><a class="reference external"
-          data-doc-search-tag="systemVar: get[T](sysvar`gensym1: Shared[T]): lent T" href="necsus/runtime/systemVar.html#get_4">systemVar: get[T](sysvar`gensym1: Shared[T]): lent T</a></li>
+          data-doc-search-tag="systemVar: get[T](sysvar: SystemVar[T]; default: T): T" href="necsus/runtime/systemVar.html#get%2CSystemVar%5BT%5D%2CT">systemVar: get[T](sysvar: SystemVar[T]; default: T): T</a></li>
           </ul></dd>
 <dt><a name="getComps" href="#getComps"><span>getComps:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -619,9 +609,7 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="isEmpty" href="#isEmpty"><span>isEmpty:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="systemVar: isEmpty[T](sysvar`gensym0: Local[T]): bool" href="necsus/runtime/systemVar.html#isEmpty">systemVar: isEmpty[T](sysvar`gensym0: Local[T]): bool</a></li>
-          <li><a class="reference external"
-          data-doc-search-tag="systemVar: isEmpty[T](sysvar`gensym1: Shared[T]): bool" href="necsus/runtime/systemVar.html#isEmpty_2">systemVar: isEmpty[T](sysvar`gensym1: Shared[T]): bool</a></li>
+          data-doc-search-tag="systemVar: isEmpty[T](sysvar: SystemVar[T]): bool" href="necsus/runtime/systemVar.html#isEmpty%2CSystemVar%5BT%5D">systemVar: isEmpty[T](sysvar: SystemVar[T]): bool</a></li>
           <li><a class="reference external"
           data-doc-search-tag="ringbuffer: isEmpty[T](ring: var RingBuffer[T]): bool" href="necsus/util/ringbuffer.html#isEmpty%2CRingBuffer%5BT%5D">ringbuffer: isEmpty[T](ring: var RingBuffer[T]): bool</a></li>
           </ul></dd>
@@ -869,10 +857,6 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference external"
           data-doc-search-tag="inbox: newInbox[T](mailbox: var Mailbox[T]): Inbox[T]" href="necsus/runtime/inbox.html#newInbox%2CMailbox%5BT%5D">inbox: newInbox[T](mailbox: var Mailbox[T]): Inbox[T]</a></li>
           </ul></dd>
-<dt><a name="newLocal" href="#newLocal"><span>newLocal:</span></a></dt><dd><ul class="simple">
-<li><a class="reference external"
-          data-doc-search-tag="systemVar: newLocal[T](): Local[T]" href="necsus/runtime/systemVar.html#newLocal">systemVar: newLocal[T](): Local[T]</a></li>
-          </ul></dd>
 <dt><a name="newMailbox" href="#newMailbox"><span>newMailbox:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="mailbox: newMailbox[T](initialSize: SomeInteger): Mailbox[T]" href="necsus/util/mailbox.html#newMailbox%2CSomeInteger">mailbox: newMailbox[T](initialSize: SomeInteger): Mailbox[T]</a></li>
@@ -907,10 +891,6 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference external"
           data-doc-search-tag="ringbuffer: newRingBuffer[T](minimumSize: SomeInteger): RingBuffer[T]" href="necsus/util/ringbuffer.html#newRingBuffer%2CSomeInteger">ringbuffer: newRingBuffer[T](minimumSize: SomeInteger): RingBuffer[T]</a></li>
           </ul></dd>
-<dt><a name="newShared" href="#newShared"><span>newShared:</span></a></dt><dd><ul class="simple">
-<li><a class="reference external"
-          data-doc-search-tag="systemVar: newShared[T](): Shared[T]" href="necsus/runtime/systemVar.html#newShared">systemVar: newShared[T](): Shared[T]</a></li>
-          </ul></dd>
 <dt><a name="newSharedVector" href="#newSharedVector"><span>newSharedVector:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="sharedVector: newSharedVector[T](initialSize: uint): SharedVector[T]" href="necsus/util/sharedVector.html#newSharedVector%2Cuint">sharedVector: newSharedVector[T](initialSize: uint): SharedVector[T]</a></li>
@@ -920,6 +900,10 @@ window.addEventListener('DOMContentLoaded', main);
           data-doc-search-tag="archetypeStore: newSlot[Archs: enum; Comps: tuple](store: var ArchetypeStore[Archs, Comps];
                                    entityId: EntityId): NewArchSlot[Comps]" href="necsus/runtime/archetypeStore.html#newSlot%2CArchetypeStore%5BArchs%3A%20enum%2CComps%3A%20tuple%5D%2CEntityId">archetypeStore: newSlot[Archs: enum; Comps: tuple](store: var ArchetypeStore[Archs, Comps];
                                    entityId: EntityId): NewArchSlot[Comps]</a></li>
+          </ul></dd>
+<dt><a name="newSystemVar" href="#newSystemVar"><span>newSystemVar:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="systemVar: newSystemVar[T](): SystemVarData[T]" href="necsus/runtime/systemVar.html#newSystemVar">systemVar: newSystemVar[T](): SystemVarData[T]</a></li>
           </ul></dd>
 <dt><a name="newTupleDir" href="#newTupleDir"><span>newTupleDir:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -1019,9 +1003,7 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference external"
           data-doc-search-tag="spawn: set[C: tuple](spawn: Spawn[C]; values: C): EntityId" href="necsus/runtime/spawn.html#set%2CSpawn%5BC%3A%20tuple%5D%2CC">spawn: set[C: tuple](spawn: Spawn[C]; values: C): EntityId</a></li>
           <li><a class="reference external"
-          data-doc-search-tag="systemVar: set[T](sysvar`gensym0: var Local[T]; value`gensym0: sink T)" href="necsus/runtime/systemVar.html#set%2C%2CsinkT">systemVar: set[T](sysvar`gensym0: var Local[T]; value`gensym0: sink T)</a></li>
-          <li><a class="reference external"
-          data-doc-search-tag="systemVar: set[T](sysvar`gensym1: var Shared[T]; value`gensym1: sink T)" href="necsus/runtime/systemVar.html#set%2C%2CsinkT_2">systemVar: set[T](sysvar`gensym1: var Shared[T]; value`gensym1: sink T)</a></li>
+          data-doc-search-tag="systemVar: set[T](sysvar: SystemVar[T]; value: sink T)" href="necsus/runtime/systemVar.html#set%2CSystemVar%5BT%5D%2CsinkT">systemVar: set[T](sysvar: SystemVar[T]; value: sink T)</a></li>
           <li><a class="reference external"
           data-doc-search-tag="blockstore: set[V](entry: Entry[V]; value: sink V)" href="necsus/util/blockstore.html#set%2CEntry%5BV%5D%2CsinkV">blockstore: set[V](entry: Entry[V]; value: sink V)</a></li>
           </ul></dd>
@@ -1101,6 +1083,14 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference external"
           data-doc-search-tag="parse: SystemPhase" href="necsus/compiletime/parse.html#SystemPhase">parse: SystemPhase</a></li>
           </ul></dd>
+<dt><a name="SystemVar" href="#SystemVar"><span>SystemVar:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="systemVar: SystemVar" href="necsus/runtime/systemVar.html#SystemVar">systemVar: SystemVar</a></li>
+          </ul></dd>
+<dt><a name="SystemVarData" href="#SystemVarData"><span>SystemVarData:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="systemVar: SystemVarData" href="necsus/runtime/systemVar.html#SystemVarData">systemVar: SystemVarData</a></li>
+          </ul></dd>
 <dt><a name="TeardownPhase" href="#TeardownPhase"><span>TeardownPhase:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="SystemPhase.TeardownPhase" href="necsus/compiletime/parse.html#TeardownPhase">SystemPhase.TeardownPhase</a></li>
@@ -1176,7 +1166,7 @@ window.addEventListener('DOMContentLoaded', main);
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-02-21 22:00:51 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-02-22 06:11:26 UTC</small>
       </div>
     </div>
   </div>
