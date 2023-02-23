@@ -1,7 +1,7 @@
 import unittest, necsus, os
 
-proc setup(dt: TimeElapsed) =
-    check(dt == 0)
+proc setup(time: TimeElapsed) =
+    check(time == 0)
 
 var lastTimeCheck = 0.0
 
@@ -10,6 +10,7 @@ proc checkTime(elapsed: TimeElapsed) =
         check(elapsed == 0)
     else:
         check(elapsed > lastTimeCheck)
+        check(elapsed < lastTimeCheck + 100)
     lastTimeCheck = elapsed
     sleep(10)
 

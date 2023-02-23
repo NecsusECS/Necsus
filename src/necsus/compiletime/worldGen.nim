@@ -88,6 +88,7 @@ proc createAppStateInit*(genInfo: CodeGenInfo): NimNode =
         var `appStateIdent` = new(`appStateType`)
         `appStateIdent`.`confIdent` =  `createConfig`
         `appStateIdent`.`worldIdent` = newWorld[`archetypeEnum`](`appStateIdent`.`confIdent`.entitySize)
+        `appStateIdent`.`startTime` = `appStateIdent`.`confIdent`.getTime()
         `archetypeDefs`
         `earlyInit`
         `stdInit`
