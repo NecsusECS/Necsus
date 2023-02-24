@@ -195,11 +195,18 @@ proc determineInstancing(nodeImpl: NimNode, nodeTypeImpl: NimNode): Option[NimNo
 proc parseSystem(parser: Parser, ident: NimNode, phase: SystemPhase): ParsedSystem =
     ## Parses a single system proc
     ident.expectKind(nnkSym)
+
+    let impl = ident.getImpl
     let typeImpl = ident.getTypeImpl
-    let args = typeImpl[0].toSeq
+
+    # If we are given a proc, read the args directly from the proc. Otherwise, we need to
+    # read them from the type, which is possibly less accurate
+    let argSource = if impl.kind == nnkProcDef: impl.params else: typeImpl[0]
+
+    let args = argSource.toSeq
         .filterIt(it.kind == nnkIdentDefs)
         .mapIt(parser.parseSystemArg(it))
-    let impl = ident.getImpl
+
     return ParsedSystem(
         phase: impl.choosePhase(phase),
         symbol: ident.strVal,
