@@ -28,3 +28,18 @@ jobs:
     - uses: actions/checkout@v1
     - name: Build readme code
       run: nimble readme
+
+  example-projects:
+     runs-on: ubuntu-latest
+     container: nimlang/nim
+     strategy:
+       matrix:
+         project: [NecsusECS/NecsusAsteroids, NecsusECS/NecsusParticleDemo]
+     steps:
+     - uses: actions/checkout@v1
+     - name: Local override
+       run: nimble develop
+     - name: Checkout
+       run: git clone https://github.com/${{ matrix.project }}.git project
+     - name: Build
+       run: cd project && nimble build -y
