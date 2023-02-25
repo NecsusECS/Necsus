@@ -12,7 +12,7 @@
 ## * https://github.com/eldipa/loki
 ##
 
-import atomics, math, options, arrayblock
+import threads, math, options, arrayblock
 
 type
     RingBuffer*[T] {.byref.} = object

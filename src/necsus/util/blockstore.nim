@@ -1,4 +1,4 @@
-import atomics, ringbuffer, arrayblock, options
+import threads, ringbuffer, arrayblock, options
 
 type
     EntryData[V] = object

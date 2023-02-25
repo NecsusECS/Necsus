@@ -8,6 +8,8 @@ jobs:
     - uses: actions/checkout@v1
     - name: Test
       run: nimble test -y
+    - name: Test with threads off
+      run: nimble --threads:off test -y
     - name: Benchmark
       run: nimble -y -d:release benchmark
     - name: Build readme code

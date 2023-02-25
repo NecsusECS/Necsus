@@ -1,4 +1,4 @@
-import macros, std/locks, arrayblock
+import macros, threads, arrayblock
 
 ##
 ## Resizable array of values stored in large buckets of memory. The benefit of this

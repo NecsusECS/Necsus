@@ -1,4 +1,7 @@
-import unittest, necsus/util/ringbuffer, options, threadpool, std/sharedlist, sequtils, algorithm, random, atomics
+import unittest, necsus/util/ringbuffer, options
+
+when compileOption("threads"):
+    import threadpool, random, atomics, algorithm, sequtils, std/sharedlist
 
 suite "RingBuffer":
 
@@ -77,45 +80,46 @@ suite "RingBuffer":
         var q = newRingBuffer[int](200)
         check(q.capacity == 255)
 
-    test "Multi-threaded push and shift":
-        var q = newRingBuffer[int](2048)
+    when compileOption("threads"):
+        test "Multi-threaded push and shift":
+            var q = newRingBuffer[int](2048)
 
-        proc pushIt(value: int) {.gcsafe.} =
-            require(q.tryPush(value))
+            proc pushIt(value: int) {.gcsafe.} =
+                require(q.tryPush(value))
 
-        for i in 0..<2000:
-            spawn pushIt(i)
+            for i in 0..<2000:
+                spawn pushIt(i)
 
-        var results: SharedList[int]
-        results.init
+            var results: SharedList[int]
+            results.init
 
-        proc shiftIt() =
-            results.add(q.tryShift().get)
+            proc shiftIt() =
+                results.add(q.tryShift().get)
 
-        for i in 0..<2000:
-            spawn shiftIt()
-
-        sync()
-
-        check(results.toSeq.sorted == toSeq(0..<2000))
-
-    for i in 0..10:
-        test "Random push and pop #" & $i:
-            var q = newRingBuffer[uint64](2048)
-            var length: Atomic[int]
-
-            proc act(randomInt: uint64) {.gcsafe.} =
-                if randomInt mod 2 == 0:
-                    if q.tryPush(randomInt):
-                        length += 1
-                else:
-                    if q.tryShift().isSome:
-                        length -= 1
-
-            var rand = initRand(i)
-            for _ in 0..<2000:
-                spawn act(rand.next())
+            for i in 0..<2000:
+                spawn shiftIt()
 
             sync()
 
-            check(q.drain.len == length.load)
+            check(results.toSeq.sorted == toSeq(0..<2000))
+
+        for i in 0..10:
+            test "Random push and pop #" & $i:
+                var q = newRingBuffer[uint64](2048)
+                var length: Atomic[int]
+
+                proc act(randomInt: uint64) {.gcsafe.} =
+                    if randomInt mod 2 == 0:
+                        if q.tryPush(randomInt):
+                            length += 1
+                    else:
+                        if q.tryShift().isSome:
+                            length -= 1
+
+                var rand = initRand(i)
+                for _ in 0..<2000:
+                    spawn act(rand.next())
+
+                sync()
+
+                check(q.drain.len == length.load)
