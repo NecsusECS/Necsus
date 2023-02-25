@@ -212,7 +212,7 @@ first step to setting is up is to mark a system with the `instanced` pragma. The
 If your system returns a `proc`, that proc will get created during the startup phase, then invoked
 for every tick. The `proc` itself that gets returned here cannot take any arguments. For example:
 
-```
+```nim
 import necsus
 
 proc someSystem(create: Spawn[(string, )], query: Query[(string,)]): auto {.instanced.} =
@@ -233,7 +233,7 @@ Your other option is to return an object. The system proc will get invoked durin
 then a `tick` proc will get invoked as part of the main loop. This also allows you to create a `=destroy`
 proc that gets invoked during teardown:
 
-```
+```nim
 import necsus
 
 type SystemInstance = object
