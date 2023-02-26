@@ -515,7 +515,7 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference external"
           data-doc-search-tag="codeGenInfo: generateForHook(codeGen: CodeGenInfo; hook: GenerateHook): NimNode" href="necsus/compiletime/codeGenInfo.html#generateForHook%2CCodeGenInfo%2CGenerateHook">codeGenInfo: generateForHook(codeGen: CodeGenInfo; hook: GenerateHook): NimNode</a></li>
           <li><a class="reference external"
-          data-doc-search-tag="systemGen: generateForHook(arg: SystemArg; details: GenerateContext): NimNode" href="necsus/compiletime/systemGen.html#generateForHook%2CSystemArg%2CGenerateContext">systemGen: generateForHook(arg: SystemArg; details: GenerateContext): NimNode</a></li>
+          data-doc-search-tag="systemGen: generateForHook(arg: SystemArg; details: GenerateContext; name: string): NimNode" href="necsus/compiletime/systemGen.html#generateForHook%2CSystemArg%2CGenerateContext%2Cstring">systemGen: generateForHook(arg: SystemArg; details: GenerateContext; name: string): NimNode</a></li>
           </ul></dd>
 <dt><a name="GenerateHook" href="#GenerateHook"><span>GenerateHook:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -819,21 +819,23 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="newGenerator" href="#newGenerator"><span>newGenerator:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="systemGen: newGenerator(ident: string; generate: proc (details: GenerateContext): NimNode;
+          data-doc-search-tag="systemGen: newGenerator(ident: string;
+             generate: proc (details: GenerateContext; name: string): NimNode;
     worldFields: proc (name: string): seq[WorldField] = defaultWorldFieldNone;
-             systemArg: proc (name: string): NimNode = defaultSystemArgNone): DirectiveGen" href="necsus/compiletime/systemGen.html#newGenerator%2Cstring%2Cproc%28GenerateContext%29%2Cproc%28string%29%2Cproc%28string%29">systemGen: newGenerator(ident: string; generate: proc (details: GenerateContext): NimNode;
+             systemArg: proc (name: string): NimNode = defaultSystemArgNone): DirectiveGen" href="necsus/compiletime/systemGen.html#newGenerator%2Cstring%2Cproc%28GenerateContext%2Cstring%29%2Cproc%28string%29%2Cproc%28string%29">systemGen: newGenerator(ident: string;
+             generate: proc (details: GenerateContext; name: string): NimNode;
     worldFields: proc (name: string): seq[WorldField] = defaultWorldFieldNone;
              systemArg: proc (name: string): NimNode = defaultSystemArgNone): DirectiveGen</a></li>
           <li><a class="reference external"
           data-doc-search-tag="systemGen: newGenerator(ident: string; generate: proc (details: GenerateContext;
-    dir: MonoDirective): NimNode; archetype: proc (
+    name: string; dir: MonoDirective): NimNode; archetype: proc (
     builder: var ArchetypeBuilder[ComponentDef]; dir: MonoDirective) = noArchetype;
     chooseName: proc (uniqId: string; dir: MonoDirective): string = defaultName;
     systemReturn: proc (args: DirectiveSet[SystemArg]; returns: MonoDirective): Option[
     NimNode] = defaultSystemReturn; worldFields: proc (name: string;
     dir: MonoDirective): seq[WorldField] = defaultWorldField; systemArg: proc (
-    name: string; dir: MonoDirective): NimNode = defaultSystemArg): DirectiveGen" href="necsus/compiletime/systemGen.html#newGenerator%2Cstring%2Cproc%28GenerateContext%2CMonoDirective%29%2Cproc%28ArchetypeBuilder%5BComponentDef%5D%2CMonoDirective%29%2Cproc%28string%2CMonoDirective%29%2Cproc%28DirectiveSet%5BSystemArg%5D%2CMonoDirective%29%2Cproc%28string%2CMonoDirective%29%2Cproc%28string%2CMonoDirective%29">systemGen: newGenerator(ident: string; generate: proc (details: GenerateContext;
-    dir: MonoDirective): NimNode; archetype: proc (
+    name: string; dir: MonoDirective): NimNode = defaultSystemArg): DirectiveGen" href="necsus/compiletime/systemGen.html#newGenerator%2Cstring%2Cproc%28GenerateContext%2Cstring%2CMonoDirective%29%2Cproc%28ArchetypeBuilder%5BComponentDef%5D%2CMonoDirective%29%2Cproc%28string%2CMonoDirective%29%2Cproc%28DirectiveSet%5BSystemArg%5D%2CMonoDirective%29%2Cproc%28string%2CMonoDirective%29%2Cproc%28string%2CMonoDirective%29">systemGen: newGenerator(ident: string; generate: proc (details: GenerateContext;
+    name: string; dir: MonoDirective): NimNode; archetype: proc (
     builder: var ArchetypeBuilder[ComponentDef]; dir: MonoDirective) = noArchetype;
     chooseName: proc (uniqId: string; dir: MonoDirective): string = defaultName;
     systemReturn: proc (args: DirectiveSet[SystemArg]; returns: MonoDirective): Option[
@@ -842,12 +844,12 @@ window.addEventListener('DOMContentLoaded', main);
     name: string; dir: MonoDirective): NimNode = defaultSystemArg): DirectiveGen</a></li>
           <li><a class="reference external"
           data-doc-search-tag="systemGen: newGenerator(ident: string; generate: proc (details: GenerateContext;
-    dir: TupleDirective): NimNode; archetype: proc (
+    name: string; dir: TupleDirective): NimNode; archetype: proc (
     builder: var ArchetypeBuilder[ComponentDef]; dir: TupleDirective) = noArchetype;
     chooseName: proc (uniqId: string; dir: TupleDirective): string = defaultName;
     worldFields: proc (name: string; dir: TupleDirective): seq[WorldField] = defaultWorldField;
-    systemArg: proc (name: string; dir: TupleDirective): NimNode = defaultSystemArg): DirectiveGen" href="necsus/compiletime/systemGen.html#newGenerator%2Cstring%2Cproc%28GenerateContext%2CTupleDirective%29%2Cproc%28ArchetypeBuilder%5BComponentDef%5D%2CTupleDirective%29%2Cproc%28string%2CTupleDirective%29%2Cproc%28string%2CTupleDirective%29%2Cproc%28string%2CTupleDirective%29">systemGen: newGenerator(ident: string; generate: proc (details: GenerateContext;
-    dir: TupleDirective): NimNode; archetype: proc (
+    systemArg: proc (name: string; dir: TupleDirective): NimNode = defaultSystemArg): DirectiveGen" href="necsus/compiletime/systemGen.html#newGenerator%2Cstring%2Cproc%28GenerateContext%2Cstring%2CTupleDirective%29%2Cproc%28ArchetypeBuilder%5BComponentDef%5D%2CTupleDirective%29%2Cproc%28string%2CTupleDirective%29%2Cproc%28string%2CTupleDirective%29%2Cproc%28string%2CTupleDirective%29">systemGen: newGenerator(ident: string; generate: proc (details: GenerateContext;
+    name: string; dir: TupleDirective): NimNode; archetype: proc (
     builder: var ArchetypeBuilder[ComponentDef]; dir: TupleDirective) = noArchetype;
     chooseName: proc (uniqId: string; dir: TupleDirective): string = defaultName;
     worldFields: proc (name: string; dir: TupleDirective): seq[WorldField] = defaultWorldField;
@@ -1166,7 +1168,7 @@ window.addEventListener('DOMContentLoaded', main);
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-02-25 17:15:04 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-02-26 23:14:30 UTC</small>
       </div>
     </div>
   </div>
