@@ -59,17 +59,16 @@ proc appStateInit*(genInfo: CodeGenInfo): NimNode =
 proc generateForHook*(codeGen: CodeGenInfo, hook: GenerateHook): NimNode =
     ## Generates the code for a specific code-gen hook
     result = newStmtList()
+    let details = GenerateContext(
+        hook: hook,
+        inputs: codeGen.app.inputs,
+        directives: codeGen.directives,
+        archetypes: codeGen.archetypes,
+        archetypeEnum: codeGen.archetypeEnum
+    )
     for _, argSet in codeGen.directives:
         for name, arg in argSet:
-            let details = GenerateContext(
-                name: name,
-                hook: hook,
-                inputs: codeGen.app.inputs,
-                directives: codeGen.directives,
-                archetypes: codeGen.archetypes,
-                archetypeEnum: codeGen.archetypeEnum
-            )
-            result.add(arg.generateForHook(details))
+            result.add(arg.generateForHook(details, name))
 
 proc worldFields*(codeGen: CodeGenInfo): seq[WorldField] =
     ## Generates the code for a specific code-gen hook

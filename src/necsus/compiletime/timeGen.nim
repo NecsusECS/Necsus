@@ -6,8 +6,8 @@ let lastTime {.compileTime.} = ident("lastTime")
 
 proc deltaFields(name: string): seq[WorldField] = @[ (name, ident("float")), (lastTime.strVal, ident("float")) ]
 
-proc generateDelta(details: GenerateContext): NimNode =
-    let timeDelta = details.name.ident
+proc generateDelta(details: GenerateContext, name: string): NimNode =
+    let timeDelta = name.ident
     case details.hook
     of Late:
         return quote:
@@ -25,15 +25,15 @@ proc generateDelta(details: GenerateContext): NimNode =
         return newEmptyNode()
 
 let deltaGenerator* {.compileTime.} = newGenerator(
-    ident = "TimeDelta", 
-    generate = generateDelta, 
+    ident = "TimeDelta",
+    generate = generateDelta,
     worldFields = deltaFields,
 )
 
 proc elapsedFields(name: string): seq[WorldField] = @[ (name, ident("float")) ]
 
-proc generateElapsed(details: GenerateContext): NimNode =
-    let timeElapsed = details.name.ident
+proc generateElapsed(details: GenerateContext, name: string): NimNode =
+    let timeElapsed = name.ident
     case details.hook
     of Late:
         return quote:

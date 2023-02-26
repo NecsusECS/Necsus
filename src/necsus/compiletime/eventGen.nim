@@ -12,11 +12,11 @@ proc inboxFields(name: string, dir: MonoDirective): seq[WorldField] = @[
     (name, nnkBracketExpr.newTree(bindSym("Inbox"), dir.argType))
 ]
 
-proc generateInbox(details: GenerateContext, inbox: MonoDirective): NimNode =
+proc generateInbox(details: GenerateContext, name: string, inbox: MonoDirective): NimNode =
     case details.hook
     of Early:
         let storageIdent = inbox.eventStorageIdent
-        let inboxName = details.name.ident
+        let inboxName = name.ident
         let eventType = inbox.argType
         return quote:
             `appStateIdent`.`storageIdent` = newMailbox[`eventType`](`appStateIdent`.`confIdent`.eventQueueSize)
@@ -45,11 +45,11 @@ proc hasInboxes(details: GenerateContext, outbox: MonoDirective): bool =
 proc outboxFields(name: string, dir: MonoDirective): seq[WorldField] =
     @[ (name, nnkBracketExpr.newTree(bindSym("Outbox"), dir.argType)) ]
 
-proc generateOutbox(details: GenerateContext, outbox: MonoDirective): NimNode =
+proc generateOutbox(details: GenerateContext, name: string, outbox: MonoDirective): NimNode =
     case details.hook
     of Standard:
         let event = "event".ident
-        let procName = details.name.ident
+        let procName = name.ident
         let eventType = outbox.argType
         let storageIdent = outbox.eventStorageIdent
 

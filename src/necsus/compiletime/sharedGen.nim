@@ -4,11 +4,11 @@ import ../runtime/systemVar
 proc worldFields(name: string, dir: MonoDirective): seq[WorldField] =
      @[ (name, nnkBracketExpr.newTree(bindSym("SystemVarData"), dir.argType)) ]
 
-proc generateShared(details: GenerateContext, dir: MonoDirective): NimNode =
+proc generateShared(details: GenerateContext, name: string, dir: MonoDirective): NimNode =
     result = newStmtList()
     case details.hook
     of Standard:
-        let varIdent = ident(details.name)
+        let varIdent = ident(name)
         let argType = dir.argType
         result.add quote do:
             `appStateIdent`.`varIdent` = newSystemVar[`argType`]()

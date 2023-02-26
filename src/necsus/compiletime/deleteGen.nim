@@ -4,11 +4,11 @@ import ../runtime/[archetypeStore, world, directives]
 
 proc worldFields(name: string): seq[WorldField] = @[ (name, bindSym("Delete")) ]
 
-proc generate(details: GenerateContext): NimNode =
+proc generate(details: GenerateContext, name: string): NimNode =
     ## Generates the code for instantiating queries
     case details.hook
     of GenerateHook.Standard:
-        let deleteProc = details.name.ident
+        let deleteProc = name.ident
         let archetypeEnum = details.archetypeEnum.ident
         let entity = ident("entity")
         let entityIndex = ident("entityIndex")

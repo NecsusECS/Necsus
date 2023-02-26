@@ -18,7 +18,7 @@ proc createArchUpdate(details: GenerateContext, attach: TupleDirective, archetyp
     let existing = ident("existing")
     result.add quote do:
         let `existing` = getComps[`archetypeEnum`, `archTuple`](
-            `appStateIdent`.`archIdent`, 
+            `appStateIdent`.`archIdent`,
             `entityIndex`.archetypeIndex
         )
 
@@ -60,11 +60,11 @@ proc attachArchetype(builder: var ArchetypeBuilder[ComponentDef], dir: TupleDire
 proc attachFields(name: string, dir: TupleDirective): seq[WorldField] =
     @[ (name, nnkBracketExpr.newTree(bindSym("Attach"), dir.asTupleType)) ]
 
-proc generateAttach(details: GenerateContext, attach: TupleDirective): NimNode =
+proc generateAttach(details: GenerateContext, name: string, attach: TupleDirective): NimNode =
     ## Generates the code for instantiating queries
     case details.hook
     of GenerateHook.Standard:
-        let procName = ident(details.name)
+        let procName = ident(name)
         let componentTuple = attach.args.toSeq.asTupleType
 
         ## Generate a cases statement to do the work for each kind of archetype
@@ -84,8 +84,8 @@ proc generateAttach(details: GenerateContext, attach: TupleDirective): NimNode =
 
 let attachGenerator* {.compileTime.} = newGenerator(
     ident = "Attach",
-    generate = generateAttach, 
-    archetype = attachArchetype, 
+    generate = generateAttach,
+    archetype = attachArchetype,
     worldFields = attachFields
 )
 
@@ -95,12 +95,12 @@ proc detachArchetype(builder: var ArchetypeBuilder[ComponentDef], dir: TupleDire
 proc detachFields(name: string, dir: TupleDirective): seq[WorldField] =
     @[ (name, nnkBracketExpr.newTree(bindSym("Detach"), dir.asTupleType)) ]
 
-proc generateDetach(details: GenerateContext, detach: TupleDirective): NimNode =
+proc generateDetach(details: GenerateContext, name: string, detach: TupleDirective): NimNode =
     ## Generates the code for instantiating queries
     case details.hook
     of GenerateHook.Standard:
 
-        let procName = ident(details.name)
+        let procName = ident(name)
 
         let cases = details.createArchetypeCase(newDotExpr(entityIndex, ident("archetype"))) do (fromArch: auto) -> auto:
             if fromArch.containsAllOf(detach.comps):

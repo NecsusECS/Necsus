@@ -21,7 +21,7 @@ proc buildArchetypeLookup(
 
     return quote do:
         let `compsIdent` = getComps[`archetypeEnum`, `archetypeType`](
-            `appStateIdent`.`archetypeIdent`, 
+            `appStateIdent`.`archetypeIdent`,
             `entityIndex`.archetypeIndex
         )
         return some(`createTuple`)
@@ -33,12 +33,12 @@ proc canCreateFrom(lookup: TupleDirective, archetype: Archetype[ComponentDef]): 
     ## Returns whether a lookup can be created from an archetype
     lookup.items.toSeq.allIt(it in archetype)
 
-proc generateTuple(details: GenerateContext, lookup: TupleDirective): NimNode =
+proc generateTuple(details: GenerateContext, name: string, lookup: TupleDirective): NimNode =
     ## Generates the code for instantiating queries
     case details.hook
     of GenerateHook.Standard:
 
-        let procName = ident(details.name)
+        let procName = ident(name)
         let tupleType = lookup.args.toSeq.asTupleType
 
         # Create a case statement where each branch is one of the archetypes
@@ -56,7 +56,7 @@ proc generateTuple(details: GenerateContext, lookup: TupleDirective): NimNode =
         return newEmptyNode()
 
 let lookupGenerator* {.compileTime.} = newGenerator(
-    ident = "Lookup", 
+    ident = "Lookup",
     generate = generateTuple,
     worldFields = worldFields,
 )

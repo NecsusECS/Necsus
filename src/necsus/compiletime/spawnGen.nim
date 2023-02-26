@@ -14,11 +14,11 @@ proc systemArg(name: string, dir: TupleDirective): NimNode =
     return quote do:
         Spawn[`tupleType`](`appStateIdent`.`sysIdent`)
 
-proc generate(details: GenerateContext, dir: TupleDirective): NimNode =
+proc generate(details: GenerateContext, name: string, dir: TupleDirective): NimNode =
     result = newStmtList()
     case details.hook
     of Standard:
-        let ident = details.name.ident
+        let ident = name.ident
         let archetype = details.archetypes[dir.items.toSeq]
         let archetypeIdent = archetype.ident
         result.add quote do:
