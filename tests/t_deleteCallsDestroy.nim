@@ -4,13 +4,11 @@ type
     Thingy = object
         value: int
 
-    ThingyRef = ref object
-
 var thingyDestroyCount = 0
 
 proc `=destroy`(thingy: var Thingy) =
-    check(thingy.value == 123)
-    thingyDestroyCount += 1
+    if thingy.value == 123:
+        thingyDestroyCount += 1
 
 proc destroyObj(spawn: Spawn[(Thingy, )], delete: Delete) =
     check(thingyDestroyCount == 0)

@@ -42,7 +42,7 @@ proc newSlot*[Archs: enum, Comps: tuple](
 
 proc index*[Comps: tuple](entry: NewArchSlot[Comps]): uint {.inline.} = Entry[ArchRow[Comps]](entry).index
 
-proc setComp*[Comps: tuple](slot: NewArchSlot[Comps], comps: Comps): EntityId {.inline.} =
+proc setComp*[Comps: tuple](slot: NewArchSlot[Comps], comps: sink Comps): EntityId {.inline.} =
     ## Stores an entity and its components into this slot
     let entry = Entry[ArchRow[Comps]](slot)
     value(entry).components = comps
