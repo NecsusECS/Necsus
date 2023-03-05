@@ -67,9 +67,10 @@ proc del*[V](store: var BlockStore[V], idx: uint) =
     ## Deletes a field
     var falsey = true
     if store.data[idx].alive.compareExchange(falsey, false):
+        store.len.atomicDec(1)
+        `=destroy`(store.data[idx].value)
         discard store.recycle.tryPush(idx)
         store.hasRecycledValues = true
-    store.len.atomicDec(1)
 
 proc `[]`*[V](store: BlockStore[V], idx: uint): var V =
     ## Reads a field
