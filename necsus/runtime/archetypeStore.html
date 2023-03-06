@@ -187,8 +187,8 @@ window.addEventListener('DOMContentLoaded', main);
 
   </ul>
   <ul class="simple nested-toc-section">setComp
-      <li><a class="reference" href="#setComp%2CNewArchSlot%5BComps%3A%20tuple%5D%2CComps"
-    title="setComp[Comps: tuple](slot: NewArchSlot[Comps]; comps: Comps): EntityId">setComp[Comps: tuple](slot: NewArchSlot[Comps]; comps: Comps): EntityId</a></li>
+      <li><a class="reference" href="#setComp%2CNewArchSlot%5BComps%3A%20tuple%5D%2CsinkComps"
+    title="setComp[Comps: tuple](slot: NewArchSlot[Comps]; comps: sink Comps): EntityId">setComp[Comps: tuple](slot: NewArchSlot[Comps]; comps: sink Comps): EntityId</a></li>
 
   </ul>
 
@@ -340,8 +340,8 @@ Reserves a slot for storing a new component
 
 </dd>
 </div>
-<div id="setComp,NewArchSlot[Comps: tuple],Comps">
-<dt><pre><span class="Keyword">proc</span> <a href="#setComp%2CNewArchSlot%5BComps%3A%20tuple%5D%2CComps"><span class="Identifier">setComp</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">slot</span><span class="Other">:</span> <a href="archetypeStore.html#NewArchSlot"><span class="Identifier">NewArchSlot</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">comps</span><span class="Other">:</span> <span class="Identifier">Comps</span><span class="Other">)</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a> {.
+<div id="setComp,NewArchSlot[Comps: tuple],sinkComps">
+<dt><pre><span class="Keyword">proc</span> <a href="#setComp%2CNewArchSlot%5BComps%3A%20tuple%5D%2CsinkComps"><span class="Identifier">setComp</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">slot</span><span class="Other">:</span> <a href="archetypeStore.html#NewArchSlot"><span class="Identifier">NewArchSlot</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">comps</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">Comps</span><span class="Other">)</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a> {.
     <span class="Identifier">inline</span>.}</pre></dt>
 <dd>
 
@@ -373,7 +373,7 @@ Iterates over the components in a view
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-03-05 23:23:37 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-03-06 00:20:39 UTC</small>
       </div>
     </div>
   </div>

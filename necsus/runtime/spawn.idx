@@ -1,5 +1,5 @@
 RawSpawn	necsus/runtime/spawn.html#RawSpawn	spawn: RawSpawn	
 Spawn	necsus/runtime/spawn.html#Spawn	spawn: Spawn	
 beginSpawn	necsus/runtime/spawn.html#beginSpawn,World[Archs: enum],ArchetypeStore[Archs: enum,Comps: tuple]	spawn: beginSpawn[Archs: enum; Comps: tuple](world: var World[Archs];\n                                      store: var ArchetypeStore[Archs, Comps]): NewArchSlot[\n    Comps]	
-set	necsus/runtime/spawn.html#set,Spawn[C: tuple],C	spawn: set[C: tuple](spawn: Spawn[C]; values: C): EntityId	
+set	necsus/runtime/spawn.html#set,Spawn[C: tuple],sinkC	spawn: set[C: tuple](spawn: Spawn[C]; values: sink C): EntityId	
 with	necsus/runtime/spawn.html#with.t,Spawn[C: tuple],varargs[typed]	spawn: with[C: tuple](spawn: Spawn[C]; values: varargs[typed]): EntityId	
