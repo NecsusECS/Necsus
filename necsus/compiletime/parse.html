@@ -116,7 +116,7 @@ window.addEventListener('DOMContentLoaded', main);
   <li><a class="reference" href="#ParsedSystem"
     title="ParsedSystem = object
   phase*: SystemPhase
-  symbol*: string
+  symbol*: NimNode
   args*: seq[SystemArg]
   depends: seq[NimNode]
   instanced*: Option[NimNode]">ParsedSystem</a></li>
@@ -226,7 +226,7 @@ Parsed information about the application proc itself
 <div id="ParsedSystem">
 <dt><pre><a href="parse.html#ParsedSystem"><span class="Identifier">ParsedSystem</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
   <span class="Identifier">phase</span><span class="Operator">*</span><span class="Other">:</span> <a href="parse.html#SystemPhase"><span class="Identifier">SystemPhase</span></a>
-  <span class="Identifier">symbol</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">string</span>
+  <span class="Identifier">symbol</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">NimNode</span>
   <span class="Identifier">args</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="systemGen.html#SystemArg"><span class="Identifier">SystemArg</span></a><span class="Other">]</span>
   <span class="Identifier">depends</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">NimNode</span><span class="Other">]</span>
   <span class="Identifier">instanced</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">Option</span><span class="Other">[</span><span class="Identifier">NimNode</span><span class="Other">]</span>
@@ -368,7 +368,7 @@ Pulls all components from a list of parsed systems
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-03-06 00:20:39 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-03-07 03:04:31 UTC</small>
       </div>
     </div>
   </div>
