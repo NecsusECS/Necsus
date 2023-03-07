@@ -10,7 +10,7 @@ proc callInstanced(codeGenInfo: CodeGenInfo, system: ParsedSystem, phase: System
     let (fieldName, fieldType) = system.instancedInfo.unsafeGet
     case phase
     of StartupPhase:
-        let init = newCall(ident(system.symbol), codeGenInfo.renderSystemArgs(system.args))
+        let init = newCall(system.symbol, codeGenInfo.renderSystemArgs(system.args))
         return quote: `appStateIdent`.`fieldName` = `init`
     of LoopPhase:
         if fieldType.kind == nnkProcTy:
@@ -28,7 +28,7 @@ proc callSystems*(codeGenInfo: CodeGenInfo, phase: SystemPhase): NimNode =
         if system.instanced.isSome:
             result.add(codeGenInfo.callInstanced(system, phase))
         elif system.phase == phase:
-            result.add(newCall(ident(system.symbol), codeGenInfo.renderSystemArgs(system.args)))
+            result.add(newCall(system.symbol, codeGenInfo.renderSystemArgs(system.args)))
 
 proc createTickProc*(genInfo: CodeGenInfo): NimNode =
     ## Creates a function that executes the next tick

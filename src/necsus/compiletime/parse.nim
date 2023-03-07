@@ -13,7 +13,7 @@ type
     ParsedSystem* = object
         ## Parsed information about a system proc
         phase*: SystemPhase
-        symbol*: string
+        symbol*: NimNode
         args*: seq[SystemArg]
         depends: seq[NimNode]
         instanced*: Option[NimNode]
@@ -209,7 +209,7 @@ proc parseSystem(parser: Parser, ident: NimNode, phase: SystemPhase): ParsedSyst
 
     return ParsedSystem(
         phase: impl.choosePhase(phase),
-        symbol: ident.strVal,
+        symbol: ident,
         args: args,
         depends: impl.readDependencies(),
         instanced: determineInstancing(impl, typeImpl)
@@ -298,4 +298,4 @@ proc parseApp*(parser: Parser, appProc: NimNode, runner: NimNode): ParsedApp =
 
 proc instancedInfo*(system: ParsedSystem): Option[tuple[fieldName: NimNode, typ: NimNode]] =
     ## Returns details about the instancing configuration for a type
-    system.instanced.map(proc (typ: auto): auto = (ident("instance_" & system.symbol), typ))
+    system.instanced.map(proc (typ: auto): auto = (ident("instance_" & system.symbol.strVal), typ))
