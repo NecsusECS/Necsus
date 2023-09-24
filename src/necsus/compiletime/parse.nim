@@ -159,7 +159,7 @@ proc findPragma(node: NimNode): NimNode =
             node[0][1]
         else:
             newEmptyNode()
-    of nnkSym: newEmptyNode()
+    of nnkSym, nnkConstDef: newEmptyNode()
     else: node.pragma
 
 proc readDependencies(typeNode: NimNode): seq[NimNode] =
