@@ -4,22 +4,35 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    container: nimlang/nim
+    container: nimlang/choosenim
     strategy:
       matrix:
         threads: [on, off]
+        nim: [ 2.0.0, 1.6.14 ]
     steps:
     - uses: actions/checkout@v1
+    - name: Choose Nim
+      run: choosenim update -y ${{ matrix.nim }}
+    - name: Safe git directory
+      run: git config --global --add safe.directory "$(pwd)"
     - name: Test
       run: nimble --threads:${{ matrix.threads }} test -y
 
   benchmark:
     runs-on: ubuntu-latest
-    container: nimlang/nim
+    container: nimlang/choosenim
+    strategy:
+      matrix:
+        threads: [on, off]
+        nim: [ 2.0.0, 1.6.14 ]
     steps:
     - uses: actions/checkout@v1
+    - name: Choose Nim
+      run: choosenim update -y ${{ matrix.nim }}
+    - name: Safe git directory
+      run: git config --global --add safe.directory "$(pwd)"
     - name: Benchmark
-      run: nimble -y -d:release benchmark
+      run: nimble -y -d:release --threads:${{ matrix.threads }} benchmark
 
   readme:
     runs-on: ubuntu-latest
@@ -30,16 +43,21 @@ jobs:
       run: nimble readme
 
   example-projects:
-     runs-on: ubuntu-latest
-     container: nimlang/nim
-     strategy:
-       matrix:
-         project: [NecsusECS/NecsusAsteroids, NecsusECS/NecsusParticleDemo]
-     steps:
-     - uses: actions/checkout@v1
-     - name: Local override
-       run: nimble develop
-     - name: Checkout
-       run: git clone https://github.com/${{ matrix.project }}.git project
-     - name: Build
-       run: cd project && nimble build -y
+    runs-on: ubuntu-latest
+    container: nimlang/choosenim
+    strategy:
+      matrix:
+        project: [NecsusECS/NecsusAsteroids, NecsusECS/NecsusParticleDemo]
+        nim: [ 2.0.0, 1.6.14 ]
+    steps:
+    - uses: actions/checkout@v1
+    - name: Choose Nim
+      run: choosenim update -y ${{ matrix.nim }}
+    - name: Safe git directory
+      run: git config --global --add safe.directory "$(pwd)"
+    - name: Local override
+      run: nimble develop
+    - name: Checkout
+      run: git clone https://github.com/${{ matrix.project }}.git project
+    - name: Build
+      run: cd project && nimble build -y
