@@ -5,6 +5,7 @@ SystemVar	necsus/runtime/systemVar.html#SystemVar	systemVar: SystemVar
 newSystemVar	necsus/runtime/systemVar.html#newSystemVar	systemVar: newSystemVar[T](): SystemVarData[T]	
 isEmpty	necsus/runtime/systemVar.html#isEmpty,SystemVar[T]	systemVar: isEmpty[T](sysvar: SystemVar[T]): bool	
 set	necsus/runtime/systemVar.html#set,SystemVar[T],sinkT	systemVar: set[T](sysvar: SystemVar[T]; value: sink T)	
+`:=`	necsus/runtime/systemVar.html#:=,SystemVar[T],sinkT	systemVar: `:=`[T](sysvar: SystemVar[T]; value: sink T)	
 get	necsus/runtime/systemVar.html#get,SystemVar[T]	systemVar: get[T](sysvar: SystemVar[T]): var T	
 get	necsus/runtime/systemVar.html#get,SystemVar[T],T	systemVar: get[T](sysvar: SystemVar[T]; default: T): T	
 `$`	necsus/runtime/systemVar.html#$,SystemVar[T]	systemVar: `$`[T](sysvar: SystemVar[T]): string	

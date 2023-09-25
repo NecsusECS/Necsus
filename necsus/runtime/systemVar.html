@@ -121,6 +121,11 @@ window.addEventListener('DOMContentLoaded', main);
     title="`$`[T](sysvar: SystemVar[T]): string">`$`[T](sysvar: SystemVar[T]): string</a></li>
 
   </ul>
+  <ul class="simple nested-toc-section">:=
+      <li><a class="reference" href="#%3A%3D%2CSystemVar%5BT%5D%2CsinkT"
+    title="`:=`[T](sysvar: SystemVar[T]; value: sink T)">`:=`[T](sysvar: SystemVar[T]; value: sink T)</a></li>
+
+  </ul>
   <ul class="simple nested-toc-section">get
       <li><a class="reference" href="#get%2CSystemVar%5BT%5D"
     title="get[T](sysvar: SystemVar[T]): var T">get[T](sysvar: SystemVar[T]): var T</a></li>
@@ -205,6 +210,14 @@ A system variable
 
 </dd>
 </div>
+<div id=":=,SystemVar[T],sinkT">
+<dt><pre><span class="Keyword">proc</span> <a href="#%3A%3D%2CSystemVar%5BT%5D%2CsinkT"><span class="Identifier">`:=`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">sysvar</span><span class="Other">:</span> <a href="systemVar.html#SystemVar"><span class="Identifier">SystemVar</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">T</span><span class="Other">)</span> {.<span class="Identifier">inline</span>.}</pre></dt>
+<dd>
+
+Sets the value in a system variable
+
+</dd>
+</div>
 <div id="get,SystemVar[T]">
 <dt><pre><span class="Keyword">proc</span> <a href="#get%2CSystemVar%5BT%5D"><span class="Identifier">get</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">sysvar</span><span class="Other">:</span> <a href="systemVar.html#SystemVar"><span class="Identifier">SystemVar</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">T</span> {.<span class="Identifier">inline</span>.}</pre></dt>
 <dd>
@@ -255,7 +268,7 @@ Sets the value in a system variable
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-03-19 17:52:40 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-09-25 16:47:34 UTC</small>
       </div>
     </div>
   </div>
