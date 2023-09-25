@@ -2,9 +2,9 @@ import unittest, necsus
 
 proc system(iterations: Local[int], exit: Shared[NecsusRun]) =
     if iterations.get(0) >= 10:
-        exit.set(ExitLoop)
+        exit := ExitLoop
     else:
-        iterations.set(iterations.get(0) + 1)
+        iterations := iterations.get(0) + 1
 
 proc testDefaultGampeLoop() {.necsus(gameLoop, [], [~system], [], newNecsusConf()).}
 

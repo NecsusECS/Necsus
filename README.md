@@ -63,9 +63,9 @@ proc report(entities: Query[(Position, )]) =
 proc exiter(iterations: Local[int], exit: Shared[NecsusRun]) =
     ## Keeps track of the number of iterations through the system and eventually exits
     if iterations.get(0) >= 100:
-        exit.set(ExitLoop)
+        exit := ExitLoop
     else:
-        iterations.set(iterations.get(0) + 1)
+        iterations := iterations.get(0) + 1
 
 proc app() {.necsus([~create], [~move, ~report, ~exiter], [], newNecsusConf()).}
     ## The skeleton into which the ECS code will be injected
@@ -493,7 +493,7 @@ import necsus
 
 proc localVars(executionCount: Local[int]) =
     echo "Total executions so far: ", executionCount.get(0)
-    executionCount.set(executionCount.get(0) + 1)
+    executionCount := executionCount.get(0) + 1
 
 proc myApp() {.necsus([], [~localVars], [], newNecsusConf()).}
 ```
@@ -507,7 +507,7 @@ underlying value.
 import necsus
 
 proc updateCount(count: Shared[int]) =
-    count.set(count.get(0) + 1)
+    count := count.get(0) + 1
 
 proc printCount(count: Shared[int]) =
     echo "Total executions so far: ", count.get(0)

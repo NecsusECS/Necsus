@@ -1,15 +1,15 @@
 import unittest, necsus
 
 proc initSystem(ours: Shared[string], mine: Local[string]): auto {.instanced.} =
-    ours.set("foo")
-    mine.set("bar")
+    ours := "foo"
+    mine := "bar"
     return proc() =
         check(ours.get == "qux")
         check(mine.get == "bar")
 
 proc assertions(ours: Shared[string]) =
     check(ours.get == "foo")
-    ours.set("qux")
+    ours := "qux"
 
 proc runner(tick: proc(): void) = tick()
 

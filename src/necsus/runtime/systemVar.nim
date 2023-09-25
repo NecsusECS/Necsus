@@ -27,6 +27,10 @@ proc set*[T](sysvar: SystemVar[T], value: sink T) {.inline.} =
     ## Sets the value in a system variable
     sysvar.unwrap.value = some(value)
 
+proc `:=`*[T](sysvar: SystemVar[T], value: sink T) {.inline.} =
+    ## Sets the value in a system variable
+    set(sysvar, value)
+
 proc get*[T](sysvar: SystemVar[T]): var T {.inline.} =
     ## Returns the value in a system variable
     sysvar.unwrap.value.get()
