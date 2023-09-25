@@ -36,9 +36,16 @@ jobs:
 
   readme:
     runs-on: ubuntu-latest
-    container: nimlang/nim
+    container: nimlang/choosenim
+    strategy:
+      matrix:
+        nim: [ 2.0.0, 1.6.14 ]
     steps:
     - uses: actions/checkout@v1
+    - name: Choose Nim
+      run: choosenim update -y ${{ matrix.nim }}
+    - name: Safe git directory
+      run: git config --global --add safe.directory "$(pwd)"
     - name: Build readme code
       run: nimble readme
 
