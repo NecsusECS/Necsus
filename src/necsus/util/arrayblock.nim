@@ -9,11 +9,16 @@ proc newArrayBlock*[T](len: SomeInteger): ArrayBlock[T] =
     result.size = len.uint
     result.data = cast[ptr UncheckedArray[T]](allocShared0(uint(sizeof(T)) * len.uint))
 
-proc `=destroy`*[T](ary: var ArrayBlock[T]) =
+template destructor(ary) =
     if ary.data != nil:
         for i in 0..<ary.size:
             `=destroy`(ary.data[i])
         deallocShared(ary.data)
+
+when NimMajor < 2:
+    proc `=destroy`*[T](ary: var ArrayBlock[T]) = destructor(ary)
+else:
+    proc `=destroy`*[T](ary: ArrayBlock[T]) = destructor(ary)
 
 proc `=copy`*[T](target: var ArrayBlock[T], source: ArrayBlock[T]) {.error.}
 
