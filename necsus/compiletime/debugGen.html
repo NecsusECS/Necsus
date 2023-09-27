@@ -17,7 +17,7 @@
 <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro:400,500,600' rel='stylesheet' type='text/css'/>
 
 <!-- CSS -->
-<title>src/necsus/compiletime/commonVars</title>
+<title>src/necsus/compiletime/debugGen</title>
 <link rel="stylesheet" type="text/css" href="../../nimdoc.out.css">
 
 <script type="text/javascript" src="../../dochack.js"></script>
@@ -69,7 +69,7 @@ window.addEventListener('DOMContentLoaded', main);
 <body>
 <div class="document" id="documentId">
   <div class="container">
-    <h1 class="title">src/necsus/compiletime/commonVars</h1>
+    <h1 class="title">src/necsus/compiletime/debugGen</h1>
     <div class="row">
   <div class="three columns">
   <div class="theme-switch-wrapper">
@@ -99,20 +99,17 @@ window.addEventListener('DOMContentLoaded', main);
   </div>
   <ul class="simple simple-toc" id="toc-list">
 <li>
+  <a class="reference reference-toplevel" href="#6" id="56">Imports</a>
+  <ul class="simple simple-toc-section">
+    
+  </ul>
+</li>
+<li>
   <a class="reference reference-toplevel" href="#9" id="59">Lets</a>
   <ul class="simple simple-toc-section">
-      <li><a class="reference" href="#appStateIdent"
-    title="appStateIdent = ident(&quot;appState&quot;)">appStateIdent</a></li>
-  <li><a class="reference" href="#confIdent"
-    title="confIdent = ident(&quot;config&quot;)">confIdent</a></li>
-  <li><a class="reference" href="#lifecycle"
-    title="lifecycle = ident(&quot;lifecycle&quot;)">lifecycle</a></li>
-  <li><a class="reference" href="#startTime"
-    title="startTime = ident(&quot;startTime&quot;)">startTime</a></li>
-  <li><a class="reference" href="#thisTime"
-    title="thisTime = ident(&quot;thisTime&quot;)">thisTime</a></li>
-  <li><a class="reference" href="#worldIdent"
-    title="worldIdent = ident(&quot;world&quot;)">worldIdent</a></li>
+      <li><a class="reference" href="#entityDebugGenerator"
+    title="entityDebugGenerator = newGenerator(&quot;EntityDebug&quot;, generateEntityDebug,
+                                    worldFields, defaultSystemArgNone)">entityDebugGenerator</a></li>
 
   </ul>
 </li>
@@ -124,52 +121,18 @@ window.addEventListener('DOMContentLoaded', main);
   <div class="nine columns" id="content">
   <div id="tocRoot"></div>
   
-  <p class="module-desc">The variable used to reference the initial size of any structsThe variable holding the app state instanceProperty that stores the current lifecycle of the appThe variable for identifying the local worldA variable that represents the time that the current tick startedA variable that represents the time that execution started</p>
-  <div class="section" id="9">
+  <p class="module-desc"></p>
+  <div class="section" id="6">
+<h1><a class="toc-backref" href="#6">Imports</a></h1>
+<dl class="item">
+<a class="reference external" href="tools.html">tools</a>, <a class="reference external" href="commonVars.html">commonVars</a>, <a class="reference external" href="archetype.html">archetype</a>, <a class="reference external" href="componentDef.html">componentDef</a>, <a class="reference external" href="worldEnum.html">worldEnum</a>, <a class="reference external" href="systemGen.html">systemGen</a>, <a class="reference external" href="../runtime/world.html">../runtime/world</a>, <a class="reference external" href="../runtime/archetypeStore.html">../runtime/archetypeStore</a>, <a class="reference external" href="../runtime/directives.html">../runtime/directives</a>
+</dl></div>
+<div class="section" id="9">
 <h1><a class="toc-backref" href="#9">Lets</a></h1>
 <dl class="item">
-<div id="appStateIdent">
-<dt><pre><a href="commonVars.html#appStateIdent"><span class="Identifier">appStateIdent</span></a> <span class="Other">=</span> <span class="Identifier">ident</span><span class="Other">(</span><span class="StringLit">&quot;appState&quot;</span><span class="Other">)</span></pre></dt>
-<dd>
-
-
-
-</dd>
-</div>
-<div id="confIdent">
-<dt><pre><a href="commonVars.html#confIdent"><span class="Identifier">confIdent</span></a> <span class="Other">=</span> <span class="Identifier">ident</span><span class="Other">(</span><span class="StringLit">&quot;config&quot;</span><span class="Other">)</span></pre></dt>
-<dd>
-
-
-
-</dd>
-</div>
-<div id="lifecycle">
-<dt><pre><a href="commonVars.html#lifecycle"><span class="Identifier">lifecycle</span></a> <span class="Other">=</span> <span class="Identifier">ident</span><span class="Other">(</span><span class="StringLit">&quot;lifecycle&quot;</span><span class="Other">)</span></pre></dt>
-<dd>
-
-
-
-</dd>
-</div>
-<div id="startTime">
-<dt><pre><a href="commonVars.html#startTime"><span class="Identifier">startTime</span></a> <span class="Other">=</span> <span class="Identifier">ident</span><span class="Other">(</span><span class="StringLit">&quot;startTime&quot;</span><span class="Other">)</span></pre></dt>
-<dd>
-
-
-
-</dd>
-</div>
-<div id="thisTime">
-<dt><pre><a href="commonVars.html#thisTime"><span class="Identifier">thisTime</span></a> <span class="Other">=</span> <span class="Identifier">ident</span><span class="Other">(</span><span class="StringLit">&quot;thisTime&quot;</span><span class="Other">)</span></pre></dt>
-<dd>
-
-
-
-</dd>
-</div>
-<div id="worldIdent">
-<dt><pre><a href="commonVars.html#worldIdent"><span class="Identifier">worldIdent</span></a> <span class="Other">=</span> <span class="Identifier">ident</span><span class="Other">(</span><span class="StringLit">&quot;world&quot;</span><span class="Other">)</span></pre></dt>
+<div id="entityDebugGenerator">
+<dt><pre><a href="debugGen.html#entityDebugGenerator"><span class="Identifier">entityDebugGenerator</span></a> <span class="Other">=</span> <span class="Identifier">newGenerator</span><span class="Other">(</span><span class="StringLit">&quot;EntityDebug&quot;</span><span class="Other">,</span> <span class="Identifier">generateEntityDebug</span><span class="Other">,</span>
+                                    <span class="Identifier">worldFields</span><span class="Other">,</span> <span class="Identifier">defaultSystemArgNone</span><span class="Other">)</span></pre></dt>
 <dd>
 
 

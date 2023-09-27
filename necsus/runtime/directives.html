@@ -113,6 +113,8 @@ window.addEventListener('DOMContentLoaded', main);
     title="Delete = proc (entityId: EntityId)">Delete</a></li>
   <li><a class="reference" href="#Detach"
     title="Detach[C] = proc (entityId: EntityId)">Detach</a></li>
+  <li><a class="reference" href="#EntityDebug"
+    title="EntityDebug = proc (entityId: EntityId): string">EntityDebug</a></li>
   <li><a class="reference" href="#Lookup"
     title="Lookup[C] = proc (entityId: EntityId): Option[C]">Lookup</a></li>
   <li><a class="reference" href="#Outbox"
@@ -165,6 +167,14 @@ Detaches a set of components from an entity. Where <tt class="docutils literal">
 
 </dd>
 </div>
+<div id="EntityDebug">
+<dt><pre><a href="directives.html#EntityDebug"><span class="Identifier">EntityDebug</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">entityId</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span></pre></dt>
+<dd>
+
+Looks up an entity and returns debug data about it
+
+</dd>
+</div>
 <div id="Lookup">
 <dt><pre><a href="directives.html#Lookup"><span class="Identifier">Lookup</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">entityId</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Option</span><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span></pre></dt>
 <dd>
@@ -207,7 +217,7 @@ The total amount of time spent in an app
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-09-25 16:47:34 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-09-27 16:07:08 UTC</small>
       </div>
     </div>
   </div>

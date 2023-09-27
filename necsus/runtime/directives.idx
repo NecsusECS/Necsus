@@ -5,3 +5,4 @@ Lookup	necsus/runtime/directives.html#Lookup	directives: Lookup
 Outbox	necsus/runtime/directives.html#Outbox	directives: Outbox	
 TimeDelta	necsus/runtime/directives.html#TimeDelta	directives: TimeDelta	
 TimeElapsed	necsus/runtime/directives.html#TimeElapsed	directives: TimeElapsed	
+EntityDebug	necsus/runtime/directives.html#EntityDebug	directives: EntityDebug	
