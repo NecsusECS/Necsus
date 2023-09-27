@@ -622,11 +622,30 @@ app.tick()
 app.tick()
 ````
 
-## Debugging
+## Debugging an Entity
+
+When you find yourelf in a position that you need to see the exact state that an entity is in, you can get a string
+dump of that entity by using the `EntityDebug` directive:
+
+
+## Debugging Generated Code
 
 If Necsus isn't behaving as you would expect, the best tool you've got in your toolbox is the ability to dump the code
 that it generates. This allows you to walk through what is happening, or even substitute the generated code into your
 app and execute it. This can be enabled by compiling with the `-d:dump` flag set.
+
+```nim
+import necsus
+
+type
+    A = object
+
+proc debuggingSystem(query: Query[(A, )], debug: EntityDebug) =
+    for eid, _ in query:
+        echo debug(eid)
+
+proc myApp() {.necsus([], [~debuggingSystem], [], newNecsusConf()).}
+```
 
 # License
 

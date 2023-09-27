@@ -25,3 +25,6 @@ type
 
     TimeElapsed* = float
         ## The total amount of time spent in an app
+
+    EntityDebug* = proc(entityId: EntityId): string
+        ## Looks up an entity and returns debug data about it

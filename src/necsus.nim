@@ -1,7 +1,7 @@
 import necsus / runtime / [ entityId, query, systemVar, inbox, directives, necsusConf, archetypeStore, spawn, pragmas ]
 import necsus / compiletime / [
     parse, systemGen, codeGenInfo, worldGen, worldEnum, spawnGen, queryGen, tickGen, sharedGen, eventGen, lookupGen,
-    attachDetachGen, deleteGen, localGen, timeGen
+    attachDetachGen, deleteGen, localGen, timeGen, debugGen
 ]
 import sequtils, macros, options
 
@@ -36,6 +36,7 @@ let parser {.compileTime.} = newParser(
     outboxGenerator,
     deltaGenerator,
     elapsedGenerator,
+    entityDebugGenerator,
 )
 
 proc buildApp(
