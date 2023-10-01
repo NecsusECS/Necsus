@@ -3,7 +3,11 @@ import necsus / compiletime / [
     parse, systemGen, codeGenInfo, worldGen, worldEnum, spawnGen, queryGen, tickGen, sharedGen, eventGen, lookupGen,
     attachDetachGen, deleteGen, localGen, timeGen, debugGen
 ]
+
 import sequtils, macros, options
+
+when defined(dump):
+    import strutils
 
 export entityId, query, archetypeStore.items, necsusConf, systemVar, inbox, directives, spawn, pragmas
 
@@ -76,7 +80,8 @@ proc buildApp(
     )
 
     when defined(dump):
-        echo result.repr
+        echo "import necsus/runtime/[world, archetypeStore], std/math"
+        echo replace(result.repr, "proc =destroy", "proc `=destroy`")
 
 macro necsus*(
     runner: typed{sym},

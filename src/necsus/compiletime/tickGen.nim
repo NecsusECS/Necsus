@@ -50,19 +50,16 @@ proc createTickProc*(genInfo: CodeGenInfo): NimNode =
 proc createTickRunner*(genInfo: CodeGenInfo, runner: NimNode): NimNode =
     ## Creates the code required to execute a single tick within the world
 
-    result = nnkCall.newTree(runner)
+    result = newStmtList()
 
+    # Create a proc to use the `appState` in the current variable closure
+    let runAppStateIdent = ident("runAppState")
+    result.add(newProc(runAppStateIdent, body = newStmtList(newCall(ident("tick"), appStateIdent))))
+
+    # Invoke the runner, passing in any manually defined arguments
+    var call = nnkCall.newTree(runner)
     for arg in genInfo.renderSystemArgs(genInfo.app.runnerArgs):
-        result.add(arg)
+        call.add(arg)
+    call.add(runAppStateIdent)
 
-    result.add(
-        nnkDo.newTree(
-            newEmptyNode(),
-            newEmptyNode(),
-            newEmptyNode(),
-            nnkFormalParams.newTree(ident("void")),
-            newEmptyNode(),
-            newEmptyNode(),
-            newStmtList(newCall(ident("tick"), appStateIdent))
-        )
-    )
+    result.add(call)
