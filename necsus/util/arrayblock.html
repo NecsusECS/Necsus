@@ -136,6 +136,11 @@ window.addEventListener('DOMContentLoaded', main);
     title="`[]=`[T](ary: ArrayBlock[T]; index: SomeInteger; value: sink T)">`[]=`[T](ary: ArrayBlock[T]; index: SomeInteger; value: sink T)</a></li>
 
   </ul>
+  <ul class="simple nested-toc-section">del
+      <li><a class="reference" href="#del%2CArrayBlock%5BT%5D%2CSomeInteger"
+    title="del[T](ary: var ArrayBlock[T]; index: SomeInteger): T">del[T](ary: var ArrayBlock[T]; index: SomeInteger): T</a></li>
+
+  </ul>
   <ul class="simple nested-toc-section">isNil
       <li><a class="reference" href="#isNil%2CArrayBlock%5BT%5D"
     title="isNil[T](ary: ArrayBlock[T]): bool">isNil[T](ary: ArrayBlock[T]): bool</a></li>
@@ -228,6 +233,14 @@ Read a value from this array block
 
 </dd>
 </div>
+<div id="del,ArrayBlock[T],SomeInteger">
+<dt><pre><span class="Keyword">proc</span> <a href="#del%2CArrayBlock%5BT%5D%2CSomeInteger"><span class="Identifier">del</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">ary</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="arrayblock.html#ArrayBlock"><span class="Identifier">ArrayBlock</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">index</span><span class="Other">:</span> <span class="Identifier">SomeInteger</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">T</span></pre></dt>
+<dd>
+
+Deletes a value from this array and returns the deleted value
+
+</dd>
+</div>
 <div id="isNil,ArrayBlock[T]">
 <dt><pre><span class="Keyword">proc</span> <a href="#isNil%2CArrayBlock%5BT%5D"><span class="Identifier">isNil</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">ary</span><span class="Other">:</span> <a href="arrayblock.html#ArrayBlock"><span class="Identifier">ArrayBlock</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span class="Identifier">inline</span>.}</pre></dt>
 <dd>
@@ -267,7 +280,7 @@ Iterate through all values in this array
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-09-29 13:57:02 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-10-02 15:56:10 UTC</small>
       </div>
     </div>
   </div>

@@ -160,16 +160,16 @@ window.addEventListener('DOMContentLoaded', main);
 
   </ul>
   <ul class="simple nested-toc-section">moveEntity
-      <li><a class="reference" href="#moveEntity%2CWorld%5BArchs%3A%20enum%5D%2Cptr.EntityIndex%5BArchs%3A%20enum%5D%2CArchetypeStore%5BArchs%3A%20enum%2CFromArch%3A%20tuple%5D%2CArchetypeStore%5BArchs%3A%20enum%2CToArch%3A%20tuple%5D%2Cproc%28ptr.FromArch%29"
+      <li><a class="reference" href="#moveEntity%2CWorld%5BArchs%3A%20enum%5D%2Cptr.EntityIndex%5BArchs%3A%20enum%5D%2CArchetypeStore%5BArchs%3A%20enum%2CFromArch%3A%20tuple%5D%2CArchetypeStore%5BArchs%3A%20enum%2CToArch%3A%20tuple%5D%2Cproc%28sinkFromArch%29"
     title="moveEntity[Archs: enum; FromArch: tuple; ToArch: tuple](world: var World[Archs];
     entityIndex: ptr EntityIndex[Archs];
     fromArch: var ArchetypeStore[Archs, FromArch];
     toArch: var ArchetypeStore[Archs, ToArch];
-    convert: proc (input: ptr FromArch): ToArch)">moveEntity[Archs: enum; FromArch: tuple; ToArch: tuple](world: var World[Archs];
+    convert: proc (input: sink FromArch): ToArch)">moveEntity[Archs: enum; FromArch: tuple; ToArch: tuple](world: var World[Archs];
     entityIndex: ptr EntityIndex[Archs];
     fromArch: var ArchetypeStore[Archs, FromArch];
     toArch: var ArchetypeStore[Archs, ToArch];
-    convert: proc (input: ptr FromArch): ToArch)</a></li>
+    convert: proc (input: sink FromArch): ToArch)</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">newArchetypeStore
@@ -309,12 +309,12 @@ Iterates over the components in a view
 
 </dd>
 </div>
-<div id="moveEntity,World[Archs: enum],ptr.EntityIndex[Archs: enum],ArchetypeStore[Archs: enum,FromArch: tuple],ArchetypeStore[Archs: enum,ToArch: tuple],proc(ptr.FromArch)">
-<dt><pre><span class="Keyword">proc</span> <a href="#moveEntity%2CWorld%5BArchs%3A%20enum%5D%2Cptr.EntityIndex%5BArchs%3A%20enum%5D%2CArchetypeStore%5BArchs%3A%20enum%2CFromArch%3A%20tuple%5D%2CArchetypeStore%5BArchs%3A%20enum%2CToArch%3A%20tuple%5D%2Cproc%28ptr.FromArch%29"><span class="Identifier">moveEntity</span></a><span class="Other">[</span><span class="Identifier">Archs</span><span class="Other">:</span> <span class="Keyword">enum</span><span class="Other">;</span> <span class="Identifier">FromArch</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">;</span> <span class="Identifier">ToArch</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span>
+<div id="moveEntity,World[Archs: enum],ptr.EntityIndex[Archs: enum],ArchetypeStore[Archs: enum,FromArch: tuple],ArchetypeStore[Archs: enum,ToArch: tuple],proc(sinkFromArch)">
+<dt><pre><span class="Keyword">proc</span> <a href="#moveEntity%2CWorld%5BArchs%3A%20enum%5D%2Cptr.EntityIndex%5BArchs%3A%20enum%5D%2CArchetypeStore%5BArchs%3A%20enum%2CFromArch%3A%20tuple%5D%2CArchetypeStore%5BArchs%3A%20enum%2CToArch%3A%20tuple%5D%2Cproc%28sinkFromArch%29"><span class="Identifier">moveEntity</span></a><span class="Other">[</span><span class="Identifier">Archs</span><span class="Other">:</span> <span class="Keyword">enum</span><span class="Other">;</span> <span class="Identifier">FromArch</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">;</span> <span class="Identifier">ToArch</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span>
     <span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">[</span><span class="Identifier">Archs</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">entityIndex</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="world.html#EntityIndex"><span class="Identifier">EntityIndex</span></a><span class="Other">[</span><span class="Identifier">Archs</span><span class="Other">]</span><span class="Other">;</span>
     <span class="Identifier">fromArch</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">Archs</span><span class="Other">,</span> <span class="Identifier">FromArch</span><span class="Other">]</span><span class="Other">;</span>
     <span class="Identifier">toArch</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">Archs</span><span class="Other">,</span> <span class="Identifier">ToArch</span><span class="Other">]</span><span class="Other">;</span>
-    <span class="Identifier">convert</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">input</span><span class="Other">:</span> <span class="Keyword">ptr</span> <span class="Identifier">FromArch</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">ToArch</span><span class="Other">)</span> {.<span class="Identifier">inline</span>.}</pre></dt>
+    <span class="Identifier">convert</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">input</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">FromArch</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">ToArch</span><span class="Other">)</span> {.<span class="Identifier">inline</span>.}</pre></dt>
 <dd>
 
 Moves the components for an entity from one archetype to another
@@ -373,7 +373,7 @@ Iterates over the components in a view
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-09-29 13:57:02 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-10-02 15:56:10 UTC</small>
       </div>
     </div>
   </div>

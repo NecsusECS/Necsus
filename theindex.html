@@ -417,7 +417,9 @@ window.addEventListener('DOMContentLoaded', main);
           <li><a class="reference external"
           data-doc-search-tag="world: del[Archs: enum](world: var World[Archs]; entityId: EntityId): EntityIndex[Archs]" href="necsus/runtime/world.html#del%2CWorld%5BArchs%3A%20enum%5D%2CEntityId">world: del[Archs: enum](world: var World[Archs]; entityId: EntityId): EntityIndex[Archs]</a></li>
           <li><a class="reference external"
-          data-doc-search-tag="blockstore: del[V](store: var BlockStore[V]; idx: uint)" href="necsus/util/blockstore.html#del%2CBlockStore%5BV%5D%2Cuint">blockstore: del[V](store: var BlockStore[V]; idx: uint)</a></li>
+          data-doc-search-tag="arrayblock: del[T](ary: var ArrayBlock[T]; index: SomeInteger): T" href="necsus/util/arrayblock.html#del%2CArrayBlock%5BT%5D%2CSomeInteger">arrayblock: del[T](ary: var ArrayBlock[T]; index: SomeInteger): T</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="blockstore: del[V](store: var BlockStore[V]; idx: uint): V" href="necsus/util/blockstore.html#del%2CBlockStore%5BV%5D%2Cuint">blockstore: del[V](store: var BlockStore[V]; idx: uint): V</a></li>
           </ul></dd>
 <dt><a name="Delete" href="#Delete"><span>Delete:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -739,11 +741,11 @@ window.addEventListener('DOMContentLoaded', main);
     entityIndex: ptr EntityIndex[Archs];
     fromArch: var ArchetypeStore[Archs, FromArch];
     toArch: var ArchetypeStore[Archs, ToArch];
-    convert: proc (input: ptr FromArch): ToArch)" href="necsus/runtime/archetypeStore.html#moveEntity%2CWorld%5BArchs%3A%20enum%5D%2Cptr.EntityIndex%5BArchs%3A%20enum%5D%2CArchetypeStore%5BArchs%3A%20enum%2CFromArch%3A%20tuple%5D%2CArchetypeStore%5BArchs%3A%20enum%2CToArch%3A%20tuple%5D%2Cproc%28ptr.FromArch%29">archetypeStore: moveEntity[Archs: enum; FromArch: tuple; ToArch: tuple](world: var World[Archs];
+    convert: proc (input: sink FromArch): ToArch)" href="necsus/runtime/archetypeStore.html#moveEntity%2CWorld%5BArchs%3A%20enum%5D%2Cptr.EntityIndex%5BArchs%3A%20enum%5D%2CArchetypeStore%5BArchs%3A%20enum%2CFromArch%3A%20tuple%5D%2CArchetypeStore%5BArchs%3A%20enum%2CToArch%3A%20tuple%5D%2Cproc%28sinkFromArch%29">archetypeStore: moveEntity[Archs: enum; FromArch: tuple; ToArch: tuple](world: var World[Archs];
     entityIndex: ptr EntityIndex[Archs];
     fromArch: var ArchetypeStore[Archs, FromArch];
     toArch: var ArchetypeStore[Archs, ToArch];
-    convert: proc (input: ptr FromArch): ToArch)</a></li>
+    convert: proc (input: sink FromArch): ToArch)</a></li>
           </ul></dd>
 <dt><a name="name" href="#name"><span>name:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -881,11 +883,11 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="newNecsusConf" href="#newNecsusConf"><span>newNecsusConf:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="necsusConf: newNecsusConf(entitySize: int = 1000;
-              componentSize: int = ceilDiv(entitySize, 3);
-              eventQueueSize: int = ceilDiv(entitySize, 10)): NecsusConf" href="necsus/runtime/necsusConf.html#newNecsusConf%2Cint%2Cint%2Cint">necsusConf: newNecsusConf(entitySize: int = 1000;
-              componentSize: int = ceilDiv(entitySize, 3);
-              eventQueueSize: int = ceilDiv(entitySize, 10)): NecsusConf</a></li>
+          data-doc-search-tag="necsusConf: newNecsusConf(): NecsusConf" href="necsus/runtime/necsusConf.html#newNecsusConf">necsusConf: newNecsusConf(): NecsusConf</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="necsusConf: newNecsusConf(entitySize: int; componentSize: int = ceilDiv(1000, 3);
+              eventQueueSize: int = ceilDiv(1000, 10)): NecsusConf" href="necsus/runtime/necsusConf.html#newNecsusConf%2Cint%2Cint%2Cint">necsusConf: newNecsusConf(entitySize: int; componentSize: int = ceilDiv(1000, 3);
+              eventQueueSize: int = ceilDiv(1000, 10)): NecsusConf</a></li>
           <li><a class="reference external"
           data-doc-search-tag="necsusConf: newNecsusConf(getTime: proc (): float; entitySize: int = 1000;
               componentSize: int = ceilDiv(entitySize, 3);
@@ -1180,7 +1182,7 @@ window.addEventListener('DOMContentLoaded', main);
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-09-29 13:57:03 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-10-02 15:56:11 UTC</small>
       </div>
     </div>
   </div>
