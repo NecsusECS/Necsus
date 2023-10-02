@@ -30,20 +30,24 @@ proc isNil*[T](ary: ArrayBlock[T]): bool {.inline.} =
     ## Whether an array block has been initialized
     ary.data == nil
 
+proc del*[T](ary: var ArrayBlock[T], index: SomeInteger): T =
+    ## Deletes a value from this array and returns the deleted value
+    result = move(ary.data[index.uint])
+
 template checkBounds[T](ary: ArrayBlock[T], index: SomeInteger) =
     when compileOption("boundChecks"):
-        if index < 0 or index >= ary.size:
+        if index < 0 or index.uint >= ary.size:
             raise newException(IndexDefect, $index & " is out of bounds")
 
 proc `[]`*[T](ary: ArrayBlock[T], index: SomeInteger): var T {.inline.} =
     ## Read a value from this array block
-    ary.checkBounds(index)
-    ary.data[index]
+    ary.checkBounds(index.uint)
+    ary.data[index.uint]
 
 proc `[]=`*[T](ary: ArrayBlock[T], index: SomeInteger, value: sink T) {.inline.} =
     ## Write a value to this array block
-    ary.checkBounds(index)
-    ary.data[index] = value
+    ary.checkBounds(index.uint)
+    ary.data[index.uint] = value
 
 iterator items*[T](ary: var ArrayBlock[T]): var T =
     ## Iterate through all values in this array

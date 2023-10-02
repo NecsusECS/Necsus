@@ -4,18 +4,21 @@ type
     Thingy = object
         value: int
 
+proc `=copy`(a: var Thingy, b: Thingy) {.error.}
+
 var thingyDestroyCount = 0
 
 proc `=destroy`(thingy: var Thingy) =
     if thingy.value == 123:
+        assert(thingyDestroyCount <= 0)
         thingyDestroyCount += 1
 
 proc destroyObj(spawn: Spawn[(Thingy, )], delete: Delete) =
-    check(thingyDestroyCount == 0)
+    require(thingyDestroyCount == 0)
     let eid = spawn.with(Thingy(value: 123))
-    check(thingyDestroyCount == 0)
+    require(thingyDestroyCount == 0)
     delete(eid)
-    check(thingyDestroyCount == 1)
+    require(thingyDestroyCount == 1)
 
 proc runner(tick: proc(): void) = tick()
 

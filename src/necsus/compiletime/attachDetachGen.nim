@@ -51,7 +51,7 @@ proc createArchMove(
     return quote:
         moveEntity[`archetypeEnum`, `fromArchTuple`, `toArchTuple`](
             `appStateIdent`.`worldIdent`, `entityIndex`, `appStateIdent`.`fromArchIdent`, `appStateIdent`.`toArchIdent`,
-            proc (`existing`: ptr `fromArchTuple`): auto = `createNewTuple`
+            proc (`existing`: sink `fromArchTuple`): auto = `createNewTuple`
         )
 
 proc attachArchetype(builder: var ArchetypeBuilder[ComponentDef], dir: TupleDirective) =

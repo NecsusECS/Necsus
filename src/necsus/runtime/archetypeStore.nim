@@ -77,19 +77,19 @@ proc getComps*[Archs: enum, Comps: tuple](store: var ArchetypeStore[Archs, Comps
 
 proc del*(store: var ArchetypeStore, index: uint) =
     ## Return the components for an archetype
-    store.compStore.del(index)
+    discard store.compStore.del(index)
 
 proc moveEntity*[Archs: enum, FromArch: tuple, ToArch: tuple](
     world: var World[Archs],
     entityIndex: ptr EntityIndex[Archs],
     fromArch: var ArchetypeStore[Archs, FromArch],
     toArch: var ArchetypeStore[Archs, ToArch],
-    convert: proc (input: ptr FromArch): ToArch
+    convert: proc (input: sink FromArch): ToArch
 ) {.inline.} =
     ## Moves the components for an entity from one archetype to another
-    let existing = getComps[Archs, FromArch](fromArch, entityIndex.archetypeIndex)
+    let deleted = fromArch.compStore.del(entityIndex.archetypeIndex)
+    let existing = deleted.components
     let newSlot = newSlot[Archs, ToArch](toArch, entityIndex.entityId)
     discard setComp(newSlot, convert(existing))
-    fromArch.del(entityIndex.archetypeIndex)
     entityIndex.archetype = toArch.archetype
     entityIndex.archetypeIndex = newSlot.index

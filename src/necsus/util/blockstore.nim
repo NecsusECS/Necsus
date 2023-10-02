@@ -63,12 +63,13 @@ proc push*[V](store: var BlockStore[V], value: sink V): uint =
     entry.set(value)
     return entry.index
 
-proc del*[V](store: var BlockStore[V], idx: uint) =
+proc del*[V](store: var BlockStore[V], idx: uint): V =
     ## Deletes a field
     var falsey = true
     if store.data[idx].alive.compareExchange(falsey, false):
         store.len.atomicDec(1)
-        `=destroy`(store.data[idx].value)
+        let deleted = store.data.del(idx)
+        result = deleted.value
         discard store.recycle.tryPush(idx)
         store.hasRecycledValues = true
 

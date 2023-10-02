@@ -36,19 +36,19 @@ suite "BlockStore":
         check(store.items.toSeq == @[0, 1, 2, 3])
         check(store.len == 4)
 
-        store.del(id2)
+        check(store.del(id2) == 2)
         check(store.items.toSeq == @[0, 1, 3])
         check(store.len == 3)
 
-        store.del(id0)
+        check(store.del(id0) == 0)
         check(store.items.toSeq == @[1, 3])
         check(store.len == 2)
 
-        store.del(id3)
+        check(store.del(id3) == 3)
         check(store.items.toSeq == @[1])
         check(store.len == 1)
 
-        store.del(id1)
+        check(store.del(id1) == 1)
         check(store.items.toSeq == newSeq[int]())
         check(store.len == 0)
 
@@ -62,7 +62,7 @@ suite "BlockStore":
             discard store.push("foo")
 
         expect IndexDefect:
-            store.del(50)
+            discard store.del(50)
 
         expect IndexDefect:
             discard store[50]
@@ -72,7 +72,7 @@ suite "BlockStore":
         for i in 0..100:
             let idx = store.push(i)
             check(store[idx] == i)
-            store.del(idx)
+            discard store.del(idx)
 
     test "Reserving values":
         var store = newBlockStore[string](50)
