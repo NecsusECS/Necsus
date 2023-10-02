@@ -26,11 +26,9 @@ when defined(js) or defined(osx) or defined(windows) or defined(posix):
     import std/times
 
     proc newNecsusConf*(
-        entitySize: int,
-        componentSize: int = ceilDiv(1_000, 3),
-        eventQueueSize: int = ceilDiv(1_000, 10)
+        entitySize: int = 1_000,
+        componentSize: int = ceilDiv(entitySize, 3),
+        eventQueueSize: int = ceilDiv(entitySize, 10)
     ): NecsusConf =
         ## Create a necsus configuration
         newNecsusConf(epochTime, entitySize, componentSize, eventQueueSize)
-
-    proc newNecsusConf*(): NecsusConf = newNecsusConf(1_000, ceilDiv(1_000, 3), ceilDiv(1_000, 10))
