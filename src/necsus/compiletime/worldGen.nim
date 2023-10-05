@@ -115,6 +115,7 @@ proc createAppStateDestructor*(genInfo: CodeGenInfo): NimNode =
     ## Creates the instance of the app state object
     let appStateType = genInfo.appStateStruct
     let destroy = "=destroy".ident
+    let beforeTeardown = genInfo.generateForHook(GenerateHook.BeforeTeardown)
     let teardowns = genInfo.callSystems(TeardownPhase)
 
     let destroys = newStmtList()
@@ -125,6 +126,7 @@ proc createAppStateDestructor*(genInfo: CodeGenInfo): NimNode =
 
     return quote:
         proc `destroy`*(`appStateIdent`: var `appStateType`) =
+            `beforeTeardown`
             `teardowns`
             `destroys`
             `appStateIdent`.`worldIdent`.`destroy`()

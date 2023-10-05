@@ -72,6 +72,13 @@ proc parseDirectiveArgsFromTuple(tupleArg: NimNode): seq[DirectiveArg] =
 template orElse[T](optional: Option[T], exec: untyped): T =
     if optional.isSome: optional.get else: exec
 
+proc parseArgType(parser: Parser, argName: string, argType, original: NimNode): SystemArg
+
+proc parseNestedArgs(parser: Parser, nestedArgs: seq[RawNestedArg]): seq[SystemArg] =
+    ## If a directive references other directives, we need to extract those
+    for (name, argType) in nestedArgs:
+        result.add parseArgType(parser, name, argType, argType)
+
 proc parseParametricArg(
     parser: Parser,
     argName: string,
@@ -87,31 +94,37 @@ proc parseParametricArg(
     case gen.kind
     of DirectiveKind.Tuple:
         let tupleDir = newTupleDir(directiveParametric.parseDirectiveArgsFromTuple)
+        let nestedArgs = gen.nestedArgsTuple(tupleDir)
         return some(SystemArg(
             generator: gen,
+            originalName: argName,
             name: gen.chooseNameTuple(uniqName, tupleDir),
             kind: DirectiveKind.Tuple,
-            tupleDir: tupleDir
+            tupleDir: tupleDir,
+            nestedArgs: parser.parseNestedArgs(nestedArgs)
         ))
     of DirectiveKind.Mono:
         let monoDir = newMonoDir(directiveParametric)
+        let nestedArgs = gen.nestedArgsMono(monoDir)
         return some(SystemArg(
             generator: gen,
+            originalName: argName,
             name: gen.chooseNameMono(uniqName, monoDir),
             kind: DirectiveKind.Mono,
-            monoDir: monoDir
+            monoDir: monoDir,
+            nestedArgs: parser.parseNestedArgs(nestedArgs)
         ))
     of DirectiveKind.None:
         error("System argument does not support tuple parameters: " & $gen.kind)
 
-proc parseFlagSystemArg(parser: Parser, directiveSymbol: NimNode): Option[SystemArg] =
+proc parseFlagSystemArg(parser: Parser, name: string, directiveSymbol: NimNode): Option[SystemArg] =
     ## Parses unparameterized system args
     let gen = parser.parseArgKind(directiveSymbol).orElse: return none(SystemArg)
     case gen.kind
     of DirectiveKind.Tuple, DirectiveKind.Mono:
         error("System argument is not flag based: " & $gen.kind)
     of DirectiveKind.None:
-        return some(SystemArg(generator: gen, kind: DirectiveKind.None))
+        return some(SystemArg(generator: gen, originalName: name, kind: DirectiveKind.None))
 
 proc parseArgType(parser: Parser, argName: string, argType, original: NimNode): SystemArg =
     ## Parses the type of a system argument
@@ -120,7 +133,7 @@ proc parseArgType(parser: Parser, argName: string, argType, original: NimNode): 
     case argType.kind:
     of nnkBracketExpr: parsed = parser.parseParametricArg(argName, argType[0], argType[1])
     of nnkCall: parsed = parser.parseParametricArg(argName, argType[1], argType[2])
-    of nnkSym: parsed = parser.parseFlagSystemArg(argType)
+    of nnkSym: parsed = parser.parseFlagSystemArg(argName, argType)
     of nnkVarTy: parsed = some(parser.parseArgType(argName, argType[0], original))
     else: parsed = none(SystemArg)
 
@@ -252,15 +265,22 @@ iterator components*(systems: openarray[ParsedSystem]): ComponentDef =
             for component in arg.components:
                 yield component
 
-iterator args*(system: ParsedSystem): SystemArg =
-    ## Yields all args in a system
-    for arg in system.args: yield arg
+proc allNestedArgs(arg: SystemArg, into: var seq[SystemArg]) =
+    for nested in arg.nestedArgs:
+        into.add(nested)
+        allNestedArgs(nested, into)
 
 iterator args*(systems: openarray[ParsedSystem]): SystemArg =
     ## Yields all args in a system
     for system in systems:
         for arg in system.args:
             yield arg
+
+            # Yield any system args nested inside other system args
+            var collectNested: seq[SystemArg]
+            arg.allNestedArgs(collectNested)
+            for nested in collectNested:
+                yield nested
 
 iterator components*(app: ParsedApp): ComponentDef =
     ## List all components referenced by an app

@@ -4,7 +4,7 @@ import monoDirective, tupleDirective, archetypeBuilder, componentDef, worldEnum,
 type
     GenerateHook* = enum
         ## The different points at which code can be hooked
-        Outside, Early, Standard, Late, BeforeLoop, LoopStart, LoopEnd
+        Outside, Early, Standard, Late, BeforeLoop, LoopStart, LoopEnd, BeforeTeardown
 
     AppInputs* = seq[tuple[argName: string, directive: MonoDirective]]
         ## The list of arguments passed into the app
@@ -23,6 +23,12 @@ type
     WorldField* = tuple[name: string, typ: NimNode]
         ## A field to add to the world object
 
+    RawNestedArg* = tuple[name: string, directive: NimNode]
+        ## A field to add to the world object
+
+    NestedArgsExtractor*[T] = proc(dir: T): seq[RawNestedArg]
+        ## Callback that pulls out any nested arguments also required by this directive
+
     HookGenerator*[T] = proc(details: GenerateContext, arg: SystemArg, name: string, dir: T): NimNode
         ## The callback that allows a decorator to generate code for a specific hook
 
@@ -40,12 +46,14 @@ type
             systemReturn*: proc(args: DirectiveSet[SystemArg], returns: MonoDirective): Option[NimNode]
             worldFieldsMono*: proc(name: string, returns: MonoDirective): seq[WorldField]
             systemArgMono*: SystemArgExtractor[MonoDirective]
+            nestedArgsMono*: NestedArgsExtractor[MonoDirective]
         of DirectiveKind.Tuple:
             generateTuple*: HookGenerator[TupleDirective]
             archetypeTuple*: proc(builder: var ArchetypeBuilder[ComponentDef], dir: TupleDirective)
             chooseNameTuple*: proc(uniqId: string, dir: TupleDirective): string
             worldFieldsTuple*: proc(name: string, returns: TupleDirective): seq[WorldField]
             systemArgTuple*: SystemArgExtractor[TupleDirective]
+            nestedArgsTuple*: NestedArgsExtractor[TupleDirective]
         of DirectiveKind.None:
             generateNone*: HookGenerator[void]
             worldFieldsNone: proc(name: string): seq[WorldField]
@@ -54,6 +62,7 @@ type
     SystemArg* = object
         ## A single arg within a system proc
         generator*: DirectiveGen
+        originalName*: string
         name*: string
         case kind*: DirectiveKind
         of DirectiveKind.Tuple:
@@ -62,6 +71,7 @@ type
             monoDir*: MonoDirective
         of DirectiveKind.None:
             discard
+        nestedArgs*: seq[SystemArg]
 
 proc noArchetype[T](builder: var ArchetypeBuilder[ComponentDef], dir: T) = discard
 
@@ -72,6 +82,8 @@ proc defaultWorldField(name: string, dir: MonoDirective | TupleDirective): seq[W
 proc defaultSystemArg(name: string, dir: MonoDirective | TupleDirective): NimNode =
     newDotExpr(appStateIdent, name.ident)
 
+proc defaultNestedArgs(dir: MonoDirective | TupleDirective): seq[RawNestedArg] = @[]
+
 proc newGenerator*(
     ident: string,
     generate: HookGenerator[TupleDirective],
@@ -79,6 +91,7 @@ proc newGenerator*(
     chooseName: proc(uniqId: string, dir: TupleDirective): string = defaultName,
     worldFields: proc(name: string, dir: TupleDirective): seq[WorldField] = defaultWorldField,
     systemArg: SystemArgExtractor[TupleDirective] = defaultSystemArg,
+    nestedArgs: NestedArgsExtractor[TupleDirective] = defaultNestedArgs,
 ): DirectiveGen =
     ## Create a tuple based generator
     result.ident = ident
@@ -88,6 +101,7 @@ proc newGenerator*(
     result.chooseNameTuple = chooseName
     result.worldFieldsTuple = worldFields
     result.systemArgTuple = systemArg
+    result.nestedArgsTuple = nestedArgs
 
 proc defaultSystemReturn(args: DirectiveSet[SystemArg], returns: MonoDirective): Option[NimNode] = none(NimNode)
 
@@ -99,6 +113,7 @@ proc newGenerator*(
     systemReturn: proc(args: DirectiveSet[SystemArg], returns: MonoDirective): Option[NimNode] = defaultSystemReturn,
     worldFields: proc(name: string, dir: MonoDirective): seq[WorldField] = defaultWorldField,
     systemArg: SystemArgExtractor[MonoDirective] = defaultSystemArg,
+    nestedArgs: NestedArgsExtractor[MonoDirective] = defaultNestedArgs,
 ): DirectiveGen =
     ## Creates a mono based generator
     result.ident = ident
@@ -109,6 +124,7 @@ proc newGenerator*(
     result.systemReturn = systemReturn
     result.worldFieldsMono = worldFields
     result.systemArgMono = systemArg
+    result.nestedArgsMono = nestedArgs
 
 proc defaultWorldFieldNone(name: string): seq[WorldField] = @[]
 
@@ -173,9 +189,17 @@ proc worldFields*(arg: SystemArg, name: string): seq[WorldField] =
     of DirectiveKind.Mono: arg.generator.worldFieldsMono(name, arg.monoDir)
     of DirectiveKind.None: arg.generator.worldFieldsNone(name)
 
-proc systemArg*(arg: SystemArg, name: string): NimNode =
+proc systemArg(arg: SystemArg, name: string): NimNode =
     ## Generates the argument to pass in when calling a system
     case arg.kind
     of DirectiveKind.Tuple: arg.generator.systemArgTuple(name, arg.tupleDir)
     of DirectiveKind.Mono: arg.generator.systemArgMono(name, arg.monoDir)
     of DirectiveKind.None: arg.generator.systemArgNone(name)
+
+proc systemArg*(directives: Table[DirectiveGen, DirectiveSet[SystemArg]], arg: SystemArg): NimNode =
+    ## Returns the value to pass to a system when executin the given argument
+    systemArg(arg, directives[arg.generator].nameOf(arg))
+
+proc systemArg*(ctx: GenerateContext, arg: SystemArg): NimNode =
+    ## Returns the value to pass to a system when executin the given argument
+    systemArg(ctx.directives, arg)

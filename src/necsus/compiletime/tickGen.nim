@@ -1,9 +1,9 @@
-import macros, sequtils, systemGen, tables, options
-import codeGenInfo, parse, directiveSet, tupleDirective, monoDirective, commonVars
+import macros, sequtils, systemGen, options
+import codeGenInfo, parse, commonVars
 
 proc renderSystemArgs(codeGenInfo: CodeGenInfo, args: openarray[SystemArg]): seq[NimNode] =
     ## Renders system arguments down to nim code
-    args.mapIt: it.systemArg(codeGenInfo.directives[it.generator].nameOf(it))
+    args.mapIt: systemArg(codeGenInfo, it)
 
 proc callInstanced(codeGenInfo: CodeGenInfo, system: ParsedSystem, phase: SystemPhase): NimNode =
     ## Generates the code for handling an instanced system in the given phase

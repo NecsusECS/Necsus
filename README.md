@@ -535,6 +535,30 @@ proc receive(receiver: Inbox[SomeEvent]) =
 proc myApp() {.necsus([], [~publish, ~receive], [], newNecsusConf()).}
 ```
 
+#### Bundles
+
+`Bundle`s are a way of grouping together multiple directives into a single object to make them easier pass around. They
+are useful when you want to encapsulate a set of logic that needs to operate on multiple directives.
+
+```
+import necsus
+
+type
+    A = object
+
+    B = object
+
+    MyBundle = object
+        spawn*: Spawn[(A, )]
+        attach*: Attach[(B, )]
+
+proc useBundle(bundle: Bundle[MyBundle]) =
+    let eid = bundle.spawn.with(A())
+    bundle.attach(eid, (B(), ))
+
+proc myApp() {.necsus([], [~useBundle], [], newNecsusConf()).}
+```
+
 ### App
 
 At an app level, there are a few more features worth discussing.
