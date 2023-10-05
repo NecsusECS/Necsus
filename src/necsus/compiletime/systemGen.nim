@@ -26,6 +26,9 @@ type
     HookGenerator*[T] = proc(details: GenerateContext, arg: SystemArg, name: string, dir: T): NimNode
         ## The callback that allows a decorator to generate code for a specific hook
 
+    SystemArgExtractor*[T] = proc(name: string, dir: T): NimNode
+        ## The callback used for determining the value to pass when calling the system
+
     DirectiveGen*  {.byref.} = object
         ## An object that can contribute to Necsus code generation
         ident*: string
@@ -36,17 +39,17 @@ type
             chooseNameMono*: proc(uniqId: string, dir: MonoDirective): string
             systemReturn*: proc(args: DirectiveSet[SystemArg], returns: MonoDirective): Option[NimNode]
             worldFieldsMono*: proc(name: string, returns: MonoDirective): seq[WorldField]
-            systemArgMono*: proc(name: string, dir: MonoDirective): NimNode
+            systemArgMono*: SystemArgExtractor[MonoDirective]
         of DirectiveKind.Tuple:
             generateTuple*: HookGenerator[TupleDirective]
             archetypeTuple*: proc(builder: var ArchetypeBuilder[ComponentDef], dir: TupleDirective)
             chooseNameTuple*: proc(uniqId: string, dir: TupleDirective): string
             worldFieldsTuple*: proc(name: string, returns: TupleDirective): seq[WorldField]
-            systemArgTuple*: proc(name: string, dir: TupleDirective): NimNode
+            systemArgTuple*: SystemArgExtractor[TupleDirective]
         of DirectiveKind.None:
             generateNone*: HookGenerator[void]
             worldFieldsNone: proc(name: string): seq[WorldField]
-            systemArgNone*: proc(name: string): NimNode
+            systemArgNone*: SystemArgExtractor[void]
 
     SystemArg* = object
         ## A single arg within a system proc
@@ -75,7 +78,7 @@ proc newGenerator*(
     archetype: proc(builder: var ArchetypeBuilder[ComponentDef], dir: TupleDirective) = noArchetype,
     chooseName: proc(uniqId: string, dir: TupleDirective): string = defaultName,
     worldFields: proc(name: string, dir: TupleDirective): seq[WorldField] = defaultWorldField,
-    systemArg: proc(name: string, dir: TupleDirective): NimNode = defaultSystemArg,
+    systemArg: SystemArgExtractor[TupleDirective] = defaultSystemArg,
 ): DirectiveGen =
     ## Create a tuple based generator
     result.ident = ident
@@ -95,7 +98,7 @@ proc newGenerator*(
     chooseName: proc(uniqId: string, dir: MonoDirective): string = defaultName,
     systemReturn: proc(args: DirectiveSet[SystemArg], returns: MonoDirective): Option[NimNode] = defaultSystemReturn,
     worldFields: proc(name: string, dir: MonoDirective): seq[WorldField] = defaultWorldField,
-    systemArg: proc(name: string, dir: MonoDirective): NimNode = defaultSystemArg,
+    systemArg: SystemArgExtractor[MonoDirective] = defaultSystemArg,
 ): DirectiveGen =
     ## Creates a mono based generator
     result.ident = ident
@@ -115,7 +118,7 @@ proc newGenerator*(
     ident: string,
     generate: HookGenerator[void],
     worldFields: proc(name: string): seq[WorldField] = defaultWorldFieldNone,
-    systemArg: proc(name: string): NimNode = defaultSystemArgNone,
+    systemArg: SystemArgExtractor[void] = defaultSystemArgNone,
 ): DirectiveGen =
     ## Creates a 'none' generator
     result.ident = ident
