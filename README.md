@@ -540,7 +540,7 @@ proc myApp() {.necsus([], [~publish, ~receive], [], newNecsusConf()).}
 `Bundle`s are a way of grouping together multiple directives into a single object to make them easier pass around. They
 are useful when you want to encapsulate a set of logic that needs to operate on multiple directives.
 
-```
+```nim
 import necsus
 
 type
