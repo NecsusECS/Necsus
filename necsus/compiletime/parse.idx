@@ -11,7 +11,6 @@ kind	necsus/compiletime/parse.html#kind,SystemArg	parse: kind(arg: SystemArg): a
 parseSystemList	necsus/compiletime/parse.html#parseSystemList,Parser,NimNode,SystemPhase	parse: parseSystemList(parser: Parser; systems: NimNode; phase: SystemPhase): seq[\n    ParsedSystem]	
 components	necsus/compiletime/parse.html#components.i,SystemArg	parse: components(arg: SystemArg): ComponentDef	
 components	necsus/compiletime/parse.html#components.i,openArray[ParsedSystem]	parse: components(systems: openArray[ParsedSystem]): ComponentDef	
-args	necsus/compiletime/parse.html#args.i,ParsedSystem	parse: args(system: ParsedSystem): SystemArg	
 args	necsus/compiletime/parse.html#args.i,openArray[ParsedSystem]	parse: args(systems: openArray[ParsedSystem]): SystemArg	
 components	necsus/compiletime/parse.html#components.i,ParsedApp	parse: components(app: ParsedApp): ComponentDef	
 parseApp	necsus/compiletime/parse.html#parseApp,Parser,NimNode,NimNode	parse: parseApp(parser: Parser; appProc: NimNode; runner: NimNode): ParsedApp	

@@ -5,3 +5,4 @@ appStateTypeName	necsus/compiletime/codeGenInfo.html#appStateTypeName,CodeGenInf
 appStateInit	necsus/compiletime/codeGenInfo.html#appStateInit,CodeGenInfo	codeGenInfo: appStateInit(genInfo: CodeGenInfo): NimNode	
 generateForHook	necsus/compiletime/codeGenInfo.html#generateForHook,CodeGenInfo,GenerateHook	codeGenInfo: generateForHook(codeGen: CodeGenInfo; hook: GenerateHook): NimNode	
 worldFields	necsus/compiletime/codeGenInfo.html#worldFields,CodeGenInfo	codeGenInfo: worldFields(codeGen: CodeGenInfo): seq[WorldField]	
+systemArg	necsus/compiletime/codeGenInfo.html#systemArg,CodeGenInfo,SystemArg	codeGenInfo: systemArg(genInfo: CodeGenInfo; arg: SystemArg): NimNode	

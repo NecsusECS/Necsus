@@ -148,6 +148,11 @@ window.addEventListener('DOMContentLoaded', main);
                allSystems: openArray[ParsedSystem]): CodeGenInfo</a></li>
 
   </ul>
+  <ul class="simple nested-toc-section">systemArg
+      <li><a class="reference" href="#systemArg%2CCodeGenInfo%2CSystemArg"
+    title="systemArg(genInfo: CodeGenInfo; arg: SystemArg): NimNode">systemArg(genInfo: CodeGenInfo; arg: SystemArg): NimNode</a></li>
+
+  </ul>
   <ul class="simple nested-toc-section">worldFields
       <li><a class="reference" href="#worldFields%2CCodeGenInfo"
     title="worldFields(codeGen: CodeGenInfo): seq[WorldField]">worldFields(codeGen: CodeGenInfo): seq[WorldField]</a></li>
@@ -219,7 +224,7 @@ The name of the object that contains the state of the app
 </div>
 <div id="generateForHook,CodeGenInfo,GenerateHook">
 <dt><pre><span class="Keyword">proc</span> <a href="#generateForHook%2CCodeGenInfo%2CGenerateHook"><span class="Identifier">generateForHook</span></a><span class="Other">(</span><span class="Identifier">codeGen</span><span class="Other">:</span> <a href="codeGenInfo.html#CodeGenInfo"><span class="Identifier">CodeGenInfo</span></a><span class="Other">;</span> <span class="Identifier">hook</span><span class="Other">:</span> <a href="systemGen.html#GenerateHook"><span class="Identifier">GenerateHook</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span> {.
-    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span></span>.}</pre></dt>
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 Generates the code for a specific code-gen hook
@@ -233,6 +238,15 @@ Generates the code for a specific code-gen hook
 <dd>
 
 Collects data needed for code gen from all the parsed systems
+
+</dd>
+</div>
+<div id="systemArg,CodeGenInfo,SystemArg">
+<dt><pre><span class="Keyword">proc</span> <a href="#systemArg%2CCodeGenInfo%2CSystemArg"><span class="Identifier">systemArg</span></a><span class="Other">(</span><span class="Identifier">genInfo</span><span class="Other">:</span> <a href="codeGenInfo.html#CodeGenInfo"><span class="Identifier">CodeGenInfo</span></a><span class="Other">;</span> <span class="Identifier">arg</span><span class="Other">:</span> <a href="systemGen.html#SystemArg"><span class="Identifier">SystemArg</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span> {.
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">,</span> <span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+Returns the value to pass to a system when executin the given argument
 
 </dd>
 </div>
@@ -255,7 +269,7 @@ Generates the code for a specific code-gen hook
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-10-02 16:06:21 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-10-05 01:53:14 UTC</small>
       </div>
     </div>
   </div>

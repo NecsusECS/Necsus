@@ -109,6 +109,8 @@ window.addEventListener('DOMContentLoaded', main);
   <ul class="simple simple-toc-section">
       <li><a class="reference" href="#Attach"
     title="Attach[C] = proc (entityId: EntityId; components: C)">Attach</a></li>
+  <li><a class="reference" href="#Bundle"
+    title="Bundle[T] = ptr T">Bundle</a></li>
   <li><a class="reference" href="#Delete"
     title="Delete = proc (entityId: EntityId)">Delete</a></li>
   <li><a class="reference" href="#Detach"
@@ -148,6 +150,14 @@ window.addEventListener('DOMContentLoaded', main);
 <dd>
 
 Describes a type that is able to update existing entities new entities. Where <tt class="docutils literal"><span class="pre"><span class="Identifier">C</span></span></tt> is a tuple with all the components to attach.
+
+</dd>
+</div>
+<div id="Bundle">
+<dt><pre><a href="directives.html#Bundle"><span class="Identifier">Bundle</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">ptr</span> <span class="Identifier">T</span></pre></dt>
+<dd>
+
+A group of directives bundled together in an object
 
 </dd>
 </div>
@@ -217,7 +227,7 @@ The total amount of time spent in an app
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-10-02 16:06:20 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-10-05 01:53:14 UTC</small>
       </div>
     </div>
   </div>
