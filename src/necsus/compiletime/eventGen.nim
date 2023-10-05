@@ -12,7 +12,7 @@ proc inboxFields(name: string, dir: MonoDirective): seq[WorldField] = @[
     (name, nnkBracketExpr.newTree(bindSym("Inbox"), dir.argType))
 ]
 
-proc generateInbox(details: GenerateContext, name: string, inbox: MonoDirective): NimNode =
+proc generateInbox(details: GenerateContext, arg: SystemArg, name: string, inbox: MonoDirective): NimNode =
     case details.hook
     of Early:
         let storageIdent = inbox.eventStorageIdent
@@ -45,7 +45,7 @@ proc hasInboxes(details: GenerateContext, outbox: MonoDirective): bool =
 proc outboxFields(name: string, dir: MonoDirective): seq[WorldField] =
     @[ (name, nnkBracketExpr.newTree(bindSym("Outbox"), dir.argType)) ]
 
-proc generateOutbox(details: GenerateContext, name: string, outbox: MonoDirective): NimNode =
+proc generateOutbox(details: GenerateContext, arg: SystemArg, name: string, outbox: MonoDirective): NimNode =
     case details.hook
     of Standard:
         let event = "event".ident

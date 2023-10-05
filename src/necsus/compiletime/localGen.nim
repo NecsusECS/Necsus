@@ -6,7 +6,7 @@ proc chooseLocalName(uniqId: string, local: MonoDirective): string = uniqId
 proc worldFields(name: string, dir: MonoDirective): seq[WorldField] =
     @[ (name, nnkBracketExpr.newTree(bindSym("SystemVarData"), dir.argType)) ]
 
-proc generateLocal(details: GenerateContext, name: string, dir: MonoDirective): NimNode =
+proc generateLocal(details: GenerateContext, arg: SystemArg, name: string, dir: MonoDirective): NimNode =
     case details.hook
     of Standard:
         let varIdent = ident(name)

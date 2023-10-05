@@ -29,7 +29,7 @@ proc buildArchetypeLookup(
         )
         return $`entityId` & " = " & $`entityArchetype` & $`compsIdent`[]
 
-proc generateEntityDebug(details: GenerateContext, name: string): NimNode =
+proc generateEntityDebug(details: GenerateContext, arg: SystemArg, name: string): NimNode =
     ## Generates the code for debugging the state of an entity
     case details.hook
     of GenerateHook.Standard:

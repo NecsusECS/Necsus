@@ -33,7 +33,7 @@ proc canCreateFrom(lookup: TupleDirective, archetype: Archetype[ComponentDef]): 
     ## Returns whether a lookup can be created from an archetype
     lookup.items.toSeq.allIt(it in archetype)
 
-proc generateTuple(details: GenerateContext, name: string, lookup: TupleDirective): NimNode =
+proc generateTuple(details: GenerateContext, arg: SystemArg, name: string, lookup: TupleDirective): NimNode =
     ## Generates the code for instantiating queries
     case details.hook
     of GenerateHook.Standard:

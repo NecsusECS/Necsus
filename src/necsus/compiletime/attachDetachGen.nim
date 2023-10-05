@@ -60,7 +60,7 @@ proc attachArchetype(builder: var ArchetypeBuilder[ComponentDef], dir: TupleDire
 proc attachFields(name: string, dir: TupleDirective): seq[WorldField] =
     @[ (name, nnkBracketExpr.newTree(bindSym("Attach"), dir.asTupleType)) ]
 
-proc generateAttach(details: GenerateContext, name: string, attach: TupleDirective): NimNode =
+proc generateAttach(details: GenerateContext, arg: SystemArg, name: string, attach: TupleDirective): NimNode =
     ## Generates the code for instantiating queries
     case details.hook
     of GenerateHook.Standard:
@@ -95,7 +95,7 @@ proc detachArchetype(builder: var ArchetypeBuilder[ComponentDef], dir: TupleDire
 proc detachFields(name: string, dir: TupleDirective): seq[WorldField] =
     @[ (name, nnkBracketExpr.newTree(bindSym("Detach"), dir.asTupleType)) ]
 
-proc generateDetach(details: GenerateContext, name: string, detach: TupleDirective): NimNode =
+proc generateDetach(details: GenerateContext, arg: SystemArg, name: string, detach: TupleDirective): NimNode =
     ## Generates the code for instantiating queries
     case details.hook
     of GenerateHook.Standard:
