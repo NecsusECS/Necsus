@@ -1,4 +1,4 @@
-import macros, monoDirective, systemGen
+import macros, monoDirective, systemGen, std/importutils
 
 proc worldFields(name: string, dir: MonoDirective): seq[WorldField] = @[]
 
@@ -8,12 +8,14 @@ proc generateShared(details: GenerateContext, arg: SystemArg, name: string, dir:
 
     case details.hook
     of LoopStart, Late, BeforeTeardown:
-        let construct = nnkObjConstr.newTree(dir.argType)
+        let bundleType = dir.argType
+        let construct = nnkObjConstr.newTree(bundleType)
 
         for nested in arg.nestedArgs:
             construct.add(nnkExprColonExpr.newTree(ident(nested.originalName), details.systemArg(nested)))
 
         result.add quote do:
+            privateAccess(`bundleType`)
             var `nameIdent` {.used.} = `construct`
     else:
         discard
@@ -33,12 +35,9 @@ proc nestedArgs(dir: MonoDirective): seq[RawNestedArg] =
     for child in impl[2][2].children:
         child.expectKind(nnkIdentDefs)
 
-        let name = child[0]
-        if name.kind != nnkPostfix or name[0].kind != nnkIdent or name[0].strVal != "*":
-            error("Expecting field to be public", child)
-
-        name[1].expectKind(nnkIdent)
-        result.add((name[1].strVal, child[1]))
+        let name = if child[0].kind == nnkPostfix: child[0][1] else: child[0]
+        name.expectKind(nnkIdent)
+        result.add((name.strVal, child[1]))
 
 let bundleGenerator* {.compileTime.} = newGenerator(
     ident = "Bundle",
