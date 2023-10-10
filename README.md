@@ -253,6 +253,35 @@ proc `=destroy`(system: var SystemInstance) =
 proc myApp() {.necsus([], [~someSystem], [], newNecsusConf()).}
 ```
 
+### Building Re-usable systems
+
+Reusing code is obviously a fundamental aspect of programming, and using generics is a fundamental aspect of
+that in Nim. Necsus, however, can't resolve generic parameters by itself. It needs to know exactly what components
+need to be passed to each system at compile time.
+
+To work around this, you can assign systems to variables, then pass those variables into your app:
+
+```nim
+import necsus
+
+type
+    SomeComponent = object
+    AnotherComponent = object
+
+proc genericSpawner[T](): auto =
+    return proc (create: Spawn[(T, )]) =
+        discard create.with(T())
+
+let spawnSomeComponent = genericSpawner[SomeComponent]()
+let spawnAnotherComponent = genericSpawner[AnotherComponent]()
+
+proc myApp() {.necsus([], [~spawnSomeComponent, ~spawnAnotherComponent], [], newNecsusConf()).}
+```
+
+It's worth mentioning that if you start usin type aliases, Nim's type system has a tendency to hide those
+from the macro system -- they generally get resolved directly down to the type they are aliasing. To work around that,
+you can add in explicit type declarations.
+
 ### Exiting
 
 Exiting the primary system loop is done through a `Shared` directive. Directives will be covered in more details below,

@@ -1,4 +1,4 @@
-import macros, sequtils, strformat, options, tables
+import macros, sequtils, strformat, options, tables, typeReader
 import componentDef, tupleDirective, monoDirective, systemGen
 import ../runtime/pragmas
 
@@ -152,29 +152,6 @@ proc parseSystemArg(parser: Parser, identDef: NimNode): SystemArg =
     identDef.expectKind(nnkIdentDefs)
     return parser.parseArgType(identDef[0].strVal, identDef[1], identDef[1])
 
-proc findChildSyms(node: NimNode, output: var seq[NimNode]) =
-    ## Finds all symbols in the children of a node and returns them
-    if node.kind == nnkSym:
-        output.add(node)
-    elif node.kind == nnkEmpty:
-        discard
-    elif node.len == 0:
-        error("Expecting a system symbol, but got: " & node.repr, node)
-    else:
-        for child in node.children:
-            findChildSyms(child, output)
-
-proc findPragma(node: NimNode): NimNode =
-    ## Finds the pragma node attached to a nim node
-    case node.kind
-    of nnkIdentDefs:
-        if node[0].kind == nnkPragmaExpr:
-            node[0][1]
-        else:
-            newEmptyNode()
-    of nnkSym, nnkConstDef: newEmptyNode()
-    else: node.pragma
-
 proc readDependencies(typeNode: NimNode): seq[NimNode] =
     ## Reads the systems referenced by a pragma attached to another system
     let depends = bindSym("depends")
@@ -205,12 +182,20 @@ proc determineInstancing(nodeImpl: NimNode, nodeTypeImpl: NimNode): Option[NimNo
         if child == bindSym("instanced"):
             return some(nodeTypeImpl[0][0])
 
+proc getSystemType(ident: NimNode, impl: NimNode): NimNode =
+    ## Returns the type definition of a system
+    case impl.kind
+    of nnkIdentDefs, nnkProcDef:
+        return impl[1].resolveTo({ nnkProcTy }).orElse: ident.getTypeImpl
+    else:
+        return ident.getTypeImpl
+
 proc parseSystem(parser: Parser, ident: NimNode, phase: SystemPhase): ParsedSystem =
     ## Parses a single system proc
     ident.expectKind(nnkSym)
 
     let impl = ident.getImpl
-    let typeImpl = ident.getTypeImpl
+    let typeImpl = ident.getSystemType(impl)
 
     # If we are given a proc, read the args directly from the proc. Otherwise, we need to
     # read them from the type, which is possibly less accurate
