@@ -7,7 +7,8 @@ proc symbols*(node: NimNode): seq[string] =
     of nnkCharLit..nnkUInt64Lit: return @[$node.intVal]
     of nnkFloatLit..nnkFloat64Lit: return @[$node.floatVal]
     of nnkNilLit: return @["nil"]
-    of nnkBracketExpr: return node.toSeq.mapIt(it.symbols).foldl(concat(a, b))
+    of nnkBracketExpr, nnkTupleTy: return node.toSeq.mapIt(it.symbols).foldl(concat(a, b))
+    of nnkIdentDefs: return concat(node[0].symbols, node[1].symbols)
     else: error(&"Unable to generate a component symbol from node ({node.kind}): {node.repr}")
 
 proc hash*(node: NimNode): Hash =
@@ -16,8 +17,8 @@ proc hash*(node: NimNode): Hash =
     of nnkSym, nnkIdent, nnkStrLit..nnkTripleStrLit: return hash(node.strVal)
     of nnkCharLit..nnkUInt64Lit: return hash(node.intVal)
     of nnkFloatLit..nnkFloat64Lit: return hash(node.floatVal)
-    of nnkNilLit: return hash(0)
-    of nnkBracketExpr: return node.toSeq.mapIt(hash(it)).foldl(a !& b, hash(node.kind))
+    of nnkNilLit, nnkEmpty: return hash(0)
+    of nnkBracketExpr, nnkTupleTy, nnkIdentDefs: return node.toSeq.mapIt(hash(it)).foldl(a !& b, hash(node.kind))
     else: error(&"Unable to generate a hash from node ({node.kind}): {node.repr}")
 
 proc cmp*(a: NimNode, b: NimNode): int =
