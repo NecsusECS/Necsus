@@ -252,20 +252,21 @@ iterator components*(systems: openarray[ParsedSystem]): ComponentDef =
 
 proc allNestedArgs(arg: SystemArg, into: var seq[SystemArg]) =
     for nested in arg.nestedArgs:
-        into.add(nested)
         allNestedArgs(nested, into)
+        into.add(nested)
 
 iterator args*(systems: openarray[ParsedSystem]): SystemArg =
     ## Yields all args in a system
     for system in systems:
         for arg in system.args:
-            yield arg
 
             # Yield any system args nested inside other system args
             var collectNested: seq[SystemArg]
             arg.allNestedArgs(collectNested)
             for nested in collectNested:
                 yield nested
+
+            yield arg
 
 iterator components*(app: ParsedApp): ComponentDef =
     ## List all components referenced by an app
