@@ -1,13 +1,13 @@
-import macros, monoDirective, systemGen, std/importutils
+import macros, monoDirective, systemGen, std/importutils, commonVars
 
-proc worldFields(name: string, dir: MonoDirective): seq[WorldField] = @[]
+proc worldFields(name: string, dir: MonoDirective): seq[WorldField] = @[ (name, dir.argType) ]
 
 proc generateShared(details: GenerateContext, arg: SystemArg, name: string, dir: MonoDirective): NimNode =
     result = newStmtList()
     let nameIdent = ident(name)
 
     case details.hook
-    of LoopStart, Late, BeforeTeardown:
+    of Late:
         let bundleType = dir.argType
         let construct = nnkObjConstr.newTree(bundleType)
 
@@ -16,14 +16,14 @@ proc generateShared(details: GenerateContext, arg: SystemArg, name: string, dir:
 
         result.add quote do:
             privateAccess(`bundleType`)
-            var `nameIdent` {.used.} = `construct`
+            `appStateIdent`.`nameIdent` = `construct`
     else:
         discard
 
 proc systemArg(name: string, dir: MonoDirective): NimNode =
     let nameIdent = name.ident
     return quote:
-        addr `nameIdent`
+        addr `appStateIdent`.`nameIdent`
 
 proc nestedArgs(dir: MonoDirective): seq[RawNestedArg] =
     ## Looks up all the fields on the bundled object and returns them as nested fields
