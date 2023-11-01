@@ -39,4 +39,8 @@ proc get*[T](sysvar: SystemVar[T], default: T): T {.inline.} =
     ## Returns the value in a system variable
     sysvar.unwrap.value.get(default)
 
+proc `==`*[T](sysvar: SystemVar[T], value: T): bool {.inline.} =
+    ## Returns whether a sysvar is set and equals the given value
+    sysvar.unwrap.value == some(value)
+
 proc `$`*[T](sysvar: SystemVar[T]): string = $sysvar.unwrap.value

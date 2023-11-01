@@ -15,3 +15,6 @@ template instanced*() {.pragma.}
     ## Indicates that a system proc should be used as an initializer to create
     ## an instance of a system. During the primary loop, the `tick` proc is
     ## called on that instance.
+
+template active*(states: varargs[typed]) {.pragma.}
+    ## Indicates a value that must be true for a system to run

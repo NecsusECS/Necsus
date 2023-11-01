@@ -10,6 +10,11 @@ type
     SystemPhase* = enum StartupPhase, LoopPhase, TeardownPhase
         ## When a system should be executed
 
+    ActiveCheck* = object
+        ## A check that needs to be made before executing a system as part of the loop phase
+        value*: NimNode
+        arg*: SystemArg
+
     ParsedSystem* = object
         ## Parsed information about a system proc
         phase*: SystemPhase
@@ -17,6 +22,7 @@ type
         args*: seq[SystemArg]
         depends: seq[NimNode]
         instanced*: Option[NimNode]
+        checks*: seq[ActiveCheck]
 
     ParsedApp* = object
         ## Parsed information about the application proc itself
@@ -159,6 +165,37 @@ proc readDependencies(typeNode: NimNode): seq[NimNode] =
         if child.kind == nnkCall and depends == child[0]:
             findChildSyms(child[1], result)
 
+proc parseActiveChecks(parser: Parser, typeNode: NimNode): seq[ActiveCheck] =
+    ## Parses any checks that need to be performed before executing a system
+    let activePragma = bindSym("active")
+
+    # Active checks must come from shared variables
+    let gen = parser.generators["Shared"]
+
+    for child in typeNode.findPragma:
+        if child.kind == nnkCall and activePragma == child[0]:
+            child[1].expectKind(nnkHiddenStdConv)
+            let activeStates = child[1][1]
+            activeStates.expectKind(nnkBracket)
+
+            for state in activeStates:
+                state.expectKind(nnkSym)
+                let typename = state.getTypeInst
+                if typename.kind != nnkSym:
+                    error("Unexpected system state type. Expecting a symbol, but got " & typename.repr, state)
+
+                let monoDir = newMonoDir(typename)
+                let arg = SystemArg(
+                    generator: gen,
+                    originalName: state.strVal,
+                    name: gen.chooseNameMono("shared_" & state.strVal, monoDir),
+                    kind: DirectiveKind.Mono,
+                    monoDir: monoDir,
+                    nestedArgs: @[]
+                )
+
+                result.add(ActiveCheck(value: state, arg: arg))
+
 proc choosePhase(typeNode: NimNode, default: SystemPhase): SystemPhase =
     ## Reads the systems referenced by a pragma attached to another system
 
@@ -205,12 +242,13 @@ proc parseSystem(parser: Parser, ident: NimNode, phase: SystemPhase): ParsedSyst
         .filterIt(it.kind == nnkIdentDefs)
         .mapIt(parser.parseSystemArg(it))
 
-    return ParsedSystem(
+    result = ParsedSystem(
         phase: impl.choosePhase(phase),
         symbol: ident,
         args: args,
         depends: impl.readDependencies(),
-        instanced: determineInstancing(impl, typeImpl)
+        instanced: determineInstancing(impl, typeImpl),
+        checks: parser.parseActiveChecks(impl),
     )
 
 proc parseSystems(parser: Parser, systems: NimNode, phase: SystemPhase, into: var seq[ParsedSystem]) =

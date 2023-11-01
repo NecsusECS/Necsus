@@ -79,3 +79,7 @@ proc worldFields*(codeGen: CodeGenInfo): seq[WorldField] =
 proc systemArg*(genInfo: CodeGenInfo, arg: SystemArg): NimNode =
     ## Returns the value to pass to a system when executin the given argument
     systemArg(genInfo.directives, arg)
+
+proc nameOf*(genInfo: CodeGenInfo, arg: SystemArg): string =
+    ## Returns the name used for a specific system arg
+    genInfo.directives[arg.generator].nameOf(arg)
