@@ -306,6 +306,10 @@ iterator args*(systems: openarray[ParsedSystem]): SystemArg =
 
             yield arg
 
+        # Yield all arguments mentioned in the active system checks
+        for check in system.checks:
+            yield check.arg
+
 iterator components*(app: ParsedApp): ComponentDef =
     ## List all components referenced by an app
     for arg in app.runnerArgs:
