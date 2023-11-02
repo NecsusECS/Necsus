@@ -47,12 +47,13 @@ proc get*[T](sysvar: SystemVar[T], default: T): T {.inline.} =
 
 proc get*[T](sysvar: SystemVar[T]): T {.inline.} =
     ## Returns the value in a system variable
-    when T is string:
-        return get(sysvar, "")
-    elif compiles(get(sysvar, {})):
-        return get(sysvar, {})
-    else:
-        return get(sysvar, low(T))
+    return sysvar.get(
+        when T is string: ""
+        elif T is SomeNumber: 0
+        elif compiles(get(sysvar, {})): {}
+        elif T is seq: @[]
+        else: low(T)
+    )
 
 proc `==`*[T](sysvar: SystemVar[T], value: T): bool {.inline.} =
     ## Returns whether a sysvar is set and equals the given value
