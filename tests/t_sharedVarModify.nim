@@ -4,7 +4,7 @@ proc system1(someVar: Shared[string]) =
     someVar.set("foo")
 
 proc system2(someVar: Shared[string]) =
-    someVar.get &= "bar"
+    someVar.getOrRaise &= "bar"
 
 proc assertion(someVar: Shared[string]) =
     check(someVar.get() == "foobar")

@@ -39,12 +39,12 @@ proc assertion(
 ) =
     check(toSeq(all.items).mapIt(it[0].value.a) == @["Foo"])
     check(toSeq(all.items).mapIt(it[1].value.b) == @["Bar"])
-    check(shared.get().value.a == "Baz")
-    check(ordinal.get().value == 123)
-    check(decimal.get().value == 3.14)
-    check(str.get().value == "asdf")
-    check(boolean.get().value == true)
-    check(character.get().value == 'a')
+    check(shared.getOrRaise.value.a == "Baz")
+    check(ordinal.getOrRaise.value == 123)
+    check(decimal.getOrRaise.value == 3.14)
+    check(str.getOrRaise.value == "asdf")
+    check(boolean.getOrRaise.value == true)
+    check(character.getOrRaise.value == 'a')
 
 proc runner(tick: proc(): void) = tick()
 

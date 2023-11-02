@@ -11,7 +11,7 @@ proc logic(bundle: Bundle[B]): auto {.instanced.} =
         bundle.a := "foo"
 
 proc assertion(bundle: Bundle[B]) =
-    check(bundle.a.get == "foo")
+    check(bundle.a == "foo")
 
 proc runner(tick: proc(): void) =
     tick()

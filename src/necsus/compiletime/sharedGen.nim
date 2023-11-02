@@ -27,7 +27,7 @@ proc systemReturn(args: DirectiveSet[SystemArg], returns: MonoDirective): Option
         if directive.monoDir == returns:
             let stateIdent = name.ident
             let returnCode = quote:
-                get(Shared(addr `appStateIdent`.`stateIdent`))
+                getOrRaise(Shared(addr `appStateIdent`.`stateIdent`))
             return some(returnCode)
     return none(NimNode)
 

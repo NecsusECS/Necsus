@@ -6,7 +6,7 @@ proc spawner(spawn: Spawn[tuple[value: tuple[nested: string]]], global: Shared[t
 
 proc assertion(query: Query[tuple[value: tuple[nested: string]]], global: Shared[tuple[value: string]]) =
     check(query.toSeq == @[(("foo", ), )])
-    check(global.get == ("blah", ))
+    check(global == ("blah", ))
 
 proc runner(tick: proc(): void) = tick()
 
