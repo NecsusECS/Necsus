@@ -141,6 +141,11 @@ window.addEventListener('DOMContentLoaded', main);
     title="generateForHook(codeGen: CodeGenInfo; hook: GenerateHook): NimNode">generateForHook(codeGen: CodeGenInfo; hook: GenerateHook): NimNode</a></li>
 
   </ul>
+  <ul class="simple nested-toc-section">nameOf
+      <li><a class="reference" href="#nameOf%2CCodeGenInfo%2CSystemArg"
+    title="nameOf(genInfo: CodeGenInfo; arg: SystemArg): string">nameOf(genInfo: CodeGenInfo; arg: SystemArg): string</a></li>
+
+  </ul>
   <ul class="simple nested-toc-section">newCodeGenInfo
       <li><a class="reference" href="#newCodeGenInfo%2CNimNode%2CParsedApp%2CopenArray%5BParsedSystem%5D"
     title="newCodeGenInfo(config: NimNode; app: ParsedApp;
@@ -231,6 +236,15 @@ Generates the code for a specific code-gen hook
 
 </dd>
 </div>
+<div id="nameOf,CodeGenInfo,SystemArg">
+<dt><pre><span class="Keyword">proc</span> <a href="#nameOf%2CCodeGenInfo%2CSystemArg"><span class="Identifier">nameOf</span></a><span class="Other">(</span><span class="Identifier">genInfo</span><span class="Other">:</span> <a href="codeGenInfo.html#CodeGenInfo"><span class="Identifier">CodeGenInfo</span></a><span class="Other">;</span> <span class="Identifier">arg</span><span class="Other">:</span> <a href="systemGen.html#SystemArg"><span class="Identifier">SystemArg</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> {.
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">,</span> <span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+Returns the name used for a specific system arg
+
+</dd>
+</div>
 <div id="newCodeGenInfo,NimNode,ParsedApp,openArray[ParsedSystem]">
 <dt><pre><span class="Keyword">proc</span> <a href="#newCodeGenInfo%2CNimNode%2CParsedApp%2CopenArray%5BParsedSystem%5D"><span class="Identifier">newCodeGenInfo</span></a><span class="Other">(</span><span class="Identifier">config</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">;</span> <span class="Identifier">app</span><span class="Other">:</span> <a href="parse.html#ParsedApp"><span class="Identifier">ParsedApp</span></a><span class="Other">;</span>
                     <span class="Identifier">allSystems</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><a href="parse.html#ParsedSystem"><span class="Identifier">ParsedSystem</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="codeGenInfo.html#CodeGenInfo"><span class="Identifier">CodeGenInfo</span></a> {.
@@ -269,7 +283,7 @@ Generates the code for a specific code-gen hook
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-10-29 22:26:35 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-11-04 20:15:55 UTC</small>
       </div>
     </div>
   </div>

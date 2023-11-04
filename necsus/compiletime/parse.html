@@ -107,7 +107,11 @@ window.addEventListener('DOMContentLoaded', main);
 <li>
   <a class="reference reference-toplevel" href="#7" id="57">Types</a>
   <ul class="simple simple-toc-section">
-      <li><a class="reference" href="#ParsedApp"
+      <li><a class="reference" href="#ActiveCheck"
+    title="ActiveCheck = object
+  value*: NimNode
+  arg*: SystemArg">ActiveCheck</a></li>
+  <li><a class="reference" href="#ParsedApp"
     title="ParsedApp = object
   name*: string
   runnerArgs*: seq[SystemArg]
@@ -119,7 +123,8 @@ window.addEventListener('DOMContentLoaded', main);
   symbol*: NimNode
   args*: seq[SystemArg]
   depends: seq[NimNode]
-  instanced*: Option[NimNode]">ParsedSystem</a></li>
+  instanced*: Option[NimNode]
+  checks*: seq[ActiveCheck]">ParsedSystem</a></li>
   <li><a class="reference" href="#SystemPhase"
     title="SystemPhase = enum
   StartupPhase, LoopPhase, TeardownPhase ## When a system should be executed">SystemPhase</a></li>
@@ -208,6 +213,17 @@ window.addEventListener('DOMContentLoaded', main);
 <div class="section" id="7">
 <h1><a class="toc-backref" href="#7">Types</a></h1>
 <dl class="item">
+<div id="ActiveCheck">
+<dt><pre><a href="parse.html#ActiveCheck"><span class="Identifier">ActiveCheck</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
+  <span class="Identifier">value</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">NimNode</span>
+  <span class="Identifier">arg</span><span class="Operator">*</span><span class="Other">:</span> <a href="systemGen.html#SystemArg"><span class="Identifier">SystemArg</span></a>
+</pre></dt>
+<dd>
+
+A check that needs to be made before executing a system as part of the loop phase
+
+</dd>
+</div>
 <div id="ParsedApp">
 <dt><pre><a href="parse.html#ParsedApp"><span class="Identifier">ParsedApp</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
   <span class="Identifier">name</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">string</span>
@@ -228,6 +244,7 @@ Parsed information about the application proc itself
   <span class="Identifier">args</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="systemGen.html#SystemArg"><span class="Identifier">SystemArg</span></a><span class="Other">]</span>
   <span class="Identifier">depends</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">NimNode</span><span class="Other">]</span>
   <span class="Identifier">instanced</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">Option</span><span class="Other">[</span><span class="Identifier">NimNode</span><span class="Other">]</span>
+  <span class="Identifier">checks</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="parse.html#ActiveCheck"><span class="Identifier">ActiveCheck</span></a><span class="Other">]</span>
 </pre></dt>
 <dd>
 
@@ -358,7 +375,7 @@ Pulls all components from a list of parsed systems
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-10-29 22:26:35 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-11-04 20:15:55 UTC</small>
       </div>
     </div>
   </div>

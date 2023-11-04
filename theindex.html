@@ -124,6 +124,8 @@ window.addEventListener('DOMContentLoaded', main);
           data-doc-search-tag="tupleDirective: `==`(a, b: TupleDirective): auto" href="necsus/compiletime/tupleDirective.html#%3D%3D%2CTupleDirective%2CTupleDirective">tupleDirective: `==`(a, b: TupleDirective): auto</a></li>
           <li><a class="reference external"
           data-doc-search-tag="entityId: `==`(a, b: EntityId): bool" href="necsus/runtime/entityId.html#%3D%3D%2CEntityId%2CEntityId">entityId: `==`(a, b: EntityId): bool</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="systemVar: `==`[T](sysvar: SystemVar[T]; value: T): bool" href="necsus/runtime/systemVar.html#%3D%3D%2CSystemVar%5BT%5D%2CT">systemVar: `==`[T](sysvar: SystemVar[T]; value: T): bool</a></li>
           </ul></dd>
 <dt><a name="%60%3Dcopy%60" href="#%60%3Dcopy%60"><span>`=copy`:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -174,6 +176,14 @@ window.addEventListener('DOMContentLoaded', main);
 <dt><a name="%60~%60" href="#%60~%60"><span>`~`:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="necsus: `~`(system: proc): SystemFlag" href="necsus.html#~%2Cproc">necsus: `~`(system: proc): SystemFlag</a></li>
+          </ul></dd>
+<dt><a name="active" href="#active"><span>active:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="pragmas: active(states: varargs[typed])" href="necsus/runtime/pragmas.html#active.t%2Cvarargs%5Btyped%5D">pragmas: active(states: varargs[typed])</a></li>
+          </ul></dd>
+<dt><a name="ActiveCheck" href="#ActiveCheck"><span>ActiveCheck:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="parse: ActiveCheck" href="necsus/compiletime/parse.html#ActiveCheck">parse: ActiveCheck</a></li>
           </ul></dd>
 <dt><a name="AppInputs" href="#AppInputs"><span>AppInputs:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -565,7 +575,7 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="get" href="#get"><span>get:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="systemVar: get[T](sysvar: SystemVar[T]): var T" href="necsus/runtime/systemVar.html#get%2CSystemVar%5BT%5D">systemVar: get[T](sysvar: SystemVar[T]): var T</a></li>
+          data-doc-search-tag="systemVar: get[T](sysvar: SystemVar[T]): T" href="necsus/runtime/systemVar.html#get%2CSystemVar%5BT%5D">systemVar: get[T](sysvar: SystemVar[T]): T</a></li>
           <li><a class="reference external"
           data-doc-search-tag="systemVar: get[T](sysvar: SystemVar[T]; default: T): T" href="necsus/runtime/systemVar.html#get%2CSystemVar%5BT%5D%2CT">systemVar: get[T](sysvar: SystemVar[T]; default: T): T</a></li>
           </ul></dd>
@@ -574,6 +584,10 @@ window.addEventListener('DOMContentLoaded', main);
           data-doc-search-tag="archetypeStore: getComps[Archs: enum; Comps: tuple](store: var ArchetypeStore[Archs, Comps];
                                     index: uint): ptr Comps" href="necsus/runtime/archetypeStore.html#getComps%2CArchetypeStore%5BArchs%3A%20enum%2CComps%3A%20tuple%5D%2Cuint">archetypeStore: getComps[Archs: enum; Comps: tuple](store: var ArchetypeStore[Archs, Comps];
                                     index: uint): ptr Comps</a></li>
+          </ul></dd>
+<dt><a name="getOrRaise" href="#getOrRaise"><span>getOrRaise:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="systemVar: getOrRaise[T](sysvar: SystemVar[T]): var T" href="necsus/runtime/systemVar.html#getOrRaise%2CSystemVar%5BT%5D">systemVar: getOrRaise[T](sysvar: SystemVar[T]): var T</a></li>
           </ul></dd>
 <dt><a name="hash" href="#hash"><span>hash:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -715,6 +729,10 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference external"
           data-doc-search-tag="localGen: localGenerator" href="necsus/compiletime/localGen.html#localGenerator">localGen: localGenerator</a></li>
           </ul></dd>
+<dt><a name="LocalOrT" href="#LocalOrT"><span>LocalOrT:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="systemVar: LocalOrT" href="necsus/runtime/systemVar.html#LocalOrT">systemVar: LocalOrT</a></li>
+          </ul></dd>
 <dt><a name="Lookup" href="#Lookup"><span>Lookup:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="directives: Lookup" href="necsus/runtime/directives.html#Lookup">directives: Lookup</a></li>
@@ -779,6 +797,8 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="nameOf" href="#nameOf"><span>nameOf:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
+          data-doc-search-tag="codeGenInfo: nameOf(genInfo: CodeGenInfo; arg: SystemArg): string" href="necsus/compiletime/codeGenInfo.html#nameOf%2CCodeGenInfo%2CSystemArg">codeGenInfo: nameOf(genInfo: CodeGenInfo; arg: SystemArg): string</a></li>
+          <li><a class="reference external"
           data-doc-search-tag="directiveSet: nameOf[T](directives: DirectiveSet[T]; value: T): string" href="necsus/compiletime/directiveSet.html#nameOf%2CDirectiveSet%5BT%5D%2CT">directiveSet: nameOf[T](directives: DirectiveSet[T]; value: T): string</a></li>
           </ul></dd>
 <dt><a name="necsus" href="#necsus"><span>necsus:</span></a></dt><dd><ul class="simple">
@@ -1073,6 +1093,10 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference external"
           data-doc-search-tag="sharedGen: sharedGenerator" href="necsus/compiletime/sharedGen.html#sharedGenerator">sharedGen: sharedGenerator</a></li>
           </ul></dd>
+<dt><a name="SharedOrT" href="#SharedOrT"><span>SharedOrT:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="systemVar: SharedOrT" href="necsus/runtime/systemVar.html#SharedOrT">systemVar: SharedOrT</a></li>
+          </ul></dd>
 <dt><a name="SharedVector" href="#SharedVector"><span>SharedVector:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="sharedVector: SharedVector" href="necsus/util/sharedVector.html#SharedVector">sharedVector: SharedVector</a></li>
@@ -1187,6 +1211,10 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference external"
           data-doc-search-tag="tupleDirective: TupleDirective" href="necsus/compiletime/tupleDirective.html#TupleDirective">tupleDirective: TupleDirective</a></li>
           </ul></dd>
+<dt><a name="unwrap" href="#unwrap"><span>unwrap:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="systemVar: unwrap[T](sysvar: SharedOrT[T] | LocalOrT[T]): T" href="necsus/runtime/systemVar.html#unwrap">systemVar: unwrap[T](sysvar: SharedOrT[T] | LocalOrT[T]): T</a></li>
+          </ul></dd>
 <dt><a name="value" href="#value"><span>value:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="blockstore: value[V](entry: Entry[V]): var V" href="necsus/util/blockstore.html#value.t%2CEntry%5BV%5D">blockstore: value[V](entry: Entry[V]): var V</a></li>
@@ -1226,7 +1254,7 @@ window.addEventListener('DOMContentLoaded', main);
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-10-29 22:26:35 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-11-04 20:15:55 UTC</small>
       </div>
     </div>
   </div>

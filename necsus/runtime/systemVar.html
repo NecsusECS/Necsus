@@ -103,8 +103,12 @@ window.addEventListener('DOMContentLoaded', main);
   <ul class="simple simple-toc-section">
       <li><a class="reference" href="#Local"
     title="Local[T] = distinct ptr SystemVarData[T]">Local</a></li>
+  <li><a class="reference" href="#LocalOrT"
+    title="LocalOrT[T] = Local[T] | T">LocalOrT</a></li>
   <li><a class="reference" href="#Shared"
     title="Shared[T] = distinct ptr SystemVarData[T]">Shared</a></li>
+  <li><a class="reference" href="#SharedOrT"
+    title="SharedOrT[T] = Shared[T] | T">SharedOrT</a></li>
   <li><a class="reference" href="#SystemVar"
     title="SystemVar[T] = Shared[T] | Local[T]">SystemVar</a></li>
   <li><a class="reference" href="#SystemVarData"
@@ -126,11 +130,21 @@ window.addEventListener('DOMContentLoaded', main);
     title="`:=`[T](sysvar: SystemVar[T]; value: sink T)">`:=`[T](sysvar: SystemVar[T]; value: sink T)</a></li>
 
   </ul>
+  <ul class="simple nested-toc-section">==
+      <li><a class="reference" href="#%3D%3D%2CSystemVar%5BT%5D%2CT"
+    title="`==`[T](sysvar: SystemVar[T]; value: T): bool">`==`[T](sysvar: SystemVar[T]; value: T): bool</a></li>
+
+  </ul>
   <ul class="simple nested-toc-section">get
       <li><a class="reference" href="#get%2CSystemVar%5BT%5D"
-    title="get[T](sysvar: SystemVar[T]): var T">get[T](sysvar: SystemVar[T]): var T</a></li>
+    title="get[T](sysvar: SystemVar[T]): T">get[T](sysvar: SystemVar[T]): T</a></li>
   <li><a class="reference" href="#get%2CSystemVar%5BT%5D%2CT"
     title="get[T](sysvar: SystemVar[T]; default: T): T">get[T](sysvar: SystemVar[T]; default: T): T</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">getOrRaise
+      <li><a class="reference" href="#getOrRaise%2CSystemVar%5BT%5D"
+    title="getOrRaise[T](sysvar: SystemVar[T]): var T">getOrRaise[T](sysvar: SystemVar[T]): var T</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">isEmpty
@@ -146,6 +160,11 @@ window.addEventListener('DOMContentLoaded', main);
   <ul class="simple nested-toc-section">set
       <li><a class="reference" href="#set%2CSystemVar%5BT%5D%2CsinkT"
     title="set[T](sysvar: SystemVar[T]; value: sink T)">set[T](sysvar: SystemVar[T]; value: sink T)</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">unwrap
+      <li><a class="reference" href="#unwrap"
+    title="unwrap[T](sysvar: SharedOrT[T] | LocalOrT[T]): T">unwrap[T](sysvar: SharedOrT[T] | LocalOrT[T]): T</a></li>
 
   </ul>
 
@@ -171,11 +190,27 @@ Wrapper around data that is specific to a single system
 
 </dd>
 </div>
+<div id="LocalOrT">
+<dt><pre><a href="systemVar.html#LocalOrT"><span class="Identifier">LocalOrT</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Other">=</span> <a href="systemVar.html#Local"><span class="Identifier">Local</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Operator">|</span> <span class="Identifier">T</span></pre></dt>
+<dd>
+
+A local value or the value itself
+
+</dd>
+</div>
 <div id="Shared">
 <dt><pre><a href="systemVar.html#Shared"><span class="Identifier">Shared</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">distinct</span> <span class="Keyword">ptr</span> <a href="systemVar.html#SystemVarData"><span class="Identifier">SystemVarData</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span></pre></dt>
 <dd>
 
 Wrapper around data that is shared across all systems
+
+</dd>
+</div>
+<div id="SharedOrT">
+<dt><pre><a href="systemVar.html#SharedOrT"><span class="Identifier">SharedOrT</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Other">=</span> <a href="systemVar.html#Shared"><span class="Identifier">Shared</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Operator">|</span> <span class="Identifier">T</span></pre></dt>
+<dd>
+
+A shared value or the value itself
 
 </dd>
 </div>
@@ -218,8 +253,16 @@ Sets the value in a system variable
 
 </dd>
 </div>
+<div id="==,SystemVar[T],T">
+<dt><pre><span class="Keyword">proc</span> <a href="#%3D%3D%2CSystemVar%5BT%5D%2CT"><span class="Identifier">`==`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">sysvar</span><span class="Other">:</span> <a href="systemVar.html#SystemVar"><span class="Identifier">SystemVar</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span class="Identifier">inline</span>.}</pre></dt>
+<dd>
+
+Returns whether a sysvar is set and equals the given value
+
+</dd>
+</div>
 <div id="get,SystemVar[T]">
-<dt><pre><span class="Keyword">proc</span> <a href="#get%2CSystemVar%5BT%5D"><span class="Identifier">get</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">sysvar</span><span class="Other">:</span> <a href="systemVar.html#SystemVar"><span class="Identifier">SystemVar</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">T</span> {.<span class="Identifier">inline</span>.}</pre></dt>
+<dt><pre><span class="Keyword">proc</span> <a href="#get%2CSystemVar%5BT%5D"><span class="Identifier">get</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">sysvar</span><span class="Other">:</span> <a href="systemVar.html#SystemVar"><span class="Identifier">SystemVar</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">T</span> {.<span class="Identifier">inline</span>.}</pre></dt>
 <dd>
 
 Returns the value in a system variable
@@ -228,6 +271,14 @@ Returns the value in a system variable
 </div>
 <div id="get,SystemVar[T],T">
 <dt><pre><span class="Keyword">proc</span> <a href="#get%2CSystemVar%5BT%5D%2CT"><span class="Identifier">get</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">sysvar</span><span class="Other">:</span> <a href="systemVar.html#SystemVar"><span class="Identifier">SystemVar</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">default</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">T</span> {.<span class="Identifier">inline</span>.}</pre></dt>
+<dd>
+
+Returns the value in a system variable
+
+</dd>
+</div>
+<div id="getOrRaise,SystemVar[T]">
+<dt><pre><span class="Keyword">proc</span> <a href="#getOrRaise%2CSystemVar%5BT%5D"><span class="Identifier">getOrRaise</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">sysvar</span><span class="Other">:</span> <a href="systemVar.html#SystemVar"><span class="Identifier">SystemVar</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">T</span> {.<span class="Identifier">inline</span>.}</pre></dt>
 <dd>
 
 Returns the value in a system variable
@@ -258,6 +309,14 @@ Sets the value in a system variable
 
 </dd>
 </div>
+<div id="unwrap">
+<dt><pre><span class="Keyword">proc</span> <a href="#unwrap"><span class="Identifier">unwrap</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">sysvar</span><span class="Other">:</span> <a href="systemVar.html#SharedOrT"><span class="Identifier">SharedOrT</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Operator">|</span> <a href="systemVar.html#LocalOrT"><span class="Identifier">LocalOrT</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">T</span> {.<span class="Identifier">inline</span>.}</pre></dt>
+<dd>
+
+Pulls a value out of a <tt class="docutils literal"><span class="pre"><span class="Identifier">SystemVar</span></span></tt> or raises
+
+</dd>
+</div>
 
 </dl></div>
 
@@ -268,7 +327,7 @@ Sets the value in a system variable
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-10-29 22:26:35 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-11-04 20:15:54 UTC</small>
       </div>
     </div>
   </div>

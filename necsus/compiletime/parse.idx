@@ -2,6 +2,7 @@ StartupPhase	necsus/compiletime/parse.html#StartupPhase	SystemPhase.StartupPhase
 LoopPhase	necsus/compiletime/parse.html#LoopPhase	SystemPhase.LoopPhase	
 TeardownPhase	necsus/compiletime/parse.html#TeardownPhase	SystemPhase.TeardownPhase	
 SystemPhase	necsus/compiletime/parse.html#SystemPhase	parse: SystemPhase	
+ActiveCheck	necsus/compiletime/parse.html#ActiveCheck	parse: ActiveCheck	
 ParsedSystem	necsus/compiletime/parse.html#ParsedSystem	parse: ParsedSystem	
 ParsedApp	necsus/compiletime/parse.html#ParsedApp	parse: ParsedApp	
 newParser	necsus/compiletime/parse.html#newParser,varargs[DirectiveGen]	parse: newParser(generators: varargs[DirectiveGen]): Parser	
