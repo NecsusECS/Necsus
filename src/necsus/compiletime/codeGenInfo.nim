@@ -56,16 +56,29 @@ proc appStateInit*(genInfo: CodeGenInfo): NimNode =
     ## The name of the object that contains the state of the app
     ident("init" & genInfo.app.name.capitalizeAscii)
 
+proc newGenerateContext(codeGen: CodeGenInfo, hook: GenerateHook): GenerateContext =
+    ## Create a GenerateContext for a hook
+    result.hook = hook
+    result.inputs = codeGen.app.inputs
+    result.directives = codeGen.directives
+    result.archetypes = codeGen.archetypes
+    result.archetypeEnum = codeGen.archetypeEnum
+
+proc nameOf*(genInfo: CodeGenInfo, arg: SystemArg): string =
+    ## Returns the name used for a specific system arg
+    genInfo.directives[arg.generator].nameOf(arg)
+
+proc generateForHook*(codeGen: CodeGenInfo, system: ParsedSystem, hook: GenerateHook): NimNode =
+    ## Generates the code for a specific code-gen hook
+    result = newStmtList()
+    let details = newGenerateContext(codeGen, hook)
+    for arg in system.args:
+        result.add(arg.generateForHook(details, codeGen.nameOf(arg)))
+
 proc generateForHook*(codeGen: CodeGenInfo, hook: GenerateHook): NimNode =
     ## Generates the code for a specific code-gen hook
     result = newStmtList()
-    let details = GenerateContext(
-        hook: hook,
-        inputs: codeGen.app.inputs,
-        directives: codeGen.directives,
-        archetypes: codeGen.archetypes,
-        archetypeEnum: codeGen.archetypeEnum
-    )
+    let details = newGenerateContext(codeGen, hook)
     for _, argSet in codeGen.directives:
         for name, arg in argSet:
             result.add(arg.generateForHook(details, name))
@@ -79,7 +92,3 @@ proc worldFields*(codeGen: CodeGenInfo): seq[WorldField] =
 proc systemArg*(genInfo: CodeGenInfo, arg: SystemArg): NimNode =
     ## Returns the value to pass to a system when executin the given argument
     systemArg(genInfo.directives, arg)
-
-proc nameOf*(genInfo: CodeGenInfo, arg: SystemArg): string =
-    ## Returns the name used for a specific system arg
-    genInfo.directives[arg.generator].nameOf(arg)

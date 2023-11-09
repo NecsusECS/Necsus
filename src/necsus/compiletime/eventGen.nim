@@ -7,22 +7,28 @@ proc eventStorageIdent(event: MonoDirective | NimNode): NimNode =
     when event is NimNode: ident(event.symbols.join("_") & "_storage")
     elif event is MonoDirective: eventStorageIdent(event.argType)
 
+proc chooseInboxName(argName: NimNode, local: MonoDirective): string =
+    argName.signatureHash & "_" & argName.strVal
+
 proc inboxFields(name: string, dir: MonoDirective): seq[WorldField] = @[
-    (dir.eventStorageIdent.strVal, nnkBracketExpr.newTree(bindSym("Mailbox"), dir.argType)),
-    (name, nnkBracketExpr.newTree(bindSym("Inbox"), dir.argType))
+    (name, nnkBracketExpr.newTree(bindSym("Mailbox"), dir.argType))
 ]
+
+proc inboxSystemArg(name: string, dir: MonoDirective): NimNode =
+    let storageIdent = name.ident
+    let eventType = dir.argType
+    return quote:
+        newInbox[`eventType`](`appStateIdent`.`storageIdent`)
 
 proc generateInbox(details: GenerateContext, arg: SystemArg, name: string, inbox: MonoDirective): NimNode =
     case details.hook
     of Early:
-        let storageIdent = inbox.eventStorageIdent
-        let inboxName = name.ident
+        let storageIdent = name.ident
         let eventType = inbox.argType
         return quote:
             `appStateIdent`.`storageIdent` = newMailbox[`eventType`](`appStateIdent`.`confIdent`.eventQueueSize)
-            `appStateIdent`.`inboxName` = newInbox[`eventType`](`appStateIdent`.`storageIdent`)
-    of LoopEnd:
-        let eventStore = inbox.eventStorageIdent
+    of AfterSystem:
+        let eventStore = name.ident
         return quote:
             clear(`appStateIdent`.`eventStore`)
     else:
@@ -30,17 +36,18 @@ proc generateInbox(details: GenerateContext, arg: SystemArg, name: string, inbox
 
 let inboxGenerator* {.compileTime.} = newGenerator(
     ident = "Inbox",
+    chooseName = chooseInboxName,
     generate = generateInbox,
     worldFields = inboxFields,
+    systemArg = inboxSystemArg,
 )
 
-proc hasInboxes(details: GenerateContext, outbox: MonoDirective): bool =
-    ## Returns whether an outbox has anyone that cares about the messages it sends
+iterator inboxes(details: GenerateContext, outbox: MonoDirective): SystemArg =
+    ## Yields the inboxes an outbox should write to
     if inboxGenerator in details.directives:
-        for _, directive in details.directives[inboxGenerator]:
-            if directive.monoDir.argType == outbox.argType:
-                return true
-    return false
+        for _, sysArg in details.directives[inboxGenerator]:
+            if sysArg.monoDir.argType == outbox.argType:
+                yield sysArg
 
 proc outboxFields(name: string, dir: MonoDirective): seq[WorldField] =
     @[ (name, nnkBracketExpr.newTree(bindSym("Outbox"), dir.argType)) ]
@@ -51,15 +58,12 @@ proc generateOutbox(details: GenerateContext, arg: SystemArg, name: string, outb
         let event = "event".ident
         let procName = name.ident
         let eventType = outbox.argType
-        let storageIdent = outbox.eventStorageIdent
 
-        # If there is nobody to listen to this event, just discard it immediately
-        let body = if details.hasInboxes(outbox):
-            quote:
-                send[`eventType`](`appStateIdent`.`storageIdent`, `event`)
-        else:
-            quote:
-                discard
+        var body = newStmtList()
+        for sysArg in inboxes(details, outbox):
+            let inboxIdent = details.nameOf(sysArg).ident
+            body.add quote do:
+                send[`eventType`](`appStateIdent`.`inboxIdent`, `event`)
 
         return quote:
             `appStateIdent`.`procName` = proc(`event`: sink `eventType`) = `body`
@@ -67,7 +71,7 @@ proc generateOutbox(details: GenerateContext, arg: SystemArg, name: string, outb
         return newEmptyNode()
 
 let outboxGenerator* {.compileTime.} = newGenerator(
-    ident = "Outbox", 
+    ident = "Outbox",
     generate = generateOutbox,
     worldFields = outboxFields,
 )

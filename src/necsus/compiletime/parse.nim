@@ -78,7 +78,7 @@ proc parseDirectiveArgsFromTuple(tupleArg: NimNode): seq[DirectiveArg] =
 template orElse[T](optional: Option[T], exec: untyped): T =
     if optional.isSome: optional.get else: exec
 
-proc parseArgType(parser: Parser, argName: string, argType, original: NimNode): SystemArg
+proc parseArgType(parser: Parser, argName: NimNode, argType, original: NimNode): SystemArg
 
 proc parseNestedArgs(parser: Parser, nestedArgs: seq[RawNestedArg]): seq[SystemArg] =
     ## If a directive references other directives, we need to extract those
@@ -87,7 +87,7 @@ proc parseNestedArgs(parser: Parser, nestedArgs: seq[RawNestedArg]): seq[SystemA
 
 proc parseParametricArg(
     parser: Parser,
-    argName: string,
+    argName: NimNode,
     directiveSymbol: NimNode,
     directiveParametric: NimNode
 ): Option[SystemArg] =
@@ -95,7 +95,7 @@ proc parseParametricArg(
     let gen = parser.parseArgKind(directiveSymbol).orElse: return none(SystemArg)
 
     # Create a unique name for so the directives can be unique, if needed
-    let uniqName = directiveSymbol.strVal & "_" & argName
+    # let uniqName = directiveSymbol.strVal & "_" & argName.strVal & argName.signatureHash
 
     case gen.kind
     of DirectiveKind.Tuple:
@@ -103,8 +103,8 @@ proc parseParametricArg(
         let nestedArgs = gen.nestedArgsTuple(tupleDir)
         return some(SystemArg(
             generator: gen,
-            originalName: argName,
-            name: gen.chooseNameTuple(uniqName, tupleDir),
+            originalName: argName.strVal,
+            name: gen.chooseNameTuple(argName, tupleDir),
             kind: DirectiveKind.Tuple,
             tupleDir: tupleDir,
             nestedArgs: parser.parseNestedArgs(nestedArgs)
@@ -114,8 +114,8 @@ proc parseParametricArg(
         let nestedArgs = gen.nestedArgsMono(monoDir)
         return some(SystemArg(
             generator: gen,
-            originalName: argName,
-            name: gen.chooseNameMono(uniqName, monoDir),
+            originalName: argName.strVal,
+            name: gen.chooseNameMono(argName, monoDir),
             kind: DirectiveKind.Mono,
             monoDir: monoDir,
             nestedArgs: parser.parseNestedArgs(nestedArgs)
@@ -123,16 +123,16 @@ proc parseParametricArg(
     of DirectiveKind.None:
         error("System argument does not support tuple parameters: " & $gen.kind)
 
-proc parseFlagSystemArg(parser: Parser, name: string, directiveSymbol: NimNode): Option[SystemArg] =
+proc parseFlagSystemArg(parser: Parser, name: NimNode, directiveSymbol: NimNode): Option[SystemArg] =
     ## Parses unparameterized system args
     let gen = parser.parseArgKind(directiveSymbol).orElse: return none(SystemArg)
     case gen.kind
     of DirectiveKind.Tuple, DirectiveKind.Mono:
         error("System argument is not flag based: " & $gen.kind)
     of DirectiveKind.None:
-        return some(SystemArg(generator: gen, originalName: name, kind: DirectiveKind.None))
+        return some(SystemArg(generator: gen, originalName: name.strVal, kind: DirectiveKind.None))
 
-proc parseArgType(parser: Parser, argName: string, argType, original: NimNode): SystemArg =
+proc parseArgType(parser: Parser, argName: NimNode, argType, original: NimNode): SystemArg =
     ## Parses the type of a system argument
 
     var parsed: Option[SystemArg]
@@ -156,7 +156,7 @@ proc parseArgType(parser: Parser, argName: string, argType, original: NimNode): 
 proc parseSystemArg(parser: Parser, identDef: NimNode): SystemArg =
     ## Parses a SystemArg from a proc argument
     identDef.expectKind(nnkIdentDefs)
-    return parser.parseArgType(identDef[0].strVal, identDef[1], identDef[1])
+    return parser.parseArgType(identDef[0], identDef[1], identDef[1])
 
 proc readDependencies(typeNode: NimNode): seq[NimNode] =
     ## Reads the systems referenced by a pragma attached to another system
@@ -188,7 +188,7 @@ proc parseActiveChecks(parser: Parser, typeNode: NimNode): seq[ActiveCheck] =
                 let arg = SystemArg(
                     generator: gen,
                     originalName: state.strVal,
-                    name: gen.chooseNameMono("shared_" & state.strVal, monoDir),
+                    name: gen.chooseNameMono(state, monoDir),
                     kind: DirectiveKind.Mono,
                     monoDir: monoDir,
                     nestedArgs: @[]

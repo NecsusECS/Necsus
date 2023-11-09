@@ -37,7 +37,7 @@ proc nestedArgs(dir: MonoDirective): seq[RawNestedArg] =
 
         let name = if child[0].kind == nnkPostfix: child[0][1] else: child[0]
         name.expectKind(nnkIdent)
-        result.add((name.strVal, child[1]))
+        result.add((name, child[1]))
 
 let bundleGenerator* {.compileTime.} = newGenerator(
     ident = "Bundle",

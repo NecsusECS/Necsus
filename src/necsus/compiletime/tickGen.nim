@@ -45,12 +45,15 @@ proc callSystems*(codeGenInfo: CodeGenInfo, phase: SystemPhase): NimNode =
     result = newStmtList()
     for system in codeGenInfo.systems:
 
-        let invokeSystem =
+        var invokeSystem =
             if system.instanced.isSome:codeGenInfo.callInstanced(system, phase)
             elif system.phase == phase: newCall(system.symbol, codeGenInfo.renderSystemArgs(system.args))
             else: newEmptyNode()
 
-        result.add(invokeSystem.addActiveChecks(codeGenInfo, system.checks, phase))
+        if invokeSystem.kind != nnkEmpty:
+            invokeSystem = newStmtList(invokeSystem, codeGenInfo.generateForHook(system, AfterSystem))
+
+            result.add(invokeSystem.addActiveChecks(codeGenInfo, system.checks, phase))
 
 proc createTickProc*(genInfo: CodeGenInfo): NimNode =
     ## Creates a function that executes the next tick

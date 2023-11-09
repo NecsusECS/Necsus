@@ -1,7 +1,7 @@
 import ../util/mailbox
 
 type
-    Inbox*[T] {.byref.} = object
+    Inbox*[T] = object
         ## Receives events
         mailbox: ptr Mailbox[T]
 
