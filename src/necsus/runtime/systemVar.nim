@@ -29,6 +29,10 @@ proc isEmpty*[T](sysvar: SystemVar[T]): bool {.inline.} =
     ## Returns whether a system variable has a value
     sysvar.extract.value.isNone
 
+proc isSome*[T](sysvar: SystemVar[T]): bool {.inline.} =
+    ## Returns whether a system variable has a value
+    not isEmpty(sysVar)
+
 proc set*[T](sysvar: SystemVar[T], value: sink T) {.inline.} =
     ## Sets the value in a system variable
     sysvar.extract.value = some(value)
