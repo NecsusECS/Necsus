@@ -12,7 +12,7 @@ proc spawner(spawn: Spawn[(Thingy, Whatsit)]) =
 
 proc dump(query: Query[(Thingy, )], dump: EntityDebug) =
     for eid, _ in query:
-        check(dump(eid) == "EntityId(0) = thingy_whatsit((number: 123), \"blah\")")
+        check(dump(eid) == "EntityId(0) = Thingy_Whatsit((number: 123), \"blah\")")
 
 proc runner(tick: proc(): void) = tick()
 

@@ -1,9 +1,9 @@
-import macros, strformat, strutils, sequtils, hashes
+import macros, strformat, sequtils, hashes
 
 proc symbols*(node: NimNode): seq[string] =
     ## Extracts all the symbols from a NimNode tree
     case node.kind
-    of nnkSym, nnkIdent, nnkStrLit..nnkTripleStrLit: return @[node.strVal.toLowerAscii]
+    of nnkSym, nnkIdent, nnkStrLit..nnkTripleStrLit: return @[node.strVal]
     of nnkCharLit..nnkUInt64Lit: return @[$node.intVal]
     of nnkFloatLit..nnkFloat64Lit: return @[$node.floatVal]
     of nnkNilLit: return @["nil"]
