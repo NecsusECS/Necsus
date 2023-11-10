@@ -45,6 +45,12 @@ proc getOrRaise*[T](sysvar: SystemVar[T]): var T {.inline.} =
     ## Returns the value in a system variable
     sysvar.extract.value.get()
 
+template getOrPut*[T](sysvar: SystemVar[T], build: typed): var T =
+    ## Returns the value in a system variable
+    if sysvar.isEmpty:
+        sysvar := build
+    sysvar.getOrRaise
+
 proc get*[T](sysvar: SystemVar[T], default: T): T {.inline.} =
     ## Returns the value in a system variable
     sysvar.extract.value.get(default)
