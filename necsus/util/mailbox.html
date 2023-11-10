@@ -122,6 +122,11 @@ window.addEventListener('DOMContentLoaded', main);
     title="clear[T](mailbox: var Mailbox[T])">clear[T](mailbox: var Mailbox[T])</a></li>
 
   </ul>
+  <ul class="simple nested-toc-section">len
+      <li><a class="reference" href="#len%2CMailbox%5BT%5D"
+    title="len[T](mailbox: var Mailbox[T]): uint">len[T](mailbox: var Mailbox[T]): uint</a></li>
+
+  </ul>
   <ul class="simple nested-toc-section">newMailbox
       <li><a class="reference" href="#newMailbox%2CSomeInteger"
     title="newMailbox[T](initialSize: SomeInteger): Mailbox[T]">newMailbox[T](initialSize: SomeInteger): Mailbox[T]</a></li>
@@ -187,6 +192,14 @@ Remove all messages from this mailbox
 
 </dd>
 </div>
+<div id="len,Mailbox[T]">
+<dt><pre><span class="Keyword">proc</span> <a href="#len%2CMailbox%5BT%5D"><span class="Identifier">len</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">mailbox</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="mailbox.html#Mailbox"><span class="Identifier">Mailbox</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">uint</span> {.<span class="Identifier">inline</span>.}</pre></dt>
+<dd>
+
+Returns the number of messages in this mailbox
+
+</dd>
+</div>
 <div id="newMailbox,SomeInteger">
 <dt><pre><span class="Keyword">proc</span> <a href="#newMailbox%2CSomeInteger"><span class="Identifier">newMailbox</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">initialSize</span><span class="Other">:</span> <span class="Identifier">SomeInteger</span><span class="Other">)</span><span class="Other">:</span> <a href="mailbox.html#Mailbox"><span class="Identifier">Mailbox</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span></pre></dt>
 <dd>
@@ -226,7 +239,7 @@ Iterate through each item in this mailbox
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-11-04 20:15:54 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-11-10 03:04:30 UTC</small>
       </div>
     </div>
   </div>

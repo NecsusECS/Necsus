@@ -185,6 +185,10 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference external"
           data-doc-search-tag="parse: ActiveCheck" href="necsus/compiletime/parse.html#ActiveCheck">parse: ActiveCheck</a></li>
           </ul></dd>
+<dt><a name="AfterSystem" href="#AfterSystem"><span>AfterSystem:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="GenerateHook.AfterSystem" href="necsus/compiletime/systemGen.html#AfterSystem">GenerateHook.AfterSystem</a></li>
+          </ul></dd>
 <dt><a name="AppInputs" href="#AppInputs"><span>AppInputs:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="systemGen: AppInputs" href="necsus/compiletime/systemGen.html#AppInputs">systemGen: AppInputs</a></li>
@@ -557,6 +561,8 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference external"
           data-doc-search-tag="codeGenInfo: generateForHook(codeGen: CodeGenInfo; hook: GenerateHook): NimNode" href="necsus/compiletime/codeGenInfo.html#generateForHook%2CCodeGenInfo%2CGenerateHook">codeGenInfo: generateForHook(codeGen: CodeGenInfo; hook: GenerateHook): NimNode</a></li>
           <li><a class="reference external"
+          data-doc-search-tag="codeGenInfo: generateForHook(codeGen: CodeGenInfo; system: ParsedSystem; hook: GenerateHook): NimNode" href="necsus/compiletime/codeGenInfo.html#generateForHook%2CCodeGenInfo%2CParsedSystem%2CGenerateHook">codeGenInfo: generateForHook(codeGen: CodeGenInfo; system: ParsedSystem; hook: GenerateHook): NimNode</a></li>
+          <li><a class="reference external"
           data-doc-search-tag="systemGen: generateForHook(arg: SystemArg; details: GenerateContext; name: string): NimNode" href="necsus/compiletime/systemGen.html#generateForHook%2CSystemArg%2CGenerateContext%2Cstring">systemGen: generateForHook(arg: SystemArg; details: GenerateContext; name: string): NimNode</a></li>
           </ul></dd>
 <dt><a name="GenerateHook" href="#GenerateHook"><span>GenerateHook:</span></a></dt><dd><ul class="simple">
@@ -584,6 +590,10 @@ window.addEventListener('DOMContentLoaded', main);
           data-doc-search-tag="archetypeStore: getComps[Archs: enum; Comps: tuple](store: var ArchetypeStore[Archs, Comps];
                                     index: uint): ptr Comps" href="necsus/runtime/archetypeStore.html#getComps%2CArchetypeStore%5BArchs%3A%20enum%2CComps%3A%20tuple%5D%2Cuint">archetypeStore: getComps[Archs: enum; Comps: tuple](store: var ArchetypeStore[Archs, Comps];
                                     index: uint): ptr Comps</a></li>
+          </ul></dd>
+<dt><a name="getOrPut" href="#getOrPut"><span>getOrPut:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="systemVar: getOrPut[T](sysvar: SystemVar[T]; build: typed): var T" href="necsus/runtime/systemVar.html#getOrPut.t%2CSystemVar%5BT%5D%2Ctyped">systemVar: getOrPut[T](sysvar: SystemVar[T]; build: typed): var T</a></li>
           </ul></dd>
 <dt><a name="getOrRaise" href="#getOrRaise"><span>getOrRaise:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -667,6 +677,10 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference external"
           data-doc-search-tag="arrayblock: isNil[T](ary: ArrayBlock[T]): bool" href="necsus/util/arrayblock.html#isNil%2CArrayBlock%5BT%5D">arrayblock: isNil[T](ary: ArrayBlock[T]): bool</a></li>
           </ul></dd>
+<dt><a name="isSome" href="#isSome"><span>isSome:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="systemVar: isSome[T](sysvar: SystemVar[T]): bool" href="necsus/runtime/systemVar.html#isSome%2CSystemVar%5BT%5D">systemVar: isSome[T](sysvar: SystemVar[T]): bool</a></li>
+          </ul></dd>
 <dt><a name="items" href="#items"><span>items:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="archetype: items[T](archetype: Archetype[T]): T" href="necsus/compiletime/archetype.html#items.i%2CArchetype%5BT%5D">archetype: items[T](archetype: Archetype[T]): T</a></li>
@@ -711,9 +725,13 @@ window.addEventListener('DOMContentLoaded', main);
           <li><a class="reference external"
           data-doc-search-tag="archetypeStore: len[ViewComps: tuple](view: ArchView[ViewComps]): uint" href="necsus/runtime/archetypeStore.html#len%2CArchView%5BViewComps%3A%20tuple%5D">archetypeStore: len[ViewComps: tuple](view: ArchView[ViewComps]): uint</a></li>
           <li><a class="reference external"
+          data-doc-search-tag="inbox: len[T](inbox: Inbox[T]): uint" href="necsus/runtime/inbox.html#len%2CInbox%5BT%5D">inbox: len[T](inbox: Inbox[T]): uint</a></li>
+          <li><a class="reference external"
           data-doc-search-tag="query: len[Comps: tuple](query: Query[Comps]): uint" href="necsus/runtime/query.html#len%2CQuery%5BComps%3A%20tuple%5D">query: len[Comps: tuple](query: Query[Comps]): uint</a></li>
           <li><a class="reference external"
           data-doc-search-tag="blockstore: len[V](blockstore: var BlockStore[V]): uint" href="necsus/util/blockstore.html#len%2CBlockStore%5BV%5D">blockstore: len[V](blockstore: var BlockStore[V]): uint</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="mailbox: len[T](mailbox: var Mailbox[T]): uint" href="necsus/util/mailbox.html#len%2CMailbox%5BT%5D">mailbox: len[T](mailbox: var Mailbox[T]): uint</a></li>
           <li><a class="reference external"
           data-doc-search-tag="sharedVector: len[T](vector: SharedVector[T]): uint" href="necsus/util/sharedVector.html#len%2CSharedVector%5BT%5D">sharedVector: len[T](vector: SharedVector[T]): uint</a></li>
           </ul></dd>
@@ -795,11 +813,17 @@ window.addEventListener('DOMContentLoaded', main);
           <li><a class="reference external"
           data-doc-search-tag="tupleDirective: name(directive: TupleDirective): string" href="necsus/compiletime/tupleDirective.html#name%2CTupleDirective">tupleDirective: name(directive: TupleDirective): string</a></li>
           </ul></dd>
+<dt><a name="NameChooser" href="#NameChooser"><span>NameChooser:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="systemGen: NameChooser" href="necsus/compiletime/systemGen.html#NameChooser">systemGen: NameChooser</a></li>
+          </ul></dd>
 <dt><a name="nameOf" href="#nameOf"><span>nameOf:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="codeGenInfo: nameOf(genInfo: CodeGenInfo; arg: SystemArg): string" href="necsus/compiletime/codeGenInfo.html#nameOf%2CCodeGenInfo%2CSystemArg">codeGenInfo: nameOf(genInfo: CodeGenInfo; arg: SystemArg): string</a></li>
           <li><a class="reference external"
           data-doc-search-tag="directiveSet: nameOf[T](directives: DirectiveSet[T]; value: T): string" href="necsus/compiletime/directiveSet.html#nameOf%2CDirectiveSet%5BT%5D%2CT">directiveSet: nameOf[T](directives: DirectiveSet[T]; value: T): string</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="systemGen: nameOf(ctx: GenerateContext; arg: SystemArg): string" href="necsus/compiletime/systemGen.html#nameOf%2CGenerateContext%2CSystemArg">systemGen: nameOf(ctx: GenerateContext; arg: SystemArg): string</a></li>
           </ul></dd>
 <dt><a name="necsus" href="#necsus"><span>necsus:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -881,29 +905,27 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference external"
           data-doc-search-tag="systemGen: newGenerator(ident: string; generate: HookGenerator[MonoDirective]; archetype: proc (
     builder: var ArchetypeBuilder[ComponentDef]; dir: MonoDirective) = noArchetype;
-    chooseName: proc (uniqId: string; dir: MonoDirective): string = defaultName;
-    systemReturn: proc (args: DirectiveSet[SystemArg]; returns: MonoDirective): Option[
-    NimNode] = defaultSystemReturn; worldFields: proc (name: string;
-    dir: MonoDirective): seq[WorldField] = defaultWorldField;
+             chooseName: NameChooser[MonoDirective] = defaultName; systemReturn: proc (
+    args: DirectiveSet[SystemArg]; returns: MonoDirective): Option[NimNode] = defaultSystemReturn;
+    worldFields: proc (name: string; dir: MonoDirective): seq[WorldField] = defaultWorldField;
              systemArg: SystemArgExtractor[MonoDirective] = defaultSystemArg;
-             nestedArgs: NestedArgsExtractor[MonoDirective] = defaultNestedArgs): DirectiveGen" href="necsus/compiletime/systemGen.html#newGenerator%2Cstring%2CHookGenerator%5BMonoDirective%5D%2Cproc%28ArchetypeBuilder%5BComponentDef%5D%2CMonoDirective%29%2Cproc%28string%2CMonoDirective%29%2Cproc%28DirectiveSet%5BSystemArg%5D%2CMonoDirective%29%2Cproc%28string%2CMonoDirective%29%2CSystemArgExtractor%5BMonoDirective%5D%2CNestedArgsExtractor%5BMonoDirective%5D">systemGen: newGenerator(ident: string; generate: HookGenerator[MonoDirective]; archetype: proc (
+             nestedArgs: NestedArgsExtractor[MonoDirective] = defaultNestedArgs): DirectiveGen" href="necsus/compiletime/systemGen.html#newGenerator%2Cstring%2CHookGenerator%5BMonoDirective%5D%2Cproc%28ArchetypeBuilder%5BComponentDef%5D%2CMonoDirective%29%2CNameChooser%5BMonoDirective%5D%2Cproc%28DirectiveSet%5BSystemArg%5D%2CMonoDirective%29%2Cproc%28string%2CMonoDirective%29%2CSystemArgExtractor%5BMonoDirective%5D%2CNestedArgsExtractor%5BMonoDirective%5D">systemGen: newGenerator(ident: string; generate: HookGenerator[MonoDirective]; archetype: proc (
     builder: var ArchetypeBuilder[ComponentDef]; dir: MonoDirective) = noArchetype;
-    chooseName: proc (uniqId: string; dir: MonoDirective): string = defaultName;
-    systemReturn: proc (args: DirectiveSet[SystemArg]; returns: MonoDirective): Option[
-    NimNode] = defaultSystemReturn; worldFields: proc (name: string;
-    dir: MonoDirective): seq[WorldField] = defaultWorldField;
+             chooseName: NameChooser[MonoDirective] = defaultName; systemReturn: proc (
+    args: DirectiveSet[SystemArg]; returns: MonoDirective): Option[NimNode] = defaultSystemReturn;
+    worldFields: proc (name: string; dir: MonoDirective): seq[WorldField] = defaultWorldField;
              systemArg: SystemArgExtractor[MonoDirective] = defaultSystemArg;
              nestedArgs: NestedArgsExtractor[MonoDirective] = defaultNestedArgs): DirectiveGen</a></li>
           <li><a class="reference external"
           data-doc-search-tag="systemGen: newGenerator(ident: string; generate: HookGenerator[TupleDirective]; archetype: proc (
     builder: var ArchetypeBuilder[ComponentDef]; dir: TupleDirective) = noArchetype;
-    chooseName: proc (uniqId: string; dir: TupleDirective): string = defaultName;
-    worldFields: proc (name: string; dir: TupleDirective): seq[WorldField] = defaultWorldField;
+             chooseName: NameChooser[TupleDirective] = defaultName; worldFields: proc (
+    name: string; dir: TupleDirective): seq[WorldField] = defaultWorldField;
              systemArg: SystemArgExtractor[TupleDirective] = defaultSystemArg;
-    nestedArgs: NestedArgsExtractor[TupleDirective] = defaultNestedArgs): DirectiveGen" href="necsus/compiletime/systemGen.html#newGenerator%2Cstring%2CHookGenerator%5BTupleDirective%5D%2Cproc%28ArchetypeBuilder%5BComponentDef%5D%2CTupleDirective%29%2Cproc%28string%2CTupleDirective%29%2Cproc%28string%2CTupleDirective%29%2CSystemArgExtractor%5BTupleDirective%5D%2CNestedArgsExtractor%5BTupleDirective%5D">systemGen: newGenerator(ident: string; generate: HookGenerator[TupleDirective]; archetype: proc (
+    nestedArgs: NestedArgsExtractor[TupleDirective] = defaultNestedArgs): DirectiveGen" href="necsus/compiletime/systemGen.html#newGenerator%2Cstring%2CHookGenerator%5BTupleDirective%5D%2Cproc%28ArchetypeBuilder%5BComponentDef%5D%2CTupleDirective%29%2CNameChooser%5BTupleDirective%5D%2Cproc%28string%2CTupleDirective%29%2CSystemArgExtractor%5BTupleDirective%5D%2CNestedArgsExtractor%5BTupleDirective%5D">systemGen: newGenerator(ident: string; generate: HookGenerator[TupleDirective]; archetype: proc (
     builder: var ArchetypeBuilder[ComponentDef]; dir: TupleDirective) = noArchetype;
-    chooseName: proc (uniqId: string; dir: TupleDirective): string = defaultName;
-    worldFields: proc (name: string; dir: TupleDirective): seq[WorldField] = defaultWorldField;
+             chooseName: NameChooser[TupleDirective] = defaultName; worldFields: proc (
+    name: string; dir: TupleDirective): seq[WorldField] = defaultWorldField;
              systemArg: SystemArgExtractor[TupleDirective] = defaultSystemArg;
     nestedArgs: NestedArgsExtractor[TupleDirective] = defaultNestedArgs): DirectiveGen</a></li>
           <li><a class="reference external"
@@ -1254,7 +1276,7 @@ window.addEventListener('DOMContentLoaded', main);
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-11-04 20:15:55 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-11-10 03:04:31 UTC</small>
       </div>
     </div>
   </div>

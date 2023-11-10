@@ -6,9 +6,11 @@ LocalOrT	necsus/runtime/systemVar.html#LocalOrT	systemVar: LocalOrT
 SystemVar	necsus/runtime/systemVar.html#SystemVar	systemVar: SystemVar	
 newSystemVar	necsus/runtime/systemVar.html#newSystemVar	systemVar: newSystemVar[T](): SystemVarData[T]	
 isEmpty	necsus/runtime/systemVar.html#isEmpty,SystemVar[T]	systemVar: isEmpty[T](sysvar: SystemVar[T]): bool	
+isSome	necsus/runtime/systemVar.html#isSome,SystemVar[T]	systemVar: isSome[T](sysvar: SystemVar[T]): bool	
 set	necsus/runtime/systemVar.html#set,SystemVar[T],sinkT	systemVar: set[T](sysvar: SystemVar[T]; value: sink T)	
 `:=`	necsus/runtime/systemVar.html#:=,SystemVar[T],sinkT	systemVar: `:=`[T](sysvar: SystemVar[T]; value: sink T)	
 getOrRaise	necsus/runtime/systemVar.html#getOrRaise,SystemVar[T]	systemVar: getOrRaise[T](sysvar: SystemVar[T]): var T	
+getOrPut	necsus/runtime/systemVar.html#getOrPut.t,SystemVar[T],typed	systemVar: getOrPut[T](sysvar: SystemVar[T]; build: typed): var T	
 get	necsus/runtime/systemVar.html#get,SystemVar[T],T	systemVar: get[T](sysvar: SystemVar[T]; default: T): T	
 get	necsus/runtime/systemVar.html#get,SystemVar[T]	systemVar: get[T](sysvar: SystemVar[T]): T	
 `==`	necsus/runtime/systemVar.html#==,SystemVar[T],T	systemVar: `==`[T](sysvar: SystemVar[T]; value: T): bool	
