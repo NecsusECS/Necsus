@@ -5,11 +5,15 @@ type
         ## A archetype of values that can be stored together
         values: seq[T]
         lookup: Table[T, int]
+        name*: string
+        identName: string
 
     ArchetypeSet*[T] = object
         ## A set of all known archetypes
         archetypes: HashSet[Archetype[T]]
         lookup: Table[HashSet[T], Archetype[T]]
+
+proc generateName(values: openarray[string]): string = values.join("_")
 
 proc newArchetype*[T](values: openarray[T]): Archetype[T] =
     ## Create an archetype
@@ -18,6 +22,8 @@ proc newArchetype*[T](values: openarray[T]): Archetype[T] =
     result.lookup = initTable[T, int](result.values.len)
     for i, value in result.values:
         result.lookup[value] = i
+    result.name = generateName(values)
+    result.identName = "archetype_" & result.name
 
 proc hash*[T](archetype: Archetype[T]): Hash =
     ## Create a hash describing a archetype
@@ -66,13 +72,8 @@ proc len*[T](archetype: Archetype[T]): auto = archetype.values.len
 proc asHashSet*[T](archetype: Archetype[T]): auto = toHashSet(archetype.values)
     ## Create a hash set from this archetype
 
-proc name*(archetype: Archetype[ComponentDef]): string =
-    ## Stringify a Archetype
-    generateName(archetype.values)
-
-proc ident*(archetype: Archetype[ComponentDef]): NimNode =
+proc ident*(archetype: Archetype[ComponentDef]): NimNode = archetype.identName.ident
     ## Creates a variable for referencing an archetype store
-    ident("archetype_" & archetype.name)
 
 proc asStorageTuple*(archetype: Archetype[ComponentDef]): NimNode =
     ## Creates the tuple type for storing an archetype
