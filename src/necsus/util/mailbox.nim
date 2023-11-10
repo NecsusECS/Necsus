@@ -32,3 +32,6 @@ iterator items*[T](mailbox: var Mailbox[T]): lent T =
 proc clear*[T](mailbox: var Mailbox[T]) =
     ## Remove all messages from this mailbox
     mailbox.next.store(0)
+
+proc len*[T](mailbox: var Mailbox[T]): uint {.inline.} = mailbox.next.load
+    ## Returns the number of messages in this mailbox

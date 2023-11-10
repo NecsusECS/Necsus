@@ -11,6 +11,7 @@ proc publish(sender: Outbox[SomeEvent], loneOutbox: Outbox[string]) =
         sender(SomeEvent(value: i + iterations))
 
 proc receive(receiver: Inbox[SomeEvent], loneInbox: Inbox[int]) =
+    check(receiver.len == 3)
     check(receiver.toSeq == @[
         SomeEvent(value: iterations + 1),
         SomeEvent(value: iterations + 2),
