@@ -14,7 +14,7 @@ proc newDirectiveSet*[T](prefix: string, values: openarray[T]): DirectiveSet[T] 
     var suffixes = initTable[string, int]()
 
     for value in values.toSeq.deduplicate:
-        let name = toLowerAscii(prefix) & "_" & value.generateName
+        let name = toLowerAscii(prefix) & "_" & value.name
         let suffix = suffixes.mgetOrPut(name, 0)
         suffixes[name] = suffix + 1
         result.values[value] = name & "_" & $suffix

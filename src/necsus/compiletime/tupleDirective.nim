@@ -16,6 +16,7 @@ type
     TupleDirective* = object of RootObj
         ## Parent type for all tuple based directives
         args*: seq[DirectiveArg]
+        name*: string
 
 proc newDirectiveArg*(component: ComponentDef, isPointer: bool, kind: DirectiveArgKind): auto =
     ## Creates a DirectiveArg
@@ -37,7 +38,8 @@ proc type*(def: DirectiveArg): NimNode =
     if def.isPointer: nnkPtrTy.newTree(NimNode(def.component)) else: NimNode(def.component)
 
 proc newTupleDir*(args: openarray[DirectiveArg]): TupleDirective =
-    TupleDirective(args: args.toSeq)
+    ## Create a TupleDirective
+    TupleDirective(args: args.toSeq, name: args.items.toSeq.mapIt(it.component).generateName)
 
 iterator items*(directive: TupleDirective): ComponentDef =
     ## Produce all components in a directive
@@ -50,14 +52,6 @@ proc comps*(directive: TupleDirective): seq[ComponentDef] =
 iterator args*(directive: TupleDirective): DirectiveArg =
     ## Produce all args in a directive
     for arg in directive.args: yield arg
-
-proc generateName*(directive: TupleDirective): string =
-    ## Produces a readable name describing this directive
-    directive.items.toSeq.generateName
-
-proc name*(directive: TupleDirective): string =
-    ## Produces a readable name describing this directive
-    directive.generateName
 
 proc hash*(directive: TupleDirective): Hash = hash(directive.args)
 
