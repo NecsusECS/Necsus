@@ -41,6 +41,7 @@ type
     DirectiveGen*  {.byref.} = object
         ## An object that can contribute to Necsus code generation
         ident*: string
+        cachedHash: Hash
         case kind*: DirectiveKind
         of DirectiveKind.Mono:
             generateMono*: HookGenerator[MonoDirective]
@@ -98,6 +99,7 @@ proc newGenerator*(
 ): DirectiveGen =
     ## Create a tuple based generator
     result.ident = ident
+    result.cachedHash = hash(ident)
     result.kind = DirectiveKind.Tuple
     result.generateTuple = generate
     result.archetypeTuple = archetype
@@ -148,7 +150,7 @@ proc newGenerator*(
 
 proc `==`*(a, b: DirectiveGen): bool = a.ident == b.ident
 
-proc hash*(gen: DirectiveGen): Hash = gen.ident.hash
+proc hash*(gen: DirectiveGen): Hash = gen.cachedHash
 
 proc `==`*(a, b: SystemArg): bool =
     if a.generator != b.generator or a.kind != b.kind or a.name != b.name:
