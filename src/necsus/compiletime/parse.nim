@@ -101,24 +101,22 @@ proc parseParametricArg(
     of DirectiveKind.Tuple:
         let tupleDir = newTupleDir(directiveParametric.parseDirectiveArgsFromTuple)
         let nestedArgs = gen.nestedArgsTuple(tupleDir)
-        return some(SystemArg(
-            generator: gen,
-            originalName: argName.strVal,
-            name: gen.chooseNameTuple(argName, tupleDir),
-            kind: DirectiveKind.Tuple,
-            tupleDir: tupleDir,
-            nestedArgs: parser.parseNestedArgs(nestedArgs)
+        return some(newSystemArg[TupleDirective](
+            generator = gen,
+            originalName = argName.strVal,
+            name = gen.chooseNameTuple(argName, tupleDir),
+            directive = tupleDir,
+            nestedArgs = parser.parseNestedArgs(nestedArgs)
         ))
     of DirectiveKind.Mono:
         let monoDir = newMonoDir(directiveParametric)
         let nestedArgs = gen.nestedArgsMono(monoDir)
-        return some(SystemArg(
-            generator: gen,
-            originalName: argName.strVal,
-            name: gen.chooseNameMono(argName, monoDir),
-            kind: DirectiveKind.Mono,
-            monoDir: monoDir,
-            nestedArgs: parser.parseNestedArgs(nestedArgs)
+        return some(newSystemArg[MonoDirective](
+            generator = gen,
+            originalName = argName.strVal,
+            name = gen.chooseNameMono(argName, monoDir),
+            directive = monoDir,
+            nestedArgs = parser.parseNestedArgs(nestedArgs)
         ))
     of DirectiveKind.None:
         error("System argument does not support tuple parameters: " & $gen.kind)
@@ -130,7 +128,7 @@ proc parseFlagSystemArg(parser: Parser, name: NimNode, directiveSymbol: NimNode)
     of DirectiveKind.Tuple, DirectiveKind.Mono:
         error("System argument is not flag based: " & $gen.kind)
     of DirectiveKind.None:
-        return some(SystemArg(generator: gen, originalName: name.strVal, kind: DirectiveKind.None))
+        return some(newSystemArg[void](gen, name.strVal, directiveSymbol.strVal))
 
 proc parseArgType(parser: Parser, argName: NimNode, argType, original: NimNode): SystemArg =
     ## Parses the type of a system argument
@@ -185,13 +183,11 @@ proc parseActiveChecks(parser: Parser, typeNode: NimNode): seq[ActiveCheck] =
                     error("Unexpected system state type. Expecting a symbol, but got " & typename.repr, state)
 
                 let monoDir = newMonoDir(typename)
-                let arg = SystemArg(
-                    generator: gen,
-                    originalName: state.strVal,
-                    name: gen.chooseNameMono(state, monoDir),
-                    kind: DirectiveKind.Mono,
-                    monoDir: monoDir,
-                    nestedArgs: @[]
+                let arg = newSystemArg(
+                    generator = gen,
+                    originalName = state.strVal,
+                    name = gen.chooseNameMono(state, monoDir),
+                    directive = monoDir
                 )
 
                 result.add(ActiveCheck(value: state, arg: arg))

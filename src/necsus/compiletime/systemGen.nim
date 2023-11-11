@@ -152,6 +152,28 @@ proc `==`*(a, b: DirectiveGen): bool = a.ident == b.ident
 
 proc hash*(gen: DirectiveGen): Hash = gen.cachedHash
 
+proc newSystemArg*[T : TupleDirective | MonoDirective | void](
+    generator: DirectiveGen,
+    originalName: string,
+    name: string,
+    nestedArgs: seq[SystemArg] = @[],
+    directive: T,
+): SystemArg =
+    ## Instantiates a SystemArg
+    result.generator = generator
+    result.originalName = originalName
+    result.name = name
+    result.nestedArgs = nestedArgs
+
+    when T is TupleDirective:
+        result.kind = DirectiveKind.Tuple
+        result.tupleDir = directive
+    elif T is MonoDirective:
+        result.kind = DirectiveKind.Mono
+        result.monoDir = directive
+    else:
+        result.kind = DirectiveKind.None
+
 proc `==`*(a, b: SystemArg): bool =
     if a.generator != b.generator or a.kind != b.kind or a.name != b.name:
         return false
