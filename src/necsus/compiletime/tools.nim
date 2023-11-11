@@ -34,6 +34,10 @@ proc asTupleType*(args: openarray[DirectiveArg]): NimNode =
 
 proc asTupleType*(tupleDir: TupleDirective): NimNode = tupleDir.args.toSeq.asTupleType
 
+iterator archetypeCases*(details: GenerateContext): tuple[ofBranch: NimNode, archetype: Archetype[ComponentDef]] =
+    for archetype in details.archetypes:
+        yield (details.archetypeEnum.ident(archetype), archetype)
+
 proc createArchetypeCase*(
     details: GenerateContext,
     readArchetype: NimNode,
@@ -42,7 +46,7 @@ proc createArchetypeCase*(
     ## Creates a case statement for all possible archetypes
     if details.archetypes.len > 0:
         result = nnkCaseStmt.newTree(readArchetype)
-        for archetype in details.archetypes:
-            result.add(nnkOfBranch.newTree(details.archetypeEnum.ident(archetype), branch(archetype)))
+        for (ofBranch, archetype) in archetypeCases(details):
+            result.add(nnkOfBranch.newTree(ofBranch, branch(archetype)))
     else:
         result = newEmptyNode()

@@ -6,6 +6,8 @@ let entityId {.compileTime.} = ident("entityId")
 
 let entityIndex {.compileTime.} = ident("entityIndex")
 
+let compsIdent {.compileTime.} = ident("comps")
+
 proc buildArchetypeLookup(
     details: GenerateContext,
     lookup: TupleDirective,
@@ -16,7 +18,6 @@ proc buildArchetypeLookup(
     let archetypeType = archetype.asStorageTuple
     let archetypeIdent = archetype.ident
     let archetypeEnum = details.archetypeEnum.ident
-    let compsIdent = ident("comps")
     let createTuple = compsIdent.copyTuple(archetype, lookup)
 
     return quote do:
@@ -27,7 +28,7 @@ proc buildArchetypeLookup(
         return some(`createTuple`)
 
 proc worldFields(name: string, dir: TupleDirective): seq[WorldField] =
-     @[ (name, nnkBracketExpr.newTree(bindSym("Lookup"), dir.asTupleType)) ]
+    @[ (name, nnkBracketExpr.newTree(bindSym("Lookup"), dir.asTupleType)) ]
 
 proc canCreateFrom(lookup: TupleDirective, archetype: Archetype[ComponentDef]): bool =
     ## Returns whether a lookup can be created from an archetype
@@ -42,11 +43,14 @@ proc generateTuple(details: GenerateContext, arg: SystemArg, name: string, looku
         let tupleType = lookup.args.toSeq.asTupleType
 
         # Create a case statement where each branch is one of the archetypes
-        let cases = details.createArchetypeCase(newDotExpr(entityIndex, ident("archetype"))) do (fromArch: auto) -> auto:
-            if lookup.canCreateFrom(fromArch):
-                details.buildArchetypeLookup(lookup, fromArch)
-            else:
-                quote: return none(`tupleType`)
+        var cases = nnkCaseStmt.newTree(newDotExpr(entityIndex, ident("archetype")))
+        for (ofBranch, archetype) in archetypeCases(details):
+            if lookup.canCreateFrom(archetype):
+                cases.add(nnkOfBranch.newTree(ofBranch, details.buildArchetypeLookup(lookup, archetype)))
+
+        # Add a fall through 'else' branch for any archetypes that don't fit this lookup
+        let noneResult = quote: return none(`tupleType`)
+        cases.add(nnkElse.newTree(noneResult))
 
         return quote:
             `appStateIdent`.`procName` = proc(`entityId`: EntityId): Option[`tupleType`] =
