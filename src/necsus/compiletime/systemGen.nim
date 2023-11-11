@@ -78,7 +78,7 @@ type
 
 proc noArchetype[T](builder: var ArchetypeBuilder[ComponentDef], dir: T) = discard
 
-proc defaultName(argName: NimNode, dir: MonoDirective | TupleDirective): string = dir.generateName
+proc defaultName(argName: NimNode, dir: MonoDirective | TupleDirective): string = dir.name
 
 proc defaultWorldField(name: string, dir: MonoDirective | TupleDirective): seq[WorldField] = @[]
 

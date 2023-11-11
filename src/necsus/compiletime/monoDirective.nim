@@ -4,13 +4,11 @@ type
      MonoDirective* = object of RootObj
         ## Parsed definition of a mono directive
         argType*: NimNode
+        name*: string
 
 proc newMonoDir*(argType: NimNode): MonoDirective =
     ## Create a new mono directive
-    MonoDirective(argType: argType)
-
-proc generateName*(directive: MonoDirective): string =
-    directive.argType.symbols.join("_")
+    MonoDirective(argType: argType, name: argType.symbols.join("_"))
 
 proc hash*(directive: MonoDirective): Hash = hash(directive.argType)
 
