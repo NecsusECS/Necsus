@@ -35,7 +35,7 @@ proc hash*(arg: DirectiveArg): Hash = hash(arg.component)
 
 proc type*(def: DirectiveArg): NimNode =
     ## The type of this component
-    if def.isPointer: nnkPtrTy.newTree(NimNode(def.component)) else: NimNode(def.component)
+    if def.isPointer: nnkPtrTy.newTree(def.component.node) else: def.component.node
 
 proc newTupleDir*(args: openarray[DirectiveArg]): TupleDirective =
     ## Create a TupleDirective

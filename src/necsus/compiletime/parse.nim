@@ -52,12 +52,12 @@ proc parseArgKind(parser: Parser, symbol: NimNode): Option[DirectiveGen] =
 
 proc parseDirectiveArg(symbol: NimNode, isPointer: bool = false, kind: DirectiveArgKind = Include): DirectiveArg =
     case symbol.kind
-    of nnkSym, nnkTupleTy: return newDirectiveArg(ComponentDef(symbol), isPointer, kind)
+    of nnkSym, nnkTupleTy: return newDirectiveArg(newComponentDef(symbol), isPointer, kind)
     of nnkBracketExpr:
         case symbol[0].strVal
         of "Not": return parseDirectiveArg(symbol[1], isPointer, Exclude)
         of "Option": return parseDirectiveArg(symbol[1], isPointer, Optional)
-        else: return newDirectiveArg(ComponentDef(symbol), isPointer, kind)
+        else: return newDirectiveArg(newComponentDef(symbol), isPointer, kind)
     of nnkIdentDefs: return parseDirectiveArg(symbol[1], isPointer, kind)
     of nnkPtrTy: return parseDirectiveArg(symbol[0], true, kind)
     else: error(&"Unexpected directive kind ({symbol.kind}): {symbol.repr}", symbol)
