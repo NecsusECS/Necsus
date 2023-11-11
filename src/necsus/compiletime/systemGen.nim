@@ -68,6 +68,7 @@ type
         generator*: DirectiveGen
         originalName*: string
         name*: string
+        cachedHash: Hash
         case kind*: DirectiveKind
         of DirectiveKind.Tuple:
             tupleDir*: TupleDirective
@@ -165,14 +166,18 @@ proc newSystemArg*[T : TupleDirective | MonoDirective | void](
     result.name = name
     result.nestedArgs = nestedArgs
 
+    let baseHash = generator.hash !& name.hash
     when T is TupleDirective:
         result.kind = DirectiveKind.Tuple
         result.tupleDir = directive
+        result.cachedHash = baseHash !& directive.hash
     elif T is MonoDirective:
         result.kind = DirectiveKind.Mono
         result.monoDir = directive
+        result.cachedHash = baseHash !& directive.hash
     else:
         result.kind = DirectiveKind.None
+        result.cachedHash = baseHash
 
 proc `==`*(a, b: SystemArg): bool =
     if a.generator != b.generator or a.kind != b.kind or a.name != b.name:
@@ -183,12 +188,7 @@ proc `==`*(a, b: SystemArg): bool =
         of DirectiveKind.Mono: a.monoDir == b.monoDir
         of DirectiveKind.None: true
 
-proc hash*(arg: SystemArg): Hash =
-    result = arg.generator.hash !& arg.kind.hash !& arg.name.hash
-    case arg.kind
-    of DirectiveKind.Tuple: result = result !& arg.tupleDir.hash
-    of DirectiveKind.Mono: result = result !& arg.monoDir.hash
-    of DirectiveKind.None: discard
+proc hash*(arg: SystemArg): Hash = arg.cachedHash
 
 proc generateName*(arg: SystemArg): string =
     case arg.kind
