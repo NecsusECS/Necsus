@@ -131,6 +131,19 @@ window.addEventListener('DOMContentLoaded', main);
 
   </ul>
 </li>
+<li>
+  <a class="reference reference-toplevel" href="#15" id="65">Iterators</a>
+  <ul class="simple simple-toc-section">
+      <ul class="simple nested-toc-section">archetypeCases
+      <li><a class="reference" href="#archetypeCases.i%2CGenerateContext"
+    title="archetypeCases(details: GenerateContext): tuple[ofBranch: NimNode,
+    archetype: Archetype[ComponentDef]]">archetypeCases(details: GenerateContext): tuple[ofBranch: NimNode,
+    archetype: Archetype[ComponentDef]]</a></li>
+
+  </ul>
+
+  </ul>
+</li>
 
 </ul>
 
@@ -166,8 +179,8 @@ Creates a tuple type from a list of components
 </div>
 <div id="copyTuple,NimNode,Archetype[ComponentDef],TupleDirective">
 <dt><pre><span class="Keyword">proc</span> <a href="#copyTuple%2CNimNode%2CArchetype%5BComponentDef%5D%2CTupleDirective"><span class="Identifier">copyTuple</span></a><span class="Other">(</span><span class="Identifier">fromVar</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">;</span> <span class="Identifier">fromArch</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span><span class="Other">;</span>
-               <span class="Identifier">directive</span><span class="Other">:</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span> {.
-    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">,</span> <span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+               <span class="Identifier">directive</span><span class="Other">:</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 Generates code for copying from one tuple to another
@@ -177,10 +190,24 @@ Generates code for copying from one tuple to another
 <div id="createArchetypeCase,GenerateContext,NimNode,proc(Archetype[ComponentDef])">
 <dt><pre><span class="Keyword">proc</span> <a href="#createArchetypeCase%2CGenerateContext%2CNimNode%2Cproc%28Archetype%5BComponentDef%5D%29"><span class="Identifier">createArchetypeCase</span></a><span class="Other">(</span><span class="Identifier">details</span><span class="Other">:</span> <a href="systemGen.html#GenerateContext"><span class="Identifier">GenerateContext</span></a><span class="Other">;</span> <span class="Identifier">readArchetype</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">;</span>
                          <span class="Identifier">branch</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">arch</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span> {.
-    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 Creates a case statement for all possible archetypes
+
+</dd>
+</div>
+
+</dl></div>
+<div class="section" id="15">
+<h1><a class="toc-backref" href="#15">Iterators</a></h1>
+<dl class="item">
+<div id="archetypeCases.i,GenerateContext">
+<dt><pre><span class="Keyword">iterator</span> <a href="#archetypeCases.i%2CGenerateContext"><span class="Identifier">archetypeCases</span></a><span class="Other">(</span><span class="Identifier">details</span><span class="Other">:</span> <a href="systemGen.html#GenerateContext"><span class="Identifier">GenerateContext</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">[</span><span class="Identifier">ofBranch</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">,</span>
+    <span class="Identifier">archetype</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span><span class="Other">]</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+
 
 </dd>
 </div>
@@ -194,7 +221,7 @@ Creates a case statement for all possible archetypes
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-11-10 03:04:31 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-11-11 20:45:06 UTC</small>
       </div>
     </div>
   </div>

@@ -13,8 +13,6 @@ newTupleDir	necsus/compiletime/tupleDirective.html#newTupleDir,openArray[Directi
 items	necsus/compiletime/tupleDirective.html#items.i,TupleDirective	tupleDirective: items(directive: TupleDirective): ComponentDef	
 comps	necsus/compiletime/tupleDirective.html#comps,TupleDirective	tupleDirective: comps(directive: TupleDirective): seq[ComponentDef]	
 args	necsus/compiletime/tupleDirective.html#args.i,TupleDirective	tupleDirective: args(directive: TupleDirective): DirectiveArg	
-generateName	necsus/compiletime/tupleDirective.html#generateName,TupleDirective	tupleDirective: generateName(directive: TupleDirective): string	
-name	necsus/compiletime/tupleDirective.html#name,TupleDirective	tupleDirective: name(directive: TupleDirective): string	
 hash	necsus/compiletime/tupleDirective.html#hash,TupleDirective	tupleDirective: hash(directive: TupleDirective): Hash	
 indexOf	necsus/compiletime/tupleDirective.html#indexOf,TupleDirective,ComponentDef	tupleDirective: indexOf(directive: TupleDirective; comp: ComponentDef): int	
 contains	necsus/compiletime/tupleDirective.html#contains,TupleDirective,ComponentDef	tupleDirective: contains(directive: TupleDirective; comp: ComponentDef): bool	

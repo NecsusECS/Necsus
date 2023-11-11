@@ -109,7 +109,8 @@ window.addEventListener('DOMContentLoaded', main);
   <ul class="simple simple-toc-section">
       <li><a class="reference" href="#MonoDirective"
     title="MonoDirective = object of RootObj
-  argType*: NimNode">MonoDirective</a></li>
+  argType*: NimNode
+  name*: string">MonoDirective</a></li>
 
   </ul>
 </li>
@@ -119,11 +120,6 @@ window.addEventListener('DOMContentLoaded', main);
       <ul class="simple nested-toc-section">==
       <li><a class="reference" href="#%3D%3D%2CMonoDirective%2CMonoDirective"
     title="`==`(a, b: MonoDirective): bool">`==`(a, b: MonoDirective): bool</a></li>
-
-  </ul>
-  <ul class="simple nested-toc-section">generateName
-      <li><a class="reference" href="#generateName%2CMonoDirective"
-    title="generateName(directive: MonoDirective): string">generateName(directive: MonoDirective): string</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">hash
@@ -159,6 +155,7 @@ window.addEventListener('DOMContentLoaded', main);
 <div id="MonoDirective">
 <dt><pre><a href="monoDirective.html#MonoDirective"><span class="Identifier">MonoDirective</span></a> <span class="Other">=</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <span class="Identifier">RootObj</span>
   <span class="Identifier">argType</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">NimNode</span>
+  <span class="Identifier">name</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">string</span>
 </pre></dt>
 <dd>
 
@@ -179,15 +176,6 @@ Parsed definition of a mono directive
 
 </dd>
 </div>
-<div id="generateName,MonoDirective">
-<dt><pre><span class="Keyword">proc</span> <a href="#generateName%2CMonoDirective"><span class="Identifier">generateName</span></a><span class="Other">(</span><span class="Identifier">directive</span><span class="Other">:</span> <a href="monoDirective.html#MonoDirective"><span class="Identifier">MonoDirective</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
-<dd>
-
-
-
-</dd>
-</div>
 <div id="hash,MonoDirective">
 <dt><pre><span class="Keyword">proc</span> <a href="#hash%2CMonoDirective"><span class="Identifier">hash</span></a><span class="Other">(</span><span class="Identifier">directive</span><span class="Other">:</span> <a href="monoDirective.html#MonoDirective"><span class="Identifier">MonoDirective</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Hash</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
@@ -197,7 +185,8 @@ Parsed definition of a mono directive
 </dd>
 </div>
 <div id="newMonoDir,NimNode">
-<dt><pre><span class="Keyword">proc</span> <a href="#newMonoDir%2CNimNode"><span class="Identifier">newMonoDir</span></a><span class="Other">(</span><span class="Identifier">argType</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">)</span><span class="Other">:</span> <a href="monoDirective.html#MonoDirective"><span class="Identifier">MonoDirective</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dt><pre><span class="Keyword">proc</span> <a href="#newMonoDir%2CNimNode"><span class="Identifier">newMonoDir</span></a><span class="Other">(</span><span class="Identifier">argType</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">)</span><span class="Other">:</span> <a href="monoDirective.html#MonoDirective"><span class="Identifier">MonoDirective</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 Create a new mono directive
@@ -214,7 +203,7 @@ Create a new mono directive
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-11-10 03:04:31 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-11-11 20:45:06 UTC</small>
       </div>
     </div>
   </div>

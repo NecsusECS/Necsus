@@ -117,7 +117,8 @@ window.addEventListener('DOMContentLoaded', main);
   Include, Exclude, Optional">DirectiveArgKind</a></li>
   <li><a class="reference" href="#TupleDirective"
     title="TupleDirective = object of RootObj
-  args*: seq[DirectiveArg]">TupleDirective</a></li>
+  args*: seq[DirectiveArg]
+  name*: string">TupleDirective</a></li>
 
   </ul>
 </li>
@@ -148,11 +149,6 @@ window.addEventListener('DOMContentLoaded', main);
     title="contains(directive: TupleDirective; comp: ComponentDef): bool">contains(directive: TupleDirective; comp: ComponentDef): bool</a></li>
 
   </ul>
-  <ul class="simple nested-toc-section">generateName
-      <li><a class="reference" href="#generateName%2CTupleDirective"
-    title="generateName(directive: TupleDirective): string">generateName(directive: TupleDirective): string</a></li>
-
-  </ul>
   <ul class="simple nested-toc-section">hash
       <li><a class="reference" href="#hash%2CDirectiveArg"
     title="hash(arg: DirectiveArg): Hash">hash(arg: DirectiveArg): Hash</a></li>
@@ -163,11 +159,6 @@ window.addEventListener('DOMContentLoaded', main);
   <ul class="simple nested-toc-section">indexOf
       <li><a class="reference" href="#indexOf%2CTupleDirective%2CComponentDef"
     title="indexOf(directive: TupleDirective; comp: ComponentDef): int">indexOf(directive: TupleDirective; comp: ComponentDef): int</a></li>
-
-  </ul>
-  <ul class="simple nested-toc-section">name
-      <li><a class="reference" href="#name%2CTupleDirective"
-    title="name(directive: TupleDirective): string">name(directive: TupleDirective): string</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">newDirectiveArg
@@ -245,6 +236,7 @@ Indicates the behavior of a directive
 <div id="TupleDirective">
 <dt><pre><a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a> <span class="Other">=</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <span class="Identifier">RootObj</span>
   <span class="Identifier">args</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="tupleDirective.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a><span class="Other">]</span>
+  <span class="Identifier">name</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">string</span>
 </pre></dt>
 <dd>
 
@@ -314,17 +306,8 @@ Returns the index of a component in this directive
 
 </dd>
 </div>
-<div id="generateName,TupleDirective">
-<dt><pre><span class="Keyword">proc</span> <a href="#generateName%2CTupleDirective"><span class="Identifier">generateName</span></a><span class="Other">(</span><span class="Identifier">directive</span><span class="Other">:</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
-<dd>
-
-Produces a readable name describing this directive
-
-</dd>
-</div>
 <div id="hash,DirectiveArg">
-<dt><pre><span class="Keyword">proc</span> <a href="#hash%2CDirectiveArg"><span class="Identifier">hash</span></a><span class="Other">(</span><span class="Identifier">arg</span><span class="Other">:</span> <a href="tupleDirective.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Hash</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dt><pre><span class="Keyword">proc</span> <a href="#hash%2CDirectiveArg"><span class="Identifier">hash</span></a><span class="Other">(</span><span class="Identifier">arg</span><span class="Other">:</span> <a href="tupleDirective.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Hash</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 Generate a unique hash
@@ -332,7 +315,7 @@ Generate a unique hash
 </dd>
 </div>
 <div id="hash,TupleDirective">
-<dt><pre><span class="Keyword">proc</span> <a href="#hash%2CTupleDirective"><span class="Identifier">hash</span></a><span class="Other">(</span><span class="Identifier">directive</span><span class="Other">:</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Hash</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dt><pre><span class="Keyword">proc</span> <a href="#hash%2CTupleDirective"><span class="Identifier">hash</span></a><span class="Other">(</span><span class="Identifier">directive</span><span class="Other">:</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Hash</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 
@@ -345,14 +328,6 @@ Generate a unique hash
 <dd>
 
 Returns the index of a component in this directive
-
-</dd>
-</div>
-<div id="name,TupleDirective">
-<dt><pre><span class="Keyword">proc</span> <a href="#name%2CTupleDirective"><span class="Identifier">name</span></a><span class="Other">(</span><span class="Identifier">directive</span><span class="Other">:</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
-<dd>
-
-Produces a readable name describing this directive
 
 </dd>
 </div>
@@ -370,7 +345,7 @@ Creates a DirectiveArg
     <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
-
+Create a TupleDirective
 
 </dd>
 </div>
@@ -405,7 +380,7 @@ Produce all components in a directive
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-11-10 03:04:31 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-11-11 20:45:06 UTC</small>
       </div>
     </div>
   </div>

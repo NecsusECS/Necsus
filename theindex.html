@@ -221,6 +221,12 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference external"
           data-doc-search-tag="archetypeBuilder: ArchetypeBuilder" href="necsus/compiletime/archetypeBuilder.html#ArchetypeBuilder">archetypeBuilder: ArchetypeBuilder</a></li>
           </ul></dd>
+<dt><a name="archetypeCases" href="#archetypeCases"><span>archetypeCases:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="tools: archetypeCases(details: GenerateContext): tuple[ofBranch: NimNode,
+    archetype: Archetype[ComponentDef]]" href="necsus/compiletime/tools.html#archetypeCases.i%2CGenerateContext">tools: archetypeCases(details: GenerateContext): tuple[ofBranch: NimNode,
+    archetype: Archetype[ComponentDef]]</a></li>
+          </ul></dd>
 <dt><a name="ArchetypeEnum" href="#ArchetypeEnum"><span>ArchetypeEnum:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="worldEnum: ArchetypeEnum" href="necsus/compiletime/worldEnum.html#ArchetypeEnum">worldEnum: ArchetypeEnum</a></li>
@@ -573,11 +579,7 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference external"
           data-doc-search-tag="componentDef: generateName(components: openArray[ComponentDef]): string" href="necsus/compiletime/componentDef.html#generateName%2CopenArray%5BComponentDef%5D">componentDef: generateName(components: openArray[ComponentDef]): string</a></li>
           <li><a class="reference external"
-          data-doc-search-tag="monoDirective: generateName(directive: MonoDirective): string" href="necsus/compiletime/monoDirective.html#generateName%2CMonoDirective">monoDirective: generateName(directive: MonoDirective): string</a></li>
-          <li><a class="reference external"
           data-doc-search-tag="systemGen: generateName(arg: SystemArg): string" href="necsus/compiletime/systemGen.html#generateName%2CSystemArg">systemGen: generateName(arg: SystemArg): string</a></li>
-          <li><a class="reference external"
-          data-doc-search-tag="tupleDirective: generateName(directive: TupleDirective): string" href="necsus/compiletime/tupleDirective.html#generateName%2CTupleDirective">tupleDirective: generateName(directive: TupleDirective): string</a></li>
           </ul></dd>
 <dt><a name="get" href="#get"><span>get:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -805,14 +807,6 @@ window.addEventListener('DOMContentLoaded', main);
     toArch: var ArchetypeStore[Archs, ToArch];
     convert: proc (input: sink FromArch): ToArch)</a></li>
           </ul></dd>
-<dt><a name="name" href="#name"><span>name:</span></a></dt><dd><ul class="simple">
-<li><a class="reference external"
-          data-doc-search-tag="archetype: name(archetype: Archetype[ComponentDef]): string" href="necsus/compiletime/archetype.html#name%2CArchetype%5BComponentDef%5D">archetype: name(archetype: Archetype[ComponentDef]): string</a></li>
-          <li><a class="reference external"
-          data-doc-search-tag="componentDef: name(def: ComponentDef): string" href="necsus/compiletime/componentDef.html#name%2CComponentDef">componentDef: name(def: ComponentDef): string</a></li>
-          <li><a class="reference external"
-          data-doc-search-tag="tupleDirective: name(directive: TupleDirective): string" href="necsus/compiletime/tupleDirective.html#name%2CTupleDirective">tupleDirective: name(directive: TupleDirective): string</a></li>
-          </ul></dd>
 <dt><a name="NameChooser" href="#NameChooser"><span>NameChooser:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="systemGen: NameChooser" href="necsus/compiletime/systemGen.html#NameChooser">systemGen: NameChooser</a></li>
@@ -884,6 +878,10 @@ window.addEventListener('DOMContentLoaded', main);
           data-doc-search-tag="codeGenInfo: newCodeGenInfo(config: NimNode; app: ParsedApp;
                allSystems: openArray[ParsedSystem]): CodeGenInfo" href="necsus/compiletime/codeGenInfo.html#newCodeGenInfo%2CNimNode%2CParsedApp%2CopenArray%5BParsedSystem%5D">codeGenInfo: newCodeGenInfo(config: NimNode; app: ParsedApp;
                allSystems: openArray[ParsedSystem]): CodeGenInfo</a></li>
+          </ul></dd>
+<dt><a name="newComponentDef" href="#newComponentDef"><span>newComponentDef:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="componentDef: newComponentDef(node: NimNode): ComponentDef" href="necsus/compiletime/componentDef.html#newComponentDef%2CNimNode">componentDef: newComponentDef(node: NimNode): ComponentDef</a></li>
           </ul></dd>
 <dt><a name="newDirectiveArg" href="#newDirectiveArg"><span>newDirectiveArg:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -982,6 +980,14 @@ window.addEventListener('DOMContentLoaded', main);
           data-doc-search-tag="archetypeStore: newSlot[Archs: enum; Comps: tuple](store: var ArchetypeStore[Archs, Comps];
                                    entityId: EntityId): NewArchSlot[Comps]" href="necsus/runtime/archetypeStore.html#newSlot%2CArchetypeStore%5BArchs%3A%20enum%2CComps%3A%20tuple%5D%2CEntityId">archetypeStore: newSlot[Archs: enum; Comps: tuple](store: var ArchetypeStore[Archs, Comps];
                                    entityId: EntityId): NewArchSlot[Comps]</a></li>
+          </ul></dd>
+<dt><a name="newSystemArg" href="#newSystemArg"><span>newSystemArg:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="systemGen: newSystemArg[T: TupleDirective | MonoDirective | void](generator: DirectiveGen;
+    originalName: string; name: string; nestedArgs: seq[SystemArg] = @[];
+    directive: T): SystemArg" href="necsus/compiletime/systemGen.html#newSystemArg%2CDirectiveGen%2Cstring%2Cstring%2Cseq%5BSystemArg%5D%2CT">systemGen: newSystemArg[T: TupleDirective | MonoDirective | void](generator: DirectiveGen;
+    originalName: string; name: string; nestedArgs: seq[SystemArg] = @[];
+    directive: T): SystemArg</a></li>
           </ul></dd>
 <dt><a name="newSystemVar" href="#newSystemVar"><span>newSystemVar:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -1276,7 +1282,7 @@ window.addEventListener('DOMContentLoaded', main);
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-11-10 03:04:31 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-11-11 20:45:07 UTC</small>
       </div>
     </div>
   </div>

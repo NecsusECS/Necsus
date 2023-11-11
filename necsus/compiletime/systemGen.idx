@@ -24,6 +24,7 @@ newGenerator	necsus/compiletime/systemGen.html#newGenerator,string,HookGenerator
 newGenerator	necsus/compiletime/systemGen.html#newGenerator,string,HookGenerator[void],proc(string),SystemArgExtractor[void]	systemGen: newGenerator(ident: string; generate: HookGenerator[void]; worldFields: proc (\n    name: string): seq[WorldField] = defaultWorldFieldNone;\n             systemArg: SystemArgExtractor[void] = defaultSystemArgNone): DirectiveGen	
 `==`	necsus/compiletime/systemGen.html#==,DirectiveGen,DirectiveGen	systemGen: `==`(a, b: DirectiveGen): bool	
 hash	necsus/compiletime/systemGen.html#hash,DirectiveGen	systemGen: hash(gen: DirectiveGen): Hash	
+newSystemArg	necsus/compiletime/systemGen.html#newSystemArg,DirectiveGen,string,string,seq[SystemArg],T	systemGen: newSystemArg[T: TupleDirective | MonoDirective | void](generator: DirectiveGen;\n    originalName: string; name: string; nestedArgs: seq[SystemArg] = @[];\n    directive: T): SystemArg	
 `==`	necsus/compiletime/systemGen.html#==,SystemArg,SystemArg	systemGen: `==`(a, b: SystemArg): bool	
 hash	necsus/compiletime/systemGen.html#hash,SystemArg	systemGen: hash(arg: SystemArg): Hash	
 generateName	necsus/compiletime/systemGen.html#generateName,SystemArg	systemGen: generateName(arg: SystemArg): string	

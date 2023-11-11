@@ -13,7 +13,6 @@ containsAllOf	necsus/compiletime/archetype.html#containsAllOf,Archetype[T],Arche
 `+`	necsus/compiletime/archetype.html#+,Archetype[T],Archetype[T]	archetype: `+`[T](archetype: Archetype[T]; other: Archetype[T]): Archetype[T]	
 len	necsus/compiletime/archetype.html#len,Archetype[T]	archetype: len[T](archetype: Archetype[T]): auto	
 asHashSet	necsus/compiletime/archetype.html#asHashSet,Archetype[T]	archetype: asHashSet[T](archetype: Archetype[T]): auto	
-name	necsus/compiletime/archetype.html#name,Archetype[ComponentDef]	archetype: name(archetype: Archetype[ComponentDef]): string	
 ident	necsus/compiletime/archetype.html#ident,Archetype[ComponentDef]	archetype: ident(archetype: Archetype[ComponentDef]): NimNode	
 asStorageTuple	necsus/compiletime/archetype.html#asStorageTuple,Archetype[ComponentDef]	archetype: asStorageTuple(archetype: Archetype[ComponentDef]): NimNode	
 items	necsus/compiletime/archetype.html#items.i,Archetype[T]	archetype: items[T](archetype: Archetype[T]): T	

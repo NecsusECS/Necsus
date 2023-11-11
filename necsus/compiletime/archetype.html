@@ -110,7 +110,9 @@ window.addEventListener('DOMContentLoaded', main);
       <li><a class="reference" href="#Archetype"
     title="Archetype[T] = ref object
   values: seq[T]
-  lookup: Table[T, int]">Archetype</a></li>
+  lookup: Table[T, int]
+  name*: string
+  identName: string">Archetype</a></li>
   <li><a class="reference" href="#ArchetypeSet"
     title="ArchetypeSet[T] = object
   archetypes: HashSet[Archetype[T]]
@@ -192,11 +194,6 @@ window.addEventListener('DOMContentLoaded', main);
     title="len[T](archetypes: ArchetypeSet[T]): int">len[T](archetypes: ArchetypeSet[T]): int</a></li>
 
   </ul>
-  <ul class="simple nested-toc-section">name
-      <li><a class="reference" href="#name%2CArchetype%5BComponentDef%5D"
-    title="name(archetype: Archetype[ComponentDef]): string">name(archetype: Archetype[ComponentDef]): string</a></li>
-
-  </ul>
   <ul class="simple nested-toc-section">newArchetype
       <li><a class="reference" href="#newArchetype%2CopenArray%5BT%5D"
     title="newArchetype[T](values: openArray[T]): Archetype[T]">newArchetype[T](values: openArray[T]): Archetype[T]</a></li>
@@ -249,6 +246,8 @@ window.addEventListener('DOMContentLoaded', main);
 <dt><pre><a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">ref</span> <span class="Keyword">object</span>
   <span class="Identifier">values</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span>
   <span class="Identifier">lookup</span><span class="Other">:</span> <span class="Identifier">Table</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">,</span> <span class="Identifier">int</span><span class="Other">]</span>
+  <span class="Identifier">name</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">string</span>
+  <span class="Identifier">identName</span><span class="Other">:</span> <span class="Identifier">string</span>
 </pre></dt>
 <dd>
 
@@ -370,8 +369,7 @@ Create a hash describing a archetype
 </dd>
 </div>
 <div id="ident,Archetype[ComponentDef]">
-<dt><pre><span class="Keyword">proc</span> <a href="#ident%2CArchetype%5BComponentDef%5D"><span class="Identifier">ident</span></a><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dt><pre><span class="Keyword">proc</span> <a href="#ident%2CArchetype%5BComponentDef%5D"><span class="Identifier">ident</span></a><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 Creates a variable for referencing an archetype store
@@ -399,15 +397,6 @@ The number of values in this archetype
 <dd>
 
 
-
-</dd>
-</div>
-<div id="name,Archetype[ComponentDef]">
-<dt><pre><span class="Keyword">proc</span> <a href="#name%2CArchetype%5BComponentDef%5D"><span class="Identifier">name</span></a><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
-<dd>
-
-Stringify a Archetype
 
 </dd>
 </div>
@@ -466,7 +455,7 @@ Produces all the archetypes
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-11-10 03:04:31 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-11-11 20:45:06 UTC</small>
       </div>
     </div>
   </div>
