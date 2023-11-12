@@ -1,4 +1,4 @@
-import tables, macros, options, sequtils
+import macros, options, sequtils
 import tupleDirective, componentDef, archetype, worldEnum, systemGen
 import ../runtime/query
 
