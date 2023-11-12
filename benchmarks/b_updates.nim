@@ -17,10 +17,10 @@ type
 
 let entityCount = 1_000_000
 
-proc setup(spawn: Spawn[(Position, Direction, Comflabulation)]) =
+proc setup(spawn: Spawn[(Comflabulation, Direction, Position)]) =
     benchmark "Creating " & $entityCount & " entities", entityCount:
         for i in 1..entityCount:
-            discard spawn.set((Position(), Direction(), Comflabulation()))
+            discard spawn.with(Comflabulation(), Direction(), Position())
 
 proc movement(dt: TimeDelta, entities: Query[tuple[pos: ptr Position, dir: Direction]]) =
     for comp in entities:
