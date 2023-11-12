@@ -4,7 +4,6 @@ type
     Archetype*[T] = ref object
         ## A archetype of values that can be stored together
         values: seq[T]
-        lookup: Table[T, int]
         name*: string
         identName: string
         cachedHash: Hash
@@ -21,17 +20,13 @@ proc generateName(values: openarray[string]): string = values.join("_")
 
 proc newArchetype*[T](values: openarray[T]): Archetype[T] =
     ## Create an archetype
-    result.new
 
     if not values.isSorted:
-        let correct = result.values.sorted().join(", ")
+        let correct = values.sorted().deduplicate(isSorted = true).join(", ")
         raise newException(UnsortedArchetype, "Archetype must be in sorted order. Correct order is: " & correct)
 
+    result.new
     result.values = values.toSeq.deduplicate(isSorted = true)
-
-    result.lookup = initTable[T, int](result.values.len)
-    for i, value in result.values:
-        result.lookup[value] = i
     result.name = generateName(values)
     result.identName = "archetype_" & result.name
     result.cachedHash = hash(result.values)
@@ -51,10 +46,12 @@ proc `$`*[T](archetype: Archetype[T]): string =
 
 proc contains*[T](archetype: Archetype[T], value: T): bool =
     ## Whether an archetype contains all the given value
-    archetype.lookup.hasKey(value)
+    archetype.values.binarySearch(value) >= 0
 
-proc indexOf*[T](archetype: Archetype[T], value: T): int = archetype.lookup[value]
+proc indexOf*[T](archetype: Archetype[T], value: T): int =
     ## Whether an archetype contains all the given value
+    result = archetype.values.binarySearch(value)
+    assert(result != -1, "Value is not in archetype: " & $value)
 
 proc containsAllOf*[T](archetype: Archetype[T], other: openarray[T]): bool =
     ## Whether an archetype contains all the given values
@@ -66,7 +63,7 @@ proc containsAllOf*[T](archetype: Archetype[T], other: Archetype[T]): bool =
 
 proc `-`*[T](archetype: Archetype[T], other: Archetype[T]): Archetype[T] =
     ## Removes components in an archetype
-    archetype.values.filterIt(not other.lookup.hasKey(it)).newArchetype
+    archetype.values.filterIt(it notin other).newArchetype
 
 proc `+`*[T](archetype: Archetype[T], other: openarray[T]): Archetype[T] =
     ## Adds values to an archetype
