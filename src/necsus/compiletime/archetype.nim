@@ -26,7 +26,7 @@ proc newArchetype*[T](values: openarray[T]): Archetype[T] =
 
     result.new
     result.values = values.toSeq.deduplicate(isSorted = true)
-    result.name = generateName(values)
+    result.name = generateName(result.values)
     result.identName = "archetype_" & result.name
     result.cachedHash = hash(result.values)
 
@@ -63,6 +63,10 @@ proc containsAllOf*[T](archetype: Archetype[T], other: Archetype[T]): bool =
 proc `-`*[T](archetype: Archetype[T], other: Archetype[T]): Archetype[T] =
     ## Removes components in an archetype
     archetype.values.filterIt(it notin other).newArchetype
+
+proc `-`*[T](archetype: Archetype[T], other: openarray[T]): Archetype[T] =
+    ## Adds values to an archetype
+    archetype.values.filterIt(it notin other).sorted().newArchetype
 
 proc `+`*[T](archetype: Archetype[T], other: openarray[T]): Archetype[T] =
     ## Adds values to an archetype
@@ -104,9 +108,3 @@ iterator items*[T](archetypes: ArchetypeSet[T]): Archetype[T] =
     ## Produces all the archetypes
     for archetype in items(archetypes.archetypes):
         yield archetype
-
-proc `[]`*[T](archetypes: ArchetypeSet[T], search: openarray[T]): Archetype[T] =
-    ## Returns the archetype containing the given values
-    result = newArchetype(search.sorted().deduplicate(isSorted = true))
-    if result notin archetypes.archetypes:
-        raise newException(KeyError, "Could not find archetype: " & join(search, ", "))

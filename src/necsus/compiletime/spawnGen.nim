@@ -19,7 +19,7 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, dir: Tuple
     case details.hook
     of Standard:
         let ident = name.ident
-        let archetype = details.archetypes[dir.items.toSeq]
+        let archetype = newArchetype(dir.items.toSeq)
         let archetypeIdent = archetype.ident
         result.add quote do:
             `appStateIdent`.`ident` =

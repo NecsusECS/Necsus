@@ -69,7 +69,7 @@ proc generateAttach(details: GenerateContext, arg: SystemArg, name: string, atta
 
         ## Generate a cases statement to do the work for each kind of archetype
         let cases = details.createArchetypeCase(newDotExpr(entityIndex, ident("archetype"))) do (fromArch: auto) -> auto:
-            let toArch = details.archetypes[concat(fromArch.values, attach.comps)]
+            let toArch = fromArch + attach.comps
             return if fromArch == toArch:
                 details.createArchUpdate(attach, toArch)
             else:
@@ -104,7 +104,7 @@ proc generateDetach(details: GenerateContext, arg: SystemArg, name: string, deta
 
         let cases = details.createArchetypeCase(newDotExpr(entityIndex, ident("archetype"))) do (fromArch: auto) -> auto:
             if fromArch.containsAllOf(detach.comps):
-                let toArch = details.archetypes[fromArch.values.filterIt(it notin detach.comps)]
+                let toArch = fromArch - detach.comps
                 return details.createArchMove(detach, fromArch, toArch)
             else:
                 return quote: discard
