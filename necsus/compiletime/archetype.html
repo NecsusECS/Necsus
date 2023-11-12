@@ -139,16 +139,13 @@ window.addEventListener('DOMContentLoaded', main);
   <ul class="simple nested-toc-section">-
       <li><a class="reference" href="#-%2CArchetype%5BT%5D%2CArchetype%5BT%5D"
     title="`-`[T](archetype: Archetype[T]; other: Archetype[T]): Archetype[T]">`-`[T](archetype: Archetype[T]; other: Archetype[T]): Archetype[T]</a></li>
+  <li><a class="reference" href="#-%2CArchetype%5BT%5D%2CopenArray%5BT%5D"
+    title="`-`[T](archetype: Archetype[T]; other: openArray[T]): Archetype[T]">`-`[T](archetype: Archetype[T]; other: openArray[T]): Archetype[T]</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">==
       <li><a class="reference" href="#%3D%3D%2CArchetype%5BT%5D%2CArchetype%5BT%5D"
     title="`==`[T](a, b: Archetype[T]): bool">`==`[T](a, b: Archetype[T]): bool</a></li>
-
-  </ul>
-  <ul class="simple nested-toc-section">[]
-      <li><a class="reference" href="#%5B%5D%2CArchetypeSet%5BT%5D%2CopenArray%5BT%5D"
-    title="`[]`[T](archetypes: ArchetypeSet[T]; search: openArray[T]): Archetype[T]">`[]`[T](archetypes: ArchetypeSet[T]; search: openArray[T]): Archetype[T]</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">asHashSet
@@ -312,19 +309,19 @@ Removes components in an archetype
 
 </dd>
 </div>
+<div id="-,Archetype[T],openArray[T]">
+<dt><pre><span class="Keyword">proc</span> <a href="#-%2CArchetype%5BT%5D%2CopenArray%5BT%5D"><span class="Identifier">`-`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">other</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span></pre></dt>
+<dd>
+
+Adds values to an archetype
+
+</dd>
+</div>
 <div id="==,Archetype[T],Archetype[T]">
 <dt><pre><span class="Keyword">proc</span> <a href="#%3D%3D%2CArchetype%5BT%5D%2CArchetype%5BT%5D"><span class="Identifier">`==`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">a</span><span class="Other">,</span> <span class="Identifier">b</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span></pre></dt>
 <dd>
 
 Determine archetype equality
-
-</dd>
-</div>
-<div id="[],ArchetypeSet[T],openArray[T]">
-<dt><pre><span class="Keyword">proc</span> <a href="#%5B%5D%2CArchetypeSet%5BT%5D%2CopenArray%5BT%5D"><span class="Identifier">`[]`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">archetypes</span><span class="Other">:</span> <a href="archetype.html#ArchetypeSet"><span class="Identifier">ArchetypeSet</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">search</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span></pre></dt>
-<dd>
-
-Returns the archetype containing the given values
 
 </dd>
 </div>
@@ -464,7 +461,7 @@ Produces all the archetypes
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-11-12 04:22:59 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-11-12 07:34:59 UTC</small>
       </div>
     </div>
   </div>

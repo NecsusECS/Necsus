@@ -10,6 +10,7 @@ indexOf	necsus/compiletime/archetype.html#indexOf,Archetype[T],T	archetype: inde
 containsAllOf	necsus/compiletime/archetype.html#containsAllOf,Archetype[T],openArray[T]	archetype: containsAllOf[T](archetype: Archetype[T]; other: openArray[T]): bool	
 containsAllOf	necsus/compiletime/archetype.html#containsAllOf,Archetype[T],Archetype[T]	archetype: containsAllOf[T](archetype: Archetype[T]; other: Archetype[T]): bool	
 `-`	necsus/compiletime/archetype.html#-,Archetype[T],Archetype[T]	archetype: `-`[T](archetype: Archetype[T]; other: Archetype[T]): Archetype[T]	
+`-`	necsus/compiletime/archetype.html#-,Archetype[T],openArray[T]	archetype: `-`[T](archetype: Archetype[T]; other: openArray[T]): Archetype[T]	
 `+`	necsus/compiletime/archetype.html#+,Archetype[T],openArray[T]	archetype: `+`[T](archetype: Archetype[T]; other: openArray[T]): Archetype[T]	
 `+`	necsus/compiletime/archetype.html#+,Archetype[T],Archetype[T]	archetype: `+`[T](archetype: Archetype[T]; other: Archetype[T]): Archetype[T]	
 len	necsus/compiletime/archetype.html#len,Archetype[T]	archetype: len[T](archetype: Archetype[T]): auto	
@@ -21,4 +22,3 @@ values	necsus/compiletime/archetype.html#values,Archetype[T]	archetype: values[T
 newArchetypeSet	necsus/compiletime/archetype.html#newArchetypeSet,openArray[Archetype[T]]	archetype: newArchetypeSet[T](values: openArray[Archetype[T]]): ArchetypeSet[T]	
 len	necsus/compiletime/archetype.html#len,ArchetypeSet[T]	archetype: len[T](archetypes: ArchetypeSet[T]): int	
 items	necsus/compiletime/archetype.html#items.i,ArchetypeSet[T]	archetype: items[T](archetypes: ArchetypeSet[T]): Archetype[T]	
-`[]`	necsus/compiletime/archetype.html#[],ArchetypeSet[T],openArray[T]	archetype: `[]`[T](archetypes: ArchetypeSet[T]; search: openArray[T]): Archetype[T]	
