@@ -7,6 +7,7 @@ type
         lookup: Table[T, int]
         name*: string
         identName: string
+        cachedHash: Hash
 
     ArchetypeSet*[T] = object
         ## A set of all known archetypes
@@ -21,21 +22,22 @@ proc generateName(values: openarray[string]): string = values.join("_")
 proc newArchetype*[T](values: openarray[T]): Archetype[T] =
     ## Create an archetype
     result.new
-    result.values = values.toSeq.deduplicate
 
-    if not result.values.isSorted:
+    if not values.isSorted:
         let correct = result.values.sorted().join(", ")
         raise newException(UnsortedArchetype, "Archetype must be in sorted order. Correct order is: " & correct)
+
+    result.values = values.toSeq.deduplicate(isSorted = true)
 
     result.lookup = initTable[T, int](result.values.len)
     for i, value in result.values:
         result.lookup[value] = i
     result.name = generateName(values)
     result.identName = "archetype_" & result.name
+    result.cachedHash = hash(result.values)
 
-proc hash*[T](archetype: Archetype[T]): Hash =
+proc hash*[T](archetype: Archetype[T]): Hash = archetype.cachedHash
     ## Create a hash describing a archetype
-    hash(archetype.values)
 
 proc `==`*[T](a, b: Archetype[T]): bool =
     ## Determine archetype equality
