@@ -1,5 +1,6 @@
 Archetype	necsus/compiletime/archetype.html#Archetype	archetype: Archetype	
 ArchetypeSet	necsus/compiletime/archetype.html#ArchetypeSet	archetype: ArchetypeSet	
+UnsortedArchetype	necsus/compiletime/archetype.html#UnsortedArchetype	archetype: UnsortedArchetype	
 newArchetype	necsus/compiletime/archetype.html#newArchetype,openArray[T]	archetype: newArchetype[T](values: openArray[T]): Archetype[T]	
 hash	necsus/compiletime/archetype.html#hash,Archetype[T]	archetype: hash[T](archetype: Archetype[T]): Hash	
 `==`	necsus/compiletime/archetype.html#==,Archetype[T],Archetype[T]	archetype: `==`[T](a, b: Archetype[T]): bool	

@@ -707,10 +707,6 @@ window.addEventListener('DOMContentLoaded', main);
           <li><a class="reference external"
           data-doc-search-tag="sharedVector: items[T](vector: SharedVector[T]): lent T" href="necsus/util/sharedVector.html#items.i%2CSharedVector%5BT%5D">sharedVector: items[T](vector: SharedVector[T]): lent T</a></li>
           </ul></dd>
-<dt><a name="JumbledArchetype" href="#JumbledArchetype"><span>JumbledArchetype:</span></a></dt><dd><ul class="simple">
-<li><a class="reference external"
-          data-doc-search-tag="archetypeBuilder: JumbledArchetype" href="necsus/compiletime/archetypeBuilder.html#JumbledArchetype">archetypeBuilder: JumbledArchetype</a></li>
-          </ul></dd>
 <dt><a name="kind" href="#kind"><span>kind:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="parse: kind(arg: SystemArg): auto" href="necsus/compiletime/parse.html#kind%2CSystemArg">parse: kind(arg: SystemArg): auto</a></li>
@@ -983,11 +979,11 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="newSystemArg" href="#newSystemArg"><span>newSystemArg:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="systemGen: newSystemArg[T: TupleDirective | MonoDirective | void](generator: DirectiveGen;
-    originalName: string; name: string; nestedArgs: seq[SystemArg] = @[];
-    directive: T): SystemArg" href="necsus/compiletime/systemGen.html#newSystemArg%2CDirectiveGen%2Cstring%2Cstring%2Cseq%5BSystemArg%5D%2CT">systemGen: newSystemArg[T: TupleDirective | MonoDirective | void](generator: DirectiveGen;
-    originalName: string; name: string; nestedArgs: seq[SystemArg] = @[];
-    directive: T): SystemArg</a></li>
+          data-doc-search-tag="systemGen: newSystemArg[T: TupleDirective | MonoDirective | void](source: NimNode;
+    generator: DirectiveGen; originalName: string; name: string;
+    nestedArgs: seq[SystemArg] = @[]; directive: T): SystemArg" href="necsus/compiletime/systemGen.html#newSystemArg%2CNimNode%2CDirectiveGen%2Cstring%2Cstring%2Cseq%5BSystemArg%5D%2CT">systemGen: newSystemArg[T: TupleDirective | MonoDirective | void](source: NimNode;
+    generator: DirectiveGen; originalName: string; name: string;
+    nestedArgs: seq[SystemArg] = @[]; directive: T): SystemArg</a></li>
           </ul></dd>
 <dt><a name="newSystemVar" href="#newSystemVar"><span>newSystemVar:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -1239,6 +1235,10 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference external"
           data-doc-search-tag="tupleDirective: TupleDirective" href="necsus/compiletime/tupleDirective.html#TupleDirective">tupleDirective: TupleDirective</a></li>
           </ul></dd>
+<dt><a name="UnsortedArchetype" href="#UnsortedArchetype"><span>UnsortedArchetype:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="archetype: UnsortedArchetype" href="necsus/compiletime/archetype.html#UnsortedArchetype">archetype: UnsortedArchetype</a></li>
+          </ul></dd>
 <dt><a name="unwrap" href="#unwrap"><span>unwrap:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="systemVar: unwrap[T](sysvar: SharedOrT[T] | LocalOrT[T]): T" href="necsus/runtime/systemVar.html#unwrap">systemVar: unwrap[T](sysvar: SharedOrT[T] | LocalOrT[T]): T</a></li>
@@ -1282,7 +1282,7 @@ window.addEventListener('DOMContentLoaded', main);
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-11-11 20:45:07 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-11-12 04:12:17 UTC</small>
       </div>
     </div>
   </div>
