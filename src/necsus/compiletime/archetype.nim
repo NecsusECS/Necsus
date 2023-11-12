@@ -11,7 +11,6 @@ type
     ArchetypeSet*[T] = object
         ## A set of all known archetypes
         archetypes: HashSet[Archetype[T]]
-        lookup: Table[HashSet[T], Archetype[T]]
 
     UnsortedArchetype* = object of Defect
         ## Thrown when an archetype is out of sorted order
@@ -98,8 +97,6 @@ proc values*[T](archetype: Archetype[T]): seq[T] = archetype.values
 proc newArchetypeSet*[T](values: openarray[Archetype[T]]): ArchetypeSet[T] =
     ## Creates a set of archetypes
     result.archetypes = values.toHashSet
-    for archetype in values:
-        result.lookup[archetype.asHashSet] = archetype
 
 proc len*[T](archetypes: ArchetypeSet[T]): int = archetypes.archetypes.card
 
@@ -110,7 +107,6 @@ iterator items*[T](archetypes: ArchetypeSet[T]): Archetype[T] =
 
 proc `[]`*[T](archetypes: ArchetypeSet[T], search: openarray[T]): Archetype[T] =
     ## Returns the archetype containing the given values
-    let asSet = search.toHashSet
-    if asSet notin archetypes.lookup:
+    result = newArchetype(search.sorted().deduplicate(isSorted = true))
+    if result notin archetypes.archetypes:
         raise newException(KeyError, "Could not find archetype: " & join(search, ", "))
-    return archetypes.lookup[asSet]
