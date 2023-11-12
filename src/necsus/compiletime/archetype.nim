@@ -8,7 +8,7 @@ type
         identName: string
         cachedHash: Hash
 
-    ArchetypeSet*[T] = object
+    ArchetypeSet*[T] = ref object
         ## A set of all known archetypes
         archetypes: HashSet[Archetype[T]]
 
@@ -100,6 +100,7 @@ proc values*[T](archetype: Archetype[T]): seq[T] = archetype.values
 
 proc newArchetypeSet*[T](values: openarray[Archetype[T]]): ArchetypeSet[T] =
     ## Creates a set of archetypes
+    result.new
     result.archetypes = values.toHashSet
 
 proc len*[T](archetypes: ArchetypeSet[T]): int = archetypes.archetypes.card

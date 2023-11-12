@@ -5,7 +5,7 @@ type
         ## Indicates the behavior of a directive
         Include, Exclude, Optional
 
-    DirectiveArg* = object
+    DirectiveArg* = ref object
         ## Represents a single argument within a directive. For example, in:
         ## Query[(Foo, Bar, Baz)]
         ## This would just represent `Foo` or `Bar` or `Baz`
@@ -18,9 +18,12 @@ type
         args*: seq[DirectiveArg]
         name*: string
 
-proc newDirectiveArg*(component: ComponentDef, isPointer: bool, kind: DirectiveArgKind): auto =
+proc newDirectiveArg*(component: ComponentDef, isPointer: bool, kind: DirectiveArgKind): DirectiveArg =
     ## Creates a DirectiveArg
-    DirectiveArg(component: component, isPointer: isPointer, kind: kind)
+    result.new
+    result.component = component
+    result.isPointer = isPointer
+    result.kind = kind
 
 proc `==`*(a, b: DirectiveArg): auto =
     ## Compare two Directive instances

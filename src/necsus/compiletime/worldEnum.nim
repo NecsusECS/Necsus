@@ -1,7 +1,7 @@
 import componentDef, sequtils, macros, tupleDirective, archetypeBuilder
 
 type
-    WorldEnum*[T] = object
+    WorldEnum*[T] = ref object
         ## A group of values represented as values in an enum
         ident: NimNode
         values: seq[T]
@@ -18,7 +18,9 @@ proc ident*[T](worldEnum: WorldEnum[T], value: T): NimNode =
 
 proc archetypeEnum*(prefix: string, archetypes: ArchetypeSet[ComponentDef]): ArchetypeEnum =
     ## Creates a set of unique enums from the various archetypes
-    ArchetypeEnum(ident: ident(prefix & "Archetypes"), values: archetypes.items.toSeq)
+    result.new
+    result.ident = ident(prefix & "Archetypes")
+    result.values = archetypes.items.toSeq
 
 iterator items*[T](worldEnum: WorldEnum[T]): T =
     ## Iterates over all elements in a component set

@@ -3,19 +3,19 @@ import componentDef, tupleDirective, monoDirective, systemGen
 import ../runtime/pragmas
 
 type
-    Parser = object
+    Parser = ref object
         ## The pluggable generators
         generators: Table[string, DirectiveGen]
 
     SystemPhase* = enum StartupPhase, LoopPhase, TeardownPhase
         ## When a system should be executed
 
-    ActiveCheck* = object
+    ActiveCheck* = ref object
         ## A check that needs to be made before executing a system as part of the loop phase
         value*: NimNode
         arg*: SystemArg
 
-    ParsedSystem* = object
+    ParsedSystem* = ref object
         ## Parsed information about a system proc
         phase*: SystemPhase
         symbol*: NimNode
@@ -24,7 +24,7 @@ type
         instanced*: Option[NimNode]
         checks*: seq[ActiveCheck]
 
-    ParsedApp* = object
+    ParsedApp* = ref object
         ## Parsed information about the application proc itself
         name*: string
         runnerArgs*: seq[SystemArg]
@@ -33,6 +33,7 @@ type
 
 proc newParser*(generators: varargs[DirectiveGen]): Parser =
     ## Creates a new parser
+    result.new
     result.generators = initTable[string, DirectiveGen]()
     for gen in generators: result.generators[gen.ident] = gen
 
@@ -165,6 +166,11 @@ proc readDependencies(typeNode: NimNode): seq[NimNode] =
         if child.kind == nnkCall and depends == child[0]:
             findChildSyms(child[1], result)
 
+proc newActiveCheck(value: NimNode, arg: SystemArg): ActiveCheck =
+    result.new
+    result.value = value
+    result.arg = arg
+
 proc parseActiveChecks(parser: Parser, typeNode: NimNode): seq[ActiveCheck] =
     ## Parses any checks that need to be performed before executing a system
     let activePragma = bindSym("active")
@@ -193,7 +199,7 @@ proc parseActiveChecks(parser: Parser, typeNode: NimNode): seq[ActiveCheck] =
                     directive = monoDir
                 )
 
-                result.add(ActiveCheck(value: state, arg: arg))
+                result.add(newActiveCheck(state, arg))
 
 proc choosePhase(typeNode: NimNode, default: SystemPhase): SystemPhase =
     ## Reads the systems referenced by a pragma attached to another system
@@ -241,14 +247,13 @@ proc parseSystem(parser: Parser, ident: NimNode, phase: SystemPhase): ParsedSyst
         .filterIt(it.kind == nnkIdentDefs)
         .mapIt(parser.parseSystemArg(it))
 
-    result = ParsedSystem(
-        phase: impl.choosePhase(phase),
-        symbol: ident,
-        args: args,
-        depends: impl.readDependencies(),
-        instanced: determineInstancing(impl, typeImpl),
-        checks: parser.parseActiveChecks(impl),
-    )
+    result.new
+    result.phase = impl.choosePhase(phase)
+    result.symbol = ident
+    result.args = args
+    result.depends = impl.readDependencies()
+    result.instanced = determineInstancing(impl, typeImpl)
+    result.checks = parser.parseActiveChecks(impl)
 
 proc parseSystems(parser: Parser, systems: NimNode, phase: SystemPhase, into: var seq[ParsedSystem]) =
     # Recursively collects a list of systems
@@ -327,6 +332,7 @@ proc parseRunner(parser: Parser, runner: NimNode): seq[SystemArg] =
 
 proc parseApp*(parser: Parser, appProc: NimNode, runner: NimNode): ParsedApp =
     ## Parses the app proc
+    result.new
     result.name = appProc.name.strVal
 
     result.inputs = @[]

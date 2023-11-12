@@ -1,7 +1,7 @@
 import macros, hashes, sequtils, strutils, nimNode
 
 type
-    ComponentDef* = object
+    ComponentDef* = ref object
         ## An individual component symbol within the ECS
         node*: NimNode
         name*: string
@@ -9,6 +9,7 @@ type
 
 proc newComponentDef*(node: NimNode): ComponentDef =
     ## Instantiate a ComponentDef
+    result.new
     result.node = node
     result.name = node.symbols.join("_")
     result.cachedHash = hash(node)

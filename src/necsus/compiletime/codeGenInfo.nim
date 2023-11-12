@@ -1,7 +1,7 @@
 import worldEnum, parse, componentDef, archetypeBuilder, systemGen, directiveSet
 import macros, sequtils, options, sets, tables, strutils
 
-type CodeGenInfo*  {.byref.} = object
+type CodeGenInfo* = ref object
     ## Contains all the information needed to do high level code gen
     config*: NimNode
     app*: ParsedApp
@@ -34,6 +34,7 @@ proc newCodeGenInfo*(
     allSystems: openarray[ParsedSystem]
 ): CodeGenInfo =
     ## Collects data needed for code gen from all the parsed systems
+    result.new
     result.config = config
     result.app = app
     result.systems = allSystems.toSeq
@@ -58,6 +59,7 @@ proc appStateInit*(genInfo: CodeGenInfo): NimNode =
 
 proc newGenerateContext(codeGen: CodeGenInfo, hook: GenerateHook): GenerateContext =
     ## Create a GenerateContext for a hook
+    result.new
     result.hook = hook
     result.inputs = codeGen.app.inputs
     result.directives = codeGen.directives

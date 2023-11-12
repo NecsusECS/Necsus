@@ -9,7 +9,7 @@ type
     AppInputs* = seq[tuple[argName: string, directive: MonoDirective]]
         ## The list of arguments passed into the app
 
-    GenerateContext* {.byref.} = object
+    GenerateContext* = ref object
         ## Information passed in while performing code gen for a generator
         hook*: GenerateHook
         directives*: Table[DirectiveGen, DirectiveSet[SystemArg]]
@@ -38,7 +38,7 @@ type
     SystemArgExtractor*[T] = proc(name: string, dir: T): NimNode
         ## The callback used for determining the value to pass when calling the system
 
-    DirectiveGen*  {.byref.} = object
+    DirectiveGen* = ref object
         ## An object that can contribute to Necsus code generation
         ident*: string
         cachedHash: Hash
@@ -63,7 +63,7 @@ type
             worldFieldsNone: proc(name: string): seq[WorldField]
             systemArgNone*: SystemArgExtractor[void]
 
-    SystemArg* = object
+    SystemArg* = ref object
         ## A single arg within a system proc
         source*: NimNode
         generator*: DirectiveGen
@@ -100,6 +100,7 @@ proc newGenerator*(
     nestedArgs: NestedArgsExtractor[TupleDirective] = defaultNestedArgs,
 ): DirectiveGen =
     ## Create a tuple based generator
+    result.new
     result.ident = ident
     result.cachedHash = hash(ident)
     result.kind = DirectiveKind.Tuple
@@ -123,6 +124,7 @@ proc newGenerator*(
     nestedArgs: NestedArgsExtractor[MonoDirective] = defaultNestedArgs,
 ): DirectiveGen =
     ## Creates a mono based generator
+    result.new
     result.ident = ident
     result.kind = DirectiveKind.Mono
     result.generateMono = generate
@@ -144,6 +146,7 @@ proc newGenerator*(
     systemArg: SystemArgExtractor[void] = defaultSystemArgNone,
 ): DirectiveGen =
     ## Creates a 'none' generator
+    result.new
     result.ident = ident
     result.kind = DirectiveKind.None
     result.generateNone = generate
@@ -163,6 +166,7 @@ proc newSystemArg*[T : TupleDirective | MonoDirective | void](
     directive: T,
 ): SystemArg =
     ## Instantiates a SystemArg
+    result.new
     result.source = source
     result.generator = generator
     result.originalName = originalName
@@ -181,6 +185,8 @@ proc newSystemArg*[T : TupleDirective | MonoDirective | void](
     else:
         result.kind = DirectiveKind.None
         result.cachedHash = baseHash
+
+proc `$`*(arg: SystemArg): string = arg.name
 
 proc `==`*(a, b: SystemArg): bool =
     if a.generator != b.generator or a.kind != b.kind or a.name != b.name:

@@ -1,13 +1,14 @@
 import tables, componentDef, tupleDirective, sequtils, strutils, sets, strformat
 
 type
-    DirectiveSet*[T] = object
+    DirectiveSet*[T] = ref object
         ## All possible directives
         symbol: string
         values: OrderedTable[T, string]
 
 proc newDirectiveSet*[T](prefix: string, values: openarray[T]): DirectiveSet[T] =
     ## Create a set of all directives in a set of systems
+    result.new
     result.symbol = prefix & $T
 
     result.values = initOrderedTable[T, string]()

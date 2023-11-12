@@ -3,7 +3,7 @@ import tables, sets, sequtils, archetype
 export archetype
 
 type
-    ArchetypeBuilder*[T] = object
+    ArchetypeBuilder*[T] = ref object
         ## A builder for creating a list of all known archetypes
         archetypes: HashSet[Archetype[T]]
         attachable: HashSet[Archetype[T]]
@@ -11,6 +11,7 @@ type
 
 proc newArchetypeBuilder*[T](): ArchetypeBuilder[T] =
     ## Creates a new ArchetypeBuilder
+    result.new
     result.archetypes.init()
     result.attachable.init()
     result.detachable.init()
