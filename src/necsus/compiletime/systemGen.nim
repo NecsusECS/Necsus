@@ -1,4 +1,4 @@
-import options, hashes, tables, macros
+import options, hashes, tables, macros, archetype
 import monoDirective, tupleDirective, archetypeBuilder, componentDef, worldEnum, directiveSet, commonVars
 
 type
@@ -65,6 +65,7 @@ type
 
     SystemArg* = object
         ## A single arg within a system proc
+        source*: NimNode
         generator*: DirectiveGen
         originalName*: string
         name*: string
@@ -154,6 +155,7 @@ proc `==`*(a, b: DirectiveGen): bool = a.ident == b.ident
 proc hash*(gen: DirectiveGen): Hash = gen.cachedHash
 
 proc newSystemArg*[T : TupleDirective | MonoDirective | void](
+    source: NimNode,
     generator: DirectiveGen,
     originalName: string,
     name: string,
@@ -161,6 +163,7 @@ proc newSystemArg*[T : TupleDirective | MonoDirective | void](
     directive: T,
 ): SystemArg =
     ## Instantiates a SystemArg
+    result.source = source
     result.generator = generator
     result.originalName = originalName
     result.name = name
@@ -197,10 +200,13 @@ proc generateName*(arg: SystemArg): string =
 
 proc buildArchetype*(builder: var ArchetypeBuilder[ComponentDef], arg: SystemArg) =
     ## Generates the code for a specific hook
-    case arg.kind
-    of DirectiveKind.Tuple: arg.generator.archetypeTuple(builder, arg.tupleDir)
-    of DirectiveKind.Mono: arg.generator.archetypeMono(builder, arg.monoDir)
-    of DirectiveKind.None: discard
+    try:
+        case arg.kind
+        of DirectiveKind.Tuple: arg.generator.archetypeTuple(builder, arg.tupleDir)
+        of DirectiveKind.Mono: arg.generator.archetypeMono(builder, arg.monoDir)
+        of DirectiveKind.None: discard
+    except UnsortedArchetype as e:
+        error(e.msg, arg.source)
 
 proc generateForHook*(arg: SystemArg, details: GenerateContext, name: string): NimNode =
     ## Generates the code for a specific hook

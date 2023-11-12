@@ -23,10 +23,13 @@ proc hash*(node: NimNode): Hash =
 
 proc cmp*(a: NimNode, b: NimNode): int =
     ## Compare two nim nodes for sorting
-    if a.kind == nnkSym and b.kind == nnkSym:
-        return cmp(a.signatureHash, b.signatureHash)
     if a.kind in {nnkSym, nnkIdent} and b.kind in {nnkSym, nnkIdent}:
-        return cmp(a.strVal, b.strVal)
+        let nameCompare = cmp(a.strVal, b.strVal)
+        if nameCompare == 0 and a.kind == nnkSym and b.kind == nnkSym:
+            return cmp(a.signatureHash, b.signatureHash)
+        else:
+            return nameCompare
+
     if a.kind != b.kind:
         return cmp(a.kind, b.kind)
     elif a.len != b.len:

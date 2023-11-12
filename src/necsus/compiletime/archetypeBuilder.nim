@@ -13,10 +13,6 @@ type
         attachable: HashSet[Archetype[T]]
         detachable: HashSet[Archetype[T]]
 
-    JumbledArchetype* = object of Defect
-        ## Thrown when the values in an archetype are out of order
-
-
 proc init[T](table: var ArchetypeTable[T]) =
     table.lookup = initTable[HashSet[T], Archetype[T]]()
 
@@ -29,12 +25,7 @@ proc addIfAbsent[T](table: var ArchetypeTable[T], arch: Archetype[T]): bool =
 
 proc add[T](table: var ArchetypeTable[T], arch: Archetype[T]) =
     ## Add an archetype, assuming it hasn't been added before
-    if not table.addIfAbsent(arch):
-        raise newException(
-            JumbledArchetype,
-            "Archetype exists, but in a different order: " & $table.lookup[arch.asHashSet] &
-            " (Tried to add as " & $arch & ")"
-        )
+    discard table.addIfAbsent(arch)
 
 iterator items[T](table: ArchetypeTable[T]): Archetype[T] =
     for _, value in table.lookup.pairs: yield value

@@ -43,10 +43,10 @@ suite "Creating archetypes":
 
     test "Require that the same archetype be added with elements in the same order":
         var builder = newArchetypeBuilder[string]()
-        builder.define([ "B", "C", "A" ])
-        builder.define([ "B", "C", "A" ])
+        builder.define([ "A", "B", "C" ])
+        builder.define([ "A", "B", "C" ])
 
-        expect(JumbledArchetype):
-            builder.define([ "A", "B", "C" ])
+        expect(UnsortedArchetype):
+            builder.define([ "C", "A", "B" ])
 
-        check(builder.build().toSeq.mapIt($it).toHashSet == [ "{B, C, A}" ].toHashSet)
+        check(builder.build().toSeq.mapIt($it).toHashSet == [ "{A, B, C}" ].toHashSet)

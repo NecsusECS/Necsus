@@ -7,18 +7,18 @@ type
     Age = object
         age*: int
 
-proc setup1(spawn: Spawn[(Person, Name)], spawnAll: Spawn[(Person, Name, Age)]) =
-    discard spawn.with(Person(), Name(name: "Jack"))
-    discard spawn.with(Person(), Name(name: "Jill"))
-    discard spawnAll.with(Person(), Name(name: "John"), Age(age: 40))
+proc setup1(spawn: Spawn[(Name, Person)], spawnAll: Spawn[(Age, Name, Person)]) =
+    discard spawn.with(Name(name: "Jack"), Person())
+    discard spawn.with(Name(name: "Jill"), Person())
+    discard spawnAll.with(Age(age: 40), Name(name: "John"), Person())
 
 proc setup2(spawnAge: Spawn[(Age, )], spawnPerson: Spawn[(Person, )]) =
     discard spawnAge.with(Age(age: 39))
     discard spawnPerson.with(Person())
     discard spawnPerson.with(Person())
 
-proc spawnMore(spawn: Spawn[(Person, Name)]) =
-    discard spawn.with(Person(), Name(name: "Joe"))
+proc spawnMore(spawn: Spawn[(Name, Person)]) =
+    discard spawn.with(Name(name: "Joe"), Person())
 
 proc assertion(
     people: Query[tuple[person: Person, name: Name]],

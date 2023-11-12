@@ -102,6 +102,7 @@ proc parseParametricArg(
         let tupleDir = newTupleDir(directiveParametric.parseDirectiveArgsFromTuple)
         let nestedArgs = gen.nestedArgsTuple(tupleDir)
         return some(newSystemArg[TupleDirective](
+            source = directiveSymbol,
             generator = gen,
             originalName = argName.strVal,
             name = gen.chooseNameTuple(argName, tupleDir),
@@ -112,6 +113,7 @@ proc parseParametricArg(
         let monoDir = newMonoDir(directiveParametric)
         let nestedArgs = gen.nestedArgsMono(monoDir)
         return some(newSystemArg[MonoDirective](
+            source = directiveSymbol,
             generator = gen,
             originalName = argName.strVal,
             name = gen.chooseNameMono(argName, monoDir),
@@ -128,7 +130,7 @@ proc parseFlagSystemArg(parser: Parser, name: NimNode, directiveSymbol: NimNode)
     of DirectiveKind.Tuple, DirectiveKind.Mono:
         error("System argument is not flag based: " & $gen.kind)
     of DirectiveKind.None:
-        return some(newSystemArg[void](gen, name.strVal, directiveSymbol.strVal))
+        return some(newSystemArg[void](directiveSymbol, gen, name.strVal, directiveSymbol.strVal))
 
 proc parseArgType(parser: Parser, argName: NimNode, argType, original: NimNode): SystemArg =
     ## Parses the type of a system argument
@@ -184,6 +186,7 @@ proc parseActiveChecks(parser: Parser, typeNode: NimNode): seq[ActiveCheck] =
 
                 let monoDir = newMonoDir(typename)
                 let arg = newSystemArg(
+                    source = state,
                     generator = gen,
                     originalName = state.strVal,
                     name = gen.chooseNameMono(state, monoDir),

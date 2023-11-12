@@ -1,4 +1,4 @@
-import tables, sets, hashes, strutils, sequtils, componentDef, macros
+import tables, sets, hashes, strutils, sequtils, componentDef, macros, algorithm
 
 type
     Archetype*[T] = ref object
@@ -13,12 +13,20 @@ type
         archetypes: HashSet[Archetype[T]]
         lookup: Table[HashSet[T], Archetype[T]]
 
+    UnsortedArchetype* = object of Defect
+        ## Thrown when an archetype is out of sorted order
+
 proc generateName(values: openarray[string]): string = values.join("_")
 
 proc newArchetype*[T](values: openarray[T]): Archetype[T] =
     ## Create an archetype
     result.new
     result.values = values.toSeq.deduplicate
+
+    if not result.values.isSorted:
+        let correct = result.values.sorted().join(", ")
+        raise newException(UnsortedArchetype, "Archetype must be in sorted order. Correct order is: " & correct)
+
     result.lookup = initTable[T, int](result.values.len)
     for i, value in result.values:
         result.lookup[value] = i
@@ -60,7 +68,7 @@ proc `-`*[T](archetype: Archetype[T], other: Archetype[T]): Archetype[T] =
 
 proc `+`*[T](archetype: Archetype[T], other: openarray[T]): Archetype[T] =
     ## Adds values to an archetype
-    concat(archetype.values, other.toSeq).newArchetype
+    concat(archetype.values, other.toSeq).sorted().newArchetype
 
 proc `+`*[T](archetype: Archetype[T], other: Archetype[T]): Archetype[T] =
     ## Joins together two archetypes

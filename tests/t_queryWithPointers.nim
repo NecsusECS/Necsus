@@ -6,9 +6,9 @@ type
     Add = object
         value*: int
 
-proc setup(spawn: Spawn[(Multiply, Add)]) =
+proc setup(spawn: Spawn[(Add, Multiply)]) =
     for i in 1..5:
-        discard spawn.with(Multiply(value: i), Add(value: i))
+        discard spawn.with(Add(value: i), Multiply(value: i))
 
 proc operate(query: Query[tuple[mult: ptr Multiply, add: ptr Add]]) =
     for _, entity in query:
