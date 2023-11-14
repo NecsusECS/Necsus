@@ -1,4 +1,4 @@
-import unittest, necsus, options, sequtils
+import unittest, necsus, options
 
 type
     A = object
