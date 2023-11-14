@@ -31,35 +31,28 @@ proc detachable*[T](builder: var ArchetypeBuilder[T], values: openarray[T]) =
 proc build*[T](builder: ArchetypeBuilder[T]): ArchetypeSet[T] =
     ## Constructs the final set of archetypes
 
-    var resultArchetypes: HashSet[Archetype[T]]
-    resultArchetypes.init()
+    var workQueue = initHashSet[Archetype[T]]()
+    var output = initHashSet[Archetype[T]]()
 
     # Add in all the baseline archetypes
     for archetype in builder.archetypes.items:
-        resultArchetypes.incl(archetype)
+        workQueue.incl(archetype)
 
-    # Now we need to modify those archetypes with attachables and detachables
-    # to cover any transitions between archetypes that might be possible. We keep
-    # modifying the set of archetypes until we reach a stable state
-    var size = 0
-    while resultArchetypes.len != size:
-        size = resultArchetypes.len
-
-        # Collect any new archetype variations that need to be considered
-        var newArchetypes = newSeq[Archetype[T]]()
-        for archetype in resultArchetypes.items:
+    while workQueue.card > 0:
+        let next = workQueue.pop
+        if next.len > 0 and not output.containsOrIncl(next):
 
             # Create all variations of existing archetypes for when a new component combination is attached
-            for attachable in builder.attachable.items:
-                newArchetypes.add(archetype + attachable)
+            for attachable in builder.attachable:
+                let variant = next + attachable
+                if variant notin output:
+                    workQueue.incl(variant)
 
             # Create all variations of existing archetypes for when a new component combination is detached
             for detachable in builder.detachable.items:
-                if archetype.containsAllOf(detachable):
-                    newArchetypes.add(archetype - detachable)
+                if next.containsAllOf(detachable):
+                    let variant = next - detachable
+                    if variant notin output:
+                        workQueue.incl(variant)
 
-        for newArchetype in newArchetypes:
-            if newArchetype.len > 0:
-                resultArchetypes.incl(newArchetype)
-
-    result = newArchetypeSet(resultArchetypes.items.toSeq)
+    result = newArchetypeSet(output.items.toSeq)
