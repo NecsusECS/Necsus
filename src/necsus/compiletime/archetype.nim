@@ -45,7 +45,7 @@ proc `$`*[T](archetype: Archetype[T]): string =
 
 proc contains*[T](archetype: Archetype[T], value: T): bool =
     ## Whether an archetype contains all the given value
-    archetype.values.binarySearch(value) >= 0
+    value in archetype.values
 
 proc indexOf*[T](archetype: Archetype[T], value: T): int =
     ## Whether an archetype contains all the given value
