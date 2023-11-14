@@ -1,8 +1,5 @@
 import necsus / runtime / [ entityId, query, systemVar, inbox, directives, necsusConf, archetypeStore, spawn, pragmas ]
-import necsus / compiletime / [
-    parse, systemGen, codeGenInfo, worldGen, worldEnum, spawnGen, queryGen, tickGen, sharedGen, eventGen, lookupGen,
-    attachDetachGen, deleteGen, localGen, timeGen, debugGen, bundleGen
-]
+import necsus / compiletime / [ parse, systemGen, codeGenInfo, worldGen, worldEnum, tickGen ]
 
 import sequtils, macros, options
 
@@ -27,23 +24,6 @@ proc gameLoop*(exit: Shared[NecsusRun], tick: proc(): void) =
     while exit.get(RunLoop) == RunLoop:
         tick()
 
-let parser {.compileTime.} = newParser(
-    spawnGenerator,
-    queryGenerator,
-    deleteGenerator,
-    attachGenerator,
-    detachGenerator,
-    sharedGenerator,
-    localGenerator,
-    lookupGenerator,
-    inboxGenerator,
-    outboxGenerator,
-    deltaGenerator,
-    elapsedGenerator,
-    entityDebugGenerator,
-    bundleGenerator,
-)
-
 proc buildApp(
     runner: NimNode,
     startup: NimNode,
@@ -55,12 +35,12 @@ proc buildApp(
     ## Creates an ECS world
 
     let parsedSystems = concat(
-        parser.parseSystemList(startup, StartupPhase),
-        parser.parseSystemList(systems, LoopPhase),
-        parser.parseSystemList(teardown, TeardownPhase)
+        parseSystemList(startup, StartupPhase),
+        parseSystemList(systems, LoopPhase),
+        parseSystemList(teardown, TeardownPhase)
     )
 
-    let parsedApp = parser.parseApp(pragmaProc, runner)
+    let parsedApp = parseApp(pragmaProc, runner)
 
     let codeGenInfo = newCodeGenInfo(conf, parsedApp, parsedSystems)
 

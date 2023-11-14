@@ -1,12 +1,10 @@
-import macros, sequtils, strformat, options, tables, typeReader
+import macros, sequtils, strformat, options, typeReader
 import componentDef, tupleDirective, monoDirective, systemGen
 import ../runtime/pragmas
+import spawnGen, queryGen, deleteGen, attachDetachGen, sharedGen
+import localGen, lookupGen, eventGen, timeGen, debugGen, bundleGen
 
 type
-    Parser = ref object
-        ## The pluggable generators
-        generators: Table[string, DirectiveGen]
-
     SystemPhase* = enum StartupPhase, LoopPhase, TeardownPhase
         ## When a system should be executed
 
@@ -31,25 +29,31 @@ type
         inputs*: AppInputs
         returns*: Option[MonoDirective]
 
-proc newParser*(generators: varargs[DirectiveGen]): Parser =
-    ## Creates a new parser
-    result.new
-    result.generators = initTable[string, DirectiveGen]()
-    for gen in generators: result.generators[gen.ident] = gen
-
 proc phase*(system: ParsedSystem): auto = system.phase
 
 proc symbol*(system: ParsedSystem): auto = system.symbol
 
 proc kind*(arg: SystemArg): auto = arg.kind
 
-proc parseArgKind(parser: Parser, symbol: NimNode): Option[DirectiveGen] =
+proc parseArgKind(symbol: NimNode): Option[DirectiveGen] =
     ## Parses a type symbol to a SystemArgKind
     symbol.expectKind(nnkSym)
-    if symbol.strVal in parser.generators:
-        return some(parser.generators[symbol.strVal])
-    else:
-        return none(DirectiveGen)
+    case symbol.strVal
+    of "Spawn": return some(spawnGenerator)
+    of "Query": return some(queryGenerator)
+    of "Attach": return some(attachGenerator)
+    of "Detach": return some(detachGenerator)
+    of "Shared": return some(sharedGenerator)
+    of "Local": return some(localGenerator)
+    of "Lookup": return some(lookupGenerator)
+    of "Inbox": return some(inboxGenerator)
+    of "Outbox": return some(outboxGenerator)
+    of "TimeDelta": return some(deltaGenerator)
+    of "TimeElapsed": return some(elapsedGenerator)
+    of "EntityDebug": return some(entityDebugGenerator)
+    of "Bundle": return some(bundleGenerator)
+    of "Delete": return some(deleteGenerator)
+    else: return none(DirectiveGen)
 
 proc parseDirectiveArg(symbol: NimNode, isPointer: bool = false, kind: DirectiveArgKind = Include): DirectiveArg =
     case symbol.kind
@@ -79,21 +83,20 @@ proc parseDirectiveArgsFromTuple(tupleArg: NimNode): seq[DirectiveArg] =
 template orElse[T](optional: Option[T], exec: untyped): T =
     if optional.isSome: optional.get else: exec
 
-proc parseArgType(parser: Parser, argName: NimNode, argType, original: NimNode): SystemArg
+proc parseArgType(argName: NimNode, argType, original: NimNode): SystemArg
 
-proc parseNestedArgs(parser: Parser, nestedArgs: seq[RawNestedArg]): seq[SystemArg] =
+proc parseNestedArgs(nestedArgs: seq[RawNestedArg]): seq[SystemArg] =
     ## If a directive references other directives, we need to extract those
     for (name, argType) in nestedArgs:
-        result.add parseArgType(parser, name, argType, argType)
+        result.add parseArgType(name, argType, argType)
 
 proc parseParametricArg(
-    parser: Parser,
     argName: NimNode,
     directiveSymbol: NimNode,
     directiveParametric: NimNode
 ): Option[SystemArg] =
     ## Parses a system arg given a specific symbol and tuple
-    let gen = parser.parseArgKind(directiveSymbol).orElse: return none(SystemArg)
+    let gen = parseArgKind(directiveSymbol).orElse: return none(SystemArg)
 
     # Create a unique name for so the directives can be unique, if needed
     # let uniqName = directiveSymbol.strVal & "_" & argName.strVal & argName.signatureHash
@@ -108,7 +111,7 @@ proc parseParametricArg(
             originalName = argName.strVal,
             name = gen.chooseNameTuple(argName, tupleDir),
             directive = tupleDir,
-            nestedArgs = parser.parseNestedArgs(nestedArgs)
+            nestedArgs = parseNestedArgs(nestedArgs)
         ))
     of DirectiveKind.Mono:
         let monoDir = newMonoDir(directiveParametric)
@@ -119,29 +122,29 @@ proc parseParametricArg(
             originalName = argName.strVal,
             name = gen.chooseNameMono(argName, monoDir),
             directive = monoDir,
-            nestedArgs = parser.parseNestedArgs(nestedArgs)
+            nestedArgs = parseNestedArgs(nestedArgs)
         ))
     of DirectiveKind.None:
         error("System argument does not support tuple parameters: " & $gen.kind)
 
-proc parseFlagSystemArg(parser: Parser, name: NimNode, directiveSymbol: NimNode): Option[SystemArg] =
+proc parseFlagSystemArg(name: NimNode, directiveSymbol: NimNode): Option[SystemArg] =
     ## Parses unparameterized system args
-    let gen = parser.parseArgKind(directiveSymbol).orElse: return none(SystemArg)
+    let gen = parseArgKind(directiveSymbol).orElse: return none(SystemArg)
     case gen.kind
     of DirectiveKind.Tuple, DirectiveKind.Mono:
         error("System argument is not flag based: " & $gen.kind)
     of DirectiveKind.None:
         return some(newSystemArg[void](directiveSymbol, gen, name.strVal, directiveSymbol.strVal))
 
-proc parseArgType(parser: Parser, argName: NimNode, argType, original: NimNode): SystemArg =
+proc parseArgType(argName: NimNode, argType, original: NimNode): SystemArg =
     ## Parses the type of a system argument
 
     var parsed: Option[SystemArg]
     case argType.kind:
-    of nnkBracketExpr: parsed = parser.parseParametricArg(argName, argType[0], argType[1])
-    of nnkCall: parsed = parser.parseParametricArg(argName, argType[1], argType[2])
-    of nnkSym: parsed = parser.parseFlagSystemArg(argName, argType)
-    of nnkVarTy: parsed = some(parser.parseArgType(argName, argType[0], original))
+    of nnkBracketExpr: parsed = parseParametricArg(argName, argType[0], argType[1])
+    of nnkCall: parsed = parseParametricArg(argName, argType[1], argType[2])
+    of nnkSym: parsed = parseFlagSystemArg(argName, argType)
+    of nnkVarTy: parsed = some(parseArgType(argName, argType[0], original))
     else: parsed = none(SystemArg)
 
     # If we were unable to parse the argument, it may be because it's a type alias. Lets try to resolve it
@@ -149,15 +152,15 @@ proc parseArgType(parser: Parser, argName: NimNode, argType, original: NimNode):
         if argType.kind == nnkSym:
             let impl = argType.getImpl
             if impl.kind == nnkTypeDef:
-                return parser.parseArgType(argName, impl[2], original)
+                return parseArgType(argName, impl[2], original)
         error("Expecting an ECS interface type, but got: " & original.repr, original)
     else:
         return parsed.get
 
-proc parseSystemArg(parser: Parser, identDef: NimNode): SystemArg =
+proc parseSystemArg(identDef: NimNode): SystemArg =
     ## Parses a SystemArg from a proc argument
     identDef.expectKind(nnkIdentDefs)
-    return parser.parseArgType(identDef[0], identDef[1], identDef[1])
+    return parseArgType(identDef[0], identDef[1], identDef[1])
 
 proc readDependencies(typeNode: NimNode): seq[NimNode] =
     ## Reads the systems referenced by a pragma attached to another system
@@ -171,12 +174,9 @@ proc newActiveCheck(value: NimNode, arg: SystemArg): ActiveCheck =
     result.value = value
     result.arg = arg
 
-proc parseActiveChecks(parser: Parser, typeNode: NimNode): seq[ActiveCheck] =
+proc parseActiveChecks(typeNode: NimNode): seq[ActiveCheck] =
     ## Parses any checks that need to be performed before executing a system
     let activePragma = bindSym("active")
-
-    # Active checks must come from shared variables
-    let gen = parser.generators["Shared"]
 
     for child in typeNode.findPragma:
         if child.kind == nnkCall and activePragma == child[0]:
@@ -193,9 +193,9 @@ proc parseActiveChecks(parser: Parser, typeNode: NimNode): seq[ActiveCheck] =
                 let monoDir = newMonoDir(typename)
                 let arg = newSystemArg(
                     source = state,
-                    generator = gen,
+                    generator = sharedGenerator,
                     originalName = state.strVal,
-                    name = gen.chooseNameMono(state, monoDir),
+                    name = sharedGenerator.chooseNameMono(state, monoDir),
                     directive = monoDir
                 )
 
@@ -232,7 +232,7 @@ proc getSystemType(ident: NimNode, impl: NimNode): NimNode =
     else:
         return ident.getTypeImpl
 
-proc parseSystem(parser: Parser, ident: NimNode, phase: SystemPhase): ParsedSystem =
+proc parseSystem(ident: NimNode, phase: SystemPhase): ParsedSystem =
     ## Parses a single system proc
     ident.expectKind(nnkSym)
 
@@ -245,7 +245,7 @@ proc parseSystem(parser: Parser, ident: NimNode, phase: SystemPhase): ParsedSyst
 
     let args = argSource.toSeq
         .filterIt(it.kind == nnkIdentDefs)
-        .mapIt(parser.parseSystemArg(it))
+        .mapIt(parseSystemArg(it))
 
     result.new
     result.phase = impl.choosePhase(phase)
@@ -253,29 +253,29 @@ proc parseSystem(parser: Parser, ident: NimNode, phase: SystemPhase): ParsedSyst
     result.args = args
     result.depends = impl.readDependencies()
     result.instanced = determineInstancing(impl, typeImpl)
-    result.checks = parser.parseActiveChecks(impl)
+    result.checks = parseActiveChecks(impl)
 
-proc parseSystems(parser: Parser, systems: NimNode, phase: SystemPhase, into: var seq[ParsedSystem]) =
+proc parseSystems(systems: NimNode, phase: SystemPhase, into: var seq[ParsedSystem]) =
     # Recursively collects a list of systems
     case systems.kind
     of nnkSym:
-        let parsed = parser.parseSystem(systems, phase)
+        let parsed = parseSystem(systems, phase)
         if into.allIt(it.symbol != parsed.symbol):
             for depends in parsed.depends:
-                parser.parseSystems(depends, phase, into)
+                parseSystems(depends, phase, into)
             into.add(parsed)
     of nnkPrefix:
-        parser.parseSystems(systems[1], phase, into)
+        parseSystems(systems[1], phase, into)
     of nnkBracket:
         for wrapped in systems.children:
-            parseSystems(parser, wrapped, phase, into)
+            parseSystems(wrapped, phase, into)
     else:
         systems.expectKind({nnkBracket, nnkPrefix, nnkSym})
 
-proc parseSystemList*(parser: Parser, systems: NimNode, phase: SystemPhase): seq[ParsedSystem] =
+proc parseSystemList*(systems: NimNode, phase: SystemPhase): seq[ParsedSystem] =
     # Parses an list of system procs into a digesteable format
     systems.expectKind(nnkBracket)
-    parser.parseSystems(systems, phase, result)
+    parseSystems(systems, phase, result)
 
 iterator components*(arg: SystemArg): ComponentDef =
     ## Pulls all components out of an argument
@@ -320,7 +320,7 @@ iterator components*(app: ParsedApp): ComponentDef =
         for component in arg.components:
             yield component
 
-proc parseRunner(parser: Parser, runner: NimNode): seq[SystemArg] =
+proc parseRunner(runner: NimNode): seq[SystemArg] =
     ## Parses the arguments of the runner
     runner.expectKind(nnkSym)
     let impl = runner.getImpl
@@ -328,9 +328,9 @@ proc parseRunner(parser: Parser, runner: NimNode): seq[SystemArg] =
     # Verify that the last argument is a proc
     impl.params[^1][1].expectKind(nnkProcTy)
 
-    result = impl.params.toSeq[1..^2].mapIt(parser.parseSystemArg(it))
+    result = impl.params.toSeq[1..^2].mapIt(parseSystemArg(it))
 
-proc parseApp*(parser: Parser, appProc: NimNode, runner: NimNode): ParsedApp =
+proc parseApp*(appProc: NimNode, runner: NimNode): ParsedApp =
     ## Parses the app proc
     result.new
     result.name = appProc.name.strVal
@@ -344,7 +344,7 @@ proc parseApp*(parser: Parser, appProc: NimNode, runner: NimNode): ParsedApp =
             param[1].expectKind(nnkIdent)
             result.inputs.add((param[0].strVal, newMonoDir(param[1])))
         else: param.expectKind({nnkEmpty, nnkIdentDefs})
-    result.runnerArgs = parser.parseRunner(runner)
+    result.runnerArgs = parseRunner(runner)
 
     let returnNode = appProc.params[0]
     result.returns = if returnNode.kind == nnkEmpty: none(MonoDirective) else: some(newMonoDir(returnNode))
