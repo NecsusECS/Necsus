@@ -2,23 +2,23 @@ import macros, options, sequtils
 import tupleDirective, componentDef, archetype, worldEnum, systemGen
 import ../runtime/query
 
+proc read(fromVar: NimNode, fromArch: Archetype[ComponentDef], arg: DirectiveArg): NimNode =
+    let readExpr = nnkBracketExpr.newTree(fromVar, newLit(fromArch.indexOf(arg.component)))
+    return if arg.isPointer: nnkAddr.newTree(readExpr) else: readExpr
+
 proc copyTuple*(fromVar: NimNode, fromArch: Archetype[ComponentDef], directive: TupleDirective): NimNode =
     ## Generates code for copying from one tuple to another
     result = nnkTupleConstr.newTree()
-
-    proc read(arg: DirectiveArg): auto =
-        let readExpr = nnkBracketExpr.newTree(fromVar, newLit(fromArch.indexOf(arg.component)))
-        return if arg.isPointer: nnkAddr.newTree(readExpr) else: readExpr
 
     for arg in directive.args:
         case arg.kind
         of DirectiveArgKind.Exclude:
             result.add(newCall(nnkBracketExpr.newTree(bindSym("Not"), arg.type), newLit(0'i8)))
         of DirectiveArgKind.Include:
-            result.add(arg.read)
+            result.add(fromVar.read(fromArch, arg))
         of DirectiveArgKind.Optional:
             if arg.component in fromArch:
-                result.add(newCall(bindSym("some"), arg.read))
+                result.add(newCall(bindSym("some"), fromVar.read(fromArch, arg)))
             else:
                 result.add(newCall(nnkBracketExpr.newTree(bindSym("none"), arg.type)))
 
