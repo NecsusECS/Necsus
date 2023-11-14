@@ -2,25 +2,29 @@ import tables, macros, sequtils
 import tupleDirective, archetype, componentDef, tools, systemGen, archetypeBuilder, commonVars
 import ../runtime/[archetypeStore, query]
 
-proc argMatchesQuery(archetype: Archetype[ComponentDef], arg: DirectiveArg): bool =
-    ## Returns whether a directive is part of an archetype
-    case arg.kind
-    of DirectiveArgKind.Optional: true
-    of DirectiveArgKind.Include: arg.component in archetype
-    of DirectiveArgKind.Exclude: arg.component notin archetype
-
 iterator selectArchetypes(details: GenerateContext, query: TupleDirective): Archetype[ComponentDef] =
     ## Iterates through the archetypes that contribute to a query
     for archetype in details.archetypes:
-        if query.args.allIt(argMatchesQuery(archetype, it)):
+        block next:
+            for arg in query.args:
+                case arg.kind
+                of DirectiveArgKind.Include:
+                    if arg.component notin archetype:
+                        break next
+                of DirectiveArgKind.Exclude:
+                    if arg.component in archetype:
+                        break next
+                of DirectiveArgKind.Optional:
+                    discard
             yield archetype
+
+let compsIdent {.compileTime.} = ident("comps")
 
 proc createArchetypeViews(details: GenerateContext, query: TupleDirective): NimNode =
     ## Creates the views that bind an archetype to a query
     result = nnkBracket.newTree()
     for archetype in details.selectArchetypes(query):
         let archetypeIdent = archetype.ident
-        let compsIdent = ident("comps")
         let tupleCopy = compsIdent.copyTuple(archetype, query)
         let archTupleType = archetype.asStorageTuple
         let queryTupleType = query.args.asTupleType
