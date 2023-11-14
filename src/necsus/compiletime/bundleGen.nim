@@ -2,7 +2,7 @@ import macros, monoDirective, systemGen, std/importutils, commonVars
 
 proc worldFields(name: string, dir: MonoDirective): seq[WorldField] = @[ (name, dir.argType) ]
 
-proc generateShared(details: GenerateContext, arg: SystemArg, name: string, dir: MonoDirective): NimNode =
+proc generate(details: GenerateContext, arg: SystemArg, name: string, dir: MonoDirective): NimNode =
     result = newStmtList()
     let nameIdent = ident(name)
 
@@ -41,7 +41,8 @@ proc nestedArgs(dir: MonoDirective): seq[RawNestedArg] =
 
 let bundleGenerator* {.compileTime.} = newGenerator(
     ident = "Bundle",
-    generate = generateShared,
+    interest = { Late },
+    generate = generate,
     worldFields = worldFields,
     systemArg = systemArg,
     nestedArgs = nestedArgs

@@ -42,6 +42,7 @@ type
         ## An object that can contribute to Necsus code generation
         ident*: string
         cachedHash: Hash
+        interest*: set[GenerateHook]
         case kind*: DirectiveKind
         of DirectiveKind.Mono:
             generateMono*: HookGenerator[MonoDirective]
@@ -92,6 +93,7 @@ proc defaultNestedArgs(dir: MonoDirective | TupleDirective): seq[RawNestedArg] =
 
 proc newGenerator*(
     ident: string,
+    interest: set[GenerateHook],
     generate: HookGenerator[TupleDirective],
     archetype: proc(builder: var ArchetypeBuilder[ComponentDef], dir: TupleDirective) = noArchetype,
     chooseName: NameChooser[TupleDirective] = defaultName,
@@ -102,6 +104,7 @@ proc newGenerator*(
     ## Create a tuple based generator
     result.new
     result.ident = ident
+    result.interest = interest
     result.cachedHash = hash(ident)
     result.kind = DirectiveKind.Tuple
     result.generateTuple = generate
@@ -115,6 +118,7 @@ proc defaultSystemReturn(args: DirectiveSet[SystemArg], returns: MonoDirective):
 
 proc newGenerator*(
     ident: string,
+    interest: set[GenerateHook],
     generate: HookGenerator[MonoDirective],
     archetype: proc(builder: var ArchetypeBuilder[ComponentDef], dir: MonoDirective) = noArchetype,
     chooseName: NameChooser[MonoDirective] = defaultName,
@@ -126,6 +130,7 @@ proc newGenerator*(
     ## Creates a mono based generator
     result.new
     result.ident = ident
+    result.interest = interest
     result.kind = DirectiveKind.Mono
     result.generateMono = generate
     result.archetypeMono = archetype
@@ -141,6 +146,7 @@ proc defaultSystemArgNone(name: string): NimNode = newDotExpr(appStateIdent, nam
 
 proc newGenerator*(
     ident: string,
+    interest: set[GenerateHook],
     generate: HookGenerator[void],
     worldFields: proc(name: string): seq[WorldField] = defaultWorldFieldNone,
     systemArg: SystemArgExtractor[void] = defaultSystemArgNone,
@@ -148,6 +154,7 @@ proc newGenerator*(
     ## Creates a 'none' generator
     result.new
     result.ident = ident
+    result.interest = interest
     result.kind = DirectiveKind.None
     result.generateNone = generate
     result.worldFieldsNone = worldFields

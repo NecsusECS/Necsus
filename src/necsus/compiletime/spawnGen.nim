@@ -30,6 +30,7 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, dir: Tuple
 
 let spawnGenerator* {.compileTime.} = newGenerator(
     ident = "Spawn",
+    interest = { Standard },
     generate = generate,
     archetype = archetypes,
     worldFields = worldFields,

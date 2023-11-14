@@ -36,6 +36,7 @@ proc generateInbox(details: GenerateContext, arg: SystemArg, name: string, inbox
 
 let inboxGenerator* {.compileTime.} = newGenerator(
     ident = "Inbox",
+    interest = { Early, AfterSystem },
     chooseName = chooseInboxName,
     generate = generateInbox,
     worldFields = inboxFields,
@@ -72,6 +73,7 @@ proc generateOutbox(details: GenerateContext, arg: SystemArg, name: string, outb
 
 let outboxGenerator* {.compileTime.} = newGenerator(
     ident = "Outbox",
+    interest = { Standard },
     generate = generateOutbox,
     worldFields = outboxFields,
 )

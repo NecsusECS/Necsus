@@ -84,6 +84,7 @@ proc generateAttach(details: GenerateContext, arg: SystemArg, name: string, atta
 
 let attachGenerator* {.compileTime.} = newGenerator(
     ident = "Attach",
+    interest = { Standard },
     generate = generateAttach,
     archetype = attachArchetype,
     worldFields = attachFields
@@ -118,6 +119,7 @@ proc generateDetach(details: GenerateContext, arg: SystemArg, name: string, deta
 
 let detachGenerator* {.compileTime.} = newGenerator(
     ident = "Detach",
+    interest = { Standard },
     generate = generateDetach,
     archetype = detachArchetype,
     worldFields = detachFields,

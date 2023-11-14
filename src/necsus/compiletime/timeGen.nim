@@ -26,6 +26,7 @@ proc generateDelta(details: GenerateContext, arg: SystemArg, name: string): NimN
 
 let deltaGenerator* {.compileTime.} = newGenerator(
     ident = "TimeDelta",
+    interest = { Late, BeforeLoop, LoopStart, LoopEnd },
     generate = generateDelta,
     worldFields = deltaFields,
 )
@@ -46,6 +47,7 @@ proc generateElapsed(details: GenerateContext, arg: SystemArg, name: string): Ni
 
 let elapsedGenerator* {.compileTime.} = newGenerator(
     ident = "TimeElapsed",
+    interest = { Late, LoopStart },
     generate = generateElapsed,
     worldFields = elapsedFields,
 )

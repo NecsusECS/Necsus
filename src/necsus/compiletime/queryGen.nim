@@ -33,7 +33,7 @@ proc createArchetypeViews(details: GenerateContext, query: TupleDirective): NimN
 proc worldFields(name: string, dir: TupleDirective): seq[WorldField] =
      @[ (name, nnkBracketExpr.newTree(bindSym("Query"), dir.asTupleType)) ]
 
-proc generateTuple(details: GenerateContext, arg: SystemArg, name:  string, dir: TupleDirective): NimNode =
+proc generate(details: GenerateContext, arg: SystemArg, name:  string, dir: TupleDirective): NimNode =
     ## Generates the code for instantiating queries
     result = newStmtList()
     case details.hook
@@ -46,5 +46,10 @@ proc generateTuple(details: GenerateContext, arg: SystemArg, name:  string, dir:
     else:
         discard
 
-let queryGenerator* {.compileTime.} = newGenerator("Query", generateTuple, worldFields = worldFields)
+let queryGenerator* {.compileTime.} = newGenerator(
+    ident = "Query",
+    interest = { Standard },
+    generate = generate,
+    worldFields = worldFields
+)
 

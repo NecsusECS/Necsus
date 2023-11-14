@@ -38,6 +38,7 @@ proc systemArg(name: string, dir: MonoDirective): NimNode =
 
 let sharedGenerator* {.compileTime.} = newGenerator(
     ident = "Shared",
+    interest = { Standard },
     generate = generateShared,
     systemReturn = systemReturn,
     worldFields = worldFields,

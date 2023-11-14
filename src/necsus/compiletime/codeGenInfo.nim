@@ -73,17 +73,23 @@ proc nameOf*(genInfo: CodeGenInfo, arg: SystemArg): string =
 proc generateForHook*(codeGen: CodeGenInfo, system: ParsedSystem, hook: GenerateHook): NimNode =
     ## Generates the code for a specific code-gen hook
     result = newStmtList()
-    let details = newGenerateContext(codeGen, hook)
+    var details: GenerateContext
     for arg in system.args:
-        result.add(arg.generateForHook(details, codeGen.nameOf(arg)))
+        if hook in arg.generator.interest:
+            if details == nil:
+                details = newGenerateContext(codeGen, hook)
+            result.add(arg.generateForHook(details, codeGen.nameOf(arg)))
 
 proc generateForHook*(codeGen: CodeGenInfo, hook: GenerateHook): NimNode =
     ## Generates the code for a specific code-gen hook
     result = newStmtList()
-    let details = newGenerateContext(codeGen, hook)
+    var details: GenerateContext
     for _, argSet in codeGen.directives:
         for name, arg in argSet:
-            result.add(arg.generateForHook(details, name))
+            if hook in arg.generator.interest:
+                if details == nil:
+                    details = newGenerateContext(codeGen, hook)
+                result.add(arg.generateForHook(details, name))
 
 proc worldFields*(codeGen: CodeGenInfo): seq[WorldField] =
     ## Generates the code for a specific code-gen hook

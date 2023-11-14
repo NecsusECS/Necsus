@@ -49,6 +49,7 @@ proc generateEntityDebug(details: GenerateContext, arg: SystemArg, name: string)
 
 let entityDebugGenerator* {.compileTime.} = newGenerator(
     ident = "EntityDebug",
+    interest = { Standard },
     generate = generateEntityDebug,
     worldFields = worldFields,
 )

@@ -25,4 +25,9 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string): NimNode =
     else:
         return newEmptyNode()
 
-let deleteGenerator* {.compileTime.} = newGenerator("Delete", generate, worldFields)
+let deleteGenerator* {.compileTime.} = newGenerator(
+    ident = "Delete",
+    interest = { Standard },
+    generate = generate,
+    worldFields = worldFields
+)

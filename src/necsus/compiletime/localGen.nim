@@ -23,6 +23,7 @@ proc systemArg(name: string, dir: MonoDirective): NimNode =
 
 let localGenerator* {.compileTime.} = newGenerator(
     ident = "Local",
+    interest = { Standard },
     generate = generateLocal,
     chooseName = chooseLocalName,
     worldFields = worldFields,
