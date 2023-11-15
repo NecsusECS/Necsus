@@ -1,4 +1,4 @@
-import macros, sequtils, strformat, options, typeReader
+import macros, sequtils, strformat, options, typeReader, strutils
 import componentDef, tupleDirective, monoDirective, systemGen
 import ../runtime/pragmas
 import spawnGen, queryGen, deleteGen, attachDetachGen, sharedGen
@@ -28,6 +28,20 @@ type
         runnerArgs*: seq[SystemArg]
         inputs*: AppInputs
         returns*: Option[MonoDirective]
+
+proc `$`*(check: ActiveCheck): string =
+    &"ActiveCheck({check.value}, {check.arg})"
+
+proc `$`*(system: ParsedSystem): string =
+    let args = join(system.args, ", ")
+    let instancedStr = if system.instanced.isSome: system.instanced.get.lispRepr else: "none"
+    &"{system.symbol}(" & join([
+        $system.phase,
+        &"args: {args}",
+        &"depends: {system.depends}",
+        &"instanced: {instancedStr}",
+        &"checks: {system.checks}",
+    ], ", ") & ")"
 
 proc phase*(system: ParsedSystem): auto = system.phase
 

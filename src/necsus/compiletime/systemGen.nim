@@ -1,4 +1,4 @@
-import options, hashes, tables, macros, archetype
+import options, hashes, tables, macros, archetype, strformat, strutils
 import monoDirective, tupleDirective, archetypeBuilder, componentDef, worldEnum, directiveSet, commonVars
 
 type
@@ -193,7 +193,17 @@ proc newSystemArg*[T : TupleDirective | MonoDirective | void](
         result.kind = DirectiveKind.None
         result.cachedHash = baseHash
 
-proc `$`*(arg: SystemArg): string = arg.name
+proc `$`*(arg: SystemArg): string =
+    let directive = case arg.kind
+        of DirectiveKind.Tuple: $arg.tupleDir
+        of DirectiveKind.Mono: $arg.monoDir
+        of DirectiveKind.None: "none"
+    &"{arg.originalName}(" & join([
+        &"{arg.generator.ident}",
+        &"name: {arg.name}",
+        &"{arg.kind}: {directive}",
+        &"nested: {arg.nestedArgs}",
+    ], ", ") & ")"
 
 proc `==`*(a, b: SystemArg): bool =
     if a.generator != b.generator or a.kind != b.kind or a.name != b.name:

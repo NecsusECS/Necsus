@@ -1,4 +1,4 @@
-import hashes, nimNode, strutils
+import hashes, nimNode, strutils, macros
 
 type
      MonoDirective* = ref object
@@ -15,3 +15,5 @@ proc newMonoDir*(argType: NimNode): MonoDirective =
 proc hash*(directive: MonoDirective): Hash = hash(directive.argType)
 
 proc `==`*(a, b: MonoDirective): bool = cmp(a.argType, b.argType) == 0
+
+proc `$`*(dir: MonoDirective): string = dir.argType.lispRepr

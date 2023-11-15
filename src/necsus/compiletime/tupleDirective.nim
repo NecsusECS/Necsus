@@ -1,4 +1,4 @@
-import componentDef, hashes, sequtils, macros
+import componentDef, hashes, sequtils, macros, strutils
 
 type
     DirectiveArgKind* = enum
@@ -25,6 +25,12 @@ proc newDirectiveArg*(component: ComponentDef, isPointer: bool, kind: DirectiveA
     result.isPointer = isPointer
     result.kind = kind
 
+proc `$`*(arg: DirectiveArg): string =
+    result = $arg.kind & "("
+    if arg.isPointer:
+        result &= "ptr "
+    result &= arg.component.name & ")"
+
 proc `==`*(a, b: DirectiveArg): auto =
     ## Compare two Directive instances
     (a.isPointer == b.isPointer) and (a.component == b.component)
@@ -43,6 +49,9 @@ proc type*(def: DirectiveArg): NimNode =
 proc newTupleDir*(args: openarray[DirectiveArg]): TupleDirective =
     ## Create a TupleDirective
     TupleDirective(args: args.toSeq, name: args.items.toSeq.mapIt(it.component).generateName)
+
+proc `$`*(dir: TupleDirective): string =
+    dir.name & "(" & join(dir.args, ", ") & ")"
 
 iterator items*(directive: TupleDirective): ComponentDef =
     ## Produce all components in a directive
