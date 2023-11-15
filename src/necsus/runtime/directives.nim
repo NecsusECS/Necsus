@@ -31,3 +31,6 @@ type
 
     Bundle*[T: object] = ptr T
         ## A group of directives bundled together in an object
+
+    SystemInstance* = proc(): void
+        ## A callback used to invoke a specific system

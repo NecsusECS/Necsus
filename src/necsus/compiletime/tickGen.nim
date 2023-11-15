@@ -1,5 +1,5 @@
 import macros, sequtils, systemGen, options
-import codeGenInfo, parse, commonVars, ../runtime/systemVar
+import codeGenInfo, parse, commonVars, ../runtime/[systemVar, directives]
 
 proc renderSystemArgs(codeGenInfo: CodeGenInfo, args: openarray[SystemArg]): seq[NimNode] =
     ## Renders system arguments down to nim code
@@ -13,7 +13,7 @@ proc callInstanced(codeGenInfo: CodeGenInfo, system: ParsedSystem, phase: System
         let init = newCall(system.symbol, codeGenInfo.renderSystemArgs(system.args))
         return quote: `appStateIdent`.`fieldName` = `init`
     of LoopPhase:
-        if fieldType.kind == nnkProcTy:
+        if fieldType.kind == nnkProcTy or fieldType == bindSym("SystemInstance"):
             return quote: `appStateIdent`.`fieldName`()
         else:
             return quote: `appStateIdent`.`fieldName`.tick()
@@ -46,7 +46,7 @@ proc callSystems*(codeGenInfo: CodeGenInfo, phase: SystemPhase): NimNode =
     for system in codeGenInfo.systems:
 
         var invokeSystem =
-            if system.instanced.isSome:codeGenInfo.callInstanced(system, phase)
+            if system.instanced.isSome: codeGenInfo.callInstanced(system, phase)
             elif system.phase == phase: newCall(system.symbol, codeGenInfo.renderSystemArgs(system.args))
             else: newEmptyNode()
 
