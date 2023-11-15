@@ -1,14 +1,16 @@
 import hashes, nimNode, strutils
 
 type
-     MonoDirective* = object of RootObj
+     MonoDirective* = ref object
         ## Parsed definition of a mono directive
         argType*: NimNode
         name*: string
 
 proc newMonoDir*(argType: NimNode): MonoDirective =
     ## Create a new mono directive
-    MonoDirective(argType: argType, name: argType.symbols.join("_"))
+    result = new(MonoDirective)
+    result.argType = argType
+    result.name = argType.symbols.join("_")
 
 proc hash*(directive: MonoDirective): Hash = hash(directive.argType)
 
