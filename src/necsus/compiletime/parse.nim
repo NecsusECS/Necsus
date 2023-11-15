@@ -373,4 +373,8 @@ proc parseApp*(appProc: NimNode, runner: NimNode): ParsedApp =
 
 proc instancedInfo*(system: ParsedSystem): Option[tuple[fieldName: NimNode, typ: NimNode]] =
     ## Returns details about the instancing configuration for a type
-    system.instanced.map(proc (typ: auto): auto = (ident("instance_" & system.symbol.strVal), typ))
+    return if system.instanced.isSome:
+        some((ident("instance_" & system.symbol.strVal), system.instanced.get))
+    else:
+        none(tuple[fieldName: NimNode, typ: NimNode])
+
