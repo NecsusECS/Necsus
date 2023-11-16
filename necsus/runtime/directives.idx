@@ -7,3 +7,4 @@ TimeDelta	necsus/runtime/directives.html#TimeDelta	directives: TimeDelta
 TimeElapsed	necsus/runtime/directives.html#TimeElapsed	directives: TimeElapsed	
 EntityDebug	necsus/runtime/directives.html#EntityDebug	directives: EntityDebug	
 Bundle	necsus/runtime/directives.html#Bundle	directives: Bundle	
+SystemInstance	necsus/runtime/directives.html#SystemInstance	directives: SystemInstance	

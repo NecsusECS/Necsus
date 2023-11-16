@@ -79,7 +79,17 @@ window.addEventListener('DOMContentLoaded', main);
           <li><a class="reference external"
           data-doc-search-tag="directiveSet: `$`[T](directives: DirectiveSet[T]): string" href="necsus/compiletime/directiveSet.html#%24%2CDirectiveSet%5BT%5D">directiveSet: `$`[T](directives: DirectiveSet[T]): string</a></li>
           <li><a class="reference external"
+          data-doc-search-tag="monoDirective: `$`(dir: MonoDirective): string" href="necsus/compiletime/monoDirective.html#%24%2CMonoDirective">monoDirective: `$`(dir: MonoDirective): string</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="parse: `$`(check: ActiveCheck): string" href="necsus/compiletime/parse.html#%24%2CActiveCheck">parse: `$`(check: ActiveCheck): string</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="parse: `$`(system: ParsedSystem): string" href="necsus/compiletime/parse.html#%24%2CParsedSystem">parse: `$`(system: ParsedSystem): string</a></li>
+          <li><a class="reference external"
           data-doc-search-tag="systemGen: `$`(arg: SystemArg): string" href="necsus/compiletime/systemGen.html#%24%2CSystemArg">systemGen: `$`(arg: SystemArg): string</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="tupleDirective: `$`(arg: DirectiveArg): string" href="necsus/compiletime/tupleDirective.html#%24%2CDirectiveArg">tupleDirective: `$`(arg: DirectiveArg): string</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="tupleDirective: `$`(dir: TupleDirective): string" href="necsus/compiletime/tupleDirective.html#%24%2CTupleDirective">tupleDirective: `$`(dir: TupleDirective): string</a></li>
           <li><a class="reference external"
           data-doc-search-tag="entityId: `$`(entityId: EntityId): string" href="necsus/runtime/entityId.html#%24%2CEntityId">entityId: `$`(entityId: EntityId): string</a></li>
           <li><a class="reference external"
@@ -899,13 +909,15 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="newGenerator" href="#newGenerator"><span>newGenerator:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="systemGen: newGenerator(ident: string; generate: HookGenerator[MonoDirective]; archetype: proc (
+          data-doc-search-tag="systemGen: newGenerator(ident: string; interest: set[GenerateHook];
+             generate: HookGenerator[MonoDirective]; archetype: proc (
     builder: var ArchetypeBuilder[ComponentDef]; dir: MonoDirective) = noArchetype;
              chooseName: NameChooser[MonoDirective] = defaultName; systemReturn: proc (
     args: DirectiveSet[SystemArg]; returns: MonoDirective): Option[NimNode] = defaultSystemReturn;
     worldFields: proc (name: string; dir: MonoDirective): seq[WorldField] = defaultWorldField;
              systemArg: SystemArgExtractor[MonoDirective] = defaultSystemArg;
-             nestedArgs: NestedArgsExtractor[MonoDirective] = defaultNestedArgs): DirectiveGen" href="necsus/compiletime/systemGen.html#newGenerator%2Cstring%2CHookGenerator%5BMonoDirective%5D%2Cproc%28ArchetypeBuilder%5BComponentDef%5D%2CMonoDirective%29%2CNameChooser%5BMonoDirective%5D%2Cproc%28DirectiveSet%5BSystemArg%5D%2CMonoDirective%29%2Cproc%28string%2CMonoDirective%29%2CSystemArgExtractor%5BMonoDirective%5D%2CNestedArgsExtractor%5BMonoDirective%5D">systemGen: newGenerator(ident: string; generate: HookGenerator[MonoDirective]; archetype: proc (
+             nestedArgs: NestedArgsExtractor[MonoDirective] = defaultNestedArgs): DirectiveGen" href="necsus/compiletime/systemGen.html#newGenerator%2Cstring%2Cset%5BGenerateHook%5D%2CHookGenerator%5BMonoDirective%5D%2Cproc%28ArchetypeBuilder%5BComponentDef%5D%2CMonoDirective%29%2CNameChooser%5BMonoDirective%5D%2Cproc%28DirectiveSet%5BSystemArg%5D%2CMonoDirective%29%2Cproc%28string%2CMonoDirective%29%2CSystemArgExtractor%5BMonoDirective%5D%2CNestedArgsExtractor%5BMonoDirective%5D">systemGen: newGenerator(ident: string; interest: set[GenerateHook];
+             generate: HookGenerator[MonoDirective]; archetype: proc (
     builder: var ArchetypeBuilder[ComponentDef]; dir: MonoDirective) = noArchetype;
              chooseName: NameChooser[MonoDirective] = defaultName; systemReturn: proc (
     args: DirectiveSet[SystemArg]; returns: MonoDirective): Option[NimNode] = defaultSystemReturn;
@@ -913,22 +925,26 @@ window.addEventListener('DOMContentLoaded', main);
              systemArg: SystemArgExtractor[MonoDirective] = defaultSystemArg;
              nestedArgs: NestedArgsExtractor[MonoDirective] = defaultNestedArgs): DirectiveGen</a></li>
           <li><a class="reference external"
-          data-doc-search-tag="systemGen: newGenerator(ident: string; generate: HookGenerator[TupleDirective]; archetype: proc (
+          data-doc-search-tag="systemGen: newGenerator(ident: string; interest: set[GenerateHook];
+             generate: HookGenerator[TupleDirective]; archetype: proc (
     builder: var ArchetypeBuilder[ComponentDef]; dir: TupleDirective) = noArchetype;
              chooseName: NameChooser[TupleDirective] = defaultName; worldFields: proc (
     name: string; dir: TupleDirective): seq[WorldField] = defaultWorldField;
              systemArg: SystemArgExtractor[TupleDirective] = defaultSystemArg;
-    nestedArgs: NestedArgsExtractor[TupleDirective] = defaultNestedArgs): DirectiveGen" href="necsus/compiletime/systemGen.html#newGenerator%2Cstring%2CHookGenerator%5BTupleDirective%5D%2Cproc%28ArchetypeBuilder%5BComponentDef%5D%2CTupleDirective%29%2CNameChooser%5BTupleDirective%5D%2Cproc%28string%2CTupleDirective%29%2CSystemArgExtractor%5BTupleDirective%5D%2CNestedArgsExtractor%5BTupleDirective%5D">systemGen: newGenerator(ident: string; generate: HookGenerator[TupleDirective]; archetype: proc (
+    nestedArgs: NestedArgsExtractor[TupleDirective] = defaultNestedArgs): DirectiveGen" href="necsus/compiletime/systemGen.html#newGenerator%2Cstring%2Cset%5BGenerateHook%5D%2CHookGenerator%5BTupleDirective%5D%2Cproc%28ArchetypeBuilder%5BComponentDef%5D%2CTupleDirective%29%2CNameChooser%5BTupleDirective%5D%2Cproc%28string%2CTupleDirective%29%2CSystemArgExtractor%5BTupleDirective%5D%2CNestedArgsExtractor%5BTupleDirective%5D">systemGen: newGenerator(ident: string; interest: set[GenerateHook];
+             generate: HookGenerator[TupleDirective]; archetype: proc (
     builder: var ArchetypeBuilder[ComponentDef]; dir: TupleDirective) = noArchetype;
              chooseName: NameChooser[TupleDirective] = defaultName; worldFields: proc (
     name: string; dir: TupleDirective): seq[WorldField] = defaultWorldField;
              systemArg: SystemArgExtractor[TupleDirective] = defaultSystemArg;
     nestedArgs: NestedArgsExtractor[TupleDirective] = defaultNestedArgs): DirectiveGen</a></li>
           <li><a class="reference external"
-          data-doc-search-tag="systemGen: newGenerator(ident: string; generate: HookGenerator[void]; worldFields: proc (
-    name: string): seq[WorldField] = defaultWorldFieldNone;
-             systemArg: SystemArgExtractor[void] = defaultSystemArgNone): DirectiveGen" href="necsus/compiletime/systemGen.html#newGenerator%2Cstring%2CHookGenerator%5Bvoid%5D%2Cproc%28string%29%2CSystemArgExtractor%5Bvoid%5D">systemGen: newGenerator(ident: string; generate: HookGenerator[void]; worldFields: proc (
-    name: string): seq[WorldField] = defaultWorldFieldNone;
+          data-doc-search-tag="systemGen: newGenerator(ident: string; interest: set[GenerateHook];
+             generate: HookGenerator[void]; worldFields: proc (name: string): seq[
+    WorldField] = defaultWorldFieldNone;
+             systemArg: SystemArgExtractor[void] = defaultSystemArgNone): DirectiveGen" href="necsus/compiletime/systemGen.html#newGenerator%2Cstring%2Cset%5BGenerateHook%5D%2CHookGenerator%5Bvoid%5D%2Cproc%28string%29%2CSystemArgExtractor%5Bvoid%5D">systemGen: newGenerator(ident: string; interest: set[GenerateHook];
+             generate: HookGenerator[void]; worldFields: proc (name: string): seq[
+    WorldField] = defaultWorldFieldNone;
              systemArg: SystemArgExtractor[void] = defaultSystemArgNone): DirectiveGen</a></li>
           </ul></dd>
 <dt><a name="newInbox" href="#newInbox"><span>newInbox:</span></a></dt><dd><ul class="simple">
@@ -956,10 +972,6 @@ window.addEventListener('DOMContentLoaded', main);
           data-doc-search-tag="necsusConf: newNecsusConf(getTime: proc (): float; entitySize: int; componentSize: int;
               eventQueueSize: int): NecsusConf" href="necsus/runtime/necsusConf.html#newNecsusConf%2Cproc%29%2Cint%2Cint%2Cint">necsusConf: newNecsusConf(getTime: proc (): float; entitySize: int; componentSize: int;
               eventQueueSize: int): NecsusConf</a></li>
-          </ul></dd>
-<dt><a name="newParser" href="#newParser"><span>newParser:</span></a></dt><dd><ul class="simple">
-<li><a class="reference external"
-          data-doc-search-tag="parse: newParser(generators: varargs[DirectiveGen]): Parser" href="necsus/compiletime/parse.html#newParser%2Cvarargs%5BDirectiveGen%5D">parse: newParser(generators: varargs[DirectiveGen]): Parser</a></li>
           </ul></dd>
 <dt><a name="newQuery" href="#newQuery"><span>newQuery:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -1027,7 +1039,7 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="parseApp" href="#parseApp"><span>parseApp:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="parse: parseApp(parser: Parser; appProc: NimNode; runner: NimNode): ParsedApp" href="necsus/compiletime/parse.html#parseApp%2CParser%2CNimNode%2CNimNode">parse: parseApp(parser: Parser; appProc: NimNode; runner: NimNode): ParsedApp</a></li>
+          data-doc-search-tag="parse: parseApp(appProc: NimNode; runner: NimNode): ParsedApp" href="necsus/compiletime/parse.html#parseApp%2CNimNode%2CNimNode">parse: parseApp(appProc: NimNode; runner: NimNode): ParsedApp</a></li>
           </ul></dd>
 <dt><a name="ParsedApp" href="#ParsedApp"><span>ParsedApp:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -1039,9 +1051,7 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="parseSystemList" href="#parseSystemList"><span>parseSystemList:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="parse: parseSystemList(parser: Parser; systems: NimNode; phase: SystemPhase): seq[
-    ParsedSystem]" href="necsus/compiletime/parse.html#parseSystemList%2CParser%2CNimNode%2CSystemPhase">parse: parseSystemList(parser: Parser; systems: NimNode; phase: SystemPhase): seq[
-    ParsedSystem]</a></li>
+          data-doc-search-tag="parse: parseSystemList(systems: NimNode; phase: SystemPhase): seq[ParsedSystem]" href="necsus/compiletime/parse.html#parseSystemList%2CNimNode%2CSystemPhase">parse: parseSystemList(systems: NimNode; phase: SystemPhase): seq[ParsedSystem]</a></li>
           </ul></dd>
 <dt><a name="phase" href="#phase"><span>phase:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -1189,6 +1199,10 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference external"
           data-doc-search-tag="necsus: SystemFlag" href="necsus.html#SystemFlag">necsus: SystemFlag</a></li>
           </ul></dd>
+<dt><a name="SystemInstance" href="#SystemInstance"><span>SystemInstance:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="directives: SystemInstance" href="necsus/runtime/directives.html#SystemInstance">directives: SystemInstance</a></li>
+          </ul></dd>
 <dt><a name="SystemPhase" href="#SystemPhase"><span>SystemPhase:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="parse: SystemPhase" href="necsus/compiletime/parse.html#SystemPhase">parse: SystemPhase</a></li>
@@ -1284,7 +1298,7 @@ window.addEventListener('DOMContentLoaded', main);
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-11-12 17:53:01 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-11-16 03:00:35 UTC</small>
       </div>
     </div>
   </div>

@@ -121,6 +121,8 @@ window.addEventListener('DOMContentLoaded', main);
     title="Lookup[C] = proc (entityId: EntityId): Option[C]">Lookup</a></li>
   <li><a class="reference" href="#Outbox"
     title="Outbox[T] = proc (message: sink T): void">Outbox</a></li>
+  <li><a class="reference" href="#SystemInstance"
+    title="SystemInstance = proc (): void">SystemInstance</a></li>
   <li><a class="reference" href="#TimeDelta"
     title="TimeDelta = float">TimeDelta</a></li>
   <li><a class="reference" href="#TimeElapsed"
@@ -201,6 +203,14 @@ Sends an event. Where <tt class="docutils literal"><span class="pre"><span class
 
 </dd>
 </div>
+<div id="SystemInstance">
+<dt><pre><a href="directives.html#SystemInstance"><span class="Identifier">SystemInstance</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">void</span></pre></dt>
+<dd>
+
+A callback used to invoke a specific system
+
+</dd>
+</div>
 <div id="TimeDelta">
 <dt><pre><a href="directives.html#TimeDelta"><span class="Identifier">TimeDelta</span></a> <span class="Other">=</span> <span class="Identifier">float</span></pre></dt>
 <dd>
@@ -227,7 +237,7 @@ The total amount of time spent in an app
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-11-12 17:53:01 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-11-16 03:00:34 UTC</small>
       </div>
     </div>
   </div>

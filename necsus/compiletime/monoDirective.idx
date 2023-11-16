@@ -2,3 +2,4 @@ MonoDirective	necsus/compiletime/monoDirective.html#MonoDirective	monoDirective:
 newMonoDir	necsus/compiletime/monoDirective.html#newMonoDir,NimNode	monoDirective: newMonoDir(argType: NimNode): MonoDirective	
 hash	necsus/compiletime/monoDirective.html#hash,MonoDirective	monoDirective: hash(directive: MonoDirective): Hash	
 `==`	necsus/compiletime/monoDirective.html#==,MonoDirective,MonoDirective	monoDirective: `==`(a, b: MonoDirective): bool	
+`$`	necsus/compiletime/monoDirective.html#$,MonoDirective	monoDirective: `$`(dir: MonoDirective): string	
