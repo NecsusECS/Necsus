@@ -1,4 +1,4 @@
-import options, hashes, tables, macros, archetype, strformat, strutils
+import options, hashes, tables, macros, archetype, strformat, strutils, sequtils
 import monoDirective, tupleDirective, archetypeBuilder, componentDef, worldEnum, directiveSet, commonVars
 
 type
@@ -198,12 +198,8 @@ proc `$`*(arg: SystemArg): string =
         of DirectiveKind.Tuple: $arg.tupleDir
         of DirectiveKind.Mono: $arg.monoDir
         of DirectiveKind.None: "none"
-    &"{arg.originalName}(" & join([
-        &"{arg.generator.ident}",
-        &"name: {arg.name}",
-        &"{arg.kind}: {directive}",
-        &"nested: {arg.nestedArgs}",
-    ], ", ") & ")"
+    let nestedStr = arg.nestedArgs.mapIt($it).join(", ")
+    &"{arg.originalName}({arg.generator.ident}, name: {arg.name}, {arg.kind}: {directive}, nested: [{nestedStr}])"
 
 proc `==`*(a, b: SystemArg): bool =
     if a.generator != b.generator or a.kind != b.kind or a.name != b.name:
