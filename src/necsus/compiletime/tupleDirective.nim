@@ -13,7 +13,7 @@ type
         isPointer*: bool
         kind*: DirectiveArgKind
 
-    TupleDirective* = object of RootObj
+    TupleDirective* = ref object
         ## Parent type for all tuple based directives
         args*: seq[DirectiveArg]
         name*: string
@@ -48,7 +48,9 @@ proc type*(def: DirectiveArg): NimNode =
 
 proc newTupleDir*(args: openarray[DirectiveArg]): TupleDirective =
     ## Create a TupleDirective
-    TupleDirective(args: args.toSeq, name: args.items.toSeq.mapIt(it.component).generateName)
+    result.new
+    result.args = args.toSeq
+    result.name = args.items.toSeq.mapIt(it.component).generateName
 
 proc `$`*(dir: TupleDirective): string =
     dir.name & "(" & join(dir.args, ", ") & ")"
