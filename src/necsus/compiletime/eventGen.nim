@@ -27,7 +27,7 @@ proc generateInbox(details: GenerateContext, arg: SystemArg, name: string, inbox
         let eventType = inbox.argType
         return quote:
             `appStateIdent`.`storageIdent` = newMailbox[`eventType`](`appStateIdent`.`confIdent`.eventQueueSize)
-    of AfterSystem:
+    of AfterActiveCheck:
         let eventStore = name.ident
         return quote:
             clear(`appStateIdent`.`eventStore`)
@@ -36,7 +36,7 @@ proc generateInbox(details: GenerateContext, arg: SystemArg, name: string, inbox
 
 let inboxGenerator* {.compileTime.} = newGenerator(
     ident = "Inbox",
-    interest = { Early, AfterSystem },
+    interest = { Early, AfterActiveCheck },
     chooseName = chooseInboxName,
     generate = generateInbox,
     worldFields = inboxFields,

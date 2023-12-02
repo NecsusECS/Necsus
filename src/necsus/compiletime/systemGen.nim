@@ -4,7 +4,7 @@ import monoDirective, tupleDirective, archetypeBuilder, componentDef, worldEnum,
 type
     GenerateHook* = enum
         ## The different points at which code can be hooked
-        Outside, Early, Standard, Late, BeforeLoop, LoopStart, AfterSystem, LoopEnd, BeforeTeardown
+        Outside, Early, Standard, Late, BeforeLoop, LoopStart, AfterSystem, AfterActiveCheck, LoopEnd, BeforeTeardown
 
     AppInputs* = seq[tuple[argName: string, directive: MonoDirective]]
         ## The list of arguments passed into the app

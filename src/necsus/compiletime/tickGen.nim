@@ -53,7 +53,10 @@ proc callSystems*(codeGenInfo: CodeGenInfo, phase: SystemPhase): NimNode =
         if invokeSystem.kind != nnkEmpty:
             invokeSystem = newStmtList(invokeSystem, codeGenInfo.generateForHook(system, AfterSystem))
 
-            result.add(invokeSystem.addActiveChecks(codeGenInfo, system.checks, phase))
+            result.add(newStmtList(
+                invokeSystem.addActiveChecks(codeGenInfo, system.checks, phase),
+                codeGenInfo.generateForHook(system, AfterActiveCheck)
+            ))
 
 proc createTickProc*(genInfo: CodeGenInfo): NimNode =
     ## Creates a function that executes the next tick
