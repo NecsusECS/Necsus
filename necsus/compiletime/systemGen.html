@@ -153,8 +153,8 @@ window.addEventListener('DOMContentLoaded', main);
   archetypeEnum*: ArchetypeEnum">GenerateContext</a></li>
   <li><a class="reference" href="#GenerateHook"
     title="GenerateHook = enum
-  Outside, Early, Standard, Late, BeforeLoop, LoopStart, AfterSystem, LoopEnd,
-  BeforeTeardown">GenerateHook</a></li>
+  Outside, Early, Standard, Late, BeforeLoop, LoopStart, AfterSystem,
+  AfterActiveCheck, LoopEnd, BeforeTeardown">GenerateHook</a></li>
   <li><a class="reference" href="#HookGenerator"
     title="HookGenerator[T] = proc (details: GenerateContext; arg: SystemArg; name: string;
                          dir: T): NimNode">HookGenerator</a></li>
@@ -388,8 +388,8 @@ Information passed in while performing code gen for a generator
 </div>
 <div id="GenerateHook">
 <dt><pre><a href="systemGen.html#GenerateHook"><span class="Identifier">GenerateHook</span></a> <span class="Other">=</span> <span class="Keyword">enum</span>
-  <span class="Identifier">Outside</span><span class="Other">,</span> <span class="Identifier">Early</span><span class="Other">,</span> <span class="Identifier">Standard</span><span class="Other">,</span> <span class="Identifier">Late</span><span class="Other">,</span> <span class="Identifier">BeforeLoop</span><span class="Other">,</span> <span class="Identifier">LoopStart</span><span class="Other">,</span> <span class="Identifier">AfterSystem</span><span class="Other">,</span> <span class="Identifier">LoopEnd</span><span class="Other">,</span>
-  <span class="Identifier">BeforeTeardown</span></pre></dt>
+  <span class="Identifier">Outside</span><span class="Other">,</span> <span class="Identifier">Early</span><span class="Other">,</span> <span class="Identifier">Standard</span><span class="Other">,</span> <span class="Identifier">Late</span><span class="Other">,</span> <span class="Identifier">BeforeLoop</span><span class="Other">,</span> <span class="Identifier">LoopStart</span><span class="Other">,</span> <span class="Identifier">AfterSystem</span><span class="Other">,</span>
+  <span class="Identifier">AfterActiveCheck</span><span class="Other">,</span> <span class="Identifier">LoopEnd</span><span class="Other">,</span> <span class="Identifier">BeforeTeardown</span></pre></dt>
 <dd>
 
 The different points at which code can be hooked
@@ -640,7 +640,7 @@ Generates the code for a specific hook
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-11-20 03:04:56 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-12-02 17:13:21 UTC</small>
       </div>
     </div>
   </div>

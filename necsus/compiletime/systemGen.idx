@@ -5,6 +5,7 @@ Late	necsus/compiletime/systemGen.html#Late	GenerateHook.Late
 BeforeLoop	necsus/compiletime/systemGen.html#BeforeLoop	GenerateHook.BeforeLoop	
 LoopStart	necsus/compiletime/systemGen.html#LoopStart	GenerateHook.LoopStart	
 AfterSystem	necsus/compiletime/systemGen.html#AfterSystem	GenerateHook.AfterSystem	
+AfterActiveCheck	necsus/compiletime/systemGen.html#AfterActiveCheck	GenerateHook.AfterActiveCheck	
 LoopEnd	necsus/compiletime/systemGen.html#LoopEnd	GenerateHook.LoopEnd	
 BeforeTeardown	necsus/compiletime/systemGen.html#BeforeTeardown	GenerateHook.BeforeTeardown	
 GenerateHook	necsus/compiletime/systemGen.html#GenerateHook	systemGen: GenerateHook	
