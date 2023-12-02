@@ -693,6 +693,75 @@ proc debuggingSystem(query: Query[(A, )], debug: EntityDebug) =
 proc myApp() {.necsus([], [~debuggingSystem], [], newNecsusConf()).}
 ```
 
+## Game State Management
+
+Often times, games will have various states they can be in at a high level.  For example, your game may have states to
+represent "loading", "playing", "won" or "lost". For this, you can annotate a system with the `active` pragma so it
+only executes when the game is in a specific state. `Shared` directives are then used for changing between states.
+
+```nim
+import necsus
+
+type GameState = enum Loading, Playing, Won, Lost
+
+proc showWon() {.active(Won).} =
+    echo "Game won!"
+
+proc switchGameState(state: Shared[GameState]) =
+    ## System that changes the game state to "won"
+    state := Won
+
+proc myApp() {.necsus([], [~showWon, ~switchGameState], [], newNecsusConf()).}
+```
+
+### Listening to state changes
+
+When you have an action that needs to be executed once when a state changes, you can encapsulate your state changes
+into a `Bundle`, then publish an event into an `Outbox`. For example, imagine a project layed out in a few files
+like this:
+
+```nim
+##
+## gameState.nim
+##
+
+import necsus
+
+type
+    GameState* = enum Loading, Playing, Won, Lost
+
+    StateManager* = object
+        state: Shared[GameState]
+        stateChange: Outbox[GameState]
+
+proc change*(manager: Bundle[StateManager], newState: GameState) =
+    ## Central entry point when then game state needs to be changed
+    manager.state := newState
+    manager.stateChange(newState)
+
+##
+## customSystem.nim
+##
+
+proc customSystem*(stateChanges: Inbox[GameState]) =
+    for newState in stateChanges:
+        echo "State changed to ", newState
+
+##
+## changeStateSystem.nim
+##
+
+proc changeStateSystem(manager: Bundle[StateManager], winConditionMet: Shared[bool]) =
+    if winConditionMet.get(false):
+        manager.change(Won)
+
+##
+## app.nim
+##
+
+proc app() {.necsus([], [~customSystem, ~changeStateSystem], [], newNecsusConf()).}
+```
+
 ## Debugging Generated Code
 
 If Necsus isn't behaving as you would expect, the best tool you've got in your toolbox is the ability to dump the code
