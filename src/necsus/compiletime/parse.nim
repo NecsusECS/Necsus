@@ -183,33 +183,40 @@ proc readDependencies(typeNode: NimNode): seq[NimNode] =
         if child.kind == nnkCall and depends == child[0]:
             findChildSyms(child[1], result)
 
-proc newActiveCheck(value: NimNode, arg: SystemArg): ActiveCheck =
-    result.new
-    result.value = value
-    result.arg = arg
+proc newActiveCheck(value: NimNode, typename: NimNode): ActiveCheck =
+    if typename.kind != nnkSym:
+        error("Unexpected system state type. Got " & typename.repr, value)
 
-proc parseActiveCheck(state: NimNode): ActiveCheck =
+    let monoDir = newMonoDir(typename)
+    let arg = newSystemArg(
+        source = value,
+        generator = sharedGenerator,
+        originalName = typename.strVal,
+        name = sharedGenerator.chooseNameMono(typename, monoDir),
+        directive = monoDir
+    )
+    return ActiveCheck(value: value, arg: arg)
+
+proc parseActiveCheck(state: NimNode): seq[ActiveCheck] =
     ## Parses a single ActiveCheck from a node
     case state.kind
     of nnkHiddenStdConv:
         return parseActiveCheck(state[1])
     of nnkBracket:
-        return parseActiveCheck(state[0])
+        for child in state.children:
+            result.add(parseActiveCheck(child))
+    of nnkCurly:
+        let setType = state.getTypeInst
+        setType.expectKind(nnkBracketExpr)
+        let typename = setType[1]
+        for value in state.children:
+            result.add(newActiveCheck(value, typename))
     else:
         state.expectKind(nnkSym)
         let typename = state.getTypeInst
         if typename.kind != nnkSym:
             error("Unexpected system state type. Expecting a symbol, but got " & typename.repr, state)
-
-        let monoDir = newMonoDir(typename)
-        let arg = newSystemArg(
-            source = state,
-            generator = sharedGenerator,
-            originalName = state.strVal,
-            name = sharedGenerator.chooseNameMono(state, monoDir),
-            directive = monoDir
-        )
-        return newActiveCheck(state, arg)
+        return @[ newActiveCheck(state, typename) ]
 
 proc parseActiveChecks(typeNode: NimNode): seq[ActiveCheck] =
     ## Parses any checks that need to be performed before executing a system
@@ -217,11 +224,8 @@ proc parseActiveChecks(typeNode: NimNode): seq[ActiveCheck] =
 
     for child in typeNode.findPragma:
         if child.kind == nnkCall and activePragma == child[0]:
-            child[1].expectKind(nnkHiddenStdConv)
-            let activeStates = child[1][1]
-            activeStates.expectKind(nnkBracket)
-            for state in activeStates:
-                result.add(parseActiveCheck(state))
+            for activeState in parseActiveCheck(child[1]):
+                result.add(activeState)
 
 proc choosePhase(typeNode: NimNode, default: SystemPhase): SystemPhase =
     ## Reads the systems referenced by a pragma attached to another system
