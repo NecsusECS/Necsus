@@ -1,4 +1,4 @@
-import macros, monoDirective, systemGen, std/importutils, commonVars
+import macros, monoDirective, systemGen, std/[importutils, options], commonVars, typeReader
 
 proc worldFields(name: string, dir: MonoDirective): seq[WorldField] = @[ (name, dir.argType) ]
 
@@ -27,12 +27,18 @@ proc systemArg(name: string, dir: MonoDirective): NimNode =
 
 proc nestedArgs(dir: MonoDirective): seq[RawNestedArg] =
     ## Looks up all the fields on the bundled object and returns them as nested fields
-    let impl = dir.argType.getImpl
-    impl.expectKind(nnkTypeDef)
-    impl[2].expectKind(nnkObjectTy)
-    impl[2][2].expectKind(nnkRecList)
 
-    for child in impl[2][2].children:
+    let bundleImpl = dir.argType.resolveTo({nnkObjectTy})
+
+    let impl: NimNode = if bundleImpl.isSome:
+        bundleImpl.get
+    else:
+        dir.argType.expectKind(nnkObjectTy)
+        newEmptyNode()
+
+    impl[2].expectKind(nnkRecList)
+
+    for child in impl[2].children:
         child.expectKind(nnkIdentDefs)
 
         let name = if child[0].kind == nnkPostfix: child[0][1] else: child[0]

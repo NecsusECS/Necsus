@@ -29,7 +29,7 @@ type
     EntityDebug* = proc(entityId: EntityId): string
         ## Looks up an entity and returns debug data about it
 
-    Bundle*[T: object] = ptr T
+    Bundle*[T] = ptr T
         ## A group of directives bundled together in an object
 
     SystemInstance* = proc(): void

@@ -51,5 +51,9 @@ proc resolveTo*(typeDef: NimNode, expectKind: set[NimNodeKind]): Option[NimNode]
         declaration.expectKind(nnkTypeDef)
         let genericTable = declaration[1].asGenericTable(typeDef.children.toSeq[1..^1])
         return declaration[2].replaceGenerics(genericTable).resolveTo(expectKind)
+    of nnkSym:
+        return typeDef.getImpl.resolveTo(expectKind)
+    of nnkTypeDef:
+        return typeDef[2].resolveTo(expectKind)
     else:
         return none[NimNode]()
