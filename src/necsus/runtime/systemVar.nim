@@ -73,4 +73,8 @@ proc unwrap*[T](sysvar: SharedOrT[T] | LocalOrT[T]): T {.inline.} =
     ## Pulls a value out of a `SystemVar` or raises
     return when sysvar is T: sysvar else: sysvar.getOrRaise
 
+proc unwrap*[T](sysvar: SharedOrT[T] | LocalOrT[T], otherwise: T): T {.inline.} =
+    ## Pulls a value out of a `SystemVar` or raises
+    return when sysvar is T: sysvar else: sysvar.get(otherwise)
+
 proc `$`*[T](sysvar: SystemVar[T]): string = $sysvar.extract.value
