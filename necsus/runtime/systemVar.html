@@ -170,6 +170,8 @@ window.addEventListener('DOMContentLoaded', main);
   <ul class="simple nested-toc-section">unwrap
       <li><a class="reference" href="#unwrap"
     title="unwrap[T](sysvar: SharedOrT[T] | LocalOrT[T]): T">unwrap[T](sysvar: SharedOrT[T] | LocalOrT[T]): T</a></li>
+  <li><a class="reference" href="#unwrap%2C%2CT"
+    title="unwrap[T](sysvar: SharedOrT[T] | LocalOrT[T]; otherwise: T): T">unwrap[T](sysvar: SharedOrT[T] | LocalOrT[T]; otherwise: T): T</a></li>
 
   </ul>
 
@@ -341,6 +343,14 @@ Pulls a value out of a <tt class="docutils literal"><span class="pre"><span clas
 
 </dd>
 </div>
+<div id="unwrap,,T">
+<dt><pre><span class="Keyword">proc</span> <a href="#unwrap%2C%2CT"><span class="Identifier">unwrap</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">sysvar</span><span class="Other">:</span> <a href="systemVar.html#SharedOrT"><span class="Identifier">SharedOrT</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Operator">|</span> <a href="systemVar.html#LocalOrT"><span class="Identifier">LocalOrT</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">otherwise</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">T</span> {.<span class="Identifier">inline</span>.}</pre></dt>
+<dd>
+
+Pulls a value out of a <tt class="docutils literal"><span class="pre"><span class="Identifier">SystemVar</span></span></tt> or raises
+
+</dd>
+</div>
 
 </dl></div>
 <div class="section" id="18">
@@ -364,7 +374,7 @@ Returns the value in a system variable
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-12-08 17:03:12 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-12-11 16:49:48 UTC</small>
       </div>
     </div>
   </div>
