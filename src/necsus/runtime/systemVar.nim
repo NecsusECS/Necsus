@@ -62,7 +62,7 @@ proc get*[T](sysvar: SystemVar[T]): T {.inline.} =
         elif T is SomeNumber: 0
         elif compiles(get(sysvar, {})): {}
         elif T is seq: @[]
-        else: low(T)
+        else: default(T)
     )
 
 proc `==`*[T](sysvar: SystemVar[T], value: T): bool {.inline.} =
