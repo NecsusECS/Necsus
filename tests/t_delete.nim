@@ -6,7 +6,7 @@ type
 
 proc setup(spawn: Spawn[(Thingy, )]) =
     for i in 1..10:
-        discard spawn.with(Thingy(number: i), )
+        spawn.with(Thingy(number: i), )
 
 proc rm(all: Query[tuple[thingy: Thingy]], delete: Delete) =
     for entityId, info in all:

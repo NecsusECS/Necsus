@@ -8,8 +8,8 @@ type
     E = object
 
 proc setup(spawnABCD: Spawn[(A, B, C, D)], spawnABCDE: Spawn[(A, B, C, D, E)]) =
-    discard spawnABCD.with(A(), B(), C(), D())
-    discard spawnABCDE.with(A(), B(), C(), D(), E())
+    spawnABCD.with(A(), B(), C(), D())
+    spawnABCDE.with(A(), B(), C(), D(), E())
 
 proc detacher(query: Query[(A, )], detach: Detach[(C, D, E)]) =
     for entityId, _ in query:

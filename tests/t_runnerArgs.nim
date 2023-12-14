@@ -11,7 +11,7 @@ type
 
 proc setup(sharedVar: Shared[string], spawn: Spawn[(B, D, E)]) =
     sharedVar.set("foo")
-    discard spawn.with(B(), D(), E(value: 789))
+    spawn.with(B(), D(), E(value: 789))
 
 proc runner(
     time: TimeDelta,
@@ -24,7 +24,7 @@ proc runner(
     tick: proc(): void
 ) =
     check(sharedVar.get() == "foo")
-    discard spawn.with(A(value: 123))
+    spawn.with(A(value: 123))
 
     check(query.items.toSeq.len == 1)
 

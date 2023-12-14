@@ -4,7 +4,7 @@ type All = object
 
 proc spawn5(spawn: Spawn[(All, )]) =
     for i in 1..5:
-        discard spawn.with(All(), )
+        spawn.with(All(), )
 
 proc assertions(all: Query[(All, )]) =
     check(all.pairs.toSeq.mapIt(int(it[0])).sorted == @[0, 1, 2, 3, 4])

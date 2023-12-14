@@ -3,9 +3,9 @@ import unittest, necsus, options
 type A = object
 
 const create = proc (spawn: Spawn[(A, )]) =
-    discard spawn.with(A())
-    discard spawn.with(A())
-    discard spawn.with(A())
+    spawn.with(A())
+    spawn.with(A())
+    spawn.with(A())
 
 const check = proc (query: Query[(A, )]) =
     check(query.len == 3)

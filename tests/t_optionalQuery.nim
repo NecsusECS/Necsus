@@ -10,8 +10,8 @@ type
 
 proc setup(spawnAB: Spawn[(A, B)], spawnABC: Spawn[(A, B, C)], attachC: Attach[(C, D)]) =
     for i in 1..3:
-        discard spawnAB.with(A(), B())
-        discard spawnABC.with(A(), B(), C(c: i))
+        spawnAB.with(A(), B())
+        spawnABC.with(A(), B(), C(c: i))
         spawnAB.with(A(), B()).attachC((C(c: i + 10), D(d: i + 20)))
 
 proc update(query: Query[(Option[ptr D], )]) =

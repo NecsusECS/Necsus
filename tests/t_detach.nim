@@ -10,7 +10,7 @@ type
 
 proc setup(spawn: Spawn[(A, B, C)]) =
     for i in 1..10:
-        discard spawn.with(A(value: i), B(value: i), C(value: i))
+        spawn.with(A(value: i), B(value: i), C(value: i))
 
 proc detacher(abc: Query[tuple[a: A, b: B, c: C]], detachBC: Detach[(B, C)], detachC: Detach[(C, )]) =
     for eid, comps in abc:

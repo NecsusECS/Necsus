@@ -8,8 +8,8 @@ type
 
 proc setup(spawnAB: Spawn[(A, B)], spawnABC: Spawn[(A, B, C)], attachC: Attach[(C, )]) =
     for i in 1..5:
-        discard spawnAB.with(A(phase: 1), B())
-        discard spawnABC.with(A(phase: 2), B(), C())
+        spawnAB.with(A(phase: 1), B())
+        spawnABC.with(A(phase: 2), B(), C())
         spawnAB.with(A(phase: 3), B()).attachC((C(), ))
 
 proc assertions(query: Query[(A, B, Not[C])]) =

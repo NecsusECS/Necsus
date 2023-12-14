@@ -17,7 +17,7 @@ proc beginSpawn*[Archs: enum, Comps: tuple](
     result = store.newSlot(newEntity.entityId)
     newEntity.setArchetypeDetails(store.archetype, result.index)
 
-proc set*[C: tuple](spawn: Spawn[C], values: sink C): EntityId {.inline.} =
+proc set*[C: tuple](spawn: Spawn[C], values: sink C): EntityId {.inline, discardable.} =
     ## Spawns an entity with the given components
     setComp(RawSpawn[C](spawn)(), values)
 

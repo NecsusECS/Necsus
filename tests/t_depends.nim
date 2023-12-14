@@ -4,7 +4,7 @@ type Accum = object
     data: string
 
 proc creator(spawn: Spawn[(Accum, )]) =
-    discard spawn.with(Accum(data: "create"))
+    spawn.with(Accum(data: "create"))
 
 proc buildSystem(): auto =
     return proc (query: Query[(ptr Accum,)]) =

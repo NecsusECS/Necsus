@@ -9,8 +9,8 @@ type
         number*: int
 
 proc setup(spawn: Spawn[(Name, )]) =
-    discard spawn.with(Name(name: "Foo"))
-    discard spawn.with(Name(name: "Bar"))
+    spawn.with(Name(name: "Foo"))
+    spawn.with(Name(name: "Bar"))
 
 proc modify(all: Query[(Name, )], addAge: Attach[(Age, )], addNum: Attach[(FavoriteNumber, )]) =
     var i = 0

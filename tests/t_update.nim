@@ -9,8 +9,8 @@ type
         mood*: string
 
 proc setup(spawn: Spawn[(Age, Mood, Name)]) =
-    discard spawn.with(Age(age: 20), Mood(mood: "Happy"), Name(name: "Foo"))
-    discard spawn.with(Age(age: 30), Mood(mood: "Sad"), Name(name: "Bar"))
+    spawn.with(Age(age: 20), Mood(mood: "Happy"), Name(name: "Foo"))
+    spawn.with(Age(age: 30), Mood(mood: "Sad"), Name(name: "Bar"))
 
 proc modify(all: Query[(Age, Mood)], attach: Attach[(Age, Mood)]) =
     for entityId, info in all:

@@ -8,7 +8,7 @@ type
 
 proc setup(spawn: Spawn[(A, B)]) =
     for i in 1..5:
-        discard spawn.with(A(), B())
+        spawn.with(A(), B())
 
 proc addC(query: Query[(A, B)], attach: Attach[(C, )]) =
     for eid, comps in query:

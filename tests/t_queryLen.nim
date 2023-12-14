@@ -16,7 +16,7 @@ proc setup(
     check(queryB.len == 0)
 
     for i in 1..5:
-        discard spawn.with(A())
+        spawn.with(A())
 
     check(queryA.len == 5)
     check(queryB.len == 0)

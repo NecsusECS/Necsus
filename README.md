@@ -44,7 +44,7 @@ type
 proc create(spawn: Spawn[(Position, Velocity)]) =
     ## Creates a handful entities at random positions with random velocities
     for _ in 1..10:
-        discard spawn.with(
+        spawn.with(
             Position(x: rand(0.0..100.0), y: rand(0.0..100.0)),
             Velocity(dx: rand(0.0..10.0), dy: rand(0.0..10.0))
         )
@@ -216,7 +216,7 @@ for every tick. The `proc` itself that gets returned here cannot take any argume
 import necsus
 
 proc someSystem(create: Spawn[(string, )], query: Query[(string,)]): auto {.instanced.} =
-    discard create.with("foo")
+    create.with("foo")
     return proc() =
         for (str,) in query:
             echo str
@@ -240,7 +240,7 @@ type SystemInstance = object
     query: Query[(string,)]
 
 proc someSystem(create: Spawn[(string, )], query: Query[(string,)]): SystemInstance {.instanced.} =
-    discard create.with("foo")
+    create.with("foo")
     result.query = query
 
 proc tick(system: var SystemInstance) =
@@ -270,7 +270,7 @@ type
 
 proc genericSpawner[T](): auto =
     return proc (create: Spawn[(T, )]) =
-        discard create.with(T())
+        create.with(T())
 
 let spawnSomeComponent = genericSpawner[SomeComponent]()
 let spawnAnotherComponent = genericSpawner[AnotherComponent]()
@@ -546,7 +546,7 @@ proc myApp() {.necsus([], [~updateCount, ~printCount], [], newNecsusConf()).}
 
 #### Inbox/Outbox (aka Events)
 
-`Inbox` and `Outbox` represent the eventing system in Necsus. Events are published using the `Outbox` and read using 
+`Inbox` and `Outbox` represent the eventing system in Necsus. Events are published using the `Outbox` and read using
 the `Inbox`. Any `Inbox` or `Outbox` with the same type will shared the same underlying mailbox.
 
 ```nim

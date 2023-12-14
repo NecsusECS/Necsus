@@ -9,7 +9,7 @@ type
 
 proc setup(spawn: Spawn[(A, B, C, D, E)]) =
     for i in 1..1000:
-        discard spawn.with(A(i), B(i), C(i), D(i), E(i))
+        spawn.with(A(i), B(i), C(i), D(i), E(i))
 
 proc modify(a: Query[(A, )], attach: Attach[(A, )]) =
     for entity, comp in a:

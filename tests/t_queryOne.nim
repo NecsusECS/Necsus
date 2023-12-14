@@ -8,7 +8,7 @@ proc assertNone(query: Query[(A, )]) =
     check(query.single.isNone)
 
 proc setup(spawn: Spawn[(A, )]) =
-    discard spawn.with(A(value: "foo"))
+    spawn.with(A(value: "foo"))
 
 proc assertOne(query: Query[(A, )]) =
     check(query.single.get()[0].value == "foo")

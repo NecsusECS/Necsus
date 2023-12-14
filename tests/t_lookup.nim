@@ -8,8 +8,8 @@ type
     C = object
 
 proc spawn(spawn: Spawn[(A, B)]) =
-    discard spawn.with(A(value: 1), B(value: "foo"))
-    discard spawn.with(A(value: 2), B(value: "bar"))
+    spawn.with(A(value: 1), B(value: "foo"))
+    spawn.with(A(value: 2), B(value: "bar"))
 
 proc assertions(
     query: Query[tuple[a: A, b: B]],

@@ -15,7 +15,7 @@ type
 
 proc spawner[T](value: string): proc (spawn: Spawn[(T, )]): void =
     return proc (spawn: Spawn[(T, )]) =
-        discard spawn.with(T(value: value))
+        spawn.with(T(value: value))
 
 let spawn1 = spawner[Thingy]("first")
 let spawn2: proc(spawn: Spawn[(Whatsit, )]): void = spawner[Whatsit]("second")

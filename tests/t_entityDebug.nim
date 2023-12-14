@@ -8,7 +8,7 @@ type
 
 
 proc spawner(spawn: Spawn[(Thingy, Whatsit)]) =
-    discard spawn.with(Thingy(number: 123), "blah")
+    spawn.with(Thingy(number: 123), "blah")
 
 proc dump(query: Query[(Thingy, )], dump: EntityDebug) =
     for eid, _ in query:
@@ -20,4 +20,3 @@ proc myApp() {.necsus(runner, [], [~spawner, ~dump], [], newNecsusConf()).}
 
 test "Debugging entities":
     myApp()
-
