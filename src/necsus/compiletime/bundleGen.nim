@@ -36,7 +36,7 @@ proc nestedArgs(dir: MonoDirective): seq[RawNestedArg] =
         dir.argType.expectKind(nnkObjectTy)
         newEmptyNode()
 
-    impl[2].expectKind(nnkRecList)
+    impl[2].expectKind({ nnkRecList, nnkEmpty })
 
     for child in impl[2].children:
         child.expectKind(nnkIdentDefs)
