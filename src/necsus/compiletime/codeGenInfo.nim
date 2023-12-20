@@ -28,16 +28,25 @@ proc calculateDirectives(args: openarray[SystemArg]): Table[DirectiveGen, Direct
     for gen, args in grouped:
         result[gen] = newDirectiveSet[SystemArg](gen.ident, args)
 
+proc newEmptyCodeGenInfo*(config: NimNode, app: ParsedApp): CodeGenInfo =
+    ## Collects data needed for code gen from all the parsed systems
+    let archetypes = newArchetypeBuilder[ComponentDef]().build()
+    return CodeGenInfo(
+        config: config,
+        app: app,
+        systems: @[],
+        archetypes: archetypes,
+        archetypeEnum: archetypeEnum(app.name, archetypes),
+        directives: initTable[DirectiveGen, DirectiveSet[SystemArg]]()
+    )
+
 proc newCodeGenInfo*(
     config: NimNode,
     app: ParsedApp,
     allSystems: openarray[ParsedSystem]
 ): CodeGenInfo =
     ## Collects data needed for code gen from all the parsed systems
-    result.new
-    result.config = config
-    result.app = app
-    result.systems = allSystems.toSeq
+    result = CodeGenInfo(config: config, app: app, systems: allSystems.toSeq)
 
     let allArgs = app.runnerArgs.concat(allSystems.args.toSeq)
 

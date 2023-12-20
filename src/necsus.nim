@@ -34,15 +34,17 @@ proc buildApp(
 ): NimNode =
     ## Creates an ECS world
 
-    let parsedSystems = concat(
-        parseSystemList(startup, StartupPhase),
-        parseSystemList(systems, LoopPhase),
-        parseSystemList(teardown, TeardownPhase)
-    )
-
     let parsedApp = parseApp(pragmaProc, runner)
 
-    let codeGenInfo = newCodeGenInfo(conf, parsedApp, parsedSystems)
+    let codeGenInfo = when not defined(nimsuggest):
+        let parsedSystems = concat(
+            parseSystemList(startup, StartupPhase),
+            parseSystemList(systems, LoopPhase),
+            parseSystemList(teardown, TeardownPhase)
+        )
+        newCodeGenInfo(conf, parsedApp, parsedSystems)
+    else:
+        newEmptyCodeGenInfo(conf, parsedApp)
 
     result = newStmtList(
         codeGenInfo.archetypeEnum.codeGen,
@@ -54,11 +56,14 @@ proc buildApp(
         pragmaProc
     )
 
-    pragmaProc.body = newStmtList(
-        codeGenInfo.createAppStateInstance(),
-        codeGenInfo.createTickRunner(runner),
-        codeGenInfo.createAppReturn(pragmaProc),
-    )
+    pragmaProc.body = when not defined(nimsuggest):
+        newStmtList(
+            codeGenInfo.createAppStateInstance(),
+            codeGenInfo.createTickRunner(runner),
+            codeGenInfo.createAppReturn(pragmaProc),
+        )
+    else:
+        newStmtList()
 
     when defined(dump):
         echo "import necsus/runtime/[world, archetypeStore], std/math"

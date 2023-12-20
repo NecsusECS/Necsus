@@ -68,3 +68,20 @@ jobs:
       run: git clone https://github.com/${{ matrix.project }}.git project
     - name: Build
       run: cd project && nimble build -y
+
+  nimsuggest:
+    ## Confirm all the tests compile when running via nimsuggest. There are some optimizations in place
+    ## to improve compile times in this case.
+    runs-on: ubuntu-latest
+    container: nimlang/choosenim
+    strategy:
+      matrix:
+        nim: [ 2.0.0, 1.6.14 ]
+    steps:
+    - uses: actions/checkout@v1
+    - name: Choose Nim
+      run: choosenim update -y ${{ matrix.nim }}
+    - name: Safe git directory
+      run: git config --global --add safe.directory "$(pwd)"
+    - name: Test
+      run: find tests -name "t_*.nim" | xargs -n1 sh -c 'nim c -d:nimsuggest $0 || exit 255'
