@@ -1,4 +1,5 @@
 CodeGenInfo	necsus/compiletime/codeGenInfo.html#CodeGenInfo	codeGenInfo: CodeGenInfo	
+newEmptyCodeGenInfo	necsus/compiletime/codeGenInfo.html#newEmptyCodeGenInfo,NimNode,ParsedApp	codeGenInfo: newEmptyCodeGenInfo(config: NimNode; app: ParsedApp): CodeGenInfo	
 newCodeGenInfo	necsus/compiletime/codeGenInfo.html#newCodeGenInfo,NimNode,ParsedApp,openArray[ParsedSystem]	codeGenInfo: newCodeGenInfo(config: NimNode; app: ParsedApp;\n               allSystems: openArray[ParsedSystem]): CodeGenInfo	
 appStateStruct	necsus/compiletime/codeGenInfo.html#appStateStruct,CodeGenInfo	codeGenInfo: appStateStruct(genInfo: CodeGenInfo): NimNode	
 appStateTypeName	necsus/compiletime/codeGenInfo.html#appStateTypeName,CodeGenInfo	codeGenInfo: appStateTypeName(genInfo: CodeGenInfo): NimNode	
