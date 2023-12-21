@@ -1,4 +1,4 @@
-import tables, macros, sequtils
+import tables, macros
 import tupleDirective, archetype, componentDef, tools, systemGen, archetypeBuilder, commonVars
 import ../runtime/[archetypeStore, query]
 
@@ -20,14 +20,13 @@ iterator selectArchetypes(details: GenerateContext, query: TupleDirective): Arch
 
 let compsIdent {.compileTime.} = ident("comps")
 
-proc createArchetypeViews(details: GenerateContext, query: TupleDirective): NimNode =
+proc createArchetypeViews(details: GenerateContext, query: TupleDirective, queryTupleType: NimNode): NimNode =
     ## Creates the views that bind an archetype to a query
     result = nnkBracket.newTree()
     for archetype in details.selectArchetypes(query):
         let archetypeIdent = archetype.ident
         let tupleCopy = compsIdent.copyTuple(archetype, query)
         let archTupleType = archetype.asStorageTuple
-        let queryTupleType = query.args.asTupleType
         result.add quote do:
             asView(
                 `appStateIdent`.`archetypeIdent`,
@@ -43,8 +42,8 @@ proc generate(details: GenerateContext, arg: SystemArg, name:  string, dir: Tupl
     case details.hook
     of GenerateHook.Standard:
         let ident = name.ident
-        let queryTuple = dir.args.toSeq.asTupleType
-        let views = details.createArchetypeViews(dir)
+        let queryTuple = dir.args.asTupleType
+        let views = details.createArchetypeViews(dir, queryTuple)
         result.add quote do:
             `appStateIdent`.`ident` = newQuery[`queryTuple`](@`views`)
     else:
