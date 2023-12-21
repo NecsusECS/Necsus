@@ -37,8 +37,11 @@ proc generateEntityDebug(details: GenerateContext, arg: SystemArg, name: string)
         let procName = ident(name)
 
         # Create a case statement where each branch is one of the archetypes
-        let cases = details.createArchetypeCase(entityArchetype) do (fromArch: auto) -> auto:
-            details.buildArchetypeLookup(fromArch)
+        var cases = newEmptyNode()
+        if details.archetypes.len > 0:
+            cases = nnkCaseStmt.newTree(entityArchetype)
+            for (ofBranch, archetype) in archetypeCases(details):
+                cases.add(nnkOfBranch.newTree(ofBranch, details.buildArchetypeLookup(archetype)))
 
         return quote:
             `appStateIdent`.`procName` = proc(`entityId`: EntityId): string =
