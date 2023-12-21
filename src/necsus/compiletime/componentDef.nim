@@ -16,7 +16,7 @@ proc newComponentDef*(node: NimNode): ComponentDef =
 
 proc `==`*(a, b: ComponentDef): bool =
     ## Compare two ComponentDef instances
-    cmp(a.node, b.node) == 0
+    a.cachedHash == b.cachedHash and cmp(a.node, b.node) == 0
 
 proc `<`*(a, b: ComponentDef): auto = cmp(a.node, b.node) < 0
 
