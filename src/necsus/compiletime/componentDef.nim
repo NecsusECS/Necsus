@@ -1,4 +1,4 @@
-import macros, hashes, sequtils, strutils, nimNode
+import macros, hashes, sequtils, strutils, nimNode, tables
 
 type
     ComponentDef* = ref object
@@ -6,17 +6,24 @@ type
         node*: NimNode
         name*: string
         cachedHash: Hash
+        uniqueId*: uint16
+
+var ids {.compileTime.}: uint16
+var lookup {.compileTime.} = initTable[NimNode, uint16]()
+
+proc getArchetypeValueId(value: NimNode): uint16 =
+    if not lookup.hasKey(value):
+        lookup[value] = ids
+        ids += 1
+    return lookup[value]
 
 proc newComponentDef*(node: NimNode): ComponentDef =
     ## Instantiate a ComponentDef
-    result.new
-    result.node = node
-    result.name = node.symbols.join("_")
-    result.cachedHash = hash(node)
+    ComponentDef(node: node, name: node.symbols.join("_"), cachedHash: hash(node), uniqueId: getArchetypeValueId(node))
 
 proc `==`*(a, b: ComponentDef): bool =
     ## Compare two ComponentDef instances
-    a.cachedHash == b.cachedHash and cmp(a.node, b.node) == 0
+    a.uniqueId == b.uniqueId
 
 proc `<`*(a, b: ComponentDef): auto = cmp(a.node, b.node) < 0
 
