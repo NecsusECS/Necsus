@@ -1,7 +1,7 @@
 import macros, sequtils
 import tools, tupleDirective, commonVars, queryGen, lookupGen, spawnGen
 import archetype, componentDef, worldEnum, systemGen, archetypeBuilder
-import ../runtime/[world, archetypeStore, directives]
+import ../runtime/[world, archetypeStore, directives], ../util/bits
 
 let entityIndex {.compileTime.} = ident("entityIndex")
 let newComps {.compileTime.} = ident("comps")
@@ -54,7 +54,7 @@ proc createArchMove(
             proc (`existing`: sink `fromArchTuple`): auto = `createNewTuple`
         )
 
-proc asFilter(dir: TupleDirective): ArchetypeFilter[ComponentDef] =
+proc asFilter(builder: var ArchetypeBuilder[ComponentDef], dir: TupleDirective): BitsFilter =
     ## Creates an archetype filter from a directive
     var required: seq[ComponentDef]
     var excluded: seq[ComponentDef]
@@ -63,7 +63,7 @@ proc asFilter(dir: TupleDirective): ArchetypeFilter[ComponentDef] =
         of DirectiveArgKind.Include: required.add(arg.component)
         of DirectiveArgKind.Exclude: excluded.add(arg.component)
         of DirectiveArgKind.Optional: discard
-    return filter(required, excluded)
+    return builder.filter(required, excluded)
 
 proc isAttachable(gen: DirectiveGen): bool =
     ## Returns whether this argument produces an entity that can be attached to
@@ -72,7 +72,7 @@ proc isAttachable(gen: DirectiveGen): bool =
 proc attachArchetype(builder: var ArchetypeBuilder[ComponentDef], systemArgs: seq[SystemArg], dir: TupleDirective) =
     for arg in systemArgs.allArgs:
         if arg.generator.isAttachable:
-            builder.attachable(dir.comps, arg.tupleDir.asFilter)
+            builder.attachable(dir.comps, builder.asFilter(arg.tupleDir))
 
 proc attachFields(name: string, dir: TupleDirective): seq[WorldField] =
     @[ (name, nnkBracketExpr.newTree(bindSym("Attach"), dir.asTupleType)) ]

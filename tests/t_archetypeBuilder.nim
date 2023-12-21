@@ -1,4 +1,12 @@
-import unittest, necsus/compiletime/archetypeBuilder, sequtils, sets
+import unittest, necsus/compiletime/archetypeBuilder, sequtils, sets, tables
+
+var ids: uint16 = 0
+var lookup = initTable[string, uint16]()
+proc uniqueId(value: string): uint16 =
+    if not lookup.hasKey(value):
+        lookup[value] = ids
+        ids += 1
+    return lookup[value]
 
 suite "Creating archetypes":
     test "Creating archetypes of values":
@@ -17,8 +25,8 @@ suite "Creating archetypes":
         builder.define([ "A" ])
         builder.define([ "A", "B" ])
 
-        builder.attachable([ "B", "C" ], filter[string]([], []))
-        builder.attachable([ "C", "D" ], filter[string]([], []))
+        builder.attachable([ "B", "C" ], builder.filter([], []))
+        builder.attachable([ "C", "D" ], builder.filter([], []))
         let archetypes = builder.build()
 
         check(archetypes.toSeq.mapIt($it).toHashSet == toHashSet([
@@ -31,7 +39,7 @@ suite "Creating archetypes":
         builder.define([ "A", "B" ])
         builder.define([ "A", "B", "C"])
 
-        builder.attachable([ "D" ], filter[string]([ "B", "C" ], []))
+        builder.attachable([ "D" ], builder.filter([ "B", "C" ], []))
         let archetypes = builder.build()
 
         check(archetypes.toSeq.mapIt($it).toHashSet == toHashSet([
@@ -44,7 +52,7 @@ suite "Creating archetypes":
         builder.define([ "A", "B" ])
         builder.define([ "A", "C"])
 
-        builder.attachable([ "D" ], filter[string]([], [ "B", "C" ]))
+        builder.attachable([ "D" ], builder.filter([], [ "B", "C" ]))
         let archetypes = builder.build()
 
         check(archetypes.toSeq.mapIt($it).toHashSet == toHashSet([
@@ -71,8 +79,6 @@ suite "Creating archetypes":
         var builder = newArchetypeBuilder[string]()
         builder.define([ "A", "B", "C" ])
         builder.define([ "A", "B", "C" ])
-
-        expect(UnsortedArchetype):
-            builder.define([ "C", "A", "B" ])
+        builder.define([ "C", "A", "B" ])
 
         check(builder.build().toSeq.mapIt($it).toHashSet == [ "{A, B, C}" ].toHashSet)
