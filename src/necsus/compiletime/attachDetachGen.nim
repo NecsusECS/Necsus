@@ -68,12 +68,16 @@ proc generateAttach(details: GenerateContext, arg: SystemArg, name: string, atta
         let componentTuple = attach.args.toSeq.asTupleType
 
         ## Generate a cases statement to do the work for each kind of archetype
-        let cases = details.createArchetypeCase(newDotExpr(entityIndex, ident("archetype"))) do (fromArch: auto) -> auto:
-            let toArch = fromArch + attach.comps
-            return if fromArch == toArch:
-                details.createArchUpdate(attach, toArch)
-            else:
-                details.createArchMove(attach, fromArch, toArch)
+        var cases: NimNode = newEmptyNode()
+        if details.archetypes.len > 0:
+            cases = nnkCaseStmt.newTree(newDotExpr(entityIndex, ident("archetype")))
+            for (ofBranch, fromArch) in archetypeCases(details):
+                let toArch = fromArch + attach.comps
+                let action = if fromArch == toArch:
+                        details.createArchUpdate(attach, toArch)
+                    else:
+                        details.createArchMove(attach, fromArch, toArch)
+                cases.add(nnkOfBranch.newTree(ofBranch, action))
 
         return quote:
             `appStateIdent`.`procName` = proc(`entityId`: EntityId, `newComps`: `componentTuple`) =
@@ -103,12 +107,19 @@ proc generateDetach(details: GenerateContext, arg: SystemArg, name: string, deta
 
         let procName = ident(name)
 
-        let cases = details.createArchetypeCase(newDotExpr(entityIndex, ident("archetype"))) do (fromArch: auto) -> auto:
-            if fromArch.containsAllOf(detach.comps):
-                let toArch = fromArch - detach.comps
-                return details.createArchMove(detach, fromArch, toArch)
-            else:
-                return quote: discard
+        var cases = newEmptyNode()
+        if details.archetypes.len > 0:
+            var needsElse = false
+            cases = nnkCaseStmt.newTree(newDotExpr(entityIndex, ident("archetype")))
+            for (ofBranch, fromArch) in archetypeCases(details):
+                if fromArch.containsAllOf(detach.comps):
+                    let toArch = fromArch - detach.comps
+                    cases.add(nnkOfBranch.newTree(ofBranch, details.createArchMove(detach, fromArch, toArch)))
+                else:
+                    needsElse = true
+
+            if needsElse:
+                cases.add(nnkElse.newTree(nnkDiscardStmt.newTree(newEmptyNode())))
 
         return quote:
             `appStateIdent`.`procName` = proc(`entityId`: EntityId) =
