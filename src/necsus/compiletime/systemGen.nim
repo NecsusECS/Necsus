@@ -262,3 +262,18 @@ proc systemArg*(directives: Table[DirectiveGen, DirectiveSet[SystemArg]], arg: S
 proc systemArg*(ctx: GenerateContext, arg: SystemArg): NimNode =
     ## Returns the value to pass to a system when executin the given argument
     systemArg(ctx.directives, arg)
+
+proc allNestedArgs(arg: SystemArg, into: var seq[SystemArg]) =
+    for nested in arg.nestedArgs:
+        allNestedArgs(nested, into)
+        into.add(nested)
+
+iterator allArgs*(args: openArray[SystemArg]): SystemArg =
+    # Yield any system args nested inside other system args
+    for arg in args:
+        var collectNested: seq[SystemArg]
+        arg.allNestedArgs(collectNested)
+        for nested in collectNested:
+            yield nested
+
+        yield arg

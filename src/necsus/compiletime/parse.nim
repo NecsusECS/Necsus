@@ -314,21 +314,9 @@ iterator components*(systems: openarray[ParsedSystem]): ComponentDef =
             for component in arg.components:
                 yield component
 
-proc allNestedArgs(arg: SystemArg, into: var seq[SystemArg]) =
-    for nested in arg.nestedArgs:
-        allNestedArgs(nested, into)
-        into.add(nested)
-
 iterator allArgs*(system: ParsedSystem): SystemArg =
     ## Yields all args in a system
-    for arg in system.args:
-
-        # Yield any system args nested inside other system args
-        var collectNested: seq[SystemArg]
-        arg.allNestedArgs(collectNested)
-        for nested in collectNested:
-            yield nested
-
+    for arg in system.args.allArgs:
         yield arg
 
     # Yield all arguments mentioned in the active system checks
