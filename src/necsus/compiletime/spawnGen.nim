@@ -2,7 +2,7 @@ import macros, sequtils, sets
 import tools, tupleDirective, archetype, archetypeBuilder, componentDef, commonVars, systemGen
 import ../runtime/spawn
 
-proc archetypes(builder: var ArchetypeBuilder[ComponentDef], dir: TupleDirective) =
+proc archetypes(builder: var ArchetypeBuilder[ComponentDef], systemArgs: seq[SystemArg], dir: TupleDirective) =
     builder.define(dir.comps)
 
 proc worldFields(name: string, dir: TupleDirective): seq[WorldField] =

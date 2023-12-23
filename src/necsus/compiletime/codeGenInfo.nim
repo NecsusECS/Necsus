@@ -10,11 +10,14 @@ type CodeGenInfo* = ref object
     archetypes*: ArchetypeSet[ComponentDef]
     archetypeEnum*: ArchetypeEnum
 
-proc calculateArchetypes(args: openarray[SystemArg]): ArchetypeSet[ComponentDef] =
+proc calculateArchetypes(allSystems: openarray[ParsedSystem], runnerArgs: seq[SystemArg]): ArchetypeSet[ComponentDef] =
     ## Given all the directives, creates a set of required archetypes
     var builder = newArchetypeBuilder[ComponentDef]()
-    for arg in args:
-        builder.buildArchetype(arg)
+    for arg in runnerArgs:
+        builder.buildArchetype(runnerArgs, arg)
+    for system in allSystems:
+        for arg in system.allArgs:
+            builder.buildArchetype(system.args, arg)
     return builder.build()
 
 proc calculateDirectives(args: openarray[SystemArg]): Table[DirectiveGen, DirectiveSet[SystemArg]] =
@@ -50,7 +53,7 @@ proc newCodeGenInfo*(
 
     let allArgs = app.runnerArgs.concat(allSystems.args.toSeq)
 
-    result.archetypes = allArgs.calculateArchetypes()
+    result.archetypes = allSystems.calculateArchetypes(app.runnerArgs)
     result.archetypeEnum = archetypeEnum(app.name, result.archetypes)
     result.directives = allArgs.calculateDirectives()
 

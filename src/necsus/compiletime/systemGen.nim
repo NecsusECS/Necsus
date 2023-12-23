@@ -38,6 +38,9 @@ type
     SystemArgExtractor*[T] = proc(name: string, dir: T): NimNode
         ## The callback used for determining the value to pass when calling the system
 
+    BuildArchetype*[T] = proc(builder: var ArchetypeBuilder[ComponentDef], systemArgs: seq[SystemArg], dir: T)
+        ## A callback used to construct an archetype
+
     DirectiveGen* = ref object
         ## An object that can contribute to Necsus code generation
         ident*: string
@@ -46,7 +49,7 @@ type
         case kind*: DirectiveKind
         of DirectiveKind.Mono:
             generateMono*: HookGenerator[MonoDirective]
-            archetypeMono*: proc(builder: var ArchetypeBuilder[ComponentDef], dir: MonoDirective)
+            archetypeMono*: BuildArchetype[MonoDirective]
             chooseNameMono*: NameChooser[MonoDirective]
             systemReturn*: proc(args: DirectiveSet[SystemArg], returns: MonoDirective): Option[NimNode]
             worldFieldsMono*: proc(name: string, returns: MonoDirective): seq[WorldField]
@@ -54,7 +57,7 @@ type
             nestedArgsMono*: NestedArgsExtractor[MonoDirective]
         of DirectiveKind.Tuple:
             generateTuple*: HookGenerator[TupleDirective]
-            archetypeTuple*: proc(builder: var ArchetypeBuilder[ComponentDef], dir: TupleDirective)
+            archetypeTuple*: BuildArchetype[TupleDirective]
             chooseNameTuple*: NameChooser[TupleDirective]
             worldFieldsTuple*: proc(name: string, returns: TupleDirective): seq[WorldField]
             systemArgTuple*: SystemArgExtractor[TupleDirective]
@@ -80,7 +83,7 @@ type
             discard
         nestedArgs*: seq[SystemArg]
 
-proc noArchetype[T](builder: var ArchetypeBuilder[ComponentDef], dir: T) = discard
+proc noArchetype[T](builder: var ArchetypeBuilder[ComponentDef], systemArgs: seq[SystemArg], dir: T) = discard
 
 proc defaultName(argName: NimNode, dir: MonoDirective | TupleDirective): string = dir.name
 
@@ -95,7 +98,7 @@ proc newGenerator*(
     ident: string,
     interest: set[GenerateHook],
     generate: HookGenerator[TupleDirective],
-    archetype: proc(builder: var ArchetypeBuilder[ComponentDef], dir: TupleDirective) = noArchetype,
+    archetype: BuildArchetype[TupleDirective] = noArchetype,
     chooseName: NameChooser[TupleDirective] = defaultName,
     worldFields: proc(name: string, dir: TupleDirective): seq[WorldField] = defaultWorldField,
     systemArg: SystemArgExtractor[TupleDirective] = defaultSystemArg,
@@ -120,7 +123,7 @@ proc newGenerator*(
     ident: string,
     interest: set[GenerateHook],
     generate: HookGenerator[MonoDirective],
-    archetype: proc(builder: var ArchetypeBuilder[ComponentDef], dir: MonoDirective) = noArchetype,
+    archetype: BuildArchetype[MonoDirective] = noArchetype,
     chooseName: NameChooser[MonoDirective] = defaultName,
     systemReturn: proc(args: DirectiveSet[SystemArg], returns: MonoDirective): Option[NimNode] = defaultSystemReturn,
     worldFields: proc(name: string, dir: MonoDirective): seq[WorldField] = defaultWorldField,
@@ -217,12 +220,12 @@ proc generateName*(arg: SystemArg): string =
     of DirectiveKind.Tuple, DirectiveKind.Mono: arg.name
     of DirectiveKind.None: arg.generator.ident
 
-proc buildArchetype*(builder: var ArchetypeBuilder[ComponentDef], arg: SystemArg) =
+proc buildArchetype*(builder: var ArchetypeBuilder[ComponentDef], systemArgs: seq[SystemArg], arg: SystemArg) =
     ## Generates the code for a specific hook
     try:
         case arg.kind
-        of DirectiveKind.Tuple: arg.generator.archetypeTuple(builder, arg.tupleDir)
-        of DirectiveKind.Mono: arg.generator.archetypeMono(builder, arg.monoDir)
+        of DirectiveKind.Tuple: arg.generator.archetypeTuple(builder, systemArgs, arg.tupleDir)
+        of DirectiveKind.Mono: arg.generator.archetypeMono(builder, systemArgs, arg.monoDir)
         of DirectiveKind.None: discard
     except UnsortedArchetype as e:
         error(e.msg, arg.source)

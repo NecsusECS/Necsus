@@ -54,7 +54,7 @@ proc createArchMove(
             proc (`existing`: sink `fromArchTuple`): auto = `createNewTuple`
         )
 
-proc attachArchetype(builder: var ArchetypeBuilder[ComponentDef], dir: TupleDirective) =
+proc attachArchetype(builder: var ArchetypeBuilder[ComponentDef], systemArgs: seq[SystemArg], dir: TupleDirective) =
     builder.attachable(dir.comps)
 
 proc attachFields(name: string, dir: TupleDirective): seq[WorldField] =
@@ -94,7 +94,7 @@ let attachGenerator* {.compileTime.} = newGenerator(
     worldFields = attachFields
 )
 
-proc detachArchetype(builder: var ArchetypeBuilder[ComponentDef], dir: TupleDirective) =
+proc detachArchetype(builder: var ArchetypeBuilder[ComponentDef], systemArgs: seq[SystemArg], dir: TupleDirective) =
     builder.detachable(dir.comps)
 
 proc detachFields(name: string, dir: TupleDirective): seq[WorldField] =

@@ -43,10 +43,6 @@ proc `$`*(system: ParsedSystem): string =
         &"checks: {system.checks}",
     ], ", ") & ")"
 
-proc phase*(system: ParsedSystem): auto = system.phase
-
-proc symbol*(system: ParsedSystem): auto = system.symbol
-
 proc kind*(arg: SystemArg): auto = arg.kind
 
 proc parseArgKind(symbol: NimNode): Option[DirectiveGen] =
@@ -323,22 +319,27 @@ proc allNestedArgs(arg: SystemArg, into: var seq[SystemArg]) =
         allNestedArgs(nested, into)
         into.add(nested)
 
+iterator allArgs*(system: ParsedSystem): SystemArg =
+    ## Yields all args in a system
+    for arg in system.args:
+
+        # Yield any system args nested inside other system args
+        var collectNested: seq[SystemArg]
+        arg.allNestedArgs(collectNested)
+        for nested in collectNested:
+            yield nested
+
+        yield arg
+
+    # Yield all arguments mentioned in the active system checks
+    for check in system.checks:
+        yield check.arg
+
 iterator args*(systems: openarray[ParsedSystem]): SystemArg =
     ## Yields all args in a system
     for system in systems:
-        for arg in system.args:
-
-            # Yield any system args nested inside other system args
-            var collectNested: seq[SystemArg]
-            arg.allNestedArgs(collectNested)
-            for nested in collectNested:
-                yield nested
-
+        for arg in system.allArgs:
             yield arg
-
-        # Yield all arguments mentioned in the active system checks
-        for check in system.checks:
-            yield check.arg
 
 iterator components*(app: ParsedApp): ComponentDef =
     ## List all components referenced by an app
