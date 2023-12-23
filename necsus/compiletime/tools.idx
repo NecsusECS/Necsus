@@ -2,4 +2,3 @@ copyTuple	necsus/compiletime/tools.html#copyTuple,NimNode,Archetype[ComponentDef
 asTupleType	necsus/compiletime/tools.html#asTupleType,openArray[DirectiveArg]	tools: asTupleType(args: openArray[DirectiveArg]): NimNode	
 asTupleType	necsus/compiletime/tools.html#asTupleType,TupleDirective	tools: asTupleType(tupleDir: TupleDirective): NimNode	
 archetypeCases	necsus/compiletime/tools.html#archetypeCases.i,GenerateContext	tools: archetypeCases(details: GenerateContext): tuple[ofBranch: NimNode,\n    archetype: Archetype[ComponentDef]]	
-createArchetypeCase	necsus/compiletime/tools.html#createArchetypeCase,GenerateContext,NimNode,proc(Archetype[ComponentDef])	tools: createArchetypeCase(details: GenerateContext; readArchetype: NimNode;\n                    branch: proc (arch: Archetype[ComponentDef]): NimNode): NimNode	
