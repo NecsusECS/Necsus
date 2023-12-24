@@ -1,21 +1,11 @@
 import tables, macros
-import tupleDirective, archetype, componentDef, tools, systemGen, archetypeBuilder, commonVars
+import tupleDirective, archetype, componentDef, tools, systemGen, archetypeBuilder, commonVars, filter
 import ../runtime/[archetypeStore, query]
 
 iterator selectArchetypes(details: GenerateContext, query: TupleDirective): Archetype[ComponentDef] =
     ## Iterates through the archetypes that contribute to a query
     for archetype in details.archetypes:
-        block next:
-            for arg in query.args:
-                case arg.kind
-                of DirectiveArgKind.Include:
-                    if arg.component notin archetype:
-                        break next
-                of DirectiveArgKind.Exclude:
-                    if arg.component in archetype:
-                        break next
-                of DirectiveArgKind.Optional:
-                    discard
+        if query.args.test(archetype):
             yield archetype
 
 let compsIdent {.compileTime.} = ident("comps")
