@@ -17,12 +17,38 @@ suite "Creating archetypes":
         builder.define([ "A" ])
         builder.define([ "A", "B" ])
 
-        builder.attachable([ "B", "C" ])
-        builder.attachable([ "C", "D" ])
+        builder.attachable([ "B", "C" ], filter[string]([], []))
+        builder.attachable([ "C", "D" ], filter[string]([], []))
         let archetypes = builder.build()
 
         check(archetypes.toSeq.mapIt($it).toHashSet == toHashSet([
             "{A}", "{A, B, C}", "{A, C, D}", "{A, B, C, D}", "{A, B}"
+        ]))
+
+    test "Allowing for attaching new components with a matching filter":
+        var builder = newArchetypeBuilder[string]()
+        builder.define([ "A" ])
+        builder.define([ "A", "B" ])
+        builder.define([ "A", "B", "C"])
+
+        builder.attachable([ "D" ], filter[string]([ "B", "C" ], []))
+        let archetypes = builder.build()
+
+        check(archetypes.toSeq.mapIt($it).toHashSet == toHashSet([
+            "{A}", "{A, B}", "{A, B, C}", "{A, B, C, D}"
+        ]))
+
+    test "Allowing for attaching new components with an excluding filter":
+        var builder = newArchetypeBuilder[string]()
+        builder.define([ "A" ])
+        builder.define([ "A", "B" ])
+        builder.define([ "A", "C"])
+
+        builder.attachable([ "D" ], filter[string]([], [ "B", "C" ]))
+        let archetypes = builder.build()
+
+        check(archetypes.toSeq.mapIt($it).toHashSet == toHashSet([
+            "{A}", "{A, B}", "{A, C}", "{A, D}"
         ]))
 
     test "Allowing for detaching new components to existing archetypes":

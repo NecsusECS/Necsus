@@ -105,6 +105,8 @@ proc newArchetypeSet*[T](values: openarray[Archetype[T]]): ArchetypeSet[T] =
 
 proc len*[T](archetypes: ArchetypeSet[T]): int = archetypes.archetypes.card
 
+proc contains*[T](archetypes: ArchetypeSet[T], archetype: Archetype[T]): bool = archetype in archetypes.archetypes
+
 iterator items*[T](archetypes: ArchetypeSet[T]): Archetype[T] =
     ## Produces all the archetypes
     for archetype in items(archetypes.archetypes):

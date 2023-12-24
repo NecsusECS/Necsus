@@ -1,5 +1,5 @@
 import macros, sequtils
-import tools, tupleDirective, commonVars
+import tools, tupleDirective, commonVars, queryGen, lookupGen, spawnGen
 import archetype, componentDef, worldEnum, systemGen, archetypeBuilder
 import ../runtime/[world, archetypeStore, directives]
 
@@ -54,8 +54,25 @@ proc createArchMove(
             proc (`existing`: sink `fromArchTuple`): auto = `createNewTuple`
         )
 
+proc asFilter(dir: TupleDirective): ArchetypeFilter[ComponentDef] =
+    ## Creates an archetype filter from a directive
+    var required: seq[ComponentDef]
+    var excluded: seq[ComponentDef]
+    for arg in dir.args:
+        case arg.kind
+        of DirectiveArgKind.Include: required.add(arg.component)
+        of DirectiveArgKind.Exclude: excluded.add(arg.component)
+        of DirectiveArgKind.Optional: discard
+    return filter(required, excluded)
+
+proc isAttachable(gen: DirectiveGen): bool =
+    ## Returns whether this argument produces an entity that can be attached to
+    gen == queryGenerator or gen == lookupGenerator or gen == spawnGenerator
+
 proc attachArchetype(builder: var ArchetypeBuilder[ComponentDef], systemArgs: seq[SystemArg], dir: TupleDirective) =
-    builder.attachable(dir.comps)
+    for arg in systemArgs.allArgs:
+        if arg.generator.isAttachable:
+            builder.attachable(dir.comps, arg.tupleDir.asFilter)
 
 proc attachFields(name: string, dir: TupleDirective): seq[WorldField] =
     @[ (name, nnkBracketExpr.newTree(bindSym("Attach"), dir.asTupleType)) ]
@@ -70,14 +87,18 @@ proc generateAttach(details: GenerateContext, arg: SystemArg, name: string, atta
         ## Generate a cases statement to do the work for each kind of archetype
         var cases: NimNode = newEmptyNode()
         if details.archetypes.len > 0:
+            var needsElse = false
             cases = nnkCaseStmt.newTree(newDotExpr(entityIndex, ident("archetype")))
             for (ofBranch, fromArch) in archetypeCases(details):
                 let toArch = fromArch + attach.comps
-                let action = if fromArch == toArch:
-                        details.createArchUpdate(attach, toArch)
-                    else:
-                        details.createArchMove(attach, fromArch, toArch)
-                cases.add(nnkOfBranch.newTree(ofBranch, action))
+                if fromArch == toArch:
+                    cases.add(nnkOfBranch.newTree(ofBranch, details.createArchUpdate(attach, toArch)))
+                elif toArch in details.archetypes:
+                    cases.add(nnkOfBranch.newTree(ofBranch, details.createArchMove(attach, fromArch, toArch)))
+                else:
+                    needsElse = true
+            if needsElse:
+                cases.add(nnkElse.newTree(nnkDiscardStmt.newTree(newEmptyNode())))
 
         return quote:
             `appStateIdent`.`procName` = proc(`entityId`: EntityId, `newComps`: `componentTuple`) =
