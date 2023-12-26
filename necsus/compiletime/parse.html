@@ -163,23 +163,18 @@ window.addEventListener('DOMContentLoaded', main);
     title="parseSystemList(systems: NimNode; phase: SystemPhase): seq[ParsedSystem]">parseSystemList(systems: NimNode; phase: SystemPhase): seq[ParsedSystem]</a></li>
 
   </ul>
-  <ul class="simple nested-toc-section">phase
-      <li><a class="reference" href="#phase%2CParsedSystem"
-    title="phase(system: ParsedSystem): auto">phase(system: ParsedSystem): auto</a></li>
-
-  </ul>
-  <ul class="simple nested-toc-section">symbol
-      <li><a class="reference" href="#symbol%2CParsedSystem"
-    title="symbol(system: ParsedSystem): auto">symbol(system: ParsedSystem): auto</a></li>
-
-  </ul>
 
   </ul>
 </li>
 <li>
   <a class="reference reference-toplevel" href="#15" id="65">Iterators</a>
   <ul class="simple simple-toc-section">
-      <ul class="simple nested-toc-section">args
+      <ul class="simple nested-toc-section">allArgs
+      <li><a class="reference" href="#allArgs.i%2CParsedSystem"
+    title="allArgs(system: ParsedSystem): SystemArg">allArgs(system: ParsedSystem): SystemArg</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">args
       <li><a class="reference" href="#args.i%2CopenArray%5BParsedSystem%5D"
     title="args(systems: openArray[ParsedSystem]): SystemArg">args(systems: openArray[ParsedSystem]): SystemArg</a></li>
 
@@ -317,27 +312,19 @@ Parses the app proc
 
 </dd>
 </div>
-<div id="phase,ParsedSystem">
-<dt><pre><span class="Keyword">proc</span> <a href="#phase%2CParsedSystem"><span class="Identifier">phase</span></a><span class="Other">(</span><span class="Identifier">system</span><span class="Other">:</span> <a href="parse.html#ParsedSystem"><span class="Identifier">ParsedSystem</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">auto</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
-<dd>
-
-
-
-</dd>
-</div>
-<div id="symbol,ParsedSystem">
-<dt><pre><span class="Keyword">proc</span> <a href="#symbol%2CParsedSystem"><span class="Identifier">symbol</span></a><span class="Other">(</span><span class="Identifier">system</span><span class="Other">:</span> <a href="parse.html#ParsedSystem"><span class="Identifier">ParsedSystem</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">auto</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
-<dd>
-
-
-
-</dd>
-</div>
 
 </dl></div>
 <div class="section" id="15">
 <h1><a class="toc-backref" href="#15">Iterators</a></h1>
 <dl class="item">
+<div id="allArgs.i,ParsedSystem">
+<dt><pre><span class="Keyword">iterator</span> <a href="#allArgs.i%2CParsedSystem"><span class="Identifier">allArgs</span></a><span class="Other">(</span><span class="Identifier">system</span><span class="Other">:</span> <a href="parse.html#ParsedSystem"><span class="Identifier">ParsedSystem</span></a><span class="Other">)</span><span class="Other">:</span> <a href="systemGen.html#SystemArg"><span class="Identifier">SystemArg</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+Yields all args in a system
+
+</dd>
+</div>
 <div id="args.i,openArray[ParsedSystem]">
 <dt><pre><span class="Keyword">iterator</span> <a href="#args.i%2CopenArray%5BParsedSystem%5D"><span class="Identifier">args</span></a><span class="Other">(</span><span class="Identifier">systems</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><a href="parse.html#ParsedSystem"><span class="Identifier">ParsedSystem</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="systemGen.html#SystemArg"><span class="Identifier">SystemArg</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
@@ -382,7 +369,7 @@ Pulls all components from a list of parsed systems
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-12-23 22:07:25 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-12-26 17:22:30 UTC</small>
       </div>
     </div>
   </div>

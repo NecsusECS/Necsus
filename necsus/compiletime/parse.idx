@@ -7,12 +7,11 @@ ParsedSystem	necsus/compiletime/parse.html#ParsedSystem	parse: ParsedSystem
 ParsedApp	necsus/compiletime/parse.html#ParsedApp	parse: ParsedApp	
 `$`	necsus/compiletime/parse.html#$,ActiveCheck	parse: `$`(check: ActiveCheck): string	
 `$`	necsus/compiletime/parse.html#$,ParsedSystem	parse: `$`(system: ParsedSystem): string	
-phase	necsus/compiletime/parse.html#phase,ParsedSystem	parse: phase(system: ParsedSystem): auto	
-symbol	necsus/compiletime/parse.html#symbol,ParsedSystem	parse: symbol(system: ParsedSystem): auto	
 kind	necsus/compiletime/parse.html#kind,SystemArg	parse: kind(arg: SystemArg): auto	
 parseSystemList	necsus/compiletime/parse.html#parseSystemList,NimNode,SystemPhase	parse: parseSystemList(systems: NimNode; phase: SystemPhase): seq[ParsedSystem]	
 components	necsus/compiletime/parse.html#components.i,SystemArg	parse: components(arg: SystemArg): ComponentDef	
 components	necsus/compiletime/parse.html#components.i,openArray[ParsedSystem]	parse: components(systems: openArray[ParsedSystem]): ComponentDef	
+allArgs	necsus/compiletime/parse.html#allArgs.i,ParsedSystem	parse: allArgs(system: ParsedSystem): SystemArg	
 args	necsus/compiletime/parse.html#args.i,openArray[ParsedSystem]	parse: args(systems: openArray[ParsedSystem]): SystemArg	
 components	necsus/compiletime/parse.html#components.i,ParsedApp	parse: components(app: ParsedApp): ComponentDef	
 parseApp	necsus/compiletime/parse.html#parseApp,NimNode,NimNode	parse: parseApp(appProc: NimNode; runner: NimNode): ParsedApp	
