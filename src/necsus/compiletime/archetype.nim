@@ -1,4 +1,4 @@
-import tables, sets, hashes, strutils, sequtils, componentDef, macros, algorithm
+import tables, sets, hashes, strutils, sequtils, componentDef, macros, algorithm, ../util/bits
 
 type
     Archetype*[T] = ref object
@@ -7,6 +7,7 @@ type
         name*: string
         identName: string
         cachedHash: Hash
+        bitset*: Bits
 
     ArchetypeSet*[T] = ref object
         ## A set of all known archetypes
@@ -20,6 +21,8 @@ proc generateName(values: openarray[string]): string = values.join("_")
 proc newArchetype*[T](values: openarray[T]): Archetype[T] =
     ## Create an archetype
 
+    var bits = Bits()
+
     var verified: seq[T]
     var previous: T
     for i, value in values:
@@ -28,6 +31,7 @@ proc newArchetype*[T](values: openarray[T]): Archetype[T] =
             raise newException(UnsortedArchetype, "Archetype must be in sorted order. Correct order is: " & correct)
         elif i == 0 or previous != value:
             verified.add(value)
+            bits.incl(value.uniqueId)
         previous = value
 
     let name = generateName(verified)
@@ -36,6 +40,7 @@ proc newArchetype*[T](values: openarray[T]): Archetype[T] =
         name: name,
         identName: "archetype_" & name,
         cachedHash: hash(verified),
+        bitset: bits,
     )
 
 proc hash*[T](archetype: Archetype[T]): Hash = archetype.cachedHash

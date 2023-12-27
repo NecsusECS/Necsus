@@ -1,11 +1,11 @@
 import tables, macros
-import tupleDirective, archetype, componentDef, tools, systemGen, archetypeBuilder, commonVars, filter
-import ../runtime/[archetypeStore, query]
+import tupleDirective, archetype, componentDef, tools, systemGen, archetypeBuilder, commonVars
+import ../runtime/[archetypeStore, query], ../util/bits
 
 iterator selectArchetypes(details: GenerateContext, query: TupleDirective): Archetype[ComponentDef] =
     ## Iterates through the archetypes that contribute to a query
     for archetype in details.archetypes:
-        if query.args.test(archetype):
+        if archetype.bitset.matches(query.filter):
             yield archetype
 
 let compsIdent {.compileTime.} = ident("comps")
@@ -24,7 +24,7 @@ proc createArchetypeViews(details: GenerateContext, query: TupleDirective, query
             )
 
 proc worldFields(name: string, dir: TupleDirective): seq[WorldField] =
-     @[ (name, nnkBracketExpr.newTree(bindSym("Query"), dir.asTupleType)) ]
+    @[ (name, nnkBracketExpr.newTree(bindSym("Query"), dir.asTupleType)) ]
 
 proc generate(details: GenerateContext, arg: SystemArg, name:  string, dir: TupleDirective): NimNode =
     ## Generates the code for instantiating queries
