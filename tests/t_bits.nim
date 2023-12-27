@@ -38,6 +38,14 @@ suite "Bits":
         check(bits1 == bits2)
         check(bits2 == bits1)
 
+    test "Bit contins":
+        let bits = newBits(1, 2, 3, 4, 500)
+        check(1 in bits)
+        check(4 in bits)
+        check(500 in bits)
+        check(5 notin bits)
+        check(5000 notin bits)
+
     test "Bit addition":
         let bits1 = newBits(1)
         let bits2 = newBits(500)

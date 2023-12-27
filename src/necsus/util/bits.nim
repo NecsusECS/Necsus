@@ -16,11 +16,13 @@ type
 const wordBits = sizeof(Word) * 8
 const maxBitMask = Word(1) shl (wordBits - 1)
 
+proc calculate(value: uint16): tuple[bucket: uint16, mask: Word] =
+    (bucket: value div wordBits, mask: maxBitMask shr (value mod wordBits))
+
 proc incl*(bitset: var Bits, value: uint16) =
     ## Add a value to this set
 
-    let bucket = value div wordBits
-    let mask = maxBitMask shr (value mod wordBits)
+    let (bucket, mask) = value.calculate
 
     if bitset.buckets.len < bucket.int + 1:
         bitset.buckets.setLen(bucket + 1)
@@ -64,6 +66,14 @@ proc hash*(bitset: Bits): Hash =
             accum = accum !& hash(value)
         bitset.cachedHash = some(accum)
     return bitset.cachedHash.get
+
+proc contains*(bitset: Bits, value: uint16): bool =
+    ## Returns whether _any_ of the bits overlap
+    let (bucket, mask) = value.calculate
+    if bitset.buckets.len < bucket.int + 1:
+        return false
+    else:
+        return (bitset.buckets[bucket] and mask) > 0
 
 proc card*(bitset: Bits): int =
     ## The number of bits that have been set -- the cardinality

@@ -48,7 +48,7 @@ proc hash*[T](archetype: Archetype[T]): Hash = archetype.cachedHash
 
 proc `==`*[T](a, b: Archetype[T]): bool =
     ## Determine archetype equality
-    a.values == b.values
+    a.bitset == b.bitset
 
 proc `$`*[T](archetype: Archetype[T]): string =
     ## Stringify a Archetype
@@ -58,16 +58,19 @@ proc `$`*[T](archetype: Archetype[T]): string =
 
 proc contains*[T](archetype: Archetype[T], value: T): bool =
     ## Whether an archetype contains all the given value
-    value in archetype.values
+    value.uniqueId in archetype.bitset
 
 proc indexOf*[T](archetype: Archetype[T], value: T): int =
     ## Whether an archetype contains all the given value
     result = archetype.values.binarySearch(value)
     assert(result != -1, "Value is not in archetype: " & $value)
 
-proc containsAllOf*[T](archetype: Archetype[T], other: openarray[T]): bool =
+proc containsAllOf*[T](archetype: Archetype[T], others: openarray[T]): bool =
     ## Whether an archetype contains all the given values
-    other.allIt(it in archetype)
+    for other in others:
+        if other notin archetype:
+            return false
+    return true
 
 proc containsAllOf*[T](archetype: Archetype[T], other: Archetype[T]): bool =
     ## Whether an archetype contains all the given values
@@ -87,13 +90,10 @@ proc `+`*[T](archetype: Archetype[T], other: openarray[T]): Archetype[T] =
 
 proc `+`*[T](archetype: Archetype[T], other: Archetype[T]): Archetype[T] =
     ## Joins together two archetypes
-    archetype + other.values
+    return if archetype == other.archetype: archetype else: archetype + other.values
 
 proc len*[T](archetype: Archetype[T]): auto = archetype.values.len
     ## The number of values in this archetype
-
-proc asHashSet*[T](archetype: Archetype[T]): auto = toHashSet(archetype.values)
-    ## Create a hash set from this archetype
 
 proc ident*(archetype: Archetype[ComponentDef]): NimNode = archetype.identName.ident
     ## Creates a variable for referencing an archetype store
