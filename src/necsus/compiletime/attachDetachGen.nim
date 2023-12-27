@@ -54,17 +54,6 @@ proc createArchMove(
             proc (`existing`: sink `fromArchTuple`): auto = `createNewTuple`
         )
 
-proc asFilter(builder: var ArchetypeBuilder[ComponentDef], dir: TupleDirective): BitsFilter =
-    ## Creates an archetype filter from a directive
-    var required: seq[ComponentDef]
-    var excluded: seq[ComponentDef]
-    for arg in dir.args:
-        case arg.kind
-        of DirectiveArgKind.Include: required.add(arg.component)
-        of DirectiveArgKind.Exclude: excluded.add(arg.component)
-        of DirectiveArgKind.Optional: discard
-    return builder.filter(required, excluded)
-
 proc isAttachable(gen: DirectiveGen): bool =
     ## Returns whether this argument produces an entity that can be attached to
     gen == queryGenerator or gen == lookupGenerator or gen == spawnGenerator
@@ -72,7 +61,7 @@ proc isAttachable(gen: DirectiveGen): bool =
 proc attachArchetype(builder: var ArchetypeBuilder[ComponentDef], systemArgs: seq[SystemArg], dir: TupleDirective) =
     for arg in systemArgs.allArgs:
         if arg.generator.isAttachable:
-            builder.attachable(dir.comps, builder.asFilter(arg.tupleDir))
+            builder.attachable(dir.comps, arg.tupleDir.filter)
 
 proc attachFields(name: string, dir: TupleDirective): seq[WorldField] =
     @[ (name, nnkBracketExpr.newTree(bindSym("Attach"), dir.asTupleType)) ]

@@ -1,4 +1,4 @@
-import componentDef, hashes, sequtils, macros, strutils
+import componentDef, hashes, sequtils, macros, strutils, ../util/bits
 
 type
     DirectiveArgKind* = enum
@@ -17,6 +17,7 @@ type
         ## Parent type for all tuple based directives
         args*: seq[DirectiveArg]
         name*: string
+        filter: BitsFilter
 
 proc newDirectiveArg*(component: ComponentDef, isPointer: bool, kind: DirectiveArgKind): DirectiveArg =
     ## Creates a DirectiveArg
@@ -97,3 +98,15 @@ proc `<`*(a, b: TupleDirective): auto =
         elif a.args[i] != b.args[i]:
             return false
     return false
+
+proc filter*(dir: TupleDirective): BitsFilter =
+    if dir.filter == nil:
+        var required = Bits()
+        var excluded = Bits()
+        for arg in dir.args:
+            case arg.kind
+            of DirectiveArgKind.Include: required.incl(arg.component.uniqueId)
+            of DirectiveArgKind.Exclude: excluded.incl(arg.component.uniqueId)
+            of DirectiveArgKind.Optional: discard
+        dir.filter = newFilter(required, excluded)
+    return dir.filter
