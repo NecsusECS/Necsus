@@ -149,11 +149,6 @@ window.addEventListener('DOMContentLoaded', main);
     title="`==`[T](a, b: Archetype[T]): bool">`==`[T](a, b: Archetype[T]): bool</a></li>
 
   </ul>
-  <ul class="simple nested-toc-section">asHashSet
-      <li><a class="reference" href="#asHashSet%2CArchetype%5BT%5D"
-    title="asHashSet[T](archetype: Archetype[T]): auto">asHashSet[T](archetype: Archetype[T]): auto</a></li>
-
-  </ul>
   <ul class="simple nested-toc-section">asStorageTuple
       <li><a class="reference" href="#asStorageTuple%2CArchetype%5BComponentDef%5D"
     title="asStorageTuple(archetype: Archetype[ComponentDef]): NimNode">asStorageTuple(archetype: Archetype[ComponentDef]): NimNode</a></li>
@@ -170,7 +165,7 @@ window.addEventListener('DOMContentLoaded', main);
       <li><a class="reference" href="#containsAllOf%2CArchetype%5BT%5D%2CArchetype%5BT%5D"
     title="containsAllOf[T](archetype: Archetype[T]; other: Archetype[T]): bool">containsAllOf[T](archetype: Archetype[T]; other: Archetype[T]): bool</a></li>
   <li><a class="reference" href="#containsAllOf%2CArchetype%5BT%5D%2CopenArray%5BT%5D"
-    title="containsAllOf[T](archetype: Archetype[T]; other: openArray[T]): bool">containsAllOf[T](archetype: Archetype[T]; other: openArray[T]): bool</a></li>
+    title="containsAllOf[T](archetype: Archetype[T]; others: openArray[T]): bool">containsAllOf[T](archetype: Archetype[T]; others: openArray[T]): bool</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">hash
@@ -329,14 +324,6 @@ Determine archetype equality
 
 </dd>
 </div>
-<div id="asHashSet,Archetype[T]">
-<dt><pre><span class="Keyword">proc</span> <a href="#asHashSet%2CArchetype%5BT%5D"><span class="Identifier">asHashSet</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">auto</span></pre></dt>
-<dd>
-
-Create a hash set from this archetype
-
-</dd>
-</div>
 <div id="asStorageTuple,Archetype[ComponentDef]">
 <dt><pre><span class="Keyword">proc</span> <a href="#asStorageTuple%2CArchetype%5BComponentDef%5D"><span class="Identifier">asStorageTuple</span></a><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
@@ -371,7 +358,7 @@ Whether an archetype contains all the given values
 </dd>
 </div>
 <div id="containsAllOf,Archetype[T],openArray[T]">
-<dt><pre><span class="Keyword">proc</span> <a href="#containsAllOf%2CArchetype%5BT%5D%2CopenArray%5BT%5D"><span class="Identifier">containsAllOf</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">other</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span></pre></dt>
+<dt><pre><span class="Keyword">proc</span> <a href="#containsAllOf%2CArchetype%5BT%5D%2CopenArray%5BT%5D"><span class="Identifier">containsAllOf</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">others</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span></pre></dt>
 <dd>
 
 Whether an archetype contains all the given values
@@ -473,7 +460,7 @@ Produces all the archetypes
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-12-27 05:49:16 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-12-27 06:25:47 UTC</small>
       </div>
     </div>
   </div>

@@ -7,14 +7,13 @@ hash	necsus/compiletime/archetype.html#hash,Archetype[T]	archetype: hash[T](arch
 `$`	necsus/compiletime/archetype.html#$,Archetype[T]	archetype: `$`[T](archetype: Archetype[T]): string	
 contains	necsus/compiletime/archetype.html#contains,Archetype[T],T	archetype: contains[T](archetype: Archetype[T]; value: T): bool	
 indexOf	necsus/compiletime/archetype.html#indexOf,Archetype[T],T	archetype: indexOf[T](archetype: Archetype[T]; value: T): int	
-containsAllOf	necsus/compiletime/archetype.html#containsAllOf,Archetype[T],openArray[T]	archetype: containsAllOf[T](archetype: Archetype[T]; other: openArray[T]): bool	
+containsAllOf	necsus/compiletime/archetype.html#containsAllOf,Archetype[T],openArray[T]	archetype: containsAllOf[T](archetype: Archetype[T]; others: openArray[T]): bool	
 containsAllOf	necsus/compiletime/archetype.html#containsAllOf,Archetype[T],Archetype[T]	archetype: containsAllOf[T](archetype: Archetype[T]; other: Archetype[T]): bool	
 `-`	necsus/compiletime/archetype.html#-,Archetype[T],Archetype[T]	archetype: `-`[T](archetype: Archetype[T]; other: Archetype[T]): Archetype[T]	
 `-`	necsus/compiletime/archetype.html#-,Archetype[T],openArray[T]	archetype: `-`[T](archetype: Archetype[T]; other: openArray[T]): Archetype[T]	
 `+`	necsus/compiletime/archetype.html#+,Archetype[T],openArray[T]	archetype: `+`[T](archetype: Archetype[T]; other: openArray[T]): Archetype[T]	
 `+`	necsus/compiletime/archetype.html#+,Archetype[T],Archetype[T]	archetype: `+`[T](archetype: Archetype[T]; other: Archetype[T]): Archetype[T]	
 len	necsus/compiletime/archetype.html#len,Archetype[T]	archetype: len[T](archetype: Archetype[T]): auto	
-asHashSet	necsus/compiletime/archetype.html#asHashSet,Archetype[T]	archetype: asHashSet[T](archetype: Archetype[T]): auto	
 ident	necsus/compiletime/archetype.html#ident,Archetype[ComponentDef]	archetype: ident(archetype: Archetype[ComponentDef]): NimNode	
 asStorageTuple	necsus/compiletime/archetype.html#asStorageTuple,Archetype[ComponentDef]	archetype: asStorageTuple(archetype: Archetype[ComponentDef]): NimNode	
 items	necsus/compiletime/archetype.html#items.i,Archetype[T]	archetype: items[T](archetype: Archetype[T]): T	

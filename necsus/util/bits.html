@@ -155,6 +155,11 @@ window.addEventListener('DOMContentLoaded', main);
     title="card(bitset: Bits): int">card(bitset: Bits): int</a></li>
 
   </ul>
+  <ul class="simple nested-toc-section">contains
+      <li><a class="reference" href="#contains%2CBits%2Cuint16"
+    title="contains(bitset: Bits; value: uint16): bool">contains(bitset: Bits; value: uint16): bool</a></li>
+
+  </ul>
   <ul class="simple nested-toc-section">hash
       <li><a class="reference" href="#hash%2CBits"
     title="hash(bitset: Bits): Hash">hash(bitset: Bits): Hash</a></li>
@@ -299,6 +304,14 @@ The number of bits that have been set -- the cardinality
 
 </dd>
 </div>
+<div id="contains,Bits,uint16">
+<dt><pre><span class="Keyword">proc</span> <a href="#contains%2CBits%2Cuint16"><span class="Identifier">contains</span></a><span class="Other">(</span><span class="Identifier">bitset</span><span class="Other">:</span> <a href="bits.html#Bits"><span class="Identifier">Bits</span></a><span class="Other">;</span> <span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">uint16</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+Returns whether _<a class="reference internal" href="#any">any</a> of the bits overlap
+
+</dd>
+</div>
 <div id="hash,Bits">
 <dt><pre><span class="Keyword">proc</span> <a href="#hash%2CBits"><span class="Identifier">hash</span></a><span class="Other">(</span><span class="Identifier">bitset</span><span class="Other">:</span> <a href="bits.html#Bits"><span class="Identifier">Bits</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Hash</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
@@ -371,7 +384,7 @@ Returns the index of every bit that has been set
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-12-27 05:49:16 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-12-27 06:25:47 UTC</small>
       </div>
     </div>
   </div>

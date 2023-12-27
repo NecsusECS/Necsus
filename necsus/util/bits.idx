@@ -5,6 +5,7 @@ newBits	necsus/util/bits.html#newBits,varargs[uint16]	bits: newBits(values: vara
 items	necsus/util/bits.html#items.i,Bits	bits: items(bitset: Bits): uint16	
 `$`	necsus/util/bits.html#$,Bits	bits: `$`(bitset: Bits): string	
 hash	necsus/util/bits.html#hash,Bits	bits: hash(bitset: Bits): Hash	
+contains	necsus/util/bits.html#contains,Bits,uint16	bits: contains(bitset: Bits; value: uint16): bool	
 card	necsus/util/bits.html#card,Bits	bits: card(bitset: Bits): int	
 `==`	necsus/util/bits.html#==,Bits,Bits	bits: `==`(a, b: Bits): bool	
 `+`	necsus/util/bits.html#+,Bits,Bits	bits: `+`(a, b: Bits): Bits	
