@@ -20,3 +20,4 @@ indexOf	necsus/compiletime/tupleDirective.html#indexOf,TupleDirective,ComponentD
 contains	necsus/compiletime/tupleDirective.html#contains,TupleDirective,ComponentDef	tupleDirective: contains(directive: TupleDirective; comp: ComponentDef): bool	
 `==`	necsus/compiletime/tupleDirective.html#==,TupleDirective,TupleDirective	tupleDirective: `==`(a, b: TupleDirective): auto	
 `&lt;`	necsus/compiletime/tupleDirective.html#<,TupleDirective,TupleDirective	tupleDirective: `&lt;`(a, b: TupleDirective): auto	
+filter	necsus/compiletime/tupleDirective.html#filter,TupleDirective	tupleDirective: filter(dir: TupleDirective): BitsFilter	

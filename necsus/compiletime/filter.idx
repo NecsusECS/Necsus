@@ -1,1 +1,0 @@
-test	necsus/compiletime/filter.html#test,openArray[DirectiveArg],Archetype[ComponentDef]	filter: test(filter: openArray[DirectiveArg]; archetype: Archetype[ComponentDef]): bool	

@@ -111,7 +111,8 @@ window.addEventListener('DOMContentLoaded', main);
     title="ComponentDef = ref object
   node*: NimNode
   name*: string
-  cachedHash: Hash">ComponentDef</a></li>
+  cachedHash: Hash
+  uniqueId*: uint16">ComponentDef</a></li>
 
   </ul>
 </li>
@@ -178,6 +179,7 @@ window.addEventListener('DOMContentLoaded', main);
   <span class="Identifier">node</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">NimNode</span>
   <span class="Identifier">name</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">string</span>
   <span class="Identifier">cachedHash</span><span class="Other">:</span> <span class="Identifier">Hash</span>
+  <span class="Identifier">uniqueId</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">uint16</span>
 </pre></dt>
 <dd>
 
@@ -240,8 +242,8 @@ Stringify a ComponentDef
 </dd>
 </div>
 <div id="newComponentDef,NimNode">
-<dt><pre><span class="Keyword">proc</span> <a href="#newComponentDef%2CNimNode"><span class="Identifier">newComponentDef</span></a><span class="Other">(</span><span class="Identifier">node</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">)</span><span class="Other">:</span> <a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dt><pre><span class="Keyword">proc</span> <a href="#newComponentDef%2CNimNode"><span class="Identifier">newComponentDef</span></a><span class="Other">(</span><span class="Identifier">node</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">)</span><span class="Other">:</span> <a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a> {.
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">,</span> <span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 Instantiate a ComponentDef
@@ -258,7 +260,7 @@ Instantiate a ComponentDef
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-12-26 17:22:30 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2023-12-27 05:49:16 UTC</small>
       </div>
     </div>
   </div>

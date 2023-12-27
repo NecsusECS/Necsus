@@ -1,0 +1,17 @@
+Bits	necsus/util/bits.html#Bits	bits: Bits	
+BitsFilter	necsus/util/bits.html#BitsFilter	bits: BitsFilter	
+incl	necsus/util/bits.html#incl,Bits,uint16	bits: incl(bitset: var Bits; value: uint16)	
+newBits	necsus/util/bits.html#newBits,varargs[uint16]	bits: newBits(values: varargs[uint16]): Bits	
+items	necsus/util/bits.html#items.i,Bits	bits: items(bitset: Bits): uint16	
+`$`	necsus/util/bits.html#$,Bits	bits: `$`(bitset: Bits): string	
+hash	necsus/util/bits.html#hash,Bits	bits: hash(bitset: Bits): Hash	
+card	necsus/util/bits.html#card,Bits	bits: card(bitset: Bits): int	
+`==`	necsus/util/bits.html#==,Bits,Bits	bits: `==`(a, b: Bits): bool	
+`+`	necsus/util/bits.html#+,Bits,Bits	bits: `+`(a, b: Bits): Bits	
+`-`	necsus/util/bits.html#-,Bits,Bits	bits: `-`(a, b: Bits): Bits	
+`&lt;=`	necsus/util/bits.html#<=,Bits,Bits	bits: `&lt;=`(a, b: Bits): bool	
+`&lt;`	necsus/util/bits.html#<,Bits,Bits	bits: `&lt;`(a, b: Bits): bool	
+anyIntersect	necsus/util/bits.html#anyIntersect,Bits,Bits	bits: anyIntersect(a, b: Bits): bool	
+newFilter	necsus/util/bits.html#newFilter,Bits,Bits	bits: newFilter(mustContain, mustExclude: Bits): BitsFilter	
+matches	necsus/util/bits.html#matches,Bits,BitsFilter	bits: matches(target: Bits; filter: BitsFilter): bool	
+hash	necsus/util/bits.html#hash,BitsFilter	bits: hash(filter: BitsFilter): Hash	

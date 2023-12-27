@@ -1,9 +1,7 @@
-ArchetypeFilter	necsus/compiletime/archetypeBuilder.html#ArchetypeFilter	archetypeBuilder: ArchetypeFilter	
 ArchetypeBuilder	necsus/compiletime/archetypeBuilder.html#ArchetypeBuilder	archetypeBuilder: ArchetypeBuilder	
-hash	necsus/compiletime/archetypeBuilder.html#hash,ArchetypeFilter[T]	archetypeBuilder: hash[T](filter: ArchetypeFilter[T]): Hash	
 newArchetypeBuilder	necsus/compiletime/archetypeBuilder.html#newArchetypeBuilder	archetypeBuilder: newArchetypeBuilder[T](): ArchetypeBuilder[T]	
-filter	necsus/compiletime/archetypeBuilder.html#filter,openArray[T],openArray[T]	archetypeBuilder: filter[T](mustContain: openArray[T]; mustExclude: openArray[T]): ArchetypeFilter[\n    T]	
+filter	necsus/compiletime/archetypeBuilder.html#filter,ArchetypeBuilder[T],openArray[T],openArray[T]	archetypeBuilder: filter[T](builder: var ArchetypeBuilder[T]; mustContain: openArray[T];\n          mustExclude: openArray[T]): BitsFilter	
 define	necsus/compiletime/archetypeBuilder.html#define,ArchetypeBuilder[T],openArray[T]	archetypeBuilder: define[T](builder: var ArchetypeBuilder[T]; values: openArray[T])	
-attachable	necsus/compiletime/archetypeBuilder.html#attachable,ArchetypeBuilder[T],openArray[T],ArchetypeFilter[T]	archetypeBuilder: attachable[T](builder: var ArchetypeBuilder[T]; values: openArray[T];\n              filter: ArchetypeFilter[T])	
+attachable	necsus/compiletime/archetypeBuilder.html#attachable,ArchetypeBuilder[T],openArray[T],BitsFilter	archetypeBuilder: attachable[T](builder: var ArchetypeBuilder[T]; values: openArray[T];\n              filter: BitsFilter)	
 detachable	necsus/compiletime/archetypeBuilder.html#detachable,ArchetypeBuilder[T],openArray[T]	archetypeBuilder: detachable[T](builder: var ArchetypeBuilder[T]; values: openArray[T])	
 build	necsus/compiletime/archetypeBuilder.html#build,ArchetypeBuilder[T]	archetypeBuilder: build[T](builder: ArchetypeBuilder[T]): ArchetypeSet[T]	
