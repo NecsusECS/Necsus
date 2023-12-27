@@ -20,15 +20,23 @@ proc generateName(values: openarray[string]): string = values.join("_")
 proc newArchetype*[T](values: openarray[T]): Archetype[T] =
     ## Create an archetype
 
-    if not values.isSorted:
-        let correct = values.sorted().deduplicate(isSorted = true).join(", ")
-        raise newException(UnsortedArchetype, "Archetype must be in sorted order. Correct order is: " & correct)
+    var verified: seq[T]
+    var previous: T
+    for i, value in values:
+        if i > 0 and value < previous:
+            let correct = values.sorted().join(", ")
+            raise newException(UnsortedArchetype, "Archetype must be in sorted order. Correct order is: " & correct)
+        elif i == 0 or previous != value:
+            verified.add(value)
+        previous = value
 
-    result.new
-    result.values = values.toSeq.deduplicate(isSorted = true)
-    result.name = generateName(result.values)
-    result.identName = "archetype_" & result.name
-    result.cachedHash = hash(result.values)
+    let name = generateName(verified)
+    return Archetype[T](
+        values: verified,
+        name: name,
+        identName: "archetype_" & name,
+        cachedHash: hash(verified),
+    )
 
 proc hash*[T](archetype: Archetype[T]): Hash = archetype.cachedHash
     ## Create a hash describing a archetype
