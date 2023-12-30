@@ -18,12 +18,15 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, dir: Tuple
     result = newStmtList()
     case details.hook
     of Standard:
-        let ident = name.ident
-        let archetype = newArchetype(dir.items.toSeq)
-        let archetypeIdent = archetype.ident
-        result.add quote do:
-            `appStateIdent`.`ident` =
-                proc(): auto = beginSpawn(`appStateIdent`.`worldIdent`, `appStateIdent`.`archetypeIdent`)
+        try:
+            let ident = name.ident
+            let archetype = newArchetype(dir.items.toSeq)
+            let archetypeIdent = archetype.ident
+            result.add quote do:
+                `appStateIdent`.`ident` =
+                    proc(): auto = beginSpawn(`appStateIdent`.`worldIdent`, `appStateIdent`.`archetypeIdent`)
+        except UnsortedArchetype as e:
+            error(e.msg, arg.source)
     else:
         discard
 
