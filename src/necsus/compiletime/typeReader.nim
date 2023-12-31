@@ -2,14 +2,16 @@ import macros, options, tables, sequtils
 
 proc findPragma*(node: NimNode): NimNode =
     ## Finds the pragma node attached to a nim node
-    case node.kind
-    of nnkIdentDefs:
-        if node[0].kind == nnkPragmaExpr:
-            node[0][1]
-        else:
-            newEmptyNode()
-    of nnkSym, nnkConstDef: newEmptyNode()
-    else: node.pragma
+    if node.kind in RoutineNodes:
+        return node.pragma
+    else:
+        case node.kind
+        of nnkIdentDefs:
+            if node[0].kind == nnkPragmaExpr:
+                node[0][1]
+            else:
+                newEmptyNode()
+        else: newEmptyNode()
 
 proc findChildSyms*(node: NimNode, output: var seq[NimNode]) =
     ## Finds all symbols in the children of a node and returns them
