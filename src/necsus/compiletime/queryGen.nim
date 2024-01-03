@@ -10,18 +10,26 @@ iterator selectArchetypes(details: GenerateContext, query: TupleDirective): Arch
 
 let compsIdent {.compileTime.} = ident("comps")
 
-proc createArchetypeViews(details: GenerateContext, query: TupleDirective, queryTupleType: NimNode): NimNode =
+proc createArchetypeViews(
+    details: GenerateContext,
+    name: string,
+    query: TupleDirective,
+    queryTupleType: NimNode,
+    dependencies: var NimNode
+): NimNode =
     ## Creates the views that bind an archetype to a query
     result = nnkBracket.newTree()
     for archetype in details.selectArchetypes(query):
         let archetypeIdent = archetype.ident
         let tupleCopy = compsIdent.copyTuple(archetype, query)
         let archTupleType = archetype.asStorageTuple
+        let convertProcName = details.globalName("converter_" & archetype.ident.strVal & "_" & name)
+
+        dependencies.add quote do:
+            func `convertProcName`(`compsIdent`: ptr `archTupleType`): `queryTupleType` = `tupleCopy`
+
         result.add quote do:
-            asView(
-                `appStateIdent`.`archetypeIdent`,
-                proc (`compsIdent`: ptr `archTupleType`): `queryTupleType` = `tupleCopy`
-            )
+            asView(`appStateIdent`.`archetypeIdent`, `convertProcName`)
 
 proc worldFields(name: string, dir: TupleDirective): seq[WorldField] =
     @[ (name, nnkBracketExpr.newTree(bindSym("Query"), dir.asTupleType)) ]
@@ -33,11 +41,13 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, dir: Tuple
 
     case details.hook
     of GenerateHook.Outside:
+        var output = newStmtList()
         let appStateTypeName = details.appStateTypeName
         let queryTuple = dir.args.asTupleType
-        let views = details.createArchetypeViews(dir, queryTuple)
-        return quote do:
-            proc `buildQueryProc`(`appStateIdent`: var `appStateTypeName`): auto = newQuery[`queryTuple`](@`views`)
+        let views = details.createArchetypeViews(name, dir, queryTuple, output)
+        output.add quote do:
+            func `buildQueryProc`(`appStateIdent`: var `appStateTypeName`): auto = newQuery[`queryTuple`](@`views`)
+        return output
 
     of GenerateHook.Standard:
         let ident = name.ident
