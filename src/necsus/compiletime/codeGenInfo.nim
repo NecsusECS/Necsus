@@ -71,12 +71,14 @@ proc appStateInit*(genInfo: CodeGenInfo): NimNode =
 
 proc newGenerateContext(codeGen: CodeGenInfo, hook: GenerateHook): GenerateContext =
     ## Create a GenerateContext for a hook
-    result.new
-    result.hook = hook
-    result.inputs = codeGen.app.inputs
-    result.directives = codeGen.directives
-    result.archetypes = codeGen.archetypes
-    result.archetypeEnum = codeGen.archetypeEnum
+    return GenerateContext(
+        hook: hook,
+        inputs: codeGen.app.inputs,
+        directives: codeGen.directives,
+        archetypes: codeGen.archetypes,
+        archetypeEnum: codeGen.archetypeEnum,
+        appStateTypeName: codeGen.appStateTypeName
+    )
 
 proc nameOf*(genInfo: CodeGenInfo, arg: SystemArg): string =
     ## Returns the name used for a specific system arg

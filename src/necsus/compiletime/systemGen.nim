@@ -16,6 +16,7 @@ type
         inputs*: AppInputs
         archetypes*: ArchetypeSet[ComponentDef]
         archetypeEnum*: ArchetypeEnum
+        appStateTypeName*: NimNode
 
     DirectiveKind* {.pure.} = enum
         Tuple, Mono, None
@@ -262,6 +263,10 @@ proc systemArg*(directives: Table[DirectiveGen, DirectiveSet[SystemArg]], arg: S
 proc systemArg*(ctx: GenerateContext, arg: SystemArg): NimNode =
     ## Returns the value to pass to a system when executin the given argument
     systemArg(ctx.directives, arg)
+
+proc globalName*(ctx: GenerateContext, name: string): NimNode =
+    ## Generates a deterministic name for a global identifier
+    ident(ctx.appStateTypeName.strVal & "_" & name)
 
 proc allNestedArgs(arg: SystemArg, into: var seq[SystemArg]) =
     for nested in arg.nestedArgs:

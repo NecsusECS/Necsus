@@ -4,14 +4,18 @@ import ../runtime/[archetypeStore, world, directives]
 
 proc worldFields(name: string): seq[WorldField] = @[ (name, bindSym("Delete")) ]
 
+let entity {.compileTime.} = ident("entity")
+let entityIndex {.compileTime.} = ident("entityIndex")
+
 proc generate(details: GenerateContext, arg: SystemArg, name: string): NimNode =
     ## Generates the code for deleting an entity
+
+    let deleteProcName = details.globalName(name)
+
     case details.hook
-    of GenerateHook.Standard:
-        let deleteProc = name.ident
+    of Outside:
         let archetypeEnum = details.archetypeEnum.ident
-        let entity = ident("entity")
-        let entityIndex = ident("entityIndex")
+        let appStateTypeName = details.appStateTypeName
 
         var cases: NimNode
         if details.archetypes.len > 0:
@@ -25,15 +29,19 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string): NimNode =
             cases = newEmptyNode()
 
         return quote do:
-            `appStateIdent`.`deleteProc` = proc(`entity`: EntityId) =
+            proc `deleteProcName`(`appStateIdent`: var `appStateTypeName`, `entity`: EntityId) =
                 let `entityIndex` = del[`archetypeEnum`](`appStateIdent`.`worldIdent`, `entity`)
                 `cases`
+    of Standard:
+        let deleteProc = name.ident
+        return quote do:
+            `appStateIdent`.`deleteProc` = proc(`entity`: EntityId) = `deleteProcName`(`appStateIdent`, `entity`)
     else:
         return newEmptyNode()
 
 let deleteGenerator* {.compileTime.} = newGenerator(
     ident = "Delete",
-    interest = { Standard },
+    interest = { Standard, Outside },
     generate = generate,
     worldFields = worldFields
 )
