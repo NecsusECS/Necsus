@@ -36,11 +36,14 @@ proc canCreateFrom(lookup: TupleDirective, archetype: Archetype[ComponentDef]): 
 
 proc generate(details: GenerateContext, arg: SystemArg, name: string, lookup: TupleDirective): NimNode =
     ## Generates the code for instantiating queries
-    case details.hook
-    of GenerateHook.Standard:
 
-        let procName = ident(name)
-        let tupleType = lookup.args.toSeq.asTupleType
+    let lookupProc = details.globalName(name)
+    let tupleType = lookup.args.toSeq.asTupleType
+
+    case details.hook
+    of GenerateHook.Outside:
+        let appStateTypeName = details.appStateTypeName
+
         let noneResult = quote: return none(`tupleType`)
 
         var cases: NimNode
@@ -63,15 +66,21 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, lookup: Tu
                 cases.add(nnkElse.newTree(noneResult))
 
         return quote:
-            `appStateIdent`.`procName` = proc(`entityId`: EntityId): Option[`tupleType`] =
+            proc `lookupProc`(`appStateIdent`: var `appStateTypeName`, `entityId`: EntityId): Option[`tupleType`] =
                 let `entityIndex` = `appStateIdent`.`worldIdent`[`entityId`]
                 `cases`
+
+    of GenerateHook.Standard:
+        let procName = ident(name)
+        return quote:
+            `appStateIdent`.`procName` = proc(`entityId`: EntityId): Option[`tupleType`] =
+                `lookupProc`(`appStateIdent`, `entityId`)
     else:
         return newEmptyNode()
 
 let lookupGenerator* {.compileTime.} = newGenerator(
     ident = "Lookup",
-    interest = { Standard },
+    interest = { Standard, Outside },
     generate = generate,
     worldFields = worldFields,
 )
