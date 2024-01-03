@@ -68,12 +68,14 @@ proc attachFields(name: string, dir: TupleDirective): seq[WorldField] =
 
 proc generateAttach(details: GenerateContext, arg: SystemArg, name: string, attach: TupleDirective): NimNode =
     ## Generates the code for instantiating queries
-    case details.hook
-    of GenerateHook.Standard:
-        let procName = ident(name)
-        let componentTuple = attach.args.toSeq.asTupleType
+    let attachProc = details.globalName(name)
+    let componentTuple = attach.args.asTupleType
 
-        ## Generate a cases statement to do the work for each kind of archetype
+    case details.hook
+    of Outside:
+        let appStateTypeName = details.appStateTypeName
+
+        # Generate a cases statement to do the work for each kind of archetype
         var cases: NimNode = newEmptyNode()
         if details.archetypes.len > 0:
             var needsElse = false
@@ -89,16 +91,25 @@ proc generateAttach(details: GenerateContext, arg: SystemArg, name: string, atta
             if needsElse:
                 cases.add(nnkElse.newTree(nnkDiscardStmt.newTree(newEmptyNode())))
 
-        return quote:
-            `appStateIdent`.`procName` = proc(`entityId`: EntityId, `newComps`: `componentTuple`) =
+        return quote do:
+            proc `attachProc`(
+                `appStateIdent`: var `appStateTypeName`,
+                `entityId`: EntityId,
+                `newComps`: `componentTuple`
+            ) =
                 var `entityIndex` = `appStateIdent`.`worldIdent`[`entityId`]
                 `cases`
+    of Standard:
+        let procName = ident(name)
+        return quote:
+            `appStateIdent`.`procName` = proc(`entityId`: EntityId, `newComps`: `componentTuple`) =
+                `attachProc`(`appStateIdent`, `entityId`, `newComps`)
     else:
         return newEmptyNode()
 
 let attachGenerator* {.compileTime.} = newGenerator(
     ident = "Attach",
-    interest = { Standard },
+    interest = { Standard, Outside },
     generate = generateAttach,
     archetype = attachArchetype,
     worldFields = attachFields
