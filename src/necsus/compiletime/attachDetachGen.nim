@@ -123,10 +123,12 @@ proc detachFields(name: string, dir: TupleDirective): seq[WorldField] =
 
 proc generateDetach(details: GenerateContext, arg: SystemArg, name: string, detach: TupleDirective): NimNode =
     ## Generates the code for instantiating queries
-    case details.hook
-    of GenerateHook.Standard:
 
-        let procName = ident(name)
+    let detachProc = details.globalName(name)
+
+    case details.hook
+    of GenerateHook.Outside:
+        let appStateTypeName = details.appStateTypeName
 
         var cases = newEmptyNode()
         if details.archetypes.len > 0:
@@ -143,15 +145,21 @@ proc generateDetach(details: GenerateContext, arg: SystemArg, name: string, deta
                 cases.add(nnkElse.newTree(nnkDiscardStmt.newTree(newEmptyNode())))
 
         return quote:
-            `appStateIdent`.`procName` = proc(`entityId`: EntityId) =
+            proc `detachProc`(`appStateIdent`: var `appStateTypeName`, `entityId`: EntityId) =
                 let `entityIndex` = `appStateIdent`.`worldIdent`[`entityId`]
                 `cases`
+
+    of GenerateHook.Standard:
+        let procName = ident(name)
+        return quote:
+            `appStateIdent`.`procName` = proc(`entityId`: EntityId) =
+                `detachProc`(`appStateIdent`, `entityId`)
     else:
         return newEmptyNode()
 
 let detachGenerator* {.compileTime.} = newGenerator(
     ident = "Detach",
-    interest = { Standard },
+    interest = { Standard, Outside },
     generate = generateDetach,
     archetype = detachArchetype,
     worldFields = detachFields,
