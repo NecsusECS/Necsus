@@ -26,22 +26,29 @@ proc createArchetypeViews(details: GenerateContext, query: TupleDirective, query
 proc worldFields(name: string, dir: TupleDirective): seq[WorldField] =
     @[ (name, nnkBracketExpr.newTree(bindSym("Query"), dir.asTupleType)) ]
 
-proc generate(details: GenerateContext, arg: SystemArg, name:  string, dir: TupleDirective): NimNode =
+proc generate(details: GenerateContext, arg: SystemArg, name: string, dir: TupleDirective): NimNode =
     ## Generates the code for instantiating queries
-    result = newStmtList()
+
+    let buildQueryProc = details.globalName(name)
+
     case details.hook
-    of GenerateHook.Standard:
-        let ident = name.ident
+    of GenerateHook.Outside:
+        let appStateTypeName = details.appStateTypeName
         let queryTuple = dir.args.asTupleType
         let views = details.createArchetypeViews(dir, queryTuple)
-        result.add quote do:
-            `appStateIdent`.`ident` = newQuery[`queryTuple`](@`views`)
+        return quote do:
+            proc `buildQueryProc`(`appStateIdent`: var `appStateTypeName`): auto = newQuery[`queryTuple`](@`views`)
+
+    of GenerateHook.Standard:
+        let ident = name.ident
+        return quote do:
+            `appStateIdent`.`ident` = `buildQueryProc`(`appStateIdent`)
     else:
-        discard
+        return newEmptyNode()
 
 let queryGenerator* {.compileTime.} = newGenerator(
     ident = "Query",
-    interest = { Standard },
+    interest = { Standard, Outside },
     generate = generate,
     worldFields = worldFields
 )
