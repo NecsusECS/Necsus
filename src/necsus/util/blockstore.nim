@@ -8,7 +8,7 @@ type
 
     Entry*[V] = ptr EntryData[V]
 
-    BlockStore*[V] = object
+    BlockStore*[V] = ref object
         ## Stores a block of packed values
         nextId: Atomic[uint]
         hasRecycledValues: bool
@@ -18,8 +18,7 @@ type
 
 proc newBlockStore*[V](size: SomeInteger): BlockStore[V] =
     ## Instantiates a new BlockStore
-    result.recycle = newRingBuffer[uint](size)
-    result.data = newArrayBlock[EntryData[V]](size)
+    BlockStore[V](recycle: newRingBuffer[uint](size), data: newArrayBlock[EntryData[V]](size))
 
 proc len*[V](blockstore: var BlockStore[V]): uint = blockstore.len.load
     ## Returns the length of this blockstore

@@ -11,7 +11,7 @@ type
         archetype: Archs
         compStore: BlockStore[ArchRow[Comps]]
 
-    ArchView*[ViewComps: tuple] = object
+    ArchView*[ViewComps: tuple] = ref object
         ## An object able to iterate over an archetype using a specific view of the data
         buildIterator: proc(): iterator(slot: var ViewComps): EntityId
         length: proc(): uint
@@ -23,10 +23,7 @@ proc newArchetypeStore*[Archs: enum, Comps: tuple](
     initialSize: SomeInteger
 ): ArchetypeStore[Archs, Comps] =
     ## Creates a new storage block for an archetype
-    let inst = new(ArchetypeStore[Archs, Comps])
-    inst.compStore = newBlockStore[ArchRow[Comps]](initialSize)
-    inst.archetype = archetype
-    return inst
+    ArchetypeStore[Archs, Comps](compStore: newBlockStore[ArchRow[Comps]](initialSize), archetype: archetype)
 
 proc archetype*[Archs: enum, Comps: tuple](store: ArchetypeStore[Archs, Comps]): Archs {.inline.} = store.archetype
     ## Accessor for the archetype of a store
@@ -54,12 +51,13 @@ proc asView*[Archs: enum, ArchetypeComps: tuple, ViewComps: tuple](
     convert: proc (input: ptr ArchetypeComps): ViewComps
 ): ArchView[ViewComps] =
     ## Creates an iterable view into this component that uses the given converter
-    result.buildIterator = proc(): auto =
+    proc buildIter(): auto =
         return iterator(comps: var ViewComps): EntityId =
             for row in items(input.compStore):
                 comps = convert(addr row.components)
                 yield row.entityId
-    result.length = proc(): auto = input.compStore.len
+    proc getLength(): uint = input.compStore.len
+    return ArchView[ViewComps](buildIterator: buildIter, length: getLength)
 
 iterator items*[ViewComps: tuple](view: ArchView[ViewComps], comps: var ViewComps): EntityId {.inline.} =
     ## Iterates over the components in a view

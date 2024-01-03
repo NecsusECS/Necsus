@@ -5,7 +5,7 @@ type
         ## An individual value yielded by a query. Where `Comps` is a tuple of the components to fetch in
         ## this query
 
-    Query*[Comps: tuple] = object
+    Query*[Comps: tuple] = ref object
         ## Allows systems to query for entities with specific components. Where `Comps` is a tuple of
         ## the components to fetch in this query.
         archetypes: seq[ArchView[Comps]]
@@ -16,7 +16,7 @@ type
 
 proc newQuery*[Comps: tuple](archetypes: sink seq[ArchView[Comps]]): Query[Comps] =
     ## Creates a new object for executing a query
-    result.archetypes = archetypes
+    Query[Comps](archetypes: archetypes)
 
 iterator pairs*[Comps: tuple](query: Query[Comps]): QueryItem[Comps] {.inline.} =
     ## Iterates through the entities in a query
