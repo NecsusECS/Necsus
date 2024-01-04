@@ -1,6 +1,6 @@
 import macros, options, tables, sequtils
 import worldEnum, codeGenInfo, archetype, commonVars, systemGen, tickGen, parse
-import ../runtime/[world, archetypeStore, necsusConf]
+import ../runtime/[world, archetypeStore, necsusConf], ../util/profile
 
 proc fields(genInfo: CodeGenInfo): seq[(NimNode, NimNode)] =
     ## Produces a list of all fields to attach to the state object
@@ -19,7 +19,6 @@ proc fields(genInfo: CodeGenInfo): seq[(NimNode, NimNode)] =
     for (name, typ) in genInfo.worldFields:
         result.add (name.ident, typ)
 
-
 proc createAppStateType*(genInfo: CodeGenInfo): NimNode =
     ## Creates a type definition that captures the state of the app
     var fields = nnkRecList.newTree()
@@ -31,6 +30,15 @@ proc createAppStateType*(genInfo: CodeGenInfo): NimNode =
         if system.instanced.isSome:
             let (fieldName, fieldType) = system.instancedInfo().unsafeGet
             fields.add nnkIdentDefs.newTree(fieldName, fieldType, newEmptyNode())
+
+    if profilingEnabled():
+        fields.add(
+            nnkIdentDefs.newTree(
+                ident("profile"),
+                nnkBracketExpr.newTree(ident("array"), newLit(genInfo.systems.len), bindSym("Profiler")),
+                newEmptyNode()
+            )
+        )
 
     return nnkTypeSection.newTree(
         nnkTypeDef.newTree(
@@ -72,6 +80,14 @@ proc createArchetypeState(genInfo: CodeGenInfo): NimNode =
                     `appStateIdent`.`confIdent`.componentSize
                 )
 
+proc initProfilers(genInfo: CodeGenInfo): NimNode =
+    result = newStmtList()
+    if profilingEnabled():
+        for i, system in genInfo.systems:
+            let name = system.symbol.strVal
+            result.add quote do:
+                `appStateIdent`.profile[`i`].name = `name`
+
 proc createAppStateInit*(genInfo: CodeGenInfo): NimNode =
     ## Creates a proc for initializing the app state object
     let createConfig = genInfo.config
@@ -83,6 +99,7 @@ proc createAppStateInit*(genInfo: CodeGenInfo): NimNode =
     let lateInit = genInfo.generateForHook(GenerateHook.Late)
     let startups = genInfo.callSystems(StartupPhase)
     let beforeLoop = genInfo.generateForHook(GenerateHook.BeforeLoop)
+    let profilers = genInfo.initProfilers()
 
     let initBody = quote:
         var `appStateIdent` = new(`appStateType`)
@@ -90,6 +107,7 @@ proc createAppStateInit*(genInfo: CodeGenInfo): NimNode =
         `appStateIdent`.`worldIdent` = newWorld[`archetypeEnum`](`appStateIdent`.`confIdent`.entitySize)
         `appStateIdent`.`startTime` = `appStateIdent`.`confIdent`.getTime()
         `archetypeDefs`
+        `profilers`
         `earlyInit`
         `stdInit`
         `lateInit`

@@ -762,6 +762,12 @@ proc changeStateSystem(manager: Bundle[StateManager], winConditionMet: Shared[bo
 proc app() {.necsus([], [~customSystem, ~changeStateSystem], [], newNecsusConf()).}
 ```
 
+## Profiling systems
+
+To get a quick and dirty idea of how your app is performing, you can compile with the `-d:profile` flag set. This
+will cause Necsus to add profiling code that will report how long each system is taking. It takes measurements,
+then outputs the timings to the console.
+
 ## Debugging Generated Code
 
 If Necsus isn't behaving as you would expect, the best tool you've got in your toolbox is the ability to dump the code

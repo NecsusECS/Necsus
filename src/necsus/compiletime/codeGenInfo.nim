@@ -31,6 +31,10 @@ proc calculateDirectives(args: openarray[SystemArg]): Table[DirectiveGen, Direct
     for gen, args in grouped:
         result[gen] = newDirectiveSet[SystemArg](gen.ident, args)
 
+proc profilingEnabled*(): bool =
+    ## Returns whether to inject system profiling code
+    defined(profile)
+
 proc newEmptyCodeGenInfo*(config: NimNode, app: ParsedApp): CodeGenInfo =
     ## Collects data needed for code gen from all the parsed systems
     let archetypes = newArchetypeBuilder[ComponentDef]().build()

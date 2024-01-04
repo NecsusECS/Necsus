@@ -1,5 +1,5 @@
 import macros, sequtils, systemGen, options
-import codeGenInfo, parse, commonVars, ../runtime/[systemVar, directives]
+import codeGenInfo, parse, commonVars, ../runtime/[systemVar, directives], ../util/profile
 
 proc renderSystemArgs(codeGenInfo: CodeGenInfo, args: openarray[SystemArg]): seq[NimNode] =
     ## Renders system arguments down to nim code
@@ -40,10 +40,21 @@ proc addActiveChecks(
 
     return newIfStmt((condition, invocation))
 
+proc wrapInProfiler(codeGenInfo: CodeGenInfo, i: int, node: NimNode): NimNode =
+    ## Wraps a system invocation in a profiler call when enabled
+    if not profilingEnabled():
+        return node
+
+    let profileVar = ident("profile_start_time_" & $i)
+    return quote do:
+        let `profileVar` = `appStateIdent`.config.getTime()
+        `node`
+        `appStateIdent`.profile[`i`].record(`appStateIdent`.config.getTime() - `profileVar`)
+
 proc callSystems*(codeGenInfo: CodeGenInfo, phase: SystemPhase): NimNode =
     ## Generates the code for invoke a list of systems
     result = newStmtList()
-    for system in codeGenInfo.systems:
+    for i, system in codeGenInfo.systems:
 
         var invokeSystem =
             if system.instanced.isSome: codeGenInfo.callInstanced(system, phase)
@@ -52,6 +63,9 @@ proc callSystems*(codeGenInfo: CodeGenInfo, phase: SystemPhase): NimNode =
 
         if invokeSystem.kind != nnkEmpty:
             invokeSystem = newStmtList(invokeSystem, codeGenInfo.generateForHook(system, AfterSystem))
+
+            if phase == SystemPhase.LoopPhase:
+                invokeSystem = codeGenInfo.wrapInProfiler(i, invokeSystem)
 
             result.add(newStmtList(
                 invokeSystem.addActiveChecks(codeGenInfo, system.checks, phase),
@@ -67,6 +81,12 @@ proc createTickProc*(genInfo: CodeGenInfo): NimNode =
     let loopStart = genInfo.generateForHook(GenerateHook.LoopStart)
     let loopEnd = genInfo.generateForHook(GenerateHook.LoopEnd)
 
+    let profiler = if profilingEnabled():
+        quote:
+            summarize(`appStateIdent`.profile, `appStateIdent`.`confIdent`)
+    else:
+        newEmptyNode()
+
     return quote:
         proc tick(`appStateIdent`: var `appStateType`) =
             let `thisTime` {.used.} = `appStateIdent`.`confIdent`.getTime()
@@ -74,6 +94,7 @@ proc createTickProc*(genInfo: CodeGenInfo): NimNode =
             block:
                 `loopSystems`
             `loopEnd`
+            `profiler`
 
 proc createTickRunner*(genInfo: CodeGenInfo, runner: NimNode): NimNode =
     ## Creates the code required to execute a single tick within the world
