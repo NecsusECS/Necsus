@@ -32,7 +32,12 @@ proc createArchetypeViews(
             asView(`appStateIdent`.`archetypeIdent`, `convertProcName`)
 
 proc worldFields(name: string, dir: TupleDirective): seq[WorldField] =
-    @[ (name, nnkBracketExpr.newTree(bindSym("Query"), dir.asTupleType)) ]
+    @[ (name, nnkBracketExpr.newTree(bindSym("RawQuery"), dir.asTupleType)) ]
+
+proc systemArg(name: string, dir: TupleDirective): NimNode =
+    let nameIdent = name.ident
+    return quote:
+        addr `appStateIdent`.`nameIdent`
 
 proc generate(details: GenerateContext, arg: SystemArg, name: string, dir: TupleDirective): NimNode =
     ## Generates the code for instantiating queries
@@ -60,6 +65,7 @@ let queryGenerator* {.compileTime.} = newGenerator(
     ident = "Query",
     interest = { Standard, Outside },
     generate = generate,
-    worldFields = worldFields
+    worldFields = worldFields,
+    systemArg = systemArg,
 )
 

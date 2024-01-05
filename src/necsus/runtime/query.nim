@@ -5,18 +5,22 @@ type
         ## An individual value yielded by a query. Where `Comps` is a tuple of the components to fetch in
         ## this query
 
-    Query*[Comps: tuple] = ref object
+    RawQuery*[Comps] = object
         ## Allows systems to query for entities with specific components. Where `Comps` is a tuple of
         ## the components to fetch in this query.
         archetypes: seq[ArchView[Comps]]
+
+    Query*[Comps: tuple] = ptr RawQuery[Comps]
+        ## Allows systems to query for entities with specific components. Where `Comps` is a tuple of
+        ## the components to fetch in this query.
 
     Not*[Comps] = distinct int8
         ## A query flag that indicates a component should be excluded from a query. Where `Comps` is
         ## the single component that should be excluded.
 
-proc newQuery*[Comps: tuple](archetypes: sink seq[ArchView[Comps]]): Query[Comps] =
+proc newQuery*[Comps: tuple](archetypes: sink seq[ArchView[Comps]]): RawQuery[Comps] =
     ## Creates a new object for executing a query
-    Query[Comps](archetypes: archetypes)
+    RawQuery[Comps](archetypes: archetypes)
 
 iterator pairs*[Comps: tuple](query: Query[Comps]): QueryItem[Comps] {.inline.} =
     ## Iterates through the entities in a query
