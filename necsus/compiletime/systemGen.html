@@ -151,7 +151,8 @@ window.addEventListener('DOMContentLoaded', main);
   directives*: Table[DirectiveGen, DirectiveSet[SystemArg]]
   inputs*: AppInputs
   archetypes*: ArchetypeSet[ComponentDef]
-  archetypeEnum*: ArchetypeEnum">GenerateContext</a></li>
+  archetypeEnum*: ArchetypeEnum
+  appStateTypeName*: NimNode">GenerateContext</a></li>
   <li><a class="reference" href="#GenerateHook"
     title="GenerateHook = enum
   Outside, Early, Standard, Late, BeforeLoop, LoopStart, AfterSystem,
@@ -220,6 +221,11 @@ window.addEventListener('DOMContentLoaded', main);
   <ul class="simple nested-toc-section">generateName
       <li><a class="reference" href="#generateName%2CSystemArg"
     title="generateName(arg: SystemArg): string">generateName(arg: SystemArg): string</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">globalName
+      <li><a class="reference" href="#globalName%2CGenerateContext%2Cstring"
+    title="globalName(ctx: GenerateContext; name: string): NimNode">globalName(ctx: GenerateContext; name: string): NimNode</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">hash
@@ -400,6 +406,7 @@ An object that can contribute to Necsus code generation
   <span class="Identifier">inputs</span><span class="Operator">*</span><span class="Other">:</span> <a href="systemGen.html#AppInputs"><span class="Identifier">AppInputs</span></a>
   <span class="Identifier">archetypes</span><span class="Operator">*</span><span class="Other">:</span> <a href="archetype.html#ArchetypeSet"><span class="Identifier">ArchetypeSet</span></a><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span>
   <span class="Identifier">archetypeEnum</span><span class="Operator">*</span><span class="Other">:</span> <a href="worldEnum.html#ArchetypeEnum"><span class="Identifier">ArchetypeEnum</span></a>
+  <span class="Identifier">appStateTypeName</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">NimNode</span>
 </pre></dt>
 <dd>
 
@@ -547,6 +554,15 @@ Generates the code for a specific hook
 
 </dd>
 </div>
+<div id="globalName,GenerateContext,string">
+<dt><pre><span class="Keyword">proc</span> <a href="#globalName%2CGenerateContext%2Cstring"><span class="Identifier">globalName</span></a><span class="Other">(</span><span class="Identifier">ctx</span><span class="Other">:</span> <a href="systemGen.html#GenerateContext"><span class="Identifier">GenerateContext</span></a><span class="Other">;</span> <span class="Identifier">name</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+Generates a deterministic name for a global identifier
+
+</dd>
+</div>
 <div id="hash,SystemArg">
 <dt><pre><span class="Keyword">proc</span> <a href="#hash%2CSystemArg"><span class="Identifier">hash</span></a><span class="Other">(</span><span class="Identifier">arg</span><span class="Other">:</span> <a href="systemGen.html#SystemArg"><span class="Identifier">SystemArg</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Hash</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
@@ -675,7 +691,7 @@ Generates the code for a specific hook
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-12-31 17:36:59 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-01-05 15:48:08 UTC</small>
       </div>
     </div>
   </div>

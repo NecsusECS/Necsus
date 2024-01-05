@@ -110,11 +110,12 @@ window.addEventListener('DOMContentLoaded', main);
       <li><a class="reference" href="#ArchetypeStore"
     title="ArchetypeStore[Archs; Comps] = ref object
   archetype: Archs
+  initialSize: int
   compStore: BlockStore[ArchRow[Comps]]">ArchetypeStore</a></li>
-  <li><a class="reference" href="#ArchView"
-    title="ArchView[ViewComps] = object
-  buildIterator: proc (): iterator (slot: var ViewComps): EntityId
-  length: proc (): uint">ArchView</a></li>
+  <li><a class="reference" href="#ArchRow"
+    title="ArchRow[Comps] = object
+  entityId*: EntityId
+  components*: Comps">ArchRow</a></li>
   <li><a class="reference" href="#NewArchSlot"
     title="NewArchSlot[Comps] = distinct Entry[ArchRow[Comps]]">NewArchSlot</a></li>
 
@@ -126,15 +127,6 @@ window.addEventListener('DOMContentLoaded', main);
       <ul class="simple nested-toc-section">archetype
       <li><a class="reference" href="#archetype%2CArchetypeStore%5BArchs%3A%20enum%2CComps%3A%20tuple%5D"
     title="archetype[Archs: enum; Comps: tuple](store: ArchetypeStore[Archs, Comps]): Archs">archetype[Archs: enum; Comps: tuple](store: ArchetypeStore[Archs, Comps]): Archs</a></li>
-
-  </ul>
-  <ul class="simple nested-toc-section">asView
-      <li><a class="reference" href="#asView%2CArchetypeStore%5BArchs%3A%20enum%2CArchetypeComps%3A%20tuple%5D%2Cproc%28ptr.ArchetypeComps%29"
-    title="asView[Archs: enum; ArchetypeComps: tuple; ViewComps: tuple](
-    input: ArchetypeStore[Archs, ArchetypeComps];
-    convert: proc (input: ptr ArchetypeComps): ViewComps): ArchView[ViewComps]">asView[Archs: enum; ArchetypeComps: tuple; ViewComps: tuple](
-    input: ArchetypeStore[Archs, ArchetypeComps];
-    convert: proc (input: ptr ArchetypeComps): ViewComps): ArchView[ViewComps]</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">del
@@ -155,8 +147,8 @@ window.addEventListener('DOMContentLoaded', main);
 
   </ul>
   <ul class="simple nested-toc-section">len
-      <li><a class="reference" href="#len%2CArchView%5BViewComps%3A%20tuple%5D"
-    title="len[ViewComps: tuple](view: ArchView[ViewComps]): uint">len[ViewComps: tuple](view: ArchView[ViewComps]): uint</a></li>
+      <li><a class="reference" href="#len%2CArchetypeStore%5BArchs%3A%20enum%2CComps%3A%20tuple%5D"
+    title="len[Archs: enum; Comps: tuple](store: ArchetypeStore[Archs, Comps]): uint">len[Archs: enum; Comps: tuple](store: ArchetypeStore[Archs, Comps]): uint</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">moveEntity
@@ -198,8 +190,10 @@ window.addEventListener('DOMContentLoaded', main);
   <a class="reference reference-toplevel" href="#15" id="65">Iterators</a>
   <ul class="simple simple-toc-section">
       <ul class="simple nested-toc-section">items
-      <li><a class="reference" href="#items.i%2CArchView%5BViewComps%3A%20tuple%5D%2CViewComps"
-    title="items[ViewComps: tuple](view: ArchView[ViewComps]; comps: var ViewComps): EntityId">items[ViewComps: tuple](view: ArchView[ViewComps]; comps: var ViewComps): EntityId</a></li>
+      <li><a class="reference" href="#items.i%2CArchetypeStore%5BArchs%3A%20enum%2CComps%3A%20tuple%5D"
+    title="items[Archs: enum; Comps: tuple](store: ArchetypeStore[Archs, Comps]): var ArchRow[
+    Comps]">items[Archs: enum; Comps: tuple](store: ArchetypeStore[Archs, Comps]): var ArchRow[
+    Comps]</a></li>
 
   </ul>
 
@@ -225,7 +219,8 @@ window.addEventListener('DOMContentLoaded', main);
 <div id="ArchetypeStore">
 <dt><pre><a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">Archs</span><span class="Other">;</span> <span class="Identifier">Comps</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">ref</span> <span class="Keyword">object</span>
   <span class="Identifier">archetype</span><span class="Other">:</span> <span class="Identifier">Archs</span>
-  <span class="Identifier">compStore</span><span class="Other">:</span> <a href="../util/blockstore.html#BlockStore"><span class="Identifier">BlockStore</span></a><span class="Other">[</span><span class="Identifier">ArchRow</span><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">]</span>
+  <span class="Identifier">initialSize</span><span class="Other">:</span> <span class="Identifier">int</span>
+  <span class="Identifier">compStore</span><span class="Other">:</span> <a href="../util/blockstore.html#BlockStore"><span class="Identifier">BlockStore</span></a><span class="Other">[</span><a href="archetypeStore.html#ArchRow"><span class="Identifier">ArchRow</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">]</span>
 </pre></dt>
 <dd>
 
@@ -233,19 +228,19 @@ Stores a specific archetype shape
 
 </dd>
 </div>
-<div id="ArchView">
-<dt><pre><a href="archetypeStore.html#ArchView"><span class="Identifier">ArchView</span></a><span class="Other">[</span><span class="Identifier">ViewComps</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">object</span>
-  <span class="Identifier">buildIterator</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Keyword">iterator</span> <span class="Other">(</span><span class="Identifier">slot</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">ViewComps</span><span class="Other">)</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a>
-  <span class="Identifier">length</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">uint</span>
+<div id="ArchRow">
+<dt><pre><a href="archetypeStore.html#ArchRow"><span class="Identifier">ArchRow</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">object</span>
+  <span class="Identifier">entityId</span><span class="Operator">*</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a>
+  <span class="Identifier">components</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">Comps</span>
 </pre></dt>
 <dd>
 
-An object able to iterate over an archetype using a specific view of the data
+A row of data stored about an entity that matches a specific archetype
 
 </dd>
 </div>
 <div id="NewArchSlot">
-<dt><pre><a href="archetypeStore.html#NewArchSlot"><span class="Identifier">NewArchSlot</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">distinct</span> <a href="../util/blockstore.html#Entry"><span class="Identifier">Entry</span></a><span class="Other">[</span><span class="Identifier">ArchRow</span><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">]</span></pre></dt>
+<dt><pre><a href="archetypeStore.html#NewArchSlot"><span class="Identifier">NewArchSlot</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">distinct</span> <a href="../util/blockstore.html#Entry"><span class="Identifier">Entry</span></a><span class="Other">[</span><a href="archetypeStore.html#ArchRow"><span class="Identifier">ArchRow</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">]</span></pre></dt>
 <dd>
 
 
@@ -263,16 +258,6 @@ An object able to iterate over an archetype using a specific view of the data
 <dd>
 
 Accessor for the archetype of a store
-
-</dd>
-</div>
-<div id="asView,ArchetypeStore[Archs: enum,ArchetypeComps: tuple],proc(ptr.ArchetypeComps)">
-<dt><pre><span class="Keyword">proc</span> <a href="#asView%2CArchetypeStore%5BArchs%3A%20enum%2CArchetypeComps%3A%20tuple%5D%2Cproc%28ptr.ArchetypeComps%29"><span class="Identifier">asView</span></a><span class="Other">[</span><span class="Identifier">Archs</span><span class="Other">:</span> <span class="Keyword">enum</span><span class="Other">;</span> <span class="Identifier">ArchetypeComps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">;</span> <span class="Identifier">ViewComps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span>
-    <span class="Identifier">input</span><span class="Other">:</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">Archs</span><span class="Other">,</span> <span class="Identifier">ArchetypeComps</span><span class="Other">]</span><span class="Other">;</span>
-    <span class="Identifier">convert</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">input</span><span class="Other">:</span> <span class="Keyword">ptr</span> <span class="Identifier">ArchetypeComps</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">ViewComps</span><span class="Other">)</span><span class="Other">:</span> <a href="archetypeStore.html#ArchView"><span class="Identifier">ArchView</span></a><span class="Other">[</span><span class="Identifier">ViewComps</span><span class="Other">]</span></pre></dt>
-<dd>
-
-Creates an iterable view into this component that uses the given converter
 
 </dd>
 </div>
@@ -301,11 +286,12 @@ Return the components for an archetype
 
 </dd>
 </div>
-<div id="len,ArchView[ViewComps: tuple]">
-<dt><pre><span class="Keyword">proc</span> <a href="#len%2CArchView%5BViewComps%3A%20tuple%5D"><span class="Identifier">len</span></a><span class="Other">[</span><span class="Identifier">ViewComps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">view</span><span class="Other">:</span> <a href="archetypeStore.html#ArchView"><span class="Identifier">ArchView</span></a><span class="Other">[</span><span class="Identifier">ViewComps</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">uint</span> {.<span class="Identifier">inline</span>.}</pre></dt>
+<div id="len,ArchetypeStore[Archs: enum,Comps: tuple]">
+<dt><pre><span class="Keyword">proc</span> <a href="#len%2CArchetypeStore%5BArchs%3A%20enum%2CComps%3A%20tuple%5D"><span class="Identifier">len</span></a><span class="Other">[</span><span class="Identifier">Archs</span><span class="Other">:</span> <span class="Keyword">enum</span><span class="Other">;</span> <span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">Archs</span><span class="Other">,</span> <span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">uint</span> {.
+    <span class="Identifier">inline</span>.}</pre></dt>
 <dd>
 
-Iterates over the components in a view
+Accessor for the archetype of a store
 
 </dd>
 </div>
@@ -354,9 +340,9 @@ Stores an entity and its components into this slot
 <div class="section" id="15">
 <h1><a class="toc-backref" href="#15">Iterators</a></h1>
 <dl class="item">
-<div id="items.i,ArchView[ViewComps: tuple],ViewComps">
-<dt><pre><span class="Keyword">iterator</span> <a href="#items.i%2CArchView%5BViewComps%3A%20tuple%5D%2CViewComps"><span class="Identifier">items</span></a><span class="Other">[</span><span class="Identifier">ViewComps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">view</span><span class="Other">:</span> <a href="archetypeStore.html#ArchView"><span class="Identifier">ArchView</span></a><span class="Other">[</span><span class="Identifier">ViewComps</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">comps</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">ViewComps</span><span class="Other">)</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a> {.
-    <span class="Identifier">inline</span>.}</pre></dt>
+<div id="items.i,ArchetypeStore[Archs: enum,Comps: tuple]">
+<dt><pre><span class="Keyword">iterator</span> <a href="#items.i%2CArchetypeStore%5BArchs%3A%20enum%2CComps%3A%20tuple%5D"><span class="Identifier">items</span></a><span class="Other">[</span><span class="Identifier">Archs</span><span class="Other">:</span> <span class="Keyword">enum</span><span class="Other">;</span> <span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">Archs</span><span class="Other">,</span> <span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchRow"><span class="Identifier">ArchRow</span></a><span class="Other">[</span>
+    <span class="Identifier">Comps</span><span class="Other">]</span></pre></dt>
 <dd>
 
 Iterates over the components in a view
@@ -373,7 +359,7 @@ Iterates over the components in a view
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-12-31 17:36:59 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-01-05 15:48:08 UTC</small>
       </div>
     </div>
   </div>

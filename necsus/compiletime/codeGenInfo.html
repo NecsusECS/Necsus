@@ -160,6 +160,11 @@ window.addEventListener('DOMContentLoaded', main);
     title="newEmptyCodeGenInfo(config: NimNode; app: ParsedApp): CodeGenInfo">newEmptyCodeGenInfo(config: NimNode; app: ParsedApp): CodeGenInfo</a></li>
 
   </ul>
+  <ul class="simple nested-toc-section">profilingEnabled
+      <li><a class="reference" href="#profilingEnabled"
+    title="profilingEnabled(): bool">profilingEnabled(): bool</a></li>
+
+  </ul>
   <ul class="simple nested-toc-section">systemArg
       <li><a class="reference" href="#systemArg%2CCodeGenInfo%2CSystemArg"
     title="systemArg(genInfo: CodeGenInfo; arg: SystemArg): NimNode">systemArg(genInfo: CodeGenInfo; arg: SystemArg): NimNode</a></li>
@@ -281,6 +286,14 @@ Collects data needed for code gen from all the parsed systems
 
 </dd>
 </div>
+<div id="profilingEnabled">
+<dt><pre><span class="Keyword">proc</span> <a href="#profilingEnabled"><span class="Identifier">profilingEnabled</span></a><span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+Returns whether to inject system profiling code
+
+</dd>
+</div>
 <div id="systemArg,CodeGenInfo,SystemArg">
 <dt><pre><span class="Keyword">proc</span> <a href="#systemArg%2CCodeGenInfo%2CSystemArg"><span class="Identifier">systemArg</span></a><span class="Other">(</span><span class="Identifier">genInfo</span><span class="Other">:</span> <a href="codeGenInfo.html#CodeGenInfo"><span class="Identifier">CodeGenInfo</span></a><span class="Other">;</span> <span class="Identifier">arg</span><span class="Other">:</span> <a href="systemGen.html#SystemArg"><span class="Identifier">SystemArg</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">,</span> <span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
@@ -309,7 +322,7 @@ Generates the code for a specific code-gen hook
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-12-31 17:36:59 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-01-05 15:48:08 UTC</small>
       </div>
     </div>
   </div>

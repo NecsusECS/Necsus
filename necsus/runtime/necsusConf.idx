@@ -1,4 +1,4 @@
 NecsusConf	necsus/runtime/necsusConf.html#NecsusConf	necsusConf: NecsusConf	
-newNecsusConf	necsus/runtime/necsusConf.html#newNecsusConf,proc),int,int,int	necsusConf: newNecsusConf(getTime: proc (): float; entitySize: int; componentSize: int;\n              eventQueueSize: int): NecsusConf	
-newNecsusConf	necsus/runtime/necsusConf.html#newNecsusConf,proc)	necsusConf: newNecsusConf(getTime: proc (): float): NecsusConf	
+newNecsusConf	necsus/runtime/necsusConf.html#newNecsusConf,proc),proc(string),int,int,int	necsusConf: newNecsusConf(getTime: proc (): float; log: proc (message: string): void;\n              entitySize: int; componentSize: int; eventQueueSize: int): NecsusConf	
+newNecsusConf	necsus/runtime/necsusConf.html#newNecsusConf,proc),proc(string)	necsusConf: newNecsusConf(getTime: proc (): float; log: proc (message: string): void): NecsusConf	
 newNecsusConf	necsus/runtime/necsusConf.html#newNecsusConf,int,int,int	necsusConf: newNecsusConf(entitySize: int = 1000;\n              componentSize: int = ceilDiv(entitySize, 3);\n              eventQueueSize: int = ceilDiv(entitySize, 10)): NecsusConf	

@@ -110,10 +110,15 @@ window.addEventListener('DOMContentLoaded', main);
       <li><a class="reference" href="#Not"
     title="Not[Comps] = distinct int8">Not</a></li>
   <li><a class="reference" href="#Query"
-    title="Query[Comps] = object
-  archetypes: seq[ArchView[Comps]]">Query</a></li>
+    title="Query[Comps] = ptr RawQuery[Comps]">Query</a></li>
   <li><a class="reference" href="#QueryItem"
     title="QueryItem[Comps] = tuple[entityId: EntityId, components: Comps]">QueryItem</a></li>
+  <li><a class="reference" href="#QueryIterator"
+    title="QueryIterator[Comps] = iterator (slot: var Comps): EntityId">QueryIterator</a></li>
+  <li><a class="reference" href="#RawQuery"
+    title="RawQuery[Comps] = object
+  getLen: proc (): uint
+  getIterator: proc (): QueryIterator[Comps]">RawQuery</a></li>
 
   </ul>
 </li>
@@ -126,8 +131,12 @@ window.addEventListener('DOMContentLoaded', main);
 
   </ul>
   <ul class="simple nested-toc-section">newQuery
-      <li><a class="reference" href="#newQuery%2Csinkseq%5BArchView%5BComps%3A%20tuple%5D%5D"
-    title="newQuery[Comps: tuple](archetypes: sink seq[ArchView[Comps]]): Query[Comps]">newQuery[Comps: tuple](archetypes: sink seq[ArchView[Comps]]): Query[Comps]</a></li>
+      <li><a class="reference" href="#newQuery%2Cproc%29%2Cproc%29"
+    title="newQuery[Comps: tuple](getLen: proc (): uint;
+                       getIterator: proc (): QueryIterator[Comps]): RawQuery[
+    Comps]">newQuery[Comps: tuple](getLen: proc (): uint;
+                       getIterator: proc (): QueryIterator[Comps]): RawQuery[
+    Comps]</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">single
@@ -166,7 +175,7 @@ window.addEventListener('DOMContentLoaded', main);
   <div class="section" id="6">
 <h1><a class="toc-backref" href="#6">Imports</a></h1>
 <dl class="item">
-<a class="reference external" href="entityId.html">entityId</a>, <a class="reference external" href="archetypeStore.html">archetypeStore</a>
+<a class="reference external" href="entityId.html">entityId</a>
 </dl></div>
 <div class="section" id="7">
 <h1><a class="toc-backref" href="#7">Types</a></h1>
@@ -180,9 +189,7 @@ A query flag that indicates a component should be excluded from a query. Where <
 </dd>
 </div>
 <div id="Query">
-<dt><pre><a href="query.html#Query"><span class="Identifier">Query</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">object</span>
-  <span class="Identifier">archetypes</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="archetypeStore.html#ArchView"><span class="Identifier">ArchView</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">]</span>
-</pre></dt>
+<dt><pre><a href="query.html#Query"><span class="Identifier">Query</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">ptr</span> <a href="query.html#RawQuery"><span class="Identifier">RawQuery</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span></pre></dt>
 <dd>
 
 Allows systems to query for entities with specific components. Where <tt class="docutils literal"><span class="pre"><span class="Identifier">Comps</span></span></tt> is a tuple of the components to fetch in this query.
@@ -194,6 +201,25 @@ Allows systems to query for entities with specific components. Where <tt class="
 <dd>
 
 An individual value yielded by a query. Where <tt class="docutils literal"><span class="pre"><span class="Identifier">Comps</span></span></tt> is a tuple of the components to fetch in this query
+
+</dd>
+</div>
+<div id="QueryIterator">
+<dt><pre><a href="query.html#QueryIterator"><span class="Identifier">QueryIterator</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">iterator</span> <span class="Other">(</span><span class="Identifier">slot</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">Comps</span><span class="Other">)</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a></pre></dt>
+<dd>
+
+An iterator over a query
+
+</dd>
+</div>
+<div id="RawQuery">
+<dt><pre><a href="query.html#RawQuery"><span class="Identifier">RawQuery</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">object</span>
+  <span class="Identifier">getLen</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">uint</span>
+  <span class="Identifier">getIterator</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <a href="query.html#QueryIterator"><span class="Identifier">QueryIterator</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span>
+</pre></dt>
+<dd>
+
+Allows systems to query for entities with specific components. Where <tt class="docutils literal"><span class="pre"><span class="Identifier">Comps</span></span></tt> is a tuple of the components to fetch in this query.
 
 </dd>
 </div>
@@ -210,11 +236,13 @@ Returns the number of entities in this query
 
 </dd>
 </div>
-<div id="newQuery,sinkseq[ArchView[Comps: tuple]]">
-<dt><pre><span class="Keyword">proc</span> <a href="#newQuery%2Csinkseq%5BArchView%5BComps%3A%20tuple%5D%5D"><span class="Identifier">newQuery</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">archetypes</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="archetypeStore.html#ArchView"><span class="Identifier">ArchView</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="query.html#Query"><span class="Identifier">Query</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span></pre></dt>
+<div id="newQuery,proc),proc)">
+<dt><pre><span class="Keyword">proc</span> <a href="#newQuery%2Cproc%29%2Cproc%29"><span class="Identifier">newQuery</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">getLen</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">uint</span><span class="Other">;</span>
+                            <span class="Identifier">getIterator</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <a href="query.html#QueryIterator"><span class="Identifier">QueryIterator</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="query.html#RawQuery"><span class="Identifier">RawQuery</span></a><span class="Other">[</span>
+    <span class="Identifier">Comps</span><span class="Other">]</span></pre></dt>
 <dd>
 
-Creates a new object for executing a query
+
 
 </dd>
 </div>
@@ -232,7 +260,7 @@ Returns a single element from a query
 <h1><a class="toc-backref" href="#15">Iterators</a></h1>
 <dl class="item">
 <div id="items.i,Query[Comps: tuple]">
-<dt><pre><span class="Keyword">iterator</span> <a href="#items.i%2CQuery%5BComps%3A%20tuple%5D"><span class="Identifier">items</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">query</span><span class="Other">:</span> <a href="query.html#Query"><span class="Identifier">Query</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Comps</span> {.<span class="Identifier">inline</span>.}</pre></dt>
+<dt><pre><span class="Keyword">iterator</span> <a href="#items.i%2CQuery%5BComps%3A%20tuple%5D"><span class="Identifier">items</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">query</span><span class="Other">:</span> <a href="query.html#Query"><span class="Identifier">Query</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Comps</span></pre></dt>
 <dd>
 
 Iterates through the entities in a query
@@ -240,7 +268,7 @@ Iterates through the entities in a query
 </dd>
 </div>
 <div id="pairs.i,Query[Comps: tuple]">
-<dt><pre><span class="Keyword">iterator</span> <a href="#pairs.i%2CQuery%5BComps%3A%20tuple%5D"><span class="Identifier">pairs</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">query</span><span class="Other">:</span> <a href="query.html#Query"><span class="Identifier">Query</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="query.html#QueryItem"><span class="Identifier">QueryItem</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span> {.<span class="Identifier">inline</span>.}</pre></dt>
+<dt><pre><span class="Keyword">iterator</span> <a href="#pairs.i%2CQuery%5BComps%3A%20tuple%5D"><span class="Identifier">pairs</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">query</span><span class="Other">:</span> <a href="query.html#Query"><span class="Identifier">Query</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="query.html#QueryItem"><span class="Identifier">QueryItem</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span></pre></dt>
 <dd>
 
 Iterates through the entities in a query
@@ -257,7 +285,7 @@ Iterates through the entities in a query
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2023-12-31 17:36:59 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-01-05 15:48:07 UTC</small>
       </div>
     </div>
   </div>
