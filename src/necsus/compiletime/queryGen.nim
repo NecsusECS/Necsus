@@ -8,28 +8,32 @@ iterator selectArchetypes(details: GenerateContext, query: TupleDirective): Arch
         if archetype.bitset.matches(query.filter):
             yield archetype
 
-let compsIdent {.compileTime.} = ident("comps")
+let slot {.compileTime.} = ident("slot")
+let entry {.compileTime.} = ident("entry")
 
-proc createArchetypeViews(
+proc walkArchetypes(
     details: GenerateContext,
     name: string,
     query: TupleDirective,
     queryTupleType: NimNode,
-    dependencies: var NimNode
-): NimNode =
+): (NimNode, NimNode) =
     ## Creates the views that bind an archetype to a query
-    result = nnkBracket.newTree()
+    var lenCalculation = newLit(0'u)
+    var iteratorBody = newStmtList()
+
     for archetype in details.selectArchetypes(query):
         let archetypeIdent = archetype.ident
-        let tupleCopy = compsIdent.copyTuple(archetype, query)
-        let archTupleType = archetype.asStorageTuple
-        let convertProcName = details.globalName("converter_" & archetype.ident.strVal & "_" & name)
+        let tupleCopy = newDotExpr(entry, ident("components")).copyTuple(archetype, query)
 
-        dependencies.add quote do:
-            func `convertProcName`(`compsIdent`: ptr `archTupleType`): `queryTupleType` = `tupleCopy`
+        lenCalculation = quote do:
+            `lenCalculation` + len(`appStateIdent`.`archetypeIdent`)
 
-        result.add quote do:
-            asView(`appStateIdent`.`archetypeIdent`, `convertProcName`)
+        iteratorBody.add quote do:
+            for `entry` in items(`appStateIdent`.`archetypeIdent`):
+                `slot` = `tupleCopy`
+                yield `entry`.entityId
+
+    return (lenCalculation, iteratorBody)
 
 proc worldFields(name: string, dir: TupleDirective): seq[WorldField] =
     @[ (name, nnkBracketExpr.newTree(bindSym("RawQuery"), dir.asTupleType)) ]
@@ -46,18 +50,22 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, dir: Tuple
 
     case details.hook
     of GenerateHook.Outside:
-        var output = newStmtList()
         let appStateTypeName = details.appStateTypeName
         let queryTuple = dir.args.asTupleType
-        let views = details.createArchetypeViews(name, dir, queryTuple, output)
-        output.add quote do:
-            func `buildQueryProc`(`appStateIdent`: var `appStateTypeName`): auto = newQuery[`queryTuple`](@`views`)
-        return output
+
+        let (lenCalculation, iteratorBody) = details.walkArchetypes(name, dir, queryTuple)
+
+        return quote do:
+            func `buildQueryProc`(`appStateIdent`: ptr `appStateTypeName`): RawQuery[`queryTuple`] =
+                proc getLen(): uint = `lenCalculation`
+                proc getIterator(): QueryIterator[`queryTuple`] =
+                    return iterator(`slot`: var `queryTuple`): EntityId = `iteratorBody`
+                return newQuery[`queryTuple`](getLen, getIterator)
 
     of GenerateHook.Standard:
         let ident = name.ident
         return quote do:
-            `appStateIdent`.`ident` = `buildQueryProc`(`appStateIdent`)
+            `appStateIdent`.`ident` = `buildQueryProc`(addr `appStateIdent`)
     else:
         return newEmptyNode()
 

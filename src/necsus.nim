@@ -1,4 +1,4 @@
-import necsus / runtime / [ entityId, query, systemVar, inbox, directives, necsusConf, archetypeStore, spawn, pragmas ]
+import necsus / runtime / [ entityId, query, systemVar, inbox, directives, necsusConf, spawn, pragmas ]
 import necsus / compiletime / [ parse, systemGen, codeGenInfo, worldGen, worldEnum, tickGen ]
 
 import sequtils, macros, options
@@ -6,7 +6,7 @@ import sequtils, macros, options
 when defined(dump):
     import strutils
 
-export entityId, query, archetypeStore.items, necsusConf, systemVar, inbox, directives, spawn, pragmas
+export entityId, query, query.items, necsusConf, systemVar, inbox, directives, spawn, pragmas
 
 type
     SystemFlag* = object
