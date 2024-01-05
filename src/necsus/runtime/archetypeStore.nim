@@ -9,6 +9,7 @@ type
     ArchetypeStore*[Archs: enum, Comps: tuple] = ref object
         ## Stores a specific archetype shape
         archetype: Archs
+        initialSize: int
         compStore: BlockStore[ArchRow[Comps]]
 
     ArchView*[ViewComps: tuple] = ref object
@@ -23,7 +24,7 @@ proc newArchetypeStore*[Archs: enum, Comps: tuple](
     initialSize: SomeInteger
 ): ArchetypeStore[Archs, Comps] =
     ## Creates a new storage block for an archetype
-    ArchetypeStore[Archs, Comps](compStore: newBlockStore[ArchRow[Comps]](initialSize), archetype: archetype)
+    ArchetypeStore[Archs, Comps](initialSize: initialSize.int, archetype: archetype)
 
 proc archetype*[Archs: enum, Comps: tuple](store: ArchetypeStore[Archs, Comps]): Archs {.inline.} = store.archetype
     ## Accessor for the archetype of a store
@@ -33,6 +34,10 @@ proc newSlot*[Archs: enum, Comps: tuple](
     entityId: EntityId
 ): NewArchSlot[Comps] {.inline.} =
     ## Reserves a slot for storing a new component
+
+    if store.compStore == nil:
+        store.compStore = newBlockStore[ArchRow[Comps]](store.initialSize)
+
     let slot = store.compStore.reserve
     slot.value.entityId = entityId
     return NewArchSlot[Comps](slot)
@@ -53,10 +58,12 @@ proc asView*[Archs: enum, ArchetypeComps: tuple, ViewComps: tuple](
     ## Creates an iterable view into this component that uses the given converter
     proc buildIter(): auto =
         return iterator(comps: var ViewComps): EntityId =
-            for row in items(input.compStore):
-                comps = convert(addr row.components)
-                yield row.entityId
-    proc getLength(): uint = input.compStore.len
+            if input.compStore != nil:
+                for row in items(input.compStore):
+                    comps = convert(addr row.components)
+                    yield row.entityId
+    proc getLength(): uint =
+        return if input.compStore != nil: input.compStore.len else: 0
     return ArchView[ViewComps](buildIterator: buildIter, length: getLength)
 
 iterator items*[ViewComps: tuple](view: ArchView[ViewComps], comps: var ViewComps): EntityId {.inline.} =
