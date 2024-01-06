@@ -147,4 +147,3 @@ proc createAppStateDestructor*(genInfo: CodeGenInfo): NimNode =
             `beforeTeardown`
             `teardowns`
             `destroys`
-            `appStateIdent`.`worldIdent`.`destroy`()
