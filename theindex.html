@@ -229,6 +229,10 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference external"
           data-doc-search-tag="bits: anyIntersect(a, b: Bits): bool" href="necsus/util/bits.html#anyIntersect%2CBits%2CBits">bits: anyIntersect(a, b: Bits): bool</a></li>
           </ul></dd>
+<dt><a name="AnyQuery" href="#AnyQuery"><span>AnyQuery:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="query: AnyQuery" href="necsus/runtime/query.html#AnyQuery">query: AnyQuery</a></li>
+          </ul></dd>
 <dt><a name="AppInputs" href="#AppInputs"><span>AppInputs:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="systemGen: AppInputs" href="necsus/compiletime/systemGen.html#AppInputs">systemGen: AppInputs</a></li>
@@ -609,6 +613,22 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference external"
           data-doc-search-tag="typeReader: findPragma(node: NimNode): NimNode" href="necsus/compiletime/typeReader.html#findPragma%2CNimNode">typeReader: findPragma(node: NimNode): NimNode</a></li>
           </ul></dd>
+<dt><a name="FullQuery" href="#FullQuery"><span>FullQuery:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="query: FullQuery" href="necsus/runtime/query.html#FullQuery">query: FullQuery</a></li>
+          </ul></dd>
+<dt><a name="fullQueryGenerator" href="#fullQueryGenerator"><span>fullQueryGenerator:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="queryGen: fullQueryGenerator" href="necsus/compiletime/queryGen.html#fullQueryGenerator">queryGen: fullQueryGenerator</a></li>
+          </ul></dd>
+<dt><a name="FullSpawn" href="#FullSpawn"><span>FullSpawn:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="spawn: FullSpawn" href="necsus/runtime/spawn.html#FullSpawn">spawn: FullSpawn</a></li>
+          </ul></dd>
+<dt><a name="fullSpawnGenerator" href="#fullSpawnGenerator"><span>fullSpawnGenerator:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="spawnGen: fullSpawnGenerator" href="necsus/compiletime/spawnGen.html#fullSpawnGenerator">spawnGen: fullSpawnGenerator</a></li>
+          </ul></dd>
 <dt><a name="gameLoop" href="#gameLoop"><span>gameLoop:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="necsus: gameLoop(exit: Shared[NecsusRun]; tick: proc (): void)" href="necsus.html#gameLoop%2CShared%5BNecsusRun%5D%2Cproc%29">necsus: gameLoop(exit: Shared[NecsusRun]; tick: proc (): void)</a></li>
@@ -765,7 +785,7 @@ window.addEventListener('DOMContentLoaded', main);
           <li><a class="reference external"
           data-doc-search-tag="inbox: items[T](inbox: Inbox[T]): lent T" href="necsus/runtime/inbox.html#items.i%2CInbox%5BT%5D">inbox: items[T](inbox: Inbox[T]): lent T</a></li>
           <li><a class="reference external"
-          data-doc-search-tag="query: items[Comps: tuple](query: Query[Comps]): Comps" href="necsus/runtime/query.html#items.i%2CQuery%5BComps%3A%20tuple%5D">query: items[Comps: tuple](query: Query[Comps]): Comps</a></li>
+          data-doc-search-tag="query: items[Comps: tuple](query: AnyQuery[Comps]): Comps" href="necsus/runtime/query.html#items.i%2CAnyQuery%5BComps%3A%20tuple%5D">query: items[Comps: tuple](query: AnyQuery[Comps]): Comps</a></li>
           <li><a class="reference external"
           data-doc-search-tag="arrayblock: items[T](ary: var ArrayBlock[T]): var T" href="necsus/util/arrayblock.html#items.i%2CArrayBlock%5BT%5D">arrayblock: items[T](ary: var ArrayBlock[T]): var T</a></li>
           <li><a class="reference external"
@@ -795,7 +815,7 @@ window.addEventListener('DOMContentLoaded', main);
           <li><a class="reference external"
           data-doc-search-tag="inbox: len[T](inbox: Inbox[T]): uint" href="necsus/runtime/inbox.html#len%2CInbox%5BT%5D">inbox: len[T](inbox: Inbox[T]): uint</a></li>
           <li><a class="reference external"
-          data-doc-search-tag="query: len[Comps: tuple](query: Query[Comps]): uint" href="necsus/runtime/query.html#len%2CQuery%5BComps%3A%20tuple%5D">query: len[Comps: tuple](query: Query[Comps]): uint</a></li>
+          data-doc-search-tag="query: len[Comps: tuple](query: AnyQuery[Comps]): uint" href="necsus/runtime/query.html#len%2CAnyQuery%5BComps%3A%20tuple%5D">query: len[Comps: tuple](query: AnyQuery[Comps]): uint</a></li>
           <li><a class="reference external"
           data-doc-search-tag="blockstore: len[V](blockstore: var BlockStore[V]): uint" href="necsus/util/blockstore.html#len%2CBlockStore%5BV%5D">blockstore: len[V](blockstore: var BlockStore[V]): uint</a></li>
           <li><a class="reference external"
@@ -1035,9 +1055,9 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="newNecsusConf" href="#newNecsusConf"><span>newNecsusConf:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="necsusConf: newNecsusConf(entitySize: int = 1000;
+          data-doc-search-tag="necsusConf: newNecsusConf(entitySize: int = DEFAULT_ENTITY_COUNT;
               componentSize: int = ceilDiv(entitySize, 3);
-              eventQueueSize: int = ceilDiv(entitySize, 10)): NecsusConf" href="necsus/runtime/necsusConf.html#newNecsusConf%2Cint%2Cint%2Cint">necsusConf: newNecsusConf(entitySize: int = 1000;
+              eventQueueSize: int = ceilDiv(entitySize, 10)): NecsusConf" href="necsus/runtime/necsusConf.html#newNecsusConf%2Cint%2Cint%2Cint">necsusConf: newNecsusConf(entitySize: int = DEFAULT_ENTITY_COUNT;
               componentSize: int = ceilDiv(entitySize, 3);
               eventQueueSize: int = ceilDiv(entitySize, 10)): NecsusConf</a></li>
           <li><a class="reference external"
@@ -1113,7 +1133,7 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference external"
           data-doc-search-tag="directiveSet: pairs[T](directives: DirectiveSet[T]): tuple[name: string, value: T]" href="necsus/compiletime/directiveSet.html#pairs.i%2CDirectiveSet%5BT%5D">directiveSet: pairs[T](directives: DirectiveSet[T]): tuple[name: string, value: T]</a></li>
           <li><a class="reference external"
-          data-doc-search-tag="query: pairs[Comps: tuple](query: Query[Comps]): QueryItem[Comps]" href="necsus/runtime/query.html#pairs.i%2CQuery%5BComps%3A%20tuple%5D">query: pairs[Comps: tuple](query: Query[Comps]): QueryItem[Comps]</a></li>
+          data-doc-search-tag="query: pairs[Comps: tuple](query: FullQuery[Comps]): QueryItem[Comps]" href="necsus/runtime/query.html#pairs.i%2CFullQuery%5BComps%3A%20tuple%5D">query: pairs[Comps: tuple](query: FullQuery[Comps]): QueryItem[Comps]</a></li>
           </ul></dd>
 <dt><a name="parseApp" href="#parseApp"><span>parseApp:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -1199,7 +1219,9 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="set" href="#set"><span>set:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="spawn: set[C: tuple](spawn: Spawn[C]; values: sink C): EntityId" href="necsus/runtime/spawn.html#set%2CSpawn%5BC%3A%20tuple%5D%2CsinkC">spawn: set[C: tuple](spawn: Spawn[C]; values: sink C): EntityId</a></li>
+          data-doc-search-tag="spawn: set[C: tuple](spawn: FullSpawn[C]; values: sink C): EntityId" href="necsus/runtime/spawn.html#set%2CFullSpawn%5BC%3A%20tuple%5D%2CsinkC">spawn: set[C: tuple](spawn: FullSpawn[C]; values: sink C): EntityId</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="spawn: set[C: tuple](spawn: Spawn[C]; values: sink C)" href="necsus/runtime/spawn.html#set%2CSpawn%5BC%3A%20tuple%5D%2CsinkC">spawn: set[C: tuple](spawn: Spawn[C]; values: sink C)</a></li>
           <li><a class="reference external"
           data-doc-search-tag="systemVar: set[T](sysvar: SystemVar[T]; value: sink T)" href="necsus/runtime/systemVar.html#set%2CSystemVar%5BT%5D%2CsinkT">systemVar: set[T](sysvar: SystemVar[T]; value: sink T)</a></li>
           <li><a class="reference external"
@@ -1233,7 +1255,7 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="single" href="#single"><span>single:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="query: single[Comps: tuple](query: Query[Comps]): Option[Comps]" href="necsus/runtime/query.html#single%2CQuery%5BComps%3A%20tuple%5D">query: single[Comps: tuple](query: Query[Comps]): Option[Comps]</a></li>
+          data-doc-search-tag="query: single[Comps: tuple](query: AnyQuery[Comps]): Option[Comps]" href="necsus/runtime/query.html#single%2CAnyQuery%5BComps%3A%20tuple%5D">query: single[Comps: tuple](query: AnyQuery[Comps]): Option[Comps]</a></li>
           </ul></dd>
 <dt><a name="Spawn" href="#Spawn"><span>Spawn:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -1367,7 +1389,9 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="with" href="#with"><span>with:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="spawn: with[C: tuple](spawn: Spawn[C]; values: varargs[typed]): EntityId" href="necsus/runtime/spawn.html#with.t%2CSpawn%5BC%3A%20tuple%5D%2Cvarargs%5Btyped%5D">spawn: with[C: tuple](spawn: Spawn[C]; values: varargs[typed]): EntityId</a></li>
+          data-doc-search-tag="spawn: with[C: tuple](spawn: FullSpawn[C]; values: varargs[typed]): EntityId" href="necsus/runtime/spawn.html#with.t%2CFullSpawn%5BC%3A%20tuple%5D%2Cvarargs%5Btyped%5D">spawn: with[C: tuple](spawn: FullSpawn[C]; values: varargs[typed]): EntityId</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="spawn: with[C: tuple](spawn: Spawn[C]; values: varargs[typed])" href="necsus/runtime/spawn.html#with.t%2CSpawn%5BC%3A%20tuple%5D%2Cvarargs%5Btyped%5D">spawn: with[C: tuple](spawn: Spawn[C]; values: varargs[typed])</a></li>
           </ul></dd>
 <dt><a name="World" href="#World"><span>World:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -1396,7 +1420,7 @@ window.addEventListener('DOMContentLoaded', main);
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-01-05 15:48:08 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-01-06 03:55:58 UTC</small>
       </div>
     </div>
   </div>

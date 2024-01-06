@@ -107,7 +107,9 @@ window.addEventListener('DOMContentLoaded', main);
 <li>
   <a class="reference reference-toplevel" href="#7" id="57">Types</a>
   <ul class="simple simple-toc-section">
-      <li><a class="reference" href="#RawSpawn"
+      <li><a class="reference" href="#FullSpawn"
+    title="FullSpawn[C] = distinct RawSpawn[C]">FullSpawn</a></li>
+  <li><a class="reference" href="#RawSpawn"
     title="RawSpawn[C] = proc (): NewArchSlot[C]">RawSpawn</a></li>
   <li><a class="reference" href="#Spawn"
     title="Spawn[C] = distinct RawSpawn[C]">Spawn</a></li>
@@ -127,8 +129,10 @@ window.addEventListener('DOMContentLoaded', main);
 
   </ul>
   <ul class="simple nested-toc-section">set
-      <li><a class="reference" href="#set%2CSpawn%5BC%3A%20tuple%5D%2CsinkC"
-    title="set[C: tuple](spawn: Spawn[C]; values: sink C): EntityId">set[C: tuple](spawn: Spawn[C]; values: sink C): EntityId</a></li>
+      <li><a class="reference" href="#set%2CFullSpawn%5BC%3A%20tuple%5D%2CsinkC"
+    title="set[C: tuple](spawn: FullSpawn[C]; values: sink C): EntityId">set[C: tuple](spawn: FullSpawn[C]; values: sink C): EntityId</a></li>
+  <li><a class="reference" href="#set%2CSpawn%5BC%3A%20tuple%5D%2CsinkC"
+    title="set[C: tuple](spawn: Spawn[C]; values: sink C)">set[C: tuple](spawn: Spawn[C]; values: sink C)</a></li>
 
   </ul>
 
@@ -138,8 +142,10 @@ window.addEventListener('DOMContentLoaded', main);
   <a class="reference reference-toplevel" href="#18" id="68">Templates</a>
   <ul class="simple simple-toc-section">
       <ul class="simple nested-toc-section">with
-      <li><a class="reference" href="#with.t%2CSpawn%5BC%3A%20tuple%5D%2Cvarargs%5Btyped%5D"
-    title="with[C: tuple](spawn: Spawn[C]; values: varargs[typed]): EntityId">with[C: tuple](spawn: Spawn[C]; values: varargs[typed]): EntityId</a></li>
+      <li><a class="reference" href="#with.t%2CFullSpawn%5BC%3A%20tuple%5D%2Cvarargs%5Btyped%5D"
+    title="with[C: tuple](spawn: FullSpawn[C]; values: varargs[typed]): EntityId">with[C: tuple](spawn: FullSpawn[C]; values: varargs[typed]): EntityId</a></li>
+  <li><a class="reference" href="#with.t%2CSpawn%5BC%3A%20tuple%5D%2Cvarargs%5Btyped%5D"
+    title="with[C: tuple](spawn: Spawn[C]; values: varargs[typed])">with[C: tuple](spawn: Spawn[C]; values: varargs[typed])</a></li>
 
   </ul>
 
@@ -162,6 +168,14 @@ window.addEventListener('DOMContentLoaded', main);
 <div class="section" id="7">
 <h1><a class="toc-backref" href="#7">Types</a></h1>
 <dl class="item">
+<div id="FullSpawn">
+<dt><pre><a href="spawn.html#FullSpawn"><span class="Identifier">FullSpawn</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">distinct</span> <a href="spawn.html#RawSpawn"><span class="Identifier">RawSpawn</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span></pre></dt>
+<dd>
+
+Describes a type that is able to create new entities. Where <tt class="docutils literal"><span class="pre"><span class="Identifier">C</span></span></tt> is a tuple with all the components to initially attach to this entity. Returns the new EntityId
+
+</dd>
+</div>
 <div id="RawSpawn">
 <dt><pre><a href="spawn.html#RawSpawn"><span class="Identifier">RawSpawn</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <a href="archetypeStore.html#NewArchSlot"><span class="Identifier">NewArchSlot</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span></pre></dt>
 <dd>
@@ -174,7 +188,7 @@ A callback for populating a component with values
 <dt><pre><a href="spawn.html#Spawn"><span class="Identifier">Spawn</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">distinct</span> <a href="spawn.html#RawSpawn"><span class="Identifier">RawSpawn</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span></pre></dt>
 <dd>
 
-Describes a type that is able to create new entities. Where <tt class="docutils literal"><span class="pre"><span class="Identifier">C</span></span></tt> is a tuple with all the components to initially attach to this entity
+Describes a type that is able to create new entities. Where <tt class="docutils literal"><span class="pre"><span class="Identifier">C</span></span></tt> is a tuple with all the components to initially attach to this entity. Does not return the new EntityId
 
 </dd>
 </div>
@@ -192,9 +206,16 @@ Spawns an entity in this archetype
 
 </dd>
 </div>
+<div id="set,FullSpawn[C: tuple],sinkC">
+<dt><pre><span class="Keyword">proc</span> <a href="#set%2CFullSpawn%5BC%3A%20tuple%5D%2CsinkC"><span class="Identifier">set</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">spawn</span><span class="Other">:</span> <a href="spawn.html#FullSpawn"><span class="Identifier">FullSpawn</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">values</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">C</span><span class="Other">)</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a> {.<span class="Identifier">inline</span>.}</pre></dt>
+<dd>
+
+Spawns an entity with the given components
+
+</dd>
+</div>
 <div id="set,Spawn[C: tuple],sinkC">
-<dt><pre><span class="Keyword">proc</span> <a href="#set%2CSpawn%5BC%3A%20tuple%5D%2CsinkC"><span class="Identifier">set</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">spawn</span><span class="Other">:</span> <a href="spawn.html#Spawn"><span class="Identifier">Spawn</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">values</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">C</span><span class="Other">)</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a> {.<span class="Identifier">inline</span><span class="Other">,</span>
-    <span class="Identifier">discardable</span>.}</pre></dt>
+<dt><pre><span class="Keyword">proc</span> <a href="#set%2CSpawn%5BC%3A%20tuple%5D%2CsinkC"><span class="Identifier">set</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">spawn</span><span class="Other">:</span> <a href="spawn.html#Spawn"><span class="Identifier">Spawn</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">values</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">C</span><span class="Other">)</span> {.<span class="Identifier">inline</span>.}</pre></dt>
 <dd>
 
 Spawns an entity with the given components
@@ -206,8 +227,16 @@ Spawns an entity with the given components
 <div class="section" id="18">
 <h1><a class="toc-backref" href="#18">Templates</a></h1>
 <dl class="item">
+<div id="with.t,FullSpawn[C: tuple],varargs[typed]">
+<dt><pre><span class="Keyword">template</span> <a href="#with.t%2CFullSpawn%5BC%3A%20tuple%5D%2Cvarargs%5Btyped%5D"><span class="Identifier">with</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">spawn</span><span class="Other">:</span> <a href="spawn.html#FullSpawn"><span class="Identifier">FullSpawn</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">values</span><span class="Other">:</span> <span class="Identifier">varargs</span><span class="Other">[</span><span class="Identifier">typed</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a></pre></dt>
+<dd>
+
+spawns the given values
+
+</dd>
+</div>
 <div id="with.t,Spawn[C: tuple],varargs[typed]">
-<dt><pre><span class="Keyword">template</span> <a href="#with.t%2CSpawn%5BC%3A%20tuple%5D%2Cvarargs%5Btyped%5D"><span class="Identifier">with</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">spawn</span><span class="Other">:</span> <a href="spawn.html#Spawn"><span class="Identifier">Spawn</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">values</span><span class="Other">:</span> <span class="Identifier">varargs</span><span class="Other">[</span><span class="Identifier">typed</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a></pre></dt>
+<dt><pre><span class="Keyword">template</span> <a href="#with.t%2CSpawn%5BC%3A%20tuple%5D%2Cvarargs%5Btyped%5D"><span class="Identifier">with</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">spawn</span><span class="Other">:</span> <a href="spawn.html#Spawn"><span class="Identifier">Spawn</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">values</span><span class="Other">:</span> <span class="Identifier">varargs</span><span class="Other">[</span><span class="Identifier">typed</span><span class="Other">]</span><span class="Other">)</span></pre></dt>
 <dd>
 
 spawns the given values
@@ -224,7 +253,7 @@ spawns the given values
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-01-05 15:48:08 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-01-06 03:55:58 UTC</small>
       </div>
     </div>
   </div>
