@@ -8,9 +8,9 @@ type
     D = object
         d: int
 
-proc setup(spawnAB: Spawn[(A, B)], spawnABC: Spawn[(A, B, C)], attachC: Attach[(C, D)]) =
+proc setup(spawnAB: FullSpawn[(A, B)], spawnABC: Spawn[(A, B, C)], attachC: Attach[(C, D)]) =
     for i in 1..3:
-        spawnAB.with(A(), B())
+        discard spawnAB.with(A(), B())
         spawnABC.with(A(), B(), C(c: i))
         spawnAB.with(A(), B()).attachC((C(c: i + 10), D(d: i + 20)))
 

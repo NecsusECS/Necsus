@@ -50,6 +50,7 @@ proc parseArgKind(symbol: NimNode): Option[DirectiveGen] =
     symbol.expectKind(nnkSym)
     case symbol.strVal
     of "Spawn": return some(spawnGenerator)
+    of "FullSpawn": return some(fullSpawnGenerator)
     of "Query": return some(queryGenerator)
     of "FullQuery": return some(fullQueryGenerator)
     of "Attach": return some(attachGenerator)

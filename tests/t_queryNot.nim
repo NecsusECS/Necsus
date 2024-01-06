@@ -6,9 +6,9 @@ type
     B = object
     C = object
 
-proc setup(spawnAB: Spawn[(A, B)], spawnABC: Spawn[(A, B, C)], attachC: Attach[(C, )]) =
+proc setup(spawnAB: FullSpawn[(A, B)], spawnABC: Spawn[(A, B, C)], attachC: Attach[(C, )]) =
     for i in 1..5:
-        spawnAB.with(A(phase: 1), B())
+        discard spawnAB.with(A(phase: 1), B())
         spawnABC.with(A(phase: 2), B(), C())
         spawnAB.with(A(phase: 3), B()).attachC((C(), ))
 

@@ -6,7 +6,11 @@ type
 
     Spawn*[C: tuple] = distinct RawSpawn[C]
         ## Describes a type that is able to create new entities. Where `C` is a tuple
-        ## with all the components to initially attach to this entity
+        ## with all the components to initially attach to this entity. Does not return the new EntityId
+
+    FullSpawn*[C: tuple] = distinct RawSpawn[C]
+        ## Describes a type that is able to create new entities. Where `C` is a tuple
+        ## with all the components to initially attach to this entity. Returns the new EntityId
 
 proc beginSpawn*[Archs: enum, Comps: tuple](
     world: var World[Archs],
@@ -17,7 +21,11 @@ proc beginSpawn*[Archs: enum, Comps: tuple](
     result = store.newSlot(newEntity.entityId)
     newEntity.setArchetypeDetails(store.archetype, result.index)
 
-proc set*[C: tuple](spawn: Spawn[C], values: sink C): EntityId {.inline, discardable.} =
+proc set*[C: tuple](spawn: Spawn[C], values: sink C) {.inline.} =
+    ## Spawns an entity with the given components
+    discard setComp(RawSpawn[C](spawn)(), values)
+
+proc set*[C: tuple](spawn: FullSpawn[C], values: sink C): EntityId {.inline.} =
     ## Spawns an entity with the given components
     setComp(RawSpawn[C](spawn)(), values)
 
@@ -25,6 +33,10 @@ macro buildTuple(values: varargs[untyped]): untyped =
     result = nnkTupleConstr.newTree()
     for elem in values: result.add(elem)
 
-template with*[C: tuple](spawn: Spawn[C], values: varargs[typed]): EntityId =
+template with*[C: tuple](spawn: Spawn[C], values: varargs[typed]) =
+    ## spawns the given values
+    set(spawn, buildTuple(values))
+
+template with*[C: tuple](spawn: FullSpawn[C], values: varargs[typed]): EntityId =
     ## spawns the given values
     set(spawn, buildTuple(values))

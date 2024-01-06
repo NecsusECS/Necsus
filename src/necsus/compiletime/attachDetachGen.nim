@@ -56,7 +56,7 @@ proc createArchMove(
 
 proc isAttachable(gen: DirectiveGen): bool =
     ## Returns whether this argument produces an entity that can be attached to
-    gen == fullQueryGenerator or gen == lookupGenerator or gen == spawnGenerator
+    gen == fullQueryGenerator or gen == lookupGenerator or gen == fullSpawnGenerator
 
 proc attachArchetype(builder: var ArchetypeBuilder[ComponentDef], systemArgs: seq[SystemArg], dir: TupleDirective) =
     for arg in systemArgs.allArgs:

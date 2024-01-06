@@ -16,10 +16,10 @@ type
     M = distinct int
 
 proc setup(
-    spawn1: Spawn[(A, B, C)],
-    spawn2: Spawn[(C, D, E)],
-    spawn3: Spawn[(E, F, G)],
-    spawn4: Spawn[(G, H, I)],
+    spawn1: FullSpawn[(A, B, C)],
+    spawn2: FullSpawn[(C, D, E)],
+    spawn3: FullSpawn[(E, F, G)],
+    spawn4: FullSpawn[(G, H, I)],
     attach1: Attach[(J, )],
     attach2: Attach[(K, )],
     attach3: Attach[(L, )],

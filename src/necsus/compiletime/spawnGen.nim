@@ -8,11 +8,15 @@ proc archetypes(builder: var ArchetypeBuilder[ComponentDef], systemArgs: seq[Sys
 proc worldFields(name: string, dir: TupleDirective): seq[WorldField] =
     @[ (name, nnkBracketExpr.newTree(bindSym("RawSpawn"), dir.asTupleType)) ]
 
-proc systemArg(name: string, dir: TupleDirective): NimNode =
+proc systemArg(spawnType: NimNode, name: string, dir: TupleDirective): NimNode =
     let sysIdent = name.ident
     let tupleType = dir.asTupleType
     return quote do:
-        Spawn[`tupleType`](`appStateIdent`.`sysIdent`)
+        `spawnType`[`tupleType`](`appStateIdent`.`sysIdent`)
+
+proc spawnSystemArg(name: string, dir: TupleDirective): NimNode = systemArg(bindSym("Spawn"), name, dir)
+
+proc fullSpawnSystemArg(name: string, dir: TupleDirective): NimNode = systemArg(bindSym("FullSpawn"), name, dir)
 
 proc generate(details: GenerateContext, arg: SystemArg, name: string, dir: TupleDirective): NimNode =
     result = newStmtList()
@@ -37,5 +41,14 @@ let spawnGenerator* {.compileTime.} = newGenerator(
     generate = generate,
     archetype = archetypes,
     worldFields = worldFields,
-    systemArg = systemArg
+    systemArg = spawnSystemArg
+)
+
+let fullSpawnGenerator* {.compileTime.} = newGenerator(
+    ident = "FullSpawn",
+    interest = { Standard },
+    generate = generate,
+    archetype = archetypes,
+    worldFields = worldFields,
+    systemArg = fullSpawnSystemArg,
 )

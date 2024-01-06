@@ -6,7 +6,7 @@ type
     C* = object
 
     Grouping* = object
-        create: Spawn[(A, B)]
+        create: FullSpawn[(A, B)]
         attach*: Attach[(C, )]
 
 proc setup*(bundle: Bundle[Grouping]) =

@@ -313,6 +313,10 @@ will fail.
 To create new entities, use a `Spawn` directive. This takes a single argument, which is the initial set of components
 to attach to the newly minted entity.
 
+There are two ways to spawn an entity, `Spawn` and `FullSpawn`. Under the covers, they do the same thing. The difference
+is that `FullSpawn` returns the generated `EntityId`, and `Spawn` does not. In general, you should use `Spawn` over
+`FullSpawn` whenever possible.
+
 ```nim
 import necsus
 
@@ -322,26 +326,29 @@ type
 
 proc spawningSystem(spawn: Spawn[(A, B)]) =
     for i in 1..10:
-        let spawnedEntityId = spawn.with(A(), B())
-        echo "Spawned a new entity with ID: ", spawnedEntityId
+        spawn.with(A(), B())
+        echo "Spawned a new entity!"
 
 proc myApp() {.necsus([~spawningSystem], [], [], newNecsusConf()).}
 ```
+
+##### Why `Spawn` and `FullSpawn`?
+
+Under the covers -- Necsus automatically generates a set of all possible archetypes that could possibly exist at
+runtime. It does this by examining systems with queries, spawns and attachements, then calculating the combinatorial
+possibilities. Naively, this is an exponential algorithm. And archetypes themselves aren't free -- each archetype that
+exists will increase your build times and the slow down your queries. Using `Spawn` instead of `FullSpawn` allows the
+underlying algorithm to ignore those components when calculating the final set of archetypes.
 
 #### Query and FullQuery
 
 Queries allow you to iterate over entities that have a specific set of components attached to them. Queries are the
 primary mechanism for interacting with entities and components.
 
-There are two kinds of query, `Query` and `FullQuery`. Conceptually, they are basically the same. However, `Query` only
-gives you access to the components themselves, while `FullQuery` gives you access to the components _and_ the
-`EntityId`. You should use `Query` wherever possible, then only use `FullQuery` when you specifically need the
-`EntityId`.
-
-The distinction between the two instances exist because Necsus automatically generates a set of all possible
-archetypes that could be created. It does this by examining places where queries, spawns and component attachements
-all meet. The more archetypes, the longer your build times and the slower your queries. Using a `Query` instead of
-a `FullQuery` helps mitigate this.
+There are two kinds of queries, `Query` and `FullQuery`. `Query` gives you access to the components, while `FullQuery`
+gives you access to the components _and_ the `EntityId`. You should use `Query` wherever possible, then only use
+`FullQuery` when you specifically need the `EntityId`. For details about why the two mechanisms exist, see the section
+above about `Spawn` versus `FullSpawn`.
 
 ```nim
 import necsus
@@ -592,7 +599,7 @@ type
     B = object
 
     MyBundle = object
-        spawn*: Spawn[(A, )]
+        spawn*: FullSpawn[(A, )]
         attach*: Attach[(B, )]
 
 proc useBundle(bundle: Bundle[MyBundle]) =

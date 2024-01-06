@@ -13,7 +13,7 @@ proc `=destroy`(thingy: var Thingy) =
         assert(thingyDestroyCount <= 0)
         thingyDestroyCount += 1
 
-proc destroyObj(spawn: Spawn[(Thingy, )], delete: Delete) =
+proc destroyObj(spawn: FullSpawn[(Thingy, )], delete: Delete) =
     require(thingyDestroyCount == 0)
     let eid = spawn.with(Thingy(value: 123))
     require(thingyDestroyCount == 0)

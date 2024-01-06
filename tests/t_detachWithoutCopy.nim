@@ -7,7 +7,7 @@ type
 proc `=copy`(x: var A, y: A) {.error.}
 proc `=copy`(x: var B, y: B) {.error.}
 
-proc exec(spawn: Spawn[(A, B)], detach: Detach[(B, )]) =
+proc exec(spawn: FullSpawn[(A, B)], detach: Detach[(B, )]) =
     detach(spawn.with(A(), B()))
 
 proc runner(tick: proc(): void) =
