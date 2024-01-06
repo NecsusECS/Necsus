@@ -66,7 +66,8 @@ proc buildApp(
         newStmtList()
 
     when defined(dump):
-        echo "import necsus/runtime/[world, archetypeStore], std/math"
+        echo "import necsus/runtime/[world, archetypeStore], std/math, necsus/util/profile"
+        echo "const DEFAULT_ENTITY_COUNT = 1_000"
         echo replace(result.repr, "proc =destroy", "proc `=destroy`")
 
 macro necsus*(

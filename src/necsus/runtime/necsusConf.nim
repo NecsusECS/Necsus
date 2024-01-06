@@ -34,8 +34,10 @@ proc newNecsusConf*(getTime: proc(): float, log: proc(message: string): void): N
 when defined(js) or defined(osx) or defined(windows) or defined(posix):
     import std/times
 
+    let DEFAULT_ENTITY_COUNT = 1_000
+
     proc newNecsusConf*(
-        entitySize: int = 1_000,
+        entitySize: int = DEFAULT_ENTITY_COUNT,
         componentSize: int = ceilDiv(entitySize, 3),
         eventQueueSize: int = ceilDiv(entitySize, 10)
     ): NecsusConf =
