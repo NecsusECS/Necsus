@@ -12,7 +12,7 @@ proc setup(spawn: Spawn[(A, B, C, D, E)]) =
         spawn.with(A(i), B(i), C(i), D(i), E(i))
 
 template setupSystem(typ: typedesc) =
-    proc `modify typ`(query: Query[(typ, )], attach: Attach[(typ, )]) =
+    proc `modify typ`(query: FullQuery[(typ, )], attach: Attach[(typ, )]) =
         for entity, comp in query:
             attach(entity, (typ(int(comp[0]) * 2), ))
 

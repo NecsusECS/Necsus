@@ -38,10 +38,16 @@ proc walkArchetypes(
 proc worldFields(name: string, dir: TupleDirective): seq[WorldField] =
     @[ (name, nnkBracketExpr.newTree(bindSym("RawQuery"), dir.asTupleType)) ]
 
-proc systemArg(name: string, dir: TupleDirective): NimNode =
+
+proc systemArg(queryType: NimNode, name: string, dir: TupleDirective): NimNode =
     let nameIdent = name.ident
+    let tupleType = dir.args.asTupleType
     return quote:
-        addr `appStateIdent`.`nameIdent`
+        `queryType`[`tupleType`](addr `appStateIdent`.`nameIdent`)
+
+proc querySystemArg(name: string, dir: TupleDirective): NimNode = systemArg(bindSym("Query"), name, dir)
+
+proc fullQuerySystemArg(name: string, dir: TupleDirective): NimNode = systemArg(bindSym("FullQuery"), name, dir)
 
 proc generate(details: GenerateContext, arg: SystemArg, name: string, dir: TupleDirective): NimNode =
     ## Generates the code for instantiating queries
@@ -74,6 +80,14 @@ let queryGenerator* {.compileTime.} = newGenerator(
     interest = { Standard, Outside },
     generate = generate,
     worldFields = worldFields,
-    systemArg = systemArg,
+    systemArg = querySystemArg,
+)
+
+let fullQueryGenerator* {.compileTime.} = newGenerator(
+    ident = "FullQuery",
+    interest = { Standard, Outside },
+    generate = generate,
+    worldFields = worldFields,
+    systemArg = fullQuerySystemArg,
 )
 

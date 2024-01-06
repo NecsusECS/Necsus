@@ -12,7 +12,7 @@ proc setup(spawn: Spawn[(A, B, C)]) =
     for i in 1..10:
         spawn.with(A(value: i), B(value: i), C(value: i))
 
-proc detacher(abc: Query[tuple[a: A, b: B, c: C]], detachBC: Detach[(B, C)], detachC: Detach[(C, )]) =
+proc detacher(abc: FullQuery[tuple[a: A, b: B, c: C]], detachBC: Detach[(B, C)], detachC: Detach[(C, )]) =
     for eid, comps in abc:
         if comps.a.value <= 3:
             detachBC(eid)
@@ -24,7 +24,7 @@ proc assertDetached(abc: Query[(A, B, C)], ab: Query[(A, B)], a: Query[(A, )]) =
     check(toSeq(ab.items).len == 7)
     check(toSeq(a.items).len == 10)
 
-proc reattach(query: Query[(A, )], attach: Attach[(B, C)]) =
+proc reattach(query: FullQuery[(A, )], attach: Attach[(B, C)]) =
     for eid, _ in query:
         eid.attach((B(value: 1), C(value: 1)))
 

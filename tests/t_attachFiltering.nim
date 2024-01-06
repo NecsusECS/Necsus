@@ -11,7 +11,7 @@ type
 proc setup(spawn: Spawn[(Name, )], number: Spawn[(FavoriteNumber, )]) =
     spawn.with(Name(name: "Foo"))
 
-proc modify(all: Query[(Name, )], addAge: Attach[(Age, )]) =
+proc modify(all: FullQuery[(Name, )], addAge: Attach[(Age, )]) =
     for entityId, _ in all:
         entityId.addAge((Age(age: 20), ))
 

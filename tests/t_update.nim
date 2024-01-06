@@ -12,7 +12,7 @@ proc setup(spawn: Spawn[(Age, Mood, Name)]) =
     spawn.with(Age(age: 20), Mood(mood: "Happy"), Name(name: "Foo"))
     spawn.with(Age(age: 30), Mood(mood: "Sad"), Name(name: "Bar"))
 
-proc modify(all: Query[(Age, Mood)], attach: Attach[(Age, Mood)]) =
+proc modify(all: FullQuery[(Age, Mood)], attach: Attach[(Age, Mood)]) =
     for entityId, info in all:
         let newAge = Age(age: info[0].age + 1)
         let newMood = Mood(mood: "Very " & info[1].mood)

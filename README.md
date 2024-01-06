@@ -55,7 +55,7 @@ proc move(dt: TimeDelta, entities: Query[(ptr Position, Velocity)]) =
         position.x += dt * velocity.dx
         position.y += dt * velocity.dy
 
-proc report(entities: Query[(Position, )]) =
+proc report(entities: FullQuery[(Position, )]) =
     ## Prints the position of each entity
     for eid, comp in entities:
         echo eid, " is at ", comp[0]
@@ -328,10 +328,20 @@ proc spawningSystem(spawn: Spawn[(A, B)]) =
 proc myApp() {.necsus([~spawningSystem], [], [], newNecsusConf()).}
 ```
 
-#### Query
+#### Query and FullQuery
 
 Queries allow you to iterate over entities that have a specific set of components attached to them. Queries are the
 primary mechanism for interacting with entities and components.
+
+There are two kinds of query, `Query` and `FullQuery`. Conceptually, they are basically the same. However, `Query` only
+gives you access to the components themselves, while `FullQuery` gives you access to the components _and_ the
+`EntityId`. You should use `Query` wherever possible, then only use `FullQuery` when you specifically need the
+`EntityId`.
+
+The distinction between the two instances exist because Necsus automatically generates a set of all possible
+archetypes that could be created. It does this by examining places where queries, spawns and component attachements
+all meet. The more archetypes, the longer your build times and the slower your queries. Using a `Query` instead of
+a `FullQuery` helps mitigate this.
 
 ```nim
 import necsus
@@ -340,11 +350,15 @@ type
     A = object
     B = object
 
-proc queryingSystem(query: Query[(A, B)]) =
+proc reportingSystem(query: Query[(A, B)]) =
+    for components in query:
+        echo "Found entity with ", components[0], " and ", components[1]
+
+proc reportingSystemWithEntity(query: FullQuery[(A, B)]) =
     for eid, components in query:
         echo "Found entity ", eid, " with ", components[0], " and ", components[1]
 
-proc myApp() {.necsus([], [~queryingSystem], [], newNecsusConf()).}
+proc myApp() {.necsus([], [~reportingSystem, ~reportingSystemWithEntity], [], newNecsusConf()).}
 ```
 
 #### Queries with Pointers
@@ -437,7 +451,7 @@ type
     A = object
     B = object
 
-proc deletingSystem(query: Query[(A, B)], delete: Delete) =
+proc deletingSystem(query: FullQuery[(A, B)], delete: Delete) =
     for eid, _ in query:
         delete(eid)
 
@@ -458,7 +472,7 @@ type
     C = object
     D = object
 
-proc lookupSystem(query: Query[(A, B)], lookup: Lookup[(C, D)]) =
+proc lookupSystem(query: FullQuery[(A, B)], lookup: Lookup[(C, D)]) =
     for eid, _ in query:
         let (c, d) = lookup(eid).get()
         echo "Found entity ", eid, " with ", c, " and ", d
@@ -478,7 +492,7 @@ type
     B = object
     C = object
 
-proc attachDetach(query: Query[(A, )], attachB: Attach[(B, )], detachC: Detach[(C, )]) =
+proc attachDetach(query: FullQuery[(A, )], attachB: Attach[(B, )], detachC: Detach[(C, )]) =
     for eid, _ in query:
         eid.attachB((B(), ))
         eid.detachC()
@@ -686,7 +700,7 @@ import necsus
 type
     A = object
 
-proc debuggingSystem(query: Query[(A, )], debug: EntityDebug) =
+proc debuggingSystem(query: FullQuery[(A, )], debug: EntityDebug) =
     for eid, _ in query:
         echo debug(eid)
 

@@ -34,10 +34,10 @@ proc setup(
 var storage: int
 
 proc query(
-    j: Query[(J, )],
-    k: Query[(K, )],
-    l: Query[(L, )],
-    m: Query[(M, )],
+    j: FullQuery[(J, )],
+    k: FullQuery[(K, )],
+    l: FullQuery[(L, )],
+    m: FullQuery[(M, )],
 ) =
     for entity, comp in j:
         storage = int(comp[0])

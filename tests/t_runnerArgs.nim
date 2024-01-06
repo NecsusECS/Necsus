@@ -17,7 +17,7 @@ proc runner(
     time: TimeDelta,
     sharedVar: Shared[string],
     spawn: Spawn[(A, )],
-    query: Query[(B, )],
+    query: FullQuery[(B, )],
     attach: Attach[(C, )],
     detachD: Detach[(D, )],
     lookup: Lookup[(E, )],

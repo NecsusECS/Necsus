@@ -12,7 +12,7 @@ proc setup(spawn: Spawn[(Name, )]) =
     spawn.with(Name(name: "Foo"))
     spawn.with(Name(name: "Bar"))
 
-proc modify(all: Query[(Name, )], addAge: Attach[(Age, )], addNum: Attach[(FavoriteNumber, )]) =
+proc modify(all: FullQuery[(Name, )], addAge: Attach[(Age, )], addNum: Attach[(FavoriteNumber, )]) =
     var i = 0
     for entityId, _ in all:
         i += 1

@@ -8,7 +8,7 @@ proc setup(spawn: Spawn[(Thingy, )]) =
     for i in 1..10:
         spawn.with(Thingy(number: i), )
 
-proc rm(all: Query[tuple[thingy: Thingy]], delete: Delete) =
+proc rm(all: FullQuery[tuple[thingy: Thingy]], delete: Delete) =
     for entityId, info in all:
         if info.thingy.number mod 2 == 0:
             delete(entityId)

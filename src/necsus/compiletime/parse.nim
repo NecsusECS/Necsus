@@ -51,6 +51,7 @@ proc parseArgKind(symbol: NimNode): Option[DirectiveGen] =
     case symbol.strVal
     of "Spawn": return some(spawnGenerator)
     of "Query": return some(queryGenerator)
+    of "FullQuery": return some(fullQueryGenerator)
     of "Attach": return some(attachGenerator)
     of "Detach": return some(detachGenerator)
     of "Shared": return some(sharedGenerator)

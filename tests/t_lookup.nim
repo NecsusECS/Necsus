@@ -12,7 +12,7 @@ proc spawn(spawn: Spawn[(A, B)]) =
     spawn.with(A(value: 2), B(value: "bar"))
 
 proc assertions(
-    query: Query[tuple[a: A, b: B]],
+    query: FullQuery[tuple[a: A, b: B]],
     lookupA: Lookup[tuple[a: A, ]],
     lookupB: Lookup[tuple[b: B, ]],
     lookupAB: Lookup[tuple[a: A, b: B]],
@@ -32,7 +32,7 @@ proc testLookup() {.necsus(runner, [~spawn], [~assertions], [], newNecsusConf())
 test "Looking up components by entity Id":
     testLookup()
 
-proc modify(query: Query[tuple[a: A, b: B]], lookup: Lookup[tuple[a: ptr A, b: ptr B]]) =
+proc modify(query: FullQuery[tuple[a: A, b: B]], lookup: Lookup[tuple[a: ptr A, b: ptr B]]) =
     for eid, _ in query:
         eid.lookup().get().a.value = eid.lookup().get().a.value * 2
         eid.lookup().get().b.value = eid.lookup().get().b.value & "bar"

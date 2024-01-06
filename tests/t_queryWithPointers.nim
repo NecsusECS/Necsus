@@ -11,7 +11,7 @@ proc setup(spawn: Spawn[(Add, Multiply)]) =
         spawn.with(Add(value: i), Multiply(value: i))
 
 proc operate(query: Query[tuple[mult: ptr Multiply, add: ptr Add]]) =
-    for _, entity in query:
+    for entity in query:
         entity.mult.value = entity.mult.value * entity.mult.value
         entity.add.value = entity.add.value + entity.add.value
 

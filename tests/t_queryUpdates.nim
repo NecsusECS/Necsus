@@ -10,14 +10,14 @@ proc setup(spawn: Spawn[(A, B)]) =
     for i in 1..5:
         spawn.with(A(), B())
 
-proc addC(query: Query[(A, B)], attach: Attach[(C, )]) =
+proc addC(query: FullQuery[(A, B)], attach: Attach[(C, )]) =
     for eid, comps in query:
         eid.attach((C(), ))
 
 proc assertABC(query: Query[(A, B, C)]) =
     check(toSeq(query.items).len == 5)
 
-proc addD(query: Query[(A, B)], attach: Attach[(D, )]) =
+proc addD(query: FullQuery[(A, B)], attach: Attach[(D, )]) =
     for eid, comps in query:
         eid.attach((D(), ))
 

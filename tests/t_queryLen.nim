@@ -10,10 +10,14 @@ proc setup(
     detach: Detach[(B, )],
     delete: Delete,
     queryA: Query[(A, )],
-    queryB: Query[(B, )]
+    fullQueryA: FullQuery[(A, )],
+    queryB: Query[(B, )],
+    fullQueryB: FullQuery[(B, )],
 ) =
     check(queryA.len == 0)
+    check(fullQueryA.len == 0)
     check(queryB.len == 0)
+    check(fullQueryB.len == 0)
 
     for i in 1..5:
         spawn.with(A())
@@ -21,23 +25,29 @@ proc setup(
     check(queryA.len == 5)
     check(queryB.len == 0)
 
-    for eid, _ in queryA:
+    for eid, _ in fullQueryA:
         eid.attach((B(), ))
 
     check(queryA.len == 5)
+    check(fullQueryA.len == 5)
     check(queryB.len == 5)
+    check(fullQueryB.len == 5)
 
-    for eid, _ in queryB:
+    for eid, _ in fullQueryB:
         eid.detach()
 
     check(queryA.len == 5)
+    check(fullQueryA.len == 5)
     check(queryB.len == 0)
+    check(fullQueryB.len == 0)
 
-    for eid, _ in queryA:
+    for eid, _ in fullQueryA:
         eid.delete()
 
     check(queryA.len == 0)
+    check(fullQueryA.len == 0)
     check(queryB.len == 0)
+    check(fullQueryB.len == 0)
 
 proc runner(tick: proc(): void) = tick()
 
