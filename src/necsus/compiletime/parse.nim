@@ -1,7 +1,7 @@
 import macros, sequtils, strformat, options, typeReader, strutils
 import componentDef, tupleDirective, monoDirective, systemGen
 import ../runtime/pragmas
-import spawnGen, queryGen, deleteGen, attachDetachGen, sharedGen
+import spawnGen, queryGen, deleteGen, attachDetachGen, sharedGen, tickIdGen
 import localGen, lookupGen, eventGen, timeGen, debugGen, bundleGen
 
 type
@@ -65,6 +65,7 @@ proc parseArgKind(symbol: NimNode): Option[DirectiveGen] =
     of "EntityDebug": return some(entityDebugGenerator)
     of "Bundle": return some(bundleGenerator)
     of "Delete": return some(deleteGenerator)
+    of "TickId": return some(tickIdGenerator)
     else: return none(DirectiveGen)
 
 proc parseDirectiveArg(symbol: NimNode, isPointer: bool = false, kind: DirectiveArgKind = Include): DirectiveArg =

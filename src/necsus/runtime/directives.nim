@@ -26,6 +26,9 @@ type
     TimeElapsed* = float
         ## The total amount of time spent in an app
 
+    TickId* = uint
+        ## An auto-incrementing ID for each tick
+
     EntityDebug* = proc(entityId: EntityId): string
         ## Looks up an entity and returns debug data about it
 

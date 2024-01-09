@@ -609,6 +609,19 @@ proc useBundle(bundle: Bundle[MyBundle]) =
 proc myApp() {.necsus([], [~useBundle], [], newNecsusConf()).}
 ```
 
+#### TickId
+
+`TickId` gives you an auto-incrementing ID for each time a `tick` is executed.
+
+```nim
+import necsus
+
+proc printTickId(tickId: TickId) =
+    echo "Current tick ID is ", tickId
+
+proc myApp() {.necsus([], [~printTickId], [], newNecsusConf()).}
+```
+
 ### App
 
 At an app level, there are a few more features worth discussing.
