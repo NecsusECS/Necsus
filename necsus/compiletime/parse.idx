@@ -8,6 +8,7 @@ ParsedApp	necsus/compiletime/parse.html#ParsedApp	parse: ParsedApp
 `$`	necsus/compiletime/parse.html#$,ActiveCheck	parse: `$`(check: ActiveCheck): string	
 `$`	necsus/compiletime/parse.html#$,ParsedSystem	parse: `$`(system: ParsedSystem): string	
 kind	necsus/compiletime/parse.html#kind,SystemArg	parse: kind(arg: SystemArg): auto	
+parseSystemDef	necsus/compiletime/parse.html#parseSystemDef,NimNode,NimNode,SystemPhase	parse: parseSystemDef(ident: NimNode; impl: NimNode; phase: SystemPhase): ParsedSystem	
 parseSystemList	necsus/compiletime/parse.html#parseSystemList,NimNode,SystemPhase	parse: parseSystemList(systems: NimNode; phase: SystemPhase): seq[ParsedSystem]	
 components	necsus/compiletime/parse.html#components.i,SystemArg	parse: components(arg: SystemArg): ComponentDef	
 components	necsus/compiletime/parse.html#components.i,openArray[ParsedSystem]	parse: components(systems: openArray[ParsedSystem]): ComponentDef	
@@ -15,4 +16,5 @@ allArgs	necsus/compiletime/parse.html#allArgs.i,ParsedSystem	parse: allArgs(syst
 args	necsus/compiletime/parse.html#args.i,openArray[ParsedSystem]	parse: args(systems: openArray[ParsedSystem]): SystemArg	
 components	necsus/compiletime/parse.html#components.i,ParsedApp	parse: components(app: ParsedApp): ComponentDef	
 parseApp	necsus/compiletime/parse.html#parseApp,NimNode,NimNode	parse: parseApp(appProc: NimNode; runner: NimNode): ParsedApp	
+newEmptyApp	necsus/compiletime/parse.html#newEmptyApp,string	parse: newEmptyApp(name: string): ParsedApp	
 instancedInfo	necsus/compiletime/parse.html#instancedInfo,ParsedSystem	parse: instancedInfo(system: ParsedSystem): Option[\n    tuple[fieldName: NimNode, typ: NimNode]]	

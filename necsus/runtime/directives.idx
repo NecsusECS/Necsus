@@ -5,6 +5,9 @@ Lookup	necsus/runtime/directives.html#Lookup	directives: Lookup
 Outbox	necsus/runtime/directives.html#Outbox	directives: Outbox	
 TimeDelta	necsus/runtime/directives.html#TimeDelta	directives: TimeDelta	
 TimeElapsed	necsus/runtime/directives.html#TimeElapsed	directives: TimeElapsed	
+TickId	necsus/runtime/directives.html#TickId	directives: TickId	
 EntityDebug	necsus/runtime/directives.html#EntityDebug	directives: EntityDebug	
 Bundle	necsus/runtime/directives.html#Bundle	directives: Bundle	
 SystemInstance	necsus/runtime/directives.html#SystemInstance	directives: SystemInstance	
+asInt	necsus/runtime/directives.html#asInt.c,TickId	directives: asInt(tickId: TickId): uint	
+`$`	necsus/runtime/directives.html#$,TickId	directives: `$`(tickId: TickId): string	
