@@ -255,7 +255,7 @@ proc getSystemType(ident: NimNode, impl: NimNode): NimNode =
     of nnkIdentDefs, nnkProcDef:
         return impl[1].resolveTo({ nnkProcTy }).orElse: ident.getTypeImpl
     of nnkLambda:
-        return impl.getTypeImpl
+        return impl
     else:
         return ident.getTypeImpl
 
@@ -267,7 +267,9 @@ proc parseSystemDef*(ident: NimNode, impl: NimNode, phase: SystemPhase): ParsedS
 
     # If we are given a proc, read the args directly from the proc. Otherwise, we need to
     # read them from the type, which is possibly less accurate
-    let argSource = if impl.kind == nnkProcDef: impl.params else: typeImpl[0]
+    let argSource = case impl.kind
+        of nnkProcDef, nnkLambda: impl.params
+        else: typeImpl[0]
 
     let args = argSource.toSeq
         .filterIt(it.kind == nnkIdentDefs)
