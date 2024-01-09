@@ -334,11 +334,14 @@ proc myApp() {.necsus([~spawningSystem], [], [], newNecsusConf()).}
 
 ##### Why `Spawn` and `FullSpawn`?
 
-Under the covers -- Necsus automatically generates a set of all possible archetypes that could possibly exist at
-runtime. It does this by examining systems with queries, spawns and attachements, then calculating the combinatorial
-possibilities. Naively, this is an exponential algorithm. And archetypes themselves aren't free -- each archetype that
-exists will increase your build times and the slow down your queries. Using `Spawn` instead of `FullSpawn` allows the
-underlying algorithm to ignore those components when calculating the final set of archetypes.
+During a build, Necsus automatically generates a set of all possible archetypes that could possibly exist at
+runtime. It does this by examining systems with `FullQuery`, `FullSpawn`, `Lookup`, and `Attach` directives then uses
+that to calculate all the combinatorial possibilities. Naively, this is an exponential algorithm. This is important
+because archetypes themselves aren't free. Each archetype that exists increases build times and slows down queries.
+
+Using `Spawn` instead of `FullSpawn` allows the underlying algorithm to ignore those directives when calculating the
+final set of archetypes. Because your system doesn't have access to the `EntityId`, it can't use the output of a
+`Spawn` call as the input to an `Attach` directive, which means it can't contribute to the list of archetypes.
 
 #### Query and FullQuery
 
@@ -347,7 +350,7 @@ primary mechanism for interacting with entities and components.
 
 There are two kinds of queries, `Query` and `FullQuery`. `Query` gives you access to the components, while `FullQuery`
 gives you access to the components _and_ the `EntityId`. You should use `Query` wherever possible, then only use
-`FullQuery` when you specifically need the `EntityId`. For details about why the two mechanisms exist, see the section
+`FullQuery` when you explicitly need the `EntityId`. For details about why the two mechanisms exist, see the section
 above about `Spawn` versus `FullSpawn`.
 
 ```nim
