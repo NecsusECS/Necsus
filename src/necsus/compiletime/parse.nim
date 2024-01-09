@@ -47,7 +47,7 @@ proc kind*(arg: SystemArg): auto = arg.kind
 
 proc parseArgKind(symbol: NimNode): Option[DirectiveGen] =
     ## Parses a type symbol to a SystemArgKind
-    symbol.expectKind(nnkSym)
+    symbol.expectKind({ nnkSym, nnkIdent })
     case symbol.strVal
     of "Spawn": return some(spawnGenerator)
     of "FullSpawn": return some(fullSpawnGenerator)
@@ -172,7 +172,7 @@ proc parseArgType(argName: NimNode, argType, original: NimNode): SystemArg =
 
 proc parseSystemArg(identDef: NimNode): SystemArg =
     ## Parses a SystemArg from a proc argument
-    identDef.expectKind(nnkIdentDefs)
+    identDef.expectKind({ nnkIdentDefs, nnkExprEqExpr })
     return parseArgType(identDef[0], identDef[1], identDef[1])
 
 proc readDependencies(typeNode: NimNode): seq[NimNode] =
@@ -254,14 +254,15 @@ proc getSystemType(ident: NimNode, impl: NimNode): NimNode =
     case impl.kind
     of nnkIdentDefs, nnkProcDef:
         return impl[1].resolveTo({ nnkProcTy }).orElse: ident.getTypeImpl
+    of nnkLambda:
+        return impl.getTypeImpl
     else:
         return ident.getTypeImpl
 
-proc parseSystem(ident: NimNode, phase: SystemPhase): ParsedSystem =
+proc parseSystemDef*(ident: NimNode, impl: NimNode, phase: SystemPhase): ParsedSystem =
     ## Parses a single system proc
     ident.expectKind(nnkSym)
 
-    let impl = ident.getImpl
     let typeImpl = ident.getSystemType(impl)
 
     # If we are given a proc, read the args directly from the proc. Otherwise, we need to
@@ -272,13 +273,19 @@ proc parseSystem(ident: NimNode, phase: SystemPhase): ParsedSystem =
         .filterIt(it.kind == nnkIdentDefs)
         .mapIt(parseSystemArg(it))
 
-    result.new
-    result.phase = impl.choosePhase(phase)
-    result.symbol = ident
-    result.args = args
-    result.depends = impl.readDependencies()
-    result.instanced = determineInstancing(impl, typeImpl)
-    result.checks = parseActiveChecks(impl)
+    return ParsedSystem(
+        phase: impl.choosePhase(phase),
+        symbol: ident,
+        args: args,
+        depends: impl.readDependencies(),
+        instanced: determineInstancing(impl, typeImpl),
+        checks: parseActiveChecks(impl),
+    )
+
+proc parseSystem(ident: NimNode, phase: SystemPhase): ParsedSystem =
+    ## Parses a single system proc
+    ident.expectKind(nnkSym)
+    return parseSystemDef(ident, ident.getImpl, phase)
 
 proc parseSystems(systems: NimNode, phase: SystemPhase, into: var seq[ParsedSystem]) =
     # Recursively collects a list of systems
@@ -366,6 +373,10 @@ proc parseApp*(appProc: NimNode, runner: NimNode): ParsedApp =
 
     let returnNode = appProc.params[0]
     result.returns = if returnNode.kind == nnkEmpty: none(MonoDirective) else: some(newMonoDir(returnNode))
+
+proc newEmptyApp*(name: string): ParsedApp =
+    ## Creates an empty parsed app
+    ParsedApp(name: name)
 
 proc instancedInfo*(system: ParsedSystem): Option[tuple[fieldName: NimNode, typ: NimNode]] =
     ## Returns details about the instancing configuration for a type

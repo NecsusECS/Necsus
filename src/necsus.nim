@@ -1,5 +1,5 @@
 import necsus / runtime / [ entityId, query, systemVar, inbox, directives, necsusConf, spawn, pragmas ]
-import necsus / compiletime / [ parse, systemGen, codeGenInfo, worldGen, worldEnum, tickGen ]
+import necsus / compiletime / [ parse, systemGen, codeGenInfo, worldGen, worldEnum, tickGen, commonVars ]
 
 import sequtils, macros, options
 
@@ -90,3 +90,33 @@ macro necsus*(
 ) =
     ## Creates an ECS world
     buildApp(bindSym("gameLoop"), startup, systems, teardown, conf, pragmaProc)
+
+macro runSystemOnce*(systemDef: typed): untyped =
+    ## Creates a single system and immediately executes it with a specific set of directives
+
+    let systemIdent = genSym()
+    let system = parseSystemDef(systemIdent, systemDef, LoopPhase)
+
+    let necsusConfIdent = genSym()
+    let defineConf = quote do:
+        let `necsusConfIdent` = newNecsusConf()
+
+    let app = newEmptyApp(genSym().strVal)
+    let codeGenInfo = newCodeGenInfo(necsusConfIdent, app, @[ system ])
+    let initIdent = codeGenInfo.appStateInit
+
+    let call = newCall(systemIdent, system.args.mapIt(systemArg(codeGenInfo, it)))
+
+    return newStmtList(
+        codeGenInfo.archetypeEnum.codeGen,
+        codeGenInfo.createAppStateType(),
+        codeGenInfo.createAppStateDestructor(),
+        codeGenInfo.generateForHook(GenerateHook.Outside),
+        defineConf,
+        codeGenInfo.createAppStateInit(),
+        quote do:
+            block:
+                let `appStateIdent` = `initIdent`()
+                let `systemIdent` = `systemDef`
+                `call`
+    )

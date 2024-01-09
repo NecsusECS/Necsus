@@ -796,6 +796,24 @@ proc changeStateSystem(manager: Bundle[StateManager], winConditionMet: Shared[bo
 proc app() {.necsus([], [~customSystem, ~changeStateSystem], [], newNecsusConf()).}
 ```
 
+## Testing Systems
+
+To test a system, you can use the `runSystemOnce` macro. It accepts a single lambda as an
+argument, and will invoke that lambda as if it were a system. You can then pass those
+directives to other systems, or interact with them directly.
+
+```nim
+import unittest, necsus
+
+proc myExampleSystem(str: Shared[string]) =
+    str := "foo"
+
+runSystemOnce do (str: Shared[string]) -> void:
+    test "Execute myExampleSystem":
+        myExampleSystem(str)
+        check(str.get == "foo")
+```
+
 ## Profiling systems
 
 To get a quick and dirty idea of how your app is performing, you can compile with the `-d:profile` flag set. This
