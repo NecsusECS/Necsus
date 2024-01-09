@@ -1,5 +1,5 @@
 import macros
-import commonVars, systemGen
+import commonVars, systemGen, ../runtime/directives
 
 let tickId {.compileTime.} = ident("tickId")
 
@@ -7,7 +7,7 @@ proc fields(name: string): seq[WorldField] = @[ (tickId.strVal, ident("uint")) ]
 
 proc sysArg(name: string): NimNode =
     return quote:
-        `appStateIdent`.`tickId`
+        TickId(addr `appStateIdent`.`tickId`)
 
 proc generate(details: GenerateContext, arg: SystemArg, name: string): NimNode =
     case details.hook
