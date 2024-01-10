@@ -101,7 +101,7 @@ macro runSystemOnce*(systemDef: typed): untyped =
     let defineConf = quote do:
         let `necsusConfIdent` = newNecsusConf()
 
-    let app = newEmptyApp(genSym().strVal)
+    let app = newEmptyApp("App_" & $lineInfoObj(systemDef).line & "_" & $lineInfoObj(systemDef).column)
     let codeGenInfo = newCodeGenInfo(necsusConfIdent, app, @[ system ])
     let initIdent = codeGenInfo.appStateInit
 
