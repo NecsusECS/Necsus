@@ -614,7 +614,8 @@ proc myApp() {.necsus([], [~useBundle], [], newNecsusConf()).}
 
 #### TickId
 
-`TickId` gives you an auto-incrementing ID for each time a `tick` is executed.
+`TickId` gives you an auto-incrementing ID for each time a `tick` is executed. This is useful, for example, if you need
+to track whether an operation has already been performed for the current tick.
 
 ```nim
 import necsus
@@ -710,7 +711,7 @@ var app = initMyApp()
 app.tick()
 app.tick()
 app.tick()
-````
+```
 
 ## Debugging an Entity
 
