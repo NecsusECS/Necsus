@@ -161,145 +161,6 @@ proc myApp(input: string) {.necsus(
 ).}
 ```
 
-#### Dependencies between systems
-
-A system may require that another system always be paired with it. This can be accomplished by adding the  `depends`
-pragma, which declares that relationship:
-
-```nim
-import necsus
-
-proc runFirst() =
-    ## No-op system, but it gets run first
-    discard
-
-proc runSecond() {.depends(runFirst).} =
-    ## No-op system that gets run second
-    discard
-
-proc myApp() {.necsus([], [~runSecond], [], newNecsusConf()).}
-```
-
-#### Marking systems for explicit phases
-
-If you have a system that should always be run during a specific phase, you can explicitly mark it with a phase
-pragma to ensure that it is always added where you expect it to be added. This is particularly useful when
-paired with dependencies, as it allows you to depend on setup or teardown phases. It can also be used to enforce
-the order of execution for a phase.
-
-```nim
-import necsus
-
-proc startupSystem() {.startupSys.}=
-    discard
-
-proc loopSystem() {.loopSys.} =
-    discard
-
-proc teardownSystem() {.teardownSys} =
-    discard
-
-proc myApp() {.necsus([], [~startupSystem, ~loopSystem, ~teardownSystem], [], newNecsusConf()).}
-```
-
-#### Instancing systems
-
-For systems that need to maintain state, it can be convenient to hold on to an instance between invocations. The
-first step to setting is up is to mark a system with the `instanced` pragma. Then, you've got two options:
-
-**Option 1: Return a Proc**
-
-If your system returns a `proc`, that proc will get created during the startup phase, then invoked
-for every tick. The `proc` itself that gets returned here cannot take any arguments. For example:
-
-```nim
-import necsus
-
-proc someSystem(create: Spawn[(string, )], query: Query[(string,)]): auto {.instanced.} =
-    create.with("foo")
-    return proc() =
-        for (str,) in query:
-            echo str
-
-proc myApp() {.necsus([], [~someSystem], [], newNecsusConf()).}
-```
-
-Obviously, this makes it easier to capture the pragmas from your parent system as closure variables,
-which can then be freely used.
-
-**Option 2: Return an Object**
-
-Your other option is to return an object. The system proc will get invoked during the startup phase,
-then a `tick` proc will get invoked as part of the main loop. This also allows you to create a `=destroy`
-proc that gets invoked during teardown:
-
-```nim
-import necsus
-
-type SystemInstance = object
-    query: Query[(string,)]
-
-proc someSystem(create: Spawn[(string, )], query: Query[(string,)]): SystemInstance {.instanced.} =
-    create.with("foo")
-    result.query = query
-
-proc tick(system: var SystemInstance) =
-    for (str,) in system.query:
-        echo str
-
-proc `=destroy`(system: var SystemInstance) =
-    echo "Destroying system"
-
-proc myApp() {.necsus([], [~someSystem], [], newNecsusConf()).}
-```
-
-### Building Re-usable systems
-
-Reusing code is obviously a fundamental aspect of programming, and using generics is a fundamental aspect of
-that in Nim. Necsus, however, can't resolve generic parameters by itself. It needs to know exactly what components
-need to be passed to each system at compile time.
-
-To work around this, you can assign systems to variables, then pass those variables into your app:
-
-```nim
-import necsus
-
-type
-    SomeComponent = object
-    AnotherComponent = object
-
-proc genericSpawner[T](): auto =
-    return proc (create: Spawn[(T, )]) =
-        create.with(T())
-
-let spawnSomeComponent = genericSpawner[SomeComponent]()
-let spawnAnotherComponent = genericSpawner[AnotherComponent]()
-
-proc myApp() {.necsus([], [~spawnSomeComponent, ~spawnAnotherComponent], [], newNecsusConf()).}
-```
-
-It's worth mentioning that if you start usin type aliases, Nim's type system has a tendency to hide those
-from the macro system -- they generally get resolved directly down to the type they are aliasing. To work around that,
-you can add in explicit type declarations.
-
-### Exiting
-
-Exiting the primary system loop is done through a `Shared` directive. Directives will be covered in more details below,
-but all you need to know in this case is that it's sending a signal to the loop executor by changing a bit of shared
-state:
-
-```nim
-import necsus
-
-proc immediateExit(exit: Shared[NecsusRun]) =
-    ## Immediately exit the first time this system is called
-    exit.set(ExitLoop)
-
-proc myApp() {.necsus([], [~immediateExit], [], newNecsusConf()).}
-
-myApp()
-```
-
 ### Directives
 
 Systems interact with the rest of an app by using special method arguments, called `Directives`. These directives are
@@ -343,7 +204,7 @@ Using `Spawn` instead of `FullSpawn` allows the underlying algorithm to ignore t
 final set of archetypes. Because your system doesn't have access to the `EntityId`, it can't use the output of a
 `Spawn` call as the input to an `Attach` directive, which means it can't contribute to the list of archetypes.
 
-#### Query and FullQuery
+#### Query
 
 Queries allow you to iterate over entities that have a specific set of components attached to them. Queries are the
 primary mechanism for interacting with entities and components.
@@ -434,7 +295,7 @@ proc optionalB(query: Query[(A, Option[B])]) =
 proc myApp() {.necsus([], [~optionalB], [], newNecsusConf()).}
 ```
 
-### Query for a single value
+#### Querying for a single value
 
 For situations where you have a singleton instance, you can use the `single` method to pull it from a query:
 
@@ -626,6 +487,171 @@ proc printTickId(tickId: TickId) =
 proc myApp() {.necsus([], [~printTickId], [], newNecsusConf()).}
 ```
 
+#### EntityDebug
+
+When you find yourelf in a position that you need to see the exact state that an entity is in, you can get a string
+dump of that entity by using the `EntityDebug` directive:
+
+```nim
+import necsus
+
+type
+    A = object
+
+proc debuggingSystem(query: FullQuery[(A, )], debug: EntityDebug) =
+    for eid, _ in query:
+        echo debug(eid)
+
+proc myApp() {.necsus([], [~debuggingSystem], [], newNecsusConf()).}
+```
+
+### Extended System Usage
+
+Beyond the basics of declaring systems and using directives, there are a few more advanced system use cases
+worth understanding.
+
+#### Dependencies between systems
+
+A system may require that another system always be paired with it. This can be accomplished by adding the  `depends`
+pragma, which declares that relationship:
+
+```nim
+import necsus
+
+proc runFirst() =
+    ## No-op system, but it gets run first
+    discard
+
+proc runSecond() {.depends(runFirst).} =
+    ## No-op system that gets run second
+    discard
+
+proc myApp() {.necsus([], [~runSecond], [], newNecsusConf()).}
+```
+
+#### Marking systems for explicit phases
+
+If you have a system that should always be run during a specific phase, you can explicitly mark it with a phase
+pragma to ensure that it is always added where you expect it to be added. This is particularly useful when
+paired with dependencies, as it allows you to depend on setup or teardown phases. It can also be used to enforce
+the order of execution for a phase.
+
+```nim
+import necsus
+
+proc startupSystem() {.startupSys.}=
+    discard
+
+proc loopSystem() {.loopSys.} =
+    discard
+
+proc teardownSystem() {.teardownSys} =
+    discard
+
+proc myApp() {.necsus([], [~startupSystem, ~loopSystem, ~teardownSystem], [], newNecsusConf()).}
+```
+
+#### Instancing systems
+
+For systems that need to maintain state, it can be convenient to hold on to an instance between invocations. The
+first step to setting is up is to mark a system with the `instanced` pragma. Then, you've got two options:
+
+**Option 1: Return a Proc**
+
+If your system returns a `proc`, that proc will get created during the startup phase, then invoked
+for every tick. The `proc` itself that gets returned here cannot take any arguments. For example:
+
+```nim
+import necsus
+
+proc someSystem(create: Spawn[(string, )], query: Query[(string,)]): auto {.instanced.} =
+    create.with("foo")
+    return proc() =
+        for (str,) in query:
+            echo str
+
+proc myApp() {.necsus([], [~someSystem], [], newNecsusConf()).}
+```
+
+Obviously, this makes it easier to capture the pragmas from your parent system as closure variables,
+which can then be freely used.
+
+**Option 2: Return an Object**
+
+Your other option is to return an object. The system proc will get invoked during the startup phase,
+then a `tick` proc will get invoked as part of the main loop. This also allows you to create a `=destroy`
+proc that gets invoked during teardown:
+
+```nim
+import necsus
+
+type SystemInstance = object
+    query: Query[(string,)]
+
+proc someSystem(create: Spawn[(string, )], query: Query[(string,)]): SystemInstance {.instanced.} =
+    create.with("foo")
+    result.query = query
+
+proc tick(system: var SystemInstance) =
+    for (str,) in system.query:
+        echo str
+
+proc `=destroy`(system: var SystemInstance) =
+    echo "Destroying system"
+
+proc myApp() {.necsus([], [~someSystem], [], newNecsusConf()).}
+```
+
+#### Building Re-usable systems
+
+Reusing code is obviously a fundamental aspect of programming, and using generics is a fundamental aspect of
+that in Nim. Necsus, however, can't resolve generic parameters by itself. It needs to know exactly what components
+need to be passed to each system at compile time.
+
+To work around this, you can assign systems to variables, then pass those variables into your app:
+
+```nim
+import necsus
+
+type
+    SomeComponent = object
+    AnotherComponent = object
+
+proc genericSpawner[T](): auto =
+    return proc (create: Spawn[(T, )]) =
+        create.with(T())
+
+let spawnSomeComponent = genericSpawner[SomeComponent]()
+let spawnAnotherComponent = genericSpawner[AnotherComponent]()
+
+proc myApp() {.necsus([], [~spawnSomeComponent, ~spawnAnotherComponent], [], newNecsusConf()).}
+```
+
+It's worth mentioning that if you start usin type aliases, Nim's type system has a tendency to hide those
+from the macro system -- they generally get resolved directly down to the type they are aliasing. To work around that,
+you can add in explicit type declarations or use templates to define your systems.
+
+#### Game State Management
+
+Often times, games will have various states they can be in at a high level.  For example, your game may have states to
+represent "loading", "playing", "won" or "lost". For this, you can annotate a system with the `active` pragma so it
+only executes when the game is in a specific state. `Shared` directives are then used for changing between states.
+
+```nim
+import necsus
+
+type GameState = enum Loading, Playing, Won, Lost
+
+proc showWon() {.active(Won).} =
+    echo "Game won!"
+
+proc switchGameState(state: Shared[GameState]) =
+    ## System that changes the game state to "won"
+    state := Won
+
+proc myApp() {.necsus([], [~showWon, ~switchGameState], [], newNecsusConf()).}
+```
+
 ### App
 
 At an app level, there are a few more features worth discussing.
@@ -665,6 +691,22 @@ Runtime configuration for the execution environment can be controlled through th
 import necsus
 
 proc myApp() {.necsus([], [], [], newNecsusConf(entitySize = 100_000)).}
+```
+
+#### Exiting
+
+With the default tick runner, exiting the app is done through a `Shared` directive:
+
+```nim
+import necsus
+
+proc immediateExit(exit: Shared[NecsusRun]) =
+    ## Immediately exit the first time this system is called
+    exit := ExitLoop
+
+proc myApp() {.necsus([], [~immediateExit], [], newNecsusConf()).}
+
+myApp()
 ```
 
 #### Custom runners
@@ -713,43 +755,40 @@ app.tick()
 app.tick()
 ```
 
-## Debugging an Entity
+## Patterns
 
-When you find yourelf in a position that you need to see the exact state that an entity is in, you can get a string
-dump of that entity by using the `EntityDebug` directive:
+There are a few useful design patterns that are useful when using Necsus
+
+### Encapsulation using Bundles
+
+Bundles provide a way to put all your entity state logic in one place, then call it from other places. For example,
+you might have a state machien for an enemy that can change in various ways. You can put that logic in a single
+file:
 
 ```nim
-import necsus
+import necsus, options
 
 type
-    A = object
+    EnemyState = enum Alive, Atacking, KnockedBack, Dead
 
-proc debuggingSystem(query: FullQuery[(A, )], debug: EntityDebug) =
-    for eid, _ in query:
-        echo debug(eid)
+    EnemyData = object
+        state: EnemyState
+        hitPoints: int
 
-proc myApp() {.necsus([], [~debuggingSystem], [], newNecsusConf()).}
-```
+    EnemyControl* = object
+        createEnemy: Spawn[(EnemyData, )]
+        findEnemy: Lookup[(ptr EnemyData, )]
 
-## Game State Management
+proc createEnemy*(control: Bundle[EnemyControl], hitPoints: int) =
+    control.createEnemy.with(EnemyData(state: Alive, hitPoints: hitPoints))
 
-Often times, games will have various states they can be in at a high level.  For example, your game may have states to
-represent "loading", "playing", "won" or "lost". For this, you can annotate a system with the `active` pragma so it
-only executes when the game is in a specific state. `Shared` directives are then used for changing between states.
-
-```nim
-import necsus
-
-type GameState = enum Loading, Playing, Won, Lost
-
-proc showWon() {.active(Won).} =
-    echo "Game won!"
-
-proc switchGameState(state: Shared[GameState]) =
-    ## System that changes the game state to "won"
-    state := Won
-
-proc myApp() {.necsus([], [~showWon, ~switchGameState], [], newNecsusConf()).}
+proc damage*(control: Bundle[EnemyControl], enemy: EntityId, damage: int) =
+    control.findEnemy(enemy).map do (data: auto) -> void:
+        data[0].hitPoints -= damage
+        if data[0].hitPoints <= 0:
+            data[0].state = Dead
+        else:
+            data[0].state = KnockedBack
 ```
 
 ### Listening to state changes
