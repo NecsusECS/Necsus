@@ -621,7 +621,7 @@ to track whether an operation has already been performed for the current tick.
 import necsus
 
 proc printTickId(tickId: TickId) =
-    echo "Current tick ID is ", tickId
+    echo "Current tick ID is ", tickId()
 
 proc myApp() {.necsus([], [~printTickId], [], newNecsusConf()).}
 ```

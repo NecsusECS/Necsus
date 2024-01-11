@@ -6,9 +6,9 @@ type BundledTickId = object
     tickId: TickId
 
 proc checkTick(tickId: TickId, tickId2: TickId, tickBundle: Bundle[BundledTickId]) =
-    check(tickId == expecting)
-    check(tickId2 == expecting)
-    check(tickBundle.tickId == expecting)
+    check(tickId() == expecting)
+    check(tickId2() == expecting)
+    check(tickBundle.tickId() == expecting)
     expecting += 1
 
 proc runner(tick: proc(): void) =

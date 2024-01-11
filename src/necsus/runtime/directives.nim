@@ -26,7 +26,7 @@ type
     TimeElapsed* = float
         ## The total amount of time spent in an app
 
-    TickId* = distinct ptr uint
+    TickId* = proc(): uint
         ## An auto-incrementing ID for each tick
 
     EntityDebug* = proc(entityId: EntityId): string
@@ -37,7 +37,3 @@ type
 
     SystemInstance* = proc(): void
         ## A callback used to invoke a specific system
-
-converter asInt*(tickId: TickId): uint = ((ptr uint)(tickId))[]
-
-proc `$`*(tickId: TickId): string = $asInt(tickId)
