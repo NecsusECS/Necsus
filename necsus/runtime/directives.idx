@@ -9,5 +9,3 @@ TickId	necsus/runtime/directives.html#TickId	directives: TickId
 EntityDebug	necsus/runtime/directives.html#EntityDebug	directives: EntityDebug	
 Bundle	necsus/runtime/directives.html#Bundle	directives: Bundle	
 SystemInstance	necsus/runtime/directives.html#SystemInstance	directives: SystemInstance	
-asInt	necsus/runtime/directives.html#asInt.c,TickId	directives: asInt(tickId: TickId): uint	
-`$`	necsus/runtime/directives.html#$,TickId	directives: `$`(tickId: TickId): string	
