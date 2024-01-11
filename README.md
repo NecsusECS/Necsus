@@ -374,7 +374,7 @@ proc myApp() {.necsus([], [~reportingSystem, ~reportingSystemWithEntity], [], ne
 #### Queries with Pointers
 
 If you want to loop through a set of entities and update the values of their components, the most efficient
-mechanism available is to update those values in place. This is accomplished by requested pointers when doing a query:
+mechanism available is to update those values in place. This is accomplished by requesting pointers when doing a query:
 
 ```nim
 import necsus
@@ -392,7 +392,7 @@ proc myApp() {.necsus([], [~inPlaceUpdate], [], newNecsusConf()).}
 
 #### Queries that exclude components
 
-There will be times you want to query for entities that contain a set of entities, but also exclude another set of
+There will be times you want to query for entities that _exclude_ a set of
 components. This can be accomplished with the `Not` type:
 
 ```nim
@@ -470,7 +470,7 @@ proc myApp() {.necsus([], [~deletingSystem], [], newNecsusConf()).}
 
 #### Lookup
 
-Lookup allows you to get components for an entity when you already have the entity id. It returns an `Option`, which
+`Lookup` allows you to get components for an entity when you already have the entity id. It returns an `Option`, which
 will be a `Some` if the entity has the exact requested components:
 
 ```nim
