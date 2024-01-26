@@ -96,23 +96,21 @@ proc parseDirectiveArgsFromTuple(tupleArg: NimNode): seq[DirectiveArg] =
 template orElse[T](optional: Option[T], exec: untyped): T =
     if optional.isSome: optional.get else: exec
 
-proc parseArgType(argName: NimNode, argType, original: NimNode): SystemArg
+proc parseArgType(context, argName, argType, original: NimNode): SystemArg
 
-proc parseNestedArgs(nestedArgs: seq[RawNestedArg]): seq[SystemArg] =
+proc parseNestedArgs(context: NimNode, nestedArgs: seq[RawNestedArg]): seq[SystemArg] =
     ## If a directive references other directives, we need to extract those
     for (name, argType) in nestedArgs:
-        result.add parseArgType(name, argType, argType)
+        result.add parseArgType(context, name, argType, argType)
 
 proc parseParametricArg(
-    argName: NimNode,
-    directiveSymbol: NimNode,
+    context,
+    argName,
+    directiveSymbol,
     directiveParametric: NimNode
 ): Option[SystemArg] =
     ## Parses a system arg given a specific symbol and tuple
     let gen = parseArgKind(directiveSymbol).orElse: return none(SystemArg)
-
-    # Create a unique name for so the directives can be unique, if needed
-    # let uniqName = directiveSymbol.strVal & "_" & argName.strVal & argName.signatureHash
 
     case gen.kind
     of DirectiveKind.Tuple:
@@ -122,9 +120,9 @@ proc parseParametricArg(
             source = directiveSymbol,
             generator = gen,
             originalName = argName.strVal,
-            name = gen.chooseNameTuple(argName, tupleDir),
+            name = gen.chooseNameTuple(context, argName, tupleDir),
             directive = tupleDir,
-            nestedArgs = parseNestedArgs(nestedArgs)
+            nestedArgs = parseNestedArgs(context, nestedArgs)
         ))
     of DirectiveKind.Mono:
         let monoDir = newMonoDir(directiveParametric)
@@ -133,9 +131,9 @@ proc parseParametricArg(
             source = directiveSymbol,
             generator = gen,
             originalName = argName.strVal,
-            name = gen.chooseNameMono(argName, monoDir),
+            name = gen.chooseNameMono(context, argName, monoDir),
             directive = monoDir,
-            nestedArgs = parseNestedArgs(nestedArgs)
+            nestedArgs = parseNestedArgs(context, nestedArgs)
         ))
     of DirectiveKind.None:
         error("System argument does not support tuple parameters: " & $gen.kind)
@@ -149,15 +147,15 @@ proc parseFlagSystemArg(name: NimNode, directiveSymbol: NimNode): Option[SystemA
     of DirectiveKind.None:
         return some(newSystemArg[void](directiveSymbol, gen, name.strVal, directiveSymbol.strVal))
 
-proc parseArgType(argName: NimNode, argType, original: NimNode): SystemArg =
+proc parseArgType(context, argName, argType, original: NimNode): SystemArg =
     ## Parses the type of a system argument
 
     var parsed: Option[SystemArg]
     case argType.kind:
-    of nnkBracketExpr: parsed = parseParametricArg(argName, argType[0], argType[1])
-    of nnkCall: parsed = parseParametricArg(argName, argType[1], argType[2])
+    of nnkBracketExpr: parsed = parseParametricArg(original, argName, argType[0], argType[1])
+    of nnkCall: parsed = parseParametricArg(context, argName, argType[1], argType[2])
     of nnkSym: parsed = parseFlagSystemArg(argName, argType)
-    of nnkVarTy: parsed = some(parseArgType(argName, argType[0], original))
+    of nnkVarTy: parsed = some(parseArgType(context, argName, argType[0], original))
     else: parsed = none(SystemArg)
 
     # If we were unable to parse the argument, it may be because it's a type alias. Lets try to resolve it
@@ -165,15 +163,15 @@ proc parseArgType(argName: NimNode, argType, original: NimNode): SystemArg =
         if argType.kind == nnkSym:
             let impl = argType.getImpl
             if impl.kind == nnkTypeDef:
-                return parseArgType(argName, impl[2], original)
+                return parseArgType(context, argName, impl[2], original)
         error("Expecting an ECS interface type, but got: " & original.repr, original)
     else:
         return parsed.get
 
-proc parseSystemArg(identDef: NimNode): SystemArg =
+proc parseSystemArg(context, identDef: NimNode): SystemArg =
     ## Parses a SystemArg from a proc argument
     identDef.expectKind({ nnkIdentDefs, nnkExprEqExpr })
-    return parseArgType(identDef[0], identDef[1], identDef[1])
+    return parseArgType(context, identDef[0], identDef[1], identDef[1])
 
 proc readDependencies(typeNode: NimNode): seq[NimNode] =
     ## Reads the systems referenced by a pragma attached to another system
@@ -182,7 +180,7 @@ proc readDependencies(typeNode: NimNode): seq[NimNode] =
         if child.kind == nnkCall and depends == child[0]:
             findChildSyms(child[1], result)
 
-proc newActiveCheck(value: NimNode, typename: NimNode): ActiveCheck =
+proc newActiveCheck(context, value, typename: NimNode): ActiveCheck =
     if typename.kind != nnkSym:
         error("Unexpected system state type. Got " & typename.repr, value)
 
@@ -191,39 +189,39 @@ proc newActiveCheck(value: NimNode, typename: NimNode): ActiveCheck =
         source = value,
         generator = sharedGenerator,
         originalName = typename.strVal,
-        name = sharedGenerator.chooseNameMono(typename, monoDir),
+        name = sharedGenerator.chooseNameMono(context, typename, monoDir),
         directive = monoDir
     )
     return ActiveCheck(value: value, arg: arg)
 
-proc parseActiveCheck(state: NimNode): seq[ActiveCheck] =
+proc parseActiveCheck(context, state: NimNode): seq[ActiveCheck] =
     ## Parses a single ActiveCheck from a node
     case state.kind
     of nnkHiddenStdConv:
-        return parseActiveCheck(state[1])
+        return parseActiveCheck(context, state[1])
     of nnkBracket:
         for child in state.children:
-            result.add(parseActiveCheck(child))
+            result.add(parseActiveCheck(context, child))
     of nnkCurly:
         let setType = state.getTypeInst
         setType.expectKind(nnkBracketExpr)
         let typename = setType[1]
         for value in state.children:
-            result.add(newActiveCheck(value, typename))
+            result.add(newActiveCheck(context, value, typename))
     else:
         state.expectKind(nnkSym)
         let typename = state.getTypeInst
         if typename.kind != nnkSym:
             error("Unexpected system state type. Expecting a symbol, but got " & typename.repr, state)
-        return @[ newActiveCheck(state, typename) ]
+        return @[ newActiveCheck(context, state, typename) ]
 
-proc parseActiveChecks(typeNode: NimNode): seq[ActiveCheck] =
+proc parseActiveChecks(context, typeNode: NimNode): seq[ActiveCheck] =
     ## Parses any checks that need to be performed before executing a system
     let activePragma = bindSym("active")
 
     for child in typeNode.findPragma:
         if child.kind == nnkCall and activePragma == child[0]:
-            for activeState in parseActiveCheck(child[1]):
+            for activeState in parseActiveCheck(context, child[1]):
                 result.add(activeState)
 
 proc choosePhase(typeNode: NimNode, default: SystemPhase): SystemPhase =
@@ -273,7 +271,7 @@ proc parseSystemDef*(ident: NimNode, impl: NimNode, phase: SystemPhase): ParsedS
 
     let args = argSource.toSeq
         .filterIt(it.kind == nnkIdentDefs)
-        .mapIt(parseSystemArg(it))
+        .mapIt(parseSystemArg(ident, it))
 
     return ParsedSystem(
         phase: impl.choosePhase(phase),
@@ -281,7 +279,7 @@ proc parseSystemDef*(ident: NimNode, impl: NimNode, phase: SystemPhase): ParsedS
         args: args,
         depends: impl.readDependencies(),
         instanced: determineInstancing(impl, typeImpl),
-        checks: parseActiveChecks(impl),
+        checks: parseActiveChecks(ident, impl),
     )
 
 proc parseSystem(ident: NimNode, phase: SystemPhase): ParsedSystem =
@@ -355,7 +353,7 @@ proc parseRunner(runner: NimNode): seq[SystemArg] =
     # Verify that the last argument is a proc
     impl.params[^1][1].expectKind(nnkProcTy)
 
-    result = impl.params.toSeq[1..^2].mapIt(parseSystemArg(it))
+    result = impl.params.toSeq[1..^2].mapIt(parseSystemArg(runner, it))
 
 proc parseApp*(appProc: NimNode, runner: NimNode): ParsedApp =
     ## Parses the app proc

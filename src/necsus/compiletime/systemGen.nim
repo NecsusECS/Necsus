@@ -33,7 +33,7 @@ type
     HookGenerator*[T] = proc(details: GenerateContext, arg: SystemArg, name: string, dir: T): NimNode
         ## The callback that allows a decorator to generate code for a specific hook
 
-    NameChooser*[T] = proc(name: NimNode, dir: T): string
+    NameChooser*[T] = proc(context, name: NimNode; dir: T): string
         ## Picks the name for an argument
 
     SystemArgExtractor*[T] = proc(name: string, dir: T): NimNode
@@ -86,7 +86,7 @@ type
 
 proc noArchetype[T](builder: var ArchetypeBuilder[ComponentDef], systemArgs: seq[SystemArg], dir: T) = discard
 
-proc defaultName(argName: NimNode, dir: MonoDirective | TupleDirective): string = dir.name
+proc defaultName(context, argName: NimNode, dir: MonoDirective | TupleDirective): string = dir.name
 
 proc defaultWorldField(name: string, dir: MonoDirective | TupleDirective): seq[WorldField] = @[]
 

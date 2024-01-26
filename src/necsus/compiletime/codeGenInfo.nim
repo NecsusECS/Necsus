@@ -92,7 +92,7 @@ proc generateForHook*(codeGen: CodeGenInfo, system: ParsedSystem, hook: Generate
     ## Generates the code for a specific code-gen hook
     result = newStmtList()
     var details: GenerateContext
-    for arg in system.args:
+    for arg in system.allArgs:
         if hook in arg.generator.interest:
             if details == nil:
                 details = newGenerateContext(codeGen, hook)

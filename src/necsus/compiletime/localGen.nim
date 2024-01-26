@@ -1,7 +1,7 @@
 import macros, systemGen, monoDirective, commonVars
 import ../runtime/systemVar
 
-proc chooseLocalName(argName: NimNode, local: MonoDirective): string = argName.signatureHash
+proc chooseLocalName(context, argName: NimNode, local: MonoDirective): string = argName.signatureHash
 
 proc worldFields(name: string, dir: MonoDirective): seq[WorldField] =
     @[ (name, nnkBracketExpr.newTree(bindSym("SystemVarData"), dir.argType)) ]

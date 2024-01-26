@@ -1,4 +1,4 @@
-import macros, strutils, tables
+import macros, strutils, tables, sequtils
 import directiveSet, monoDirective, nimNode, commonVars, systemGen
 import ../util/mailbox, ../runtime/[inbox, directives]
 
@@ -7,8 +7,15 @@ proc eventStorageIdent(event: MonoDirective | NimNode): NimNode =
     when event is NimNode: ident(event.symbols.join("_") & "_storage")
     elif event is MonoDirective: eventStorageIdent(event.argType)
 
-proc chooseInboxName(argName: NimNode, local: MonoDirective): string =
-    argName.signatureHash & "_" & argName.strVal
+proc getSignature(node: NimNode): string =
+    case node.kind
+    of nnkSym: return node.signatureHash
+    of nnkBracketExpr: return node.children.toSeq.mapIt(it.getSignature).join()
+    else: node.expectKind({nnkSym})
+
+proc chooseInboxName(context, argName: NimNode, local: MonoDirective): string =
+    let signature = if argName.kind == nnkSym: argName.getSignature else: context.getSignature
+    return signature & argName.strVal
 
 proc inboxFields(name: string, dir: MonoDirective): seq[WorldField] = @[
     (name, nnkBracketExpr.newTree(bindSym("Mailbox"), dir.argType))

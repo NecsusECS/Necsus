@@ -49,9 +49,7 @@ proc type*(def: DirectiveArg): NimNode =
 
 proc newTupleDir*(args: openarray[DirectiveArg]): TupleDirective =
     ## Create a TupleDirective
-    result.new
-    result.args = args.toSeq
-    result.name = args.items.toSeq.mapIt(it.component).generateName
+    return TupleDirective(args: args.toSeq, name: args.items.toSeq.mapIt(it.component).generateName)
 
 proc `$`*(dir: TupleDirective): string =
     dir.name & "(" & join(dir.args, ", ") & ")"
