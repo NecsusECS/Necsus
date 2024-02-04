@@ -15,7 +15,7 @@ proc assertOne(query: Query[(A, )]) =
 
 proc runner(tick: proc(): void) = tick()
 
-proc queryOne() {.necsus(runner, [~assertNone, ~setup, ~assertOne], [], [], newNecsusConf()).}
+proc queryOne() {.necsus(runner, [~assertNone, ~setup, ~assertOne], newNecsusConf()).}
 
 test "Pull a single value from a query":
     queryOne()

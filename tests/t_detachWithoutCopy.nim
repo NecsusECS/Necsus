@@ -13,7 +13,7 @@ proc exec(spawn: FullSpawn[(A, B)], detach: Detach[(B, )]) =
 proc runner(tick: proc(): void) =
     tick()
 
-proc testDetach() {.necsus(runner, [], [~exec], [], newNecsusConf()).}
+proc testDetach() {.necsus(runner, [~exec], newNecsusConf()).}
 
 test "Detaching components without requiring a copy":
     testDetach()

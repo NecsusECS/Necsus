@@ -4,7 +4,7 @@ type
     A = object
     B = object
 
-proc setup(
+proc assertion(
     spawn: Spawn[(A, )],
     attach: Attach[(B, )],
     detach: Detach[(B, )],
@@ -51,7 +51,7 @@ proc setup(
 
 proc runner(tick: proc(): void) = tick()
 
-proc queryLen() {.necsus(runner, [~setup], [], [], newNecsusConf()).}
+proc queryLen() {.necsus(runner, [~assertion], newNecsusConf()).}
 
 test "Report the length of a query":
     queryLen()

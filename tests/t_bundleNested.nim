@@ -20,7 +20,7 @@ proc assertion*(bundle: Bundle[C]) =
 proc runner(tick: proc(): void) =
     tick()
 
-proc myApp() {.necsus(runner, [], [~setup, ~assertion], [], conf = newNecsusConf()).}
+proc myApp() {.necsus(runner, [~setup, ~assertion], conf = newNecsusConf()).}
 
 test "Bundles nested inside other bundles":
     myApp()

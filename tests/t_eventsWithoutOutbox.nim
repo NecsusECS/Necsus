@@ -7,7 +7,7 @@ proc sender(receive: Inbox[SomeEvent]) =
 
 proc runner(tick: proc(): void) = tick()
 
-proc testEvents() {.necsus(runner, [], [~sender], [], newNecsusConf()).}
+proc testEvents() {.necsus(runner, [~sender], newNecsusConf()).}
 
 test "Receiving events without any outboxes":
     testEvents()

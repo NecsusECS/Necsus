@@ -17,7 +17,7 @@ proc runner(tick: proc(): void) =
     tick()
     tick()
 
-proc myApp() {.necsus(runner, [], [~sys1, ~sys2], [], newNecsusConf()).}
+proc myApp() {.necsus(runner, [~sys1, ~sys2], newNecsusConf()).}
 
 test "Executed instanced systems that return procs":
     myApp()

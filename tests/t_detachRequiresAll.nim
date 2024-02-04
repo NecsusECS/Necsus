@@ -30,7 +30,7 @@ proc assertions(
 
 proc runner(tick: proc(): void) = tick()
 
-proc myApp() {.necsus(runner, [~setup], [~detacher, ~assertions], [], newNecsusConf()).}
+proc myApp() {.necsus(runner, [~setup, ~detacher, ~assertions], newNecsusConf()).}
 
 test "Detaching should require all components to be present":
     myApp()

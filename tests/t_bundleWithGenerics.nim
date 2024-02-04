@@ -13,7 +13,7 @@ proc verify(bundle: Bundle[A[string]]) =
 proc runner(tick: proc(): void) =
     tick()
 
-proc myApp() {.necsus(runner, [], [~setValue, ~verify], [], conf = newNecsusConf()).}
+proc myApp() {.necsus(runner, [~setValue, ~verify], conf = newNecsusConf()).}
 
 test "Bundles with generic parameters should compile":
     myApp()

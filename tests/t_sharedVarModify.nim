@@ -12,7 +12,7 @@ proc assertion(someVar: Shared[string]) =
 proc runner(tick: proc(): void) =
     tick()
 
-proc testSharedVar() {.necsus(runner, [], [~system1, ~system2, ~assertion], [], newNecsusConf()).}
+proc testSharedVar() {.necsus(runner, [~system1, ~system2, ~assertion], newNecsusConf()).}
 
 test "Modifying the value in a shared variable":
     testSharedVar()

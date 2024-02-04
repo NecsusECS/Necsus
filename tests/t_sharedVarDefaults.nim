@@ -30,7 +30,7 @@ proc system(
 proc runOnce(tick: proc(): void) =
     tick()
 
-proc myApp() {.necsus(runOnce, [], [~system], [], newNecsusConf()).}
+proc myApp() {.necsus(runOnce, [~system], newNecsusConf()).}
 
 test "Reading default values from shared values":
     myApp()

@@ -12,7 +12,7 @@ const check = proc (query: Query[(A, )]) =
 
 proc runner(tick: proc(): void) = tick()
 
-proc variableApp() {.necsus(runner, [], [~create], [], newNecsusConf()).}
+proc variableApp() {.necsus(runner, [~create], newNecsusConf()).}
 
 test "Allow systems to be create from variables":
     variableApp()

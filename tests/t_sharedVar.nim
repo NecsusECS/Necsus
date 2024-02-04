@@ -16,23 +16,18 @@ proc runTwice(tick: proc(): void) =
     tick()
     tick()
 
-proc testSharedVar() {.necsus(runTwice, [], [~system1, ~system2, ~assertions], [], newNecsusConf()).}
+proc testSharedVar() {.necsus(runTwice, [~system1, ~system2, ~assertions], newNecsusConf()).}
 
 test "Assigning and reading shared system vars":
     testSharedVar()
 
-
-
-proc runOnce(tick: proc(): void) = tick()
 
 proc assertAppInputs(strInput: Shared[string], intInput: Shared[int]) =
     assert(strInput.get() == "blah blah")
 
 proc testSharedVarArg(strInput: string, intInput: int, unmentioned: float) {.necsus(
     runTwice,
-    [],
     [~assertAppInputs],
-    [],
     newNecsusConf())
 .}
 

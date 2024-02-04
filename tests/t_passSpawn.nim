@@ -11,7 +11,7 @@ proc spawner(spawn: Spawn[(A, )]) =
 proc runner(tick: proc(): void) =
     tick()
 
-proc myApp() {.used, necsus(runner, [~spawner], [], [], newNecsusConf()).}
+proc myApp() {.used, necsus(runner, [~spawner], newNecsusConf()).}
 
 test "Passing spawn instance to another function":
     myApp()

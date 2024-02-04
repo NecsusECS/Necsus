@@ -26,7 +26,7 @@ proc assertions(all: Query[(Name, Age, Mood)]) =
 proc runner(tick: proc(): void) =
     tick()
 
-proc testAttaches() {.necsus(runner, [~setup], [~modify, ~assertions], [], newNecsusConf()).}
+proc testAttaches() {.necsus(runner, [~setup, ~modify, ~assertions], newNecsusConf()).}
 
 test "Updating components via an Attach":
     testAttaches()

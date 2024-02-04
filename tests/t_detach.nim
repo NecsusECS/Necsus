@@ -36,9 +36,7 @@ proc runner(tick: proc(): void) =
 
 proc testDetach() {.necsus(
     runner,
-    [~setup],
-    [~detacher, ~assertDetached, ~reattach, ~assertReattached],
-    [],
+    [~setup, ~detacher, ~assertDetached, ~reattach, ~assertReattached],
     newNecsusConf()
 ).}
 

@@ -17,7 +17,7 @@ proc runner(tick: proc(): void) =
     tick()
     tick()
 
-proc myApp() {.necsus(runner, [], [~spawn5, ~assertions, ~deleteAll], [], newNecsusConf()).}
+proc myApp() {.necsus(runner, [~spawn5, ~assertions, ~deleteAll], newNecsusConf()).}
 
 test "Reusing deleted entityIDs":
     myApp()

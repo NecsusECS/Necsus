@@ -27,7 +27,7 @@ proc assertABCD(query: Query[(A, B, C, D)]) =
 proc runner(tick: proc(): void) =
     tick()
 
-proc attachQuery() {.necsus(runner, [~setup], [~addC, ~assertABC, ~addD], [~assertABCD], newNecsusConf()).}
+proc attachQuery() {.necsus(runner, [~setup, ~addC, ~assertABC, ~addD, ~assertABCD], newNecsusConf()).}
 
 test "Update query when new components are attached":
     attachQuery()

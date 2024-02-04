@@ -78,3 +78,11 @@ proc unwrap*[T](sysvar: SharedOrT[T] | LocalOrT[T], otherwise: T): T {.inline.} 
     return when sysvar is T: sysvar else: sysvar.get(otherwise)
 
 proc `$`*[T](sysvar: SystemVar[T]): string = $sysvar.extract.value
+
+iterator items*[T](sysvar: var SystemVar[T]): var T =
+    if sysvar.isSome:
+        yield sysvar.extract.value.get()
+
+iterator items*[T](sysvar: SystemVar[T]): lent T =
+    if sysvar.isSome:
+        yield sysvar.extract.value.get()

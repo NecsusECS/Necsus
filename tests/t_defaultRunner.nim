@@ -6,7 +6,7 @@ proc system(iterations: Local[int], exit: Shared[NecsusRun]) =
     else:
         iterations := iterations.get(0) + 1
 
-proc testDefaultGampeLoop() {.necsus(gameLoop, [], [~system], [], newNecsusConf()).}
+proc testDefaultGampeLoop() {.necsus(gameLoop, [~system], newNecsusConf()).}
 
 test "Default game loop runner":
     testDefaultGampeLoop()

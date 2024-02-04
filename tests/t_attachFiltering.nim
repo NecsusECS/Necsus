@@ -8,7 +8,7 @@ type
     FavoriteNumber = object
         number*: int
 
-proc setup(spawn: Spawn[(Name, )], number: Spawn[(FavoriteNumber, )]) =
+proc setup(spawn: Spawn[(Name, )], number: Spawn[(FavoriteNumber, )]) {.startupSys.} =
     spawn.with(Name(name: "Foo"))
 
 proc modify(all: FullQuery[(Name, )], addAge: Attach[(Age, )]) =
@@ -22,7 +22,7 @@ proc assertions(all: Query[(Name, Age)]) =
 proc runner(tick: proc(): void) =
     tick()
 
-proc testAttaches() {.necsus(runner, [~setup], [~modify, ~assertions], [], newNecsusConf()).}
+proc testAttaches() {.necsus(runner, [~setup, ~modify, ~assertions], newNecsusConf()).}
 
 test "Attaching components":
     testAttaches()

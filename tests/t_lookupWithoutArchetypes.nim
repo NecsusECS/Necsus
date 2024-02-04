@@ -10,7 +10,7 @@ proc doLookup(lookup: Lookup[(A, B, C)]) =
 
 proc runner(tick: proc(): void) = tick()
 
-proc testLookup() {.necsus(runner, [], [~doLookup], [], newNecsusConf()).}
+proc testLookup() {.necsus(runner, [~doLookup], newNecsusConf()).}
 
 test "Lookups without any archetypes in the system":
     testLookup()

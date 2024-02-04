@@ -39,7 +39,7 @@ proc assertion(
 proc runner(tick: proc(): void) =
     tick()
 
-proc myApp() {.necsus(runner, [~spawn1, ~spawn2, ~spawn3, ~spawn4, ~spawn5], [~assertion], [], conf = newNecsusConf()).}
+proc myApp() {.necsus(runner, [~spawn1, ~spawn2, ~spawn3, ~spawn4, ~spawn5, ~assertion], conf = newNecsusConf()).}
 
 test "Spawning against aliased types should remain distinct":
     myApp()

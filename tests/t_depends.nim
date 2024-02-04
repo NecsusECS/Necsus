@@ -25,7 +25,7 @@ proc assertion(query: Query[(Accum,)]) {.depends(update2, update3).} =
 
 proc runner(tick: proc(): void) = tick()
 
-proc myApp() {.necsus(runner, [], [~assertion], [], newNecsusConf()).}
+proc myApp() {.necsus(runner, [~assertion], newNecsusConf()).}
 
 test "Depending on other systems":
     myApp()

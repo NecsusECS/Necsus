@@ -13,7 +13,7 @@ proc assertions(ours: Shared[string]) =
 
 proc runner(tick: proc(): void) = tick()
 
-proc myApp() {.necsus(runner, [], [~assertions, ~initSystem], [], newNecsusConf()).}
+proc myApp() {.necsus(runner, [~assertions, ~initSystem], newNecsusConf()).}
 
 test "Allow system variables to be instanced":
     myApp()

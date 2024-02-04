@@ -26,9 +26,7 @@ proc gameLoop*(exit: Shared[NecsusRun], tick: proc(): void) =
 
 proc buildApp(
     runner: NimNode,
-    startup: NimNode,
     systems: NimNode,
-    teardown: NimNode,
     conf: NimNode,
     pragmaProc: NimNode
 ): NimNode =
@@ -37,12 +35,7 @@ proc buildApp(
     let parsedApp = parseApp(pragmaProc, runner)
 
     let codeGenInfo = when not defined(nimsuggest):
-        let parsedSystems = concat(
-            parseSystemList(startup, StartupPhase),
-            parseSystemList(systems, LoopPhase),
-            parseSystemList(teardown, TeardownPhase)
-        )
-        newCodeGenInfo(conf, parsedApp, parsedSystems)
+        newCodeGenInfo(conf, parsedApp, parseSystemList(systems))
     else:
         newEmptyCodeGenInfo(conf, parsedApp)
 
@@ -72,30 +65,26 @@ proc buildApp(
 
 macro necsus*(
     runner: typed{sym},
-    startup: openarray[SystemFlag],
     systems: openarray[SystemFlag],
-    teardown: openarray[SystemFlag],
     conf: NecsusConf,
     pragmaProc: untyped
 ) =
     ## Creates an ECS world
-    buildApp(runner, startup, systems, teardown, conf, pragmaProc)
+    buildApp(runner, systems, conf, pragmaProc)
 
 macro necsus*(
-    startup: openarray[SystemFlag],
     systems: openarray[SystemFlag],
-    teardown: openarray[SystemFlag],
     conf: NecsusConf,
     pragmaProc: untyped
 ) =
     ## Creates an ECS world
-    buildApp(bindSym("gameLoop"), startup, systems, teardown, conf, pragmaProc)
+    buildApp(bindSym("gameLoop"), systems, conf, pragmaProc)
 
 macro runSystemOnce*(systemDef: typed): untyped =
     ## Creates a single system and immediately executes it with a specific set of directives
 
     let systemIdent = genSym()
-    let system = parseSystemDef(systemIdent, systemDef, LoopPhase)
+    let system = parseSystemDef(systemIdent, systemDef)
 
     let necsusConfIdent = genSym()
     let defineConf = quote do:

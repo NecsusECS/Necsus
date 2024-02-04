@@ -19,7 +19,7 @@ proc runner(tick: proc(): void) =
     tick()
     check(accum == "value: startup loop")
 
-proc myApp() {.necsus(runner, [~atTeardown], [~atStartup], [~inLoop], newNecsusConf()).}
+proc myApp() {.necsus(runner, [~atTeardown, ~atStartup, ~inLoop], newNecsusConf()).}
 
 test "Explicitly defining the execution location for systems":
     myApp()

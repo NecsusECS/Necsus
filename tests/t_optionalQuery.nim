@@ -8,7 +8,7 @@ type
     D = object
         d: int
 
-proc setup(spawnAB: FullSpawn[(A, B)], spawnABC: Spawn[(A, B, C)], attachC: Attach[(C, D)]) =
+proc setup(spawnAB: FullSpawn[(A, B)], spawnABC: Spawn[(A, B, C)], attachC: Attach[(C, D)]) {.startupSys.} =
     for i in 1..3:
         discard spawnAB.with(A(), B())
         spawnABC.with(A(), B(), C(c: i))
@@ -28,7 +28,7 @@ proc assertions(query: Query[(A, B, Option[C], Option[D])]) =
 
 proc runner(tick: proc(): void) = tick()
 
-proc optionalQuery() {.necsus(runner, [~setup], [~update], [~assertions], newNecsusConf()).}
+proc optionalQuery() {.necsus(runner, [~setup, ~update, ~assertions], newNecsusConf()).}
 
 test "Queries with optional components":
     optionalQuery()

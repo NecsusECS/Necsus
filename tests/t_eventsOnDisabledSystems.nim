@@ -19,7 +19,7 @@ proc runner(tick: proc(): void) =
     tick()
     tick()
 
-proc testEvents() {.necsus(runner, [], [~publish, ~receive, ~changeState], [], newNecsusConf()).}
+proc testEvents() {.necsus(runner, [~publish, ~receive, ~changeState], newNecsusConf()).}
 
 test "Events should not be sent to disabled systems":
     testEvents()

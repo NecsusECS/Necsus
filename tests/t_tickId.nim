@@ -15,7 +15,7 @@ proc runner(tick: proc(): void) =
     for i in 1..10:
         tick()
 
-proc myApp() {.necsus(runner, [], [~checkTick], [], newNecsusConf()).}
+proc myApp() {.necsus(runner, [~checkTick], newNecsusConf()).}
 
 test "TickId tracking":
     myApp()

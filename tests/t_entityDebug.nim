@@ -16,7 +16,7 @@ proc dump(query: FullQuery[(Thingy, )], dump: EntityDebug) =
 
 proc runner(tick: proc(): void) = tick()
 
-proc myApp() {.necsus(runner, [], [~spawner, ~dump], [], newNecsusConf()).}
+proc myApp() {.necsus(runner, [~spawner, ~dump], newNecsusConf()).}
 
 test "Debugging entities":
     myApp()

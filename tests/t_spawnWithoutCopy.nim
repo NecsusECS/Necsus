@@ -11,7 +11,7 @@ proc spawner(spawn: Spawn[(Thingy, )]) =
 
 proc runner(tick: proc(): void) = tick()
 
-proc myApp() {.necsus(runner, [], [~spawner], [], newNecsusConf()).}
+proc myApp() {.necsus(runner, [~spawner], newNecsusConf()).}
 
 test "Spawning a value should not require a copy":
     myApp()

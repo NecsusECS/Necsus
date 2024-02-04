@@ -1,6 +1,6 @@
 import unittest, necsus, os
 
-proc setup(time: TimeElapsed) =
+proc setup(time: TimeElapsed) {.startupSys.} =
     check(time == 0)
 
 var lastTimeCheck = 0.0
@@ -18,7 +18,7 @@ proc runner(tick: proc(): void) =
     for i in 1..10:
         tick()
 
-proc myApp() {.necsus(runner, [~setup], [~checkTime], [], newNecsusConf()).}
+proc myApp() {.necsus(runner, [~setup, ~checkTime], newNecsusConf()).}
 
 test "Time elapsed tracking":
     myApp()

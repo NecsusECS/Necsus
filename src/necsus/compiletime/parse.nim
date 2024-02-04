@@ -224,7 +224,7 @@ proc parseActiveChecks(context, typeNode: NimNode): seq[ActiveCheck] =
             for activeState in parseActiveCheck(context, child[1]):
                 result.add(activeState)
 
-proc choosePhase(typeNode: NimNode, default: SystemPhase): SystemPhase =
+proc choosePhase(typeNode: NimNode): SystemPhase =
     ## Reads the systems referenced by a pragma attached to another system
 
     let startupPragma = bindSym("startupSys")
@@ -239,7 +239,7 @@ proc choosePhase(typeNode: NimNode, default: SystemPhase): SystemPhase =
                 return LoopPhase
             elif teardownSysPragma == child:
                 return TeardownPhase
-    return default
+    return LoopPhase
 
 proc determineInstancing(nodeImpl: NimNode, nodeTypeImpl: NimNode): Option[NimNode] =
     ## Determines whether a system is instanced, and returns the type to use for instancing
@@ -257,7 +257,7 @@ proc getSystemType(ident: NimNode, impl: NimNode): NimNode =
     else:
         return ident.getTypeImpl
 
-proc parseSystemDef*(ident: NimNode, impl: NimNode, phase: SystemPhase): ParsedSystem =
+proc parseSystemDef*(ident: NimNode, impl: NimNode): ParsedSystem =
     ## Parses a single system proc
     ident.expectKind(nnkSym)
 
@@ -274,7 +274,7 @@ proc parseSystemDef*(ident: NimNode, impl: NimNode, phase: SystemPhase): ParsedS
         .mapIt(parseSystemArg(ident, it))
 
     return ParsedSystem(
-        phase: impl.choosePhase(phase),
+        phase: impl.choosePhase(),
         symbol: ident,
         args: args,
         depends: impl.readDependencies(),
@@ -282,32 +282,32 @@ proc parseSystemDef*(ident: NimNode, impl: NimNode, phase: SystemPhase): ParsedS
         checks: parseActiveChecks(ident, impl),
     )
 
-proc parseSystem(ident: NimNode, phase: SystemPhase): ParsedSystem =
+proc parseSystem(ident: NimNode): ParsedSystem =
     ## Parses a single system proc
     ident.expectKind(nnkSym)
-    return parseSystemDef(ident, ident.getImpl, phase)
+    return parseSystemDef(ident, ident.getImpl)
 
-proc parseSystems(systems: NimNode, phase: SystemPhase, into: var seq[ParsedSystem]) =
+proc parseSystems(systems: NimNode, into: var seq[ParsedSystem]) =
     # Recursively collects a list of systems
     case systems.kind
     of nnkSym:
-        let parsed = parseSystem(systems, phase)
+        let parsed = parseSystem(systems)
         if into.allIt(it.symbol != parsed.symbol):
             for depends in parsed.depends:
-                parseSystems(depends, phase, into)
+                parseSystems(depends, into)
             into.add(parsed)
     of nnkPrefix:
-        parseSystems(systems[1], phase, into)
+        parseSystems(systems[1], into)
     of nnkBracket:
         for wrapped in systems.children:
-            parseSystems(wrapped, phase, into)
+            parseSystems(wrapped, into)
     else:
         systems.expectKind({nnkBracket, nnkPrefix, nnkSym})
 
-proc parseSystemList*(systems: NimNode, phase: SystemPhase): seq[ParsedSystem] =
+proc parseSystemList*(systems: NimNode): seq[ParsedSystem] =
     # Parses an list of system procs into a digesteable format
     systems.expectKind(nnkBracket)
-    parseSystems(systems, phase, result)
+    parseSystems(systems, result)
 
 iterator components*(arg: SystemArg): ComponentDef =
     ## Pulls all components out of an argument

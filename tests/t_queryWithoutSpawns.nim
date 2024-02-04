@@ -17,7 +17,7 @@ proc spawner(spawns: Spawn[(C, )]) =
 
 proc runner(tick: proc(): void) = tick()
 
-proc noSpawnQuery() {.necsus(runner, [], [~spawner, ~query1, ~query2], [], newNecsusConf()).}
+proc noSpawnQuery() {.necsus(runner, [~spawner, ~query1, ~query2], newNecsusConf()).}
 
 test "Querying for components that have never been spawned":
     noSpawnQuery()

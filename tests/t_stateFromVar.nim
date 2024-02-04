@@ -15,7 +15,7 @@ proc whenA(accum: Shared[string]) {.active(stateA).} =
 proc whenB(accum: Shared[string]) {.active(stateB).} =
     accum := accum.get("") & "B"
 
-proc assertion(accum: Shared[string]) =
+proc assertion(accum: Shared[string]) {.teardownSys.} =
     check(accum.get == "||A|B|AB")
 
 proc runner(state: Shared[GameState], tick: proc(): void) =
@@ -27,7 +27,7 @@ proc runner(state: Shared[GameState], tick: proc(): void) =
     state := AAndB
     tick()
 
-proc myApp() {.necsus(runner, [], [~always, ~whenA, ~whenB], [~assertion], conf = newNecsusConf()).}
+proc myApp() {.necsus(runner, [~always, ~whenA, ~whenB, ~assertion], conf = newNecsusConf()).}
 
 test "Systems should only run when their state checks are met":
     myApp()

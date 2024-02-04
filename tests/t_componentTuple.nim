@@ -10,7 +10,7 @@ proc assertion(query: Query[tuple[value: tuple[nested: string]]], global: Shared
 
 proc runner(tick: proc(): void) = tick()
 
-proc myApp() {.necsus(runner, [], [~spawner, ~assertion], [], newNecsusConf()).}
+proc myApp() {.necsus(runner, [~spawner, ~assertion], newNecsusConf()).}
 
 test "Systems should allow tuples as components":
     myApp()

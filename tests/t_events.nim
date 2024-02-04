@@ -25,7 +25,7 @@ proc runner(tick: proc(): void) =
     iterations += 10
     tick()
 
-proc testEvents() {.necsus(runner, [], [~publish, ~receive], [], newNecsusConf()).}
+proc testEvents() {.necsus(runner, [~publish, ~receive], newNecsusConf()).}
 
 test "Sending and receiving values":
     testEvents()

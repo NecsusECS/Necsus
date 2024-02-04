@@ -15,7 +15,7 @@ proc receive(receiveA: Inbox[EventA], receiveB: Inbox[EventB]) =
 
 proc runner(tick: proc(): void) = tick()
 
-proc testEvents() {.necsus(runner, [], [~publish, ~receive], [], newNecsusConf()).}
+proc testEvents() {.necsus(runner, [~publish, ~receive], newNecsusConf()).}
 
 test "Events with different names should have distinct mailboxes":
     testEvents()

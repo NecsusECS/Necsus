@@ -18,7 +18,7 @@ proc assertions(all: Query[(Thingy, )]) =
 
 proc runner(tick: proc(): void) = tick()
 
-proc myApp() {.necsus(runner, [~setup], [~rm, ~assertions], [], newNecsusConf()).}
+proc myApp() {.necsus(runner, [~setup, ~rm, ~assertions], newNecsusConf()).}
 
 test "Deleting entities":
     myApp()

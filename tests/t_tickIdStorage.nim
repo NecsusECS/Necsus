@@ -10,7 +10,7 @@ proc runner(tick: proc(): void) =
     for i in 1..10:
         tick()
 
-proc myApp() {.necsus(runner, [], [~checkTick], [], newNecsusConf()).}
+proc myApp() {.necsus(runner, [~checkTick], newNecsusConf()).}
 
 test "Storing a TickId should store the value and not the pointer":
     myApp()

@@ -29,7 +29,7 @@ proc runner(tick: proc(): void) =
     timesThrough += 1
     tick()
 
-proc testEvents() {.necsus(runner, [], [~receive1, ~publish1, ~receive2, ~publish2], [], newNecsusConf()).}
+proc testEvents() {.necsus(runner, [~receive1, ~publish1, ~receive2, ~publish2], newNecsusConf()).}
 
 test "Inboxes should only be cleared after a system has executed":
     testEvents()

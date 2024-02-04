@@ -42,6 +42,7 @@ iterator pairs*[Comps: tuple](query: FullQuery[Comps]): QueryItem[Comps] =
 
 iterator items*[Comps: tuple](query: AnyQuery[Comps]): Comps =
     ## Iterates through the entities in a query
+    {.hint[ConvFromXtoItselfNotNeeded]:off.}
     for (_, components) in pairs(FullQuery[Comps](query)): yield components
 
 proc len*[Comps: tuple](query: AnyQuery[Comps]): uint =

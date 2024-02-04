@@ -15,7 +15,7 @@ proc runner(tick: proc(): void) =
     tick()
     tick()
 
-proc testLocalVar() {.necsus(runner, [], [~system1, ~system2], [], newNecsusConf()).}
+proc testLocalVar() {.necsus(runner, [~system1, ~system2], newNecsusConf()).}
 
 test "Assigning and reading local system vars":
     testLocalVar()

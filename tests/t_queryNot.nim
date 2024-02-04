@@ -17,7 +17,7 @@ proc assertions(query: Query[(A, B, Not[C])]) =
 
 proc runner(tick: proc(): void) = tick()
 
-proc notQuery() {.necsus(runner, [~setup], [], [~assertions], newNecsusConf()).}
+proc notQuery() {.necsus(runner, [~setup, ~assertions], newNecsusConf()).}
 
 test "Exclude entities with a component":
     notQuery()

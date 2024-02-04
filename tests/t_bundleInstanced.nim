@@ -16,7 +16,7 @@ proc assertion(bundle: Bundle[B]) =
 proc runner(tick: proc(): void) =
     tick()
 
-proc myApp() {.necsus(runner, [], [~logic, ~assertion], [], conf = newNecsusConf()).}
+proc myApp() {.necsus(runner, [~logic, ~assertion], conf = newNecsusConf()).}
 
 test "Bundles used within an instanced system":
     myApp()

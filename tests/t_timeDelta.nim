@@ -2,7 +2,7 @@ import unittest, necsus, os
 
 type Dummy = object
 
-proc setup(dt: TimeDelta, spawn: Spawn[(Dummy, )]) =
+proc setup(dt: TimeDelta, spawn: Spawn[(Dummy, )]) {.startupSys.} =
     check(dt == 0)
 
 var isFirst = true
@@ -18,7 +18,7 @@ proc runner(tick: proc(): void) =
     for i in 1..10:
         tick()
 
-proc myApp() {.necsus(runner, [~setup], [~checkTime], [], newNecsusConf()).}
+proc myApp() {.necsus(runner, [~setup, ~checkTime], newNecsusConf()).}
 
 test "Time delta tracking":
     myApp()

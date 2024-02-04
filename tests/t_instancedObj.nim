@@ -22,7 +22,7 @@ proc `=destroy`(obj: var SystemInst) =
 proc runner(tick: proc(): void) =
     tick()
 
-proc myApp() {.necsus(runner, [], [~initSystem], [], newNecsusConf()).}
+proc myApp() {.necsus(runner, [~initSystem], newNecsusConf()).}
 
 test "Executed instanced systems that return objects":
     myApp()

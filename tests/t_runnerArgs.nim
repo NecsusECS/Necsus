@@ -9,7 +9,7 @@ type
     E = object
         value: int
 
-proc setup(sharedVar: Shared[string], spawn: Spawn[(B, D, E)]) =
+proc setup(sharedVar: Shared[string], spawn: Spawn[(B, D, E)]) {.startupSys.} =
     sharedVar.set("foo")
     spawn.with(B(), D(), E(value: 789))
 
@@ -40,7 +40,7 @@ proc assertions(checkA: Query[(A, )], checkBC: Query[(B, C)], checkD: Query[(D, 
     check(checkBC.items.toSeq.len == 1)
     check(checkD.items.toSeq.len == 0)
 
-proc testRunnerArgs() {.necsus(runner, [~setup], [~assertions], [], newNecsusConf()).}
+proc testRunnerArgs() {.necsus(runner, [~setup, ~assertions], newNecsusConf()).}
 
 test "Passing directives into the runner":
     testRunnerArgs()

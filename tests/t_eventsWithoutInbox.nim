@@ -7,7 +7,7 @@ proc publish(sender: Outbox[SomeEvent]) =
 
 proc runner(tick: proc(): void) = tick()
 
-proc testEvents() {.necsus(runner, [], [~publish], [], newNecsusConf()).}
+proc testEvents() {.necsus(runner, [~publish], newNecsusConf()).}
 
 test "Sending events without any inboxes":
     testEvents()

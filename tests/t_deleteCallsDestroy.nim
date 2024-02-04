@@ -22,7 +22,7 @@ proc destroyObj(spawn: FullSpawn[(Thingy, )], delete: Delete) =
 
 proc runner(tick: proc(): void) = tick()
 
-proc myApp() {.necsus(runner, [], [~destroyObj], [], newNecsusConf()).}
+proc myApp() {.necsus(runner, [~destroyObj], newNecsusConf()).}
 
 test "Deleting entities should call destroy on their components":
     myApp()

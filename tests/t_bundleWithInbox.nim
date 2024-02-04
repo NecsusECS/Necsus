@@ -18,7 +18,7 @@ proc runner(tick: proc(): void) =
     tick()
     tick()
 
-proc myApp() {.necsus(runner, [], [~setup, ~assertion1, ~assertion2], [], conf = newNecsusConf()).}
+proc myApp() {.necsus(runner, [~setup, ~assertion1, ~assertion2], conf = newNecsusConf()).}
 
 test "Bundles that contain an inbox":
     myApp()

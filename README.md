@@ -41,7 +41,7 @@ type
     Velocity = object
         dx*, dy*: float
 
-proc create(spawn: Spawn[(Position, Velocity)]) =
+proc create(spawn: Spawn[(Position, Velocity)]) {.startupSys.}=
     ## Creates a handful entities at random positions with random velocities
     for _ in 1..10:
         spawn.with(
@@ -67,7 +67,7 @@ proc exiter(iterations: Local[int], exit: Shared[NecsusRun]) =
     else:
         iterations := iterations.get(0) + 1
 
-proc app() {.necsus([~create], [~move, ~report, ~exiter], [], newNecsusConf()).}
+proc app() {.necsus([~create, ~move, ~report, ~exiter], newNecsusConf()).}
     ## The skeleton into which the ECS code will be injected
 
 # Run your app
@@ -92,7 +92,7 @@ To get started with Necsus, you define your app by adding the `necsus` pragma on
 ```nim
 import necsus
 
-proc myApp() {.necsus([], [], [], newNecsusConf()).}
+proc myApp() {.necsus([], newNecsusConf()).}
 ```
 
 That's it. At this point you have a functioning ECS setup, though it won't do much without systems attached. If you
@@ -109,7 +109,7 @@ import necsus
 proc helloWorld() =
     echo "hello world"
 
-proc myApp() {.necsus([], [~helloWorld], [], newNecsusConf()).}
+proc myApp() {.necsus([~helloWorld], newNecsusConf()).}
 ```
 
 In the above example, if you called `myApp`, it would print `hello world` to the console in an infinite loop.
@@ -130,35 +130,34 @@ proc first() =
 proc second() =
     discard
 
-proc myApp() {.necsus([], [~first, ~second], [], newNecsusConf()).}
+proc myApp() {.necsus([~first, ~second], newNecsusConf()).}
 ```
 
 ### Types of Systems
 
-Within the lifecycle of an app, there are three phases in which a system can be registered:
+Within the lifecycle of an app, there are three phases in which a system can be executed:
 
-1. Startup: The system is executed once when the app is started
-2. Loop: The system is executed for every loop
-3. Teardown: The system is executed once after the loop exits
+1. Startup: The system is executed once when the app is started. Systems opt in to this phase by adding the
+   `startupSys` pragma.
+2. Loop: The system is executed for every loop. Systems naturally exist in this phase, though you can also be
+   explicit by adding the `loopSys` pragma to them.
+3. Teardown: The system is executed once after the loop exits. Systems opt in to this phase by adding the
+   `teardownSys` pragma.
+
 
 ```nim
 import necsus
 
-proc startupSystem() =
+proc startupSystem() {.startupSys.} =
     discard
 
-proc loopSystem() =
+proc loopSystem() {.loopSys.} =
     discard
 
-proc teardownSystem() =
+proc teardownSystem() {.teardownSys.} =
     discard
 
-proc myApp(input: string) {.necsus(
-    startup = [~startupSystem],
-    systems = [~loopSystem],
-    teardown = [~teardownSystem],
-    conf = newNecsusConf()
-).}
+proc myApp(input: string) {.necsus([~startupSystem, ~loopSystem, ~teardownSystem], newNecsusConf()).}
 ```
 
 ### Directives
@@ -185,12 +184,12 @@ type
     A = object
     B = object
 
-proc spawningSystem(spawn: Spawn[(A, B)]) =
+proc spawningSystem(spawn: Spawn[(A, B)]) {.startupSys.} =
     for i in 1..10:
         spawn.with(A(), B())
         echo "Spawned a new entity!"
 
-proc myApp() {.necsus([~spawningSystem], [], [], newNecsusConf()).}
+proc myApp() {.necsus([~spawningSystem], newNecsusConf()).}
 ```
 
 ##### Why `Spawn` and `FullSpawn`?
@@ -229,7 +228,7 @@ proc reportingSystemWithEntity(query: FullQuery[(A, B)]) =
     for eid, components in query:
         echo "Found entity ", eid, " with ", components[0], " and ", components[1]
 
-proc myApp() {.necsus([], [~reportingSystem, ~reportingSystemWithEntity], [], newNecsusConf()).}
+proc myApp() {.necsus([~reportingSystem, ~reportingSystemWithEntity], newNecsusConf()).}
 ```
 
 #### Queries with Pointers
@@ -248,7 +247,7 @@ proc inPlaceUpdate(query: Query[(ptr A, )]) =
     for (a) in query:
         a.value += 1
 
-proc myApp() {.necsus([], [~inPlaceUpdate], [], newNecsusConf()).}
+proc myApp() {.necsus([~inPlaceUpdate], newNecsusConf()).}
 ```
 
 #### Queries that exclude components
@@ -270,7 +269,7 @@ proc excludingC(query: Query[(A, B, Not[C])]) =
     for (a, b, _) in query:
         echo "Found a with ", a.a, " and b with ", b.b
 
-proc myApp() {.necsus([], [~excludingC], [], newNecsusConf()).}
+proc myApp() {.necsus([~excludingC], newNecsusConf()).}
 ```
 
 #### Queries with optional components
@@ -292,7 +291,7 @@ proc optionalB(query: Query[(A, Option[B])]) =
         echo "Found a with ", a.a
         if b.isSome: echo "Component B exists: ", b.get().b
 
-proc myApp() {.necsus([], [~optionalB], [], newNecsusConf()).}
+proc myApp() {.necsus([~optionalB], newNecsusConf()).}
 ```
 
 #### Querying for a single value
@@ -308,7 +307,7 @@ proc oneInstance(query: Query[(A, )]) =
     let (a) = query.single.get
     echo a
 
-proc myApp() {.necsus([], [~oneInstance], [], newNecsusConf()).}
+proc myApp() {.necsus([~oneInstance], newNecsusConf()).}
 ```
 
 #### Delete
@@ -326,7 +325,7 @@ proc deletingSystem(query: FullQuery[(A, B)], delete: Delete) =
     for eid, _ in query:
         delete(eid)
 
-proc myApp() {.necsus([], [~deletingSystem], [], newNecsusConf()).}
+proc myApp() {.necsus([~deletingSystem], newNecsusConf()).}
 ```
 
 #### Lookup
@@ -348,7 +347,7 @@ proc lookupSystem(query: FullQuery[(A, B)], lookup: Lookup[(C, D)]) =
         let (c, d) = lookup(eid).get()
         echo "Found entity ", eid, " with ", c, " and ", d
 
-proc myApp() {.necsus([], [~lookupSystem], [], newNecsusConf()).}
+proc myApp() {.necsus([~lookupSystem], newNecsusConf()).}
 ```
 
 #### Attach/Detach
@@ -368,7 +367,7 @@ proc attachDetach(query: FullQuery[(A, )], attachB: Attach[(B, )], detachC: Deta
         eid.attachB((B(), ))
         eid.detachC()
 
-proc myApp() {.necsus([], [~attachDetach], [], newNecsusConf()).}
+proc myApp() {.necsus([~attachDetach], newNecsusConf()).}
 ```
 
 #### TimeDelta
@@ -381,7 +380,7 @@ import necsus
 proc showTime(dt: TimeDelta) =
     echo "Time since last system execution: ", dt
 
-proc myApp() {.necsus([], [~showTime], [], newNecsusConf()).}
+proc myApp() {.necsus([~showTime], newNecsusConf()).}
 ```
 
 #### TimeElapsed
@@ -394,7 +393,7 @@ import necsus
 proc showTime(elapsed: TimeElapsed) =
     echo "Time spent executing app: ", elapsed
 
-proc myApp() {.necsus([], [~showTime], [], newNecsusConf()).}
+proc myApp() {.necsus([~showTime], newNecsusConf()).}
 ```
 
 #### Local
@@ -409,7 +408,7 @@ proc localVars(executionCount: Local[int]) =
     echo "Total executions so far: ", executionCount.get(0)
     executionCount := executionCount.get(0) + 1
 
-proc myApp() {.necsus([], [~localVars], [], newNecsusConf()).}
+proc myApp() {.necsus([~localVars], newNecsusConf()).}
 ```
 
 #### Shared
@@ -426,7 +425,7 @@ proc updateCount(count: Shared[int]) =
 proc printCount(count: Shared[int]) =
     echo "Total executions so far: ", count.get(0)
 
-proc myApp() {.necsus([], [~updateCount, ~printCount], [], newNecsusConf()).}
+proc myApp() {.necsus([~updateCount, ~printCount], newNecsusConf()).}
 ```
 
 #### Inbox/Outbox (aka Events)
@@ -446,7 +445,7 @@ proc receive(receiver: Inbox[SomeEvent]) =
     for event in receiver:
         echo event.string
 
-proc myApp() {.necsus([], [~publish, ~receive], [], newNecsusConf()).}
+proc myApp() {.necsus([~publish, ~receive], newNecsusConf()).}
 ```
 
 #### Bundles
@@ -470,7 +469,7 @@ proc useBundle(bundle: Bundle[MyBundle]) =
     let eid = bundle.spawn.with(A())
     bundle.attach(eid, (B(), ))
 
-proc myApp() {.necsus([], [~useBundle], [], newNecsusConf()).}
+proc myApp() {.necsus([~useBundle], newNecsusConf()).}
 ```
 
 #### TickId
@@ -484,7 +483,7 @@ import necsus
 proc printTickId(tickId: TickId) =
     echo "Current tick ID is ", tickId()
 
-proc myApp() {.necsus([], [~printTickId], [], newNecsusConf()).}
+proc myApp() {.necsus([~printTickId], newNecsusConf()).}
 ```
 
 #### EntityDebug
@@ -502,7 +501,7 @@ proc debuggingSystem(query: FullQuery[(A, )], debug: EntityDebug) =
     for eid, _ in query:
         echo debug(eid)
 
-proc myApp() {.necsus([], [~debuggingSystem], [], newNecsusConf()).}
+proc myApp() {.necsus([~debuggingSystem], newNecsusConf()).}
 ```
 
 ### Extended System Usage
@@ -526,29 +525,7 @@ proc runSecond() {.depends(runFirst).} =
     ## No-op system that gets run second
     discard
 
-proc myApp() {.necsus([], [~runSecond], [], newNecsusConf()).}
-```
-
-#### Marking systems for explicit phases
-
-If you have a system that should always be run during a specific phase, you can explicitly mark it with a phase
-pragma to ensure that it is always added where you expect it to be added. This is particularly useful when
-paired with dependencies, as it allows you to depend on setup or teardown phases. It can also be used to enforce
-the order of execution for a phase.
-
-```nim
-import necsus
-
-proc startupSystem() {.startupSys.}=
-    discard
-
-proc loopSystem() {.loopSys.} =
-    discard
-
-proc teardownSystem() {.teardownSys} =
-    discard
-
-proc myApp() {.necsus([], [~startupSystem, ~loopSystem, ~teardownSystem], [], newNecsusConf()).}
+proc myApp() {.necsus([~runSecond], newNecsusConf()).}
 ```
 
 #### Instancing systems
@@ -570,7 +547,7 @@ proc someSystem(create: Spawn[(string, )], query: Query[(string,)]): auto {.inst
         for (str,) in query:
             echo str
 
-proc myApp() {.necsus([], [~someSystem], [], newNecsusConf()).}
+proc myApp() {.necsus([~someSystem], newNecsusConf()).}
 ```
 
 Obviously, this makes it easier to capture the pragmas from your parent system as closure variables,
@@ -599,7 +576,7 @@ proc tick(system: var SystemInstance) =
 proc `=destroy`(system: var SystemInstance) =
     echo "Destroying system"
 
-proc myApp() {.necsus([], [~someSystem], [], newNecsusConf()).}
+proc myApp() {.necsus([~someSystem], newNecsusConf()).}
 ```
 
 #### Building Re-usable systems
@@ -624,7 +601,7 @@ proc genericSpawner[T](): auto =
 let spawnSomeComponent = genericSpawner[SomeComponent]()
 let spawnAnotherComponent = genericSpawner[AnotherComponent]()
 
-proc myApp() {.necsus([], [~spawnSomeComponent, ~spawnAnotherComponent], [], newNecsusConf()).}
+proc myApp() {.necsus([~spawnSomeComponent, ~spawnAnotherComponent], newNecsusConf()).}
 ```
 
 It's worth mentioning that if you start usin type aliases, Nim's type system has a tendency to hide those
@@ -649,7 +626,7 @@ proc switchGameState(state: Shared[GameState]) =
     ## System that changes the game state to "won"
     state := Won
 
-proc myApp() {.necsus([], [~showWon, ~switchGameState], [], newNecsusConf()).}
+proc myApp() {.necsus([~showWon, ~switchGameState], newNecsusConf()).}
 ```
 
 ### App
@@ -666,7 +643,7 @@ import necsus
 proc exampleSystem(input: Shared[string]) =
     echo input.get()
 
-proc myApp(input: string) {.necsus([], [~exampleSystem], [], newNecsusConf()).}
+proc myApp(input: string) {.necsus([~exampleSystem], newNecsusConf()).}
 ```
 
 #### App Return Type
@@ -679,7 +656,7 @@ import necsus
 proc setAppReturn(appReturns: Shared[string]) =
     appReturns.set("Return value from app")
 
-proc myApp(): string {.necsus([], [~setAppReturn], [], newNecsusConf()).}
+proc myApp(): string {.necsus([~setAppReturn], newNecsusConf()).}
 ```
 
 #### App Configuration
@@ -690,7 +667,7 @@ Runtime configuration for the execution environment can be controlled through th
 ```nim
 import necsus
 
-proc myApp() {.necsus([], [], [], newNecsusConf(entitySize = 100_000)).}
+proc myApp() {.necsus([], newNecsusConf(entitySize = 100_000)).}
 ```
 
 #### Exiting
@@ -704,7 +681,7 @@ proc immediateExit(exit: Shared[NecsusRun]) =
     ## Immediately exit the first time this system is called
     exit := ExitLoop
 
-proc myApp() {.necsus([], [~immediateExit], [], newNecsusConf()).}
+proc myApp() {.necsus([~immediateExit], newNecsusConf()).}
 
 myApp()
 ```
@@ -729,7 +706,7 @@ proc customRunner*(count: Shared[int], tick: proc(): void) =
 proc incrementer(count: Shared[int]) =
     count.set(count.get(0) + 1)
 
-proc myApp() {.necsus(customRunner, [], [~incrementer], [], newNecsusConf()).}
+proc myApp() {.necsus(customRunner, [~incrementer], newNecsusConf()).}
 
 myApp()
 ```
@@ -746,7 +723,7 @@ import necsus
 proc myExampleSystem() =
     discard
 
-proc myApp() {.necsus([], [~myExampleSystem], [], newNecsusConf()).}
+proc myApp() {.necsus([~myExampleSystem], newNecsusConf()).}
 
 # Initialize the app and execute the main loop 3 times
 var app = initMyApp()
@@ -836,7 +813,7 @@ proc changeStateSystem(manager: Bundle[StateManager], winConditionMet: Shared[bo
 ## app.nim
 ##
 
-proc app() {.necsus([], [~customSystem, ~changeStateSystem], [], newNecsusConf()).}
+proc app() {.necsus([~customSystem, ~changeStateSystem], newNecsusConf()).}
 ```
 
 ## Testing Systems
