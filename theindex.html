@@ -787,6 +787,10 @@ window.addEventListener('DOMContentLoaded', main);
           <li><a class="reference external"
           data-doc-search-tag="query: items[Comps: tuple](query: AnyQuery[Comps]): Comps" href="necsus/runtime/query.html#items.i%2CAnyQuery%5BComps%3A%20tuple%5D">query: items[Comps: tuple](query: AnyQuery[Comps]): Comps</a></li>
           <li><a class="reference external"
+          data-doc-search-tag="systemVar: items[T](sysvar: var SystemVar[T]): var T" href="necsus/runtime/systemVar.html#items.i%2CSystemVar%5BT%5D">systemVar: items[T](sysvar: var SystemVar[T]): var T</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="systemVar: items[T](sysvar: SystemVar[T]): lent T" href="necsus/runtime/systemVar.html#items.i%2CSystemVar%5BT%5D_2">systemVar: items[T](sysvar: SystemVar[T]): lent T</a></li>
+          <li><a class="reference external"
           data-doc-search-tag="arrayblock: items[T](ary: var ArrayBlock[T]): var T" href="necsus/util/arrayblock.html#items.i%2CArrayBlock%5BT%5D">arrayblock: items[T](ary: var ArrayBlock[T]): var T</a></li>
           <li><a class="reference external"
           data-doc-search-tag="bits: items(bitset: Bits): uint16" href="necsus/util/bits.html#items.i%2CBits">bits: items(bitset: Bits): uint16</a></li>
@@ -911,15 +915,11 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="necsus" href="#necsus"><span>necsus:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="necsus: necsus(runner: typed{sym}; startup: openArray[SystemFlag];
-       systems: openArray[SystemFlag]; teardown: openArray[SystemFlag];
-       conf: NecsusConf; pragmaProc: untyped)" href="necsus.html#necsus.m%2C%2CopenArray%5BSystemFlag%5D%2CopenArray%5BSystemFlag%5D%2CopenArray%5BSystemFlag%5D%2CNecsusConf%2Cuntyped">necsus: necsus(runner: typed{sym}; startup: openArray[SystemFlag];
-       systems: openArray[SystemFlag]; teardown: openArray[SystemFlag];
-       conf: NecsusConf; pragmaProc: untyped)</a></li>
+          data-doc-search-tag="necsus: necsus(runner: typed{sym}; systems: openArray[SystemFlag]; conf: NecsusConf;
+       pragmaProc: untyped)" href="necsus.html#necsus.m%2C%2CopenArray%5BSystemFlag%5D%2CNecsusConf%2Cuntyped">necsus: necsus(runner: typed{sym}; systems: openArray[SystemFlag]; conf: NecsusConf;
+       pragmaProc: untyped)</a></li>
           <li><a class="reference external"
-          data-doc-search-tag="necsus: necsus(startup: openArray[SystemFlag]; systems: openArray[SystemFlag];
-       teardown: openArray[SystemFlag]; conf: NecsusConf; pragmaProc: untyped)" href="necsus.html#necsus.m%2CopenArray%5BSystemFlag%5D%2CopenArray%5BSystemFlag%5D%2CopenArray%5BSystemFlag%5D%2CNecsusConf%2Cuntyped">necsus: necsus(startup: openArray[SystemFlag]; systems: openArray[SystemFlag];
-       teardown: openArray[SystemFlag]; conf: NecsusConf; pragmaProc: untyped)</a></li>
+          data-doc-search-tag="necsus: necsus(systems: openArray[SystemFlag]; conf: NecsusConf; pragmaProc: untyped)" href="necsus.html#necsus.m%2CopenArray%5BSystemFlag%5D%2CNecsusConf%2Cuntyped">necsus: necsus(systems: openArray[SystemFlag]; conf: NecsusConf; pragmaProc: untyped)</a></li>
           </ul></dd>
 <dt><a name="NecsusConf" href="#NecsusConf"><span>NecsusConf:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -1153,11 +1153,11 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="parseSystemDef" href="#parseSystemDef"><span>parseSystemDef:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="parse: parseSystemDef(ident: NimNode; impl: NimNode; phase: SystemPhase): ParsedSystem" href="necsus/compiletime/parse.html#parseSystemDef%2CNimNode%2CNimNode%2CSystemPhase">parse: parseSystemDef(ident: NimNode; impl: NimNode; phase: SystemPhase): ParsedSystem</a></li>
+          data-doc-search-tag="parse: parseSystemDef(ident: NimNode; impl: NimNode): ParsedSystem" href="necsus/compiletime/parse.html#parseSystemDef%2CNimNode%2CNimNode">parse: parseSystemDef(ident: NimNode; impl: NimNode): ParsedSystem</a></li>
           </ul></dd>
 <dt><a name="parseSystemList" href="#parseSystemList"><span>parseSystemList:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="parse: parseSystemList(systems: NimNode; phase: SystemPhase): seq[ParsedSystem]" href="necsus/compiletime/parse.html#parseSystemList%2CNimNode%2CSystemPhase">parse: parseSystemList(systems: NimNode; phase: SystemPhase): seq[ParsedSystem]</a></li>
+          data-doc-search-tag="parse: parseSystemList(systems: NimNode): seq[ParsedSystem]" href="necsus/compiletime/parse.html#parseSystemList%2CNimNode">parse: parseSystemList(systems: NimNode): seq[ParsedSystem]</a></li>
           </ul></dd>
 <dt><a name="Profiler" href="#Profiler"><span>Profiler:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -1440,7 +1440,7 @@ window.addEventListener('DOMContentLoaded', main);
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-01-26 03:41:08 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-02-04 20:52:24 UTC</small>
       </div>
     </div>
   </div>

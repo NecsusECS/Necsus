@@ -17,3 +17,5 @@ get	necsus/runtime/systemVar.html#get,SystemVar[T]	systemVar: get[T](sysvar: Sys
 unwrap	necsus/runtime/systemVar.html#unwrap	systemVar: unwrap[T](sysvar: SharedOrT[T] | LocalOrT[T]): T	
 unwrap	necsus/runtime/systemVar.html#unwrap,,T	systemVar: unwrap[T](sysvar: SharedOrT[T] | LocalOrT[T]; otherwise: T): T	
 `$`	necsus/runtime/systemVar.html#$,SystemVar[T]	systemVar: `$`[T](sysvar: SystemVar[T]): string	
+items	necsus/runtime/systemVar.html#items.i,SystemVar[T]	systemVar: items[T](sysvar: var SystemVar[T]): var T	
+items	necsus/runtime/systemVar.html#items.i,SystemVar[T]_2	systemVar: items[T](sysvar: SystemVar[T]): lent T	

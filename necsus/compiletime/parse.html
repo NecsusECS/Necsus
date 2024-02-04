@@ -164,13 +164,13 @@ window.addEventListener('DOMContentLoaded', main);
 
   </ul>
   <ul class="simple nested-toc-section">parseSystemDef
-      <li><a class="reference" href="#parseSystemDef%2CNimNode%2CNimNode%2CSystemPhase"
-    title="parseSystemDef(ident: NimNode; impl: NimNode; phase: SystemPhase): ParsedSystem">parseSystemDef(ident: NimNode; impl: NimNode; phase: SystemPhase): ParsedSystem</a></li>
+      <li><a class="reference" href="#parseSystemDef%2CNimNode%2CNimNode"
+    title="parseSystemDef(ident: NimNode; impl: NimNode): ParsedSystem">parseSystemDef(ident: NimNode; impl: NimNode): ParsedSystem</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">parseSystemList
-      <li><a class="reference" href="#parseSystemList%2CNimNode%2CSystemPhase"
-    title="parseSystemList(systems: NimNode; phase: SystemPhase): seq[ParsedSystem]">parseSystemList(systems: NimNode; phase: SystemPhase): seq[ParsedSystem]</a></li>
+      <li><a class="reference" href="#parseSystemList%2CNimNode"
+    title="parseSystemList(systems: NimNode): seq[ParsedSystem]">parseSystemList(systems: NimNode): seq[ParsedSystem]</a></li>
 
   </ul>
 
@@ -321,8 +321,8 @@ Parses the app proc
 
 </dd>
 </div>
-<div id="parseSystemDef,NimNode,NimNode,SystemPhase">
-<dt><pre><span class="Keyword">proc</span> <a href="#parseSystemDef%2CNimNode%2CNimNode%2CSystemPhase"><span class="Identifier">parseSystemDef</span></a><span class="Other">(</span><span class="Identifier">ident</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">;</span> <span class="Identifier">impl</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">;</span> <span class="Identifier">phase</span><span class="Other">:</span> <a href="parse.html#SystemPhase"><span class="Identifier">SystemPhase</span></a><span class="Other">)</span><span class="Other">:</span> <a href="parse.html#ParsedSystem"><span class="Identifier">ParsedSystem</span></a> {.
+<div id="parseSystemDef,NimNode,NimNode">
+<dt><pre><span class="Keyword">proc</span> <a href="#parseSystemDef%2CNimNode%2CNimNode"><span class="Identifier">parseSystemDef</span></a><span class="Other">(</span><span class="Identifier">ident</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">;</span> <span class="Identifier">impl</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">)</span><span class="Other">:</span> <a href="parse.html#ParsedSystem"><span class="Identifier">ParsedSystem</span></a> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">KeyError</span><span class="Other">,</span> <span class="Identifier">ValueError</span><span class="Other">,</span> <span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
@@ -330,8 +330,8 @@ Parses a single system proc
 
 </dd>
 </div>
-<div id="parseSystemList,NimNode,SystemPhase">
-<dt><pre><span class="Keyword">proc</span> <a href="#parseSystemList%2CNimNode%2CSystemPhase"><span class="Identifier">parseSystemList</span></a><span class="Other">(</span><span class="Identifier">systems</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">;</span> <span class="Identifier">phase</span><span class="Other">:</span> <a href="parse.html#SystemPhase"><span class="Identifier">SystemPhase</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="parse.html#ParsedSystem"><span class="Identifier">ParsedSystem</span></a><span class="Other">]</span> {.
+<div id="parseSystemList,NimNode">
+<dt><pre><span class="Keyword">proc</span> <a href="#parseSystemList%2CNimNode"><span class="Identifier">parseSystemList</span></a><span class="Other">(</span><span class="Identifier">systems</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="parse.html#ParsedSystem"><span class="Identifier">ParsedSystem</span></a><span class="Other">]</span> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">KeyError</span><span class="Other">,</span> <span class="Identifier">ValueError</span><span class="Other">,</span> <span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
@@ -396,7 +396,7 @@ Pulls all components from a list of parsed systems
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-01-26 03:41:08 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-02-04 20:52:24 UTC</small>
       </div>
     </div>
   </div>
