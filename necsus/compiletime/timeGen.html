@@ -108,13 +108,11 @@ window.addEventListener('DOMContentLoaded', main);
   <a class="reference reference-toplevel" href="#9" id="59">Lets</a>
   <ul class="simple simple-toc-section">
       <li><a class="reference" href="#deltaGenerator"
-    title="deltaGenerator = newGenerator(&quot;TimeDelta&quot;,
-                              {Late, BeforeLoop, LoopStart, LoopEnd},
+    title="deltaGenerator = newGenerator(&quot;TimeDelta&quot;, {Late, BeforeLoop, LoopEnd},
                               generateDelta, deltaFields, defaultSystemArgNone)">deltaGenerator</a></li>
   <li><a class="reference" href="#elapsedGenerator"
-    title="elapsedGenerator = newGenerator(&quot;TimeElapsed&quot;, {Late, LoopStart},
-                                generateElapsed, elapsedFields,
-                                defaultSystemArgNone)">elapsedGenerator</a></li>
+    title="elapsedGenerator = newGenerator(&quot;TimeElapsed&quot;, {Late}, generateElapsed,
+                                elapsedFields, defaultSystemArgNone)">elapsedGenerator</a></li>
 
   </ul>
 </li>
@@ -130,14 +128,13 @@ window.addEventListener('DOMContentLoaded', main);
   <div class="section" id="6">
 <h1><a class="toc-backref" href="#6">Imports</a></h1>
 <dl class="item">
-<a class="reference external" href="archetype.html">archetype</a>, <a class="reference external" href="archetypeBuilder.html">archetypeBuilder</a>, <a class="reference external" href="commonVars.html">commonVars</a>, <a class="reference external" href="systemGen.html">systemGen</a>
+<a class="reference external" href="archetype.html">archetype</a>, <a class="reference external" href="archetypeBuilder.html">archetypeBuilder</a>, <a class="reference external" href="commonVars.html">commonVars</a>, <a class="reference external" href="systemGen.html">systemGen</a>, <a class="reference external" href="../runtime/directives.html">../runtime/directives</a>
 </dl></div>
 <div class="section" id="9">
 <h1><a class="toc-backref" href="#9">Lets</a></h1>
 <dl class="item">
 <div id="deltaGenerator">
-<dt><pre><a href="timeGen.html#deltaGenerator"><span class="Identifier">deltaGenerator</span></a> <span class="Other">=</span> <span class="Identifier">newGenerator</span><span class="Other">(</span><span class="StringLit">&quot;TimeDelta&quot;</span><span class="Other">,</span>
-                              <span class="Other">{</span><span class="Identifier">Late</span><span class="Other">,</span> <span class="Identifier">BeforeLoop</span><span class="Other">,</span> <span class="Identifier">LoopStart</span><span class="Other">,</span> <span class="Identifier">LoopEnd</span><span class="Other">}</span><span class="Other">,</span>
+<dt><pre><a href="timeGen.html#deltaGenerator"><span class="Identifier">deltaGenerator</span></a> <span class="Other">=</span> <span class="Identifier">newGenerator</span><span class="Other">(</span><span class="StringLit">&quot;TimeDelta&quot;</span><span class="Other">,</span> <span class="Other">{</span><span class="Identifier">Late</span><span class="Other">,</span> <span class="Identifier">BeforeLoop</span><span class="Other">,</span> <span class="Identifier">LoopEnd</span><span class="Other">}</span><span class="Other">,</span>
                               <span class="Identifier">generateDelta</span><span class="Other">,</span> <span class="Identifier">deltaFields</span><span class="Other">,</span> <span class="Identifier">defaultSystemArgNone</span><span class="Other">)</span></pre></dt>
 <dd>
 
@@ -146,9 +143,8 @@ window.addEventListener('DOMContentLoaded', main);
 </dd>
 </div>
 <div id="elapsedGenerator">
-<dt><pre><a href="timeGen.html#elapsedGenerator"><span class="Identifier">elapsedGenerator</span></a> <span class="Other">=</span> <span class="Identifier">newGenerator</span><span class="Other">(</span><span class="StringLit">&quot;TimeElapsed&quot;</span><span class="Other">,</span> <span class="Other">{</span><span class="Identifier">Late</span><span class="Other">,</span> <span class="Identifier">LoopStart</span><span class="Other">}</span><span class="Other">,</span>
-                                <span class="Identifier">generateElapsed</span><span class="Other">,</span> <span class="Identifier">elapsedFields</span><span class="Other">,</span>
-                                <span class="Identifier">defaultSystemArgNone</span><span class="Other">)</span></pre></dt>
+<dt><pre><a href="timeGen.html#elapsedGenerator"><span class="Identifier">elapsedGenerator</span></a> <span class="Other">=</span> <span class="Identifier">newGenerator</span><span class="Other">(</span><span class="StringLit">&quot;TimeElapsed&quot;</span><span class="Other">,</span> <span class="Other">{</span><span class="Identifier">Late</span><span class="Other">}</span><span class="Other">,</span> <span class="Identifier">generateElapsed</span><span class="Other">,</span>
+                                <span class="Identifier">elapsedFields</span><span class="Other">,</span> <span class="Identifier">defaultSystemArgNone</span><span class="Other">)</span></pre></dt>
 <dd>
 
 
@@ -165,7 +161,7 @@ window.addEventListener('DOMContentLoaded', main);
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-02-05 00:53:45 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-02-05 03:24:31 UTC</small>
       </div>
     </div>
   </div>
