@@ -24,7 +24,7 @@ proc setup(
     attach2: Attach[(K, )],
     attach3: Attach[(L, )],
     attach4: Attach[(M, )],
-) =
+) {.startupSys.} =
     for i in 1..100:
         spawn1.with(A(i), B(i), C(i)).attach1((J(i), ))
         spawn2.with(C(i), D(i), E(i)).attach2((K(i), ))
@@ -52,7 +52,7 @@ proc runner(tick: proc(): void) =
     benchmark "Archetype explosion", 1000:
         tick()
 
-proc myApp() {.necsus(runner, [~setup], [~query], [], newNecsusConf(10_000)).}
+proc myApp() {.necsus(runner, [~setup, ~query], newNecsusConf(10_000)).}
 
 myApp()
 
