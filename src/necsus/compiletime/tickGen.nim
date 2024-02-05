@@ -89,7 +89,7 @@ proc createTickProc*(genInfo: CodeGenInfo): NimNode =
 
     return quote:
         proc tick(`appStateIdent`: var `appStateType`) =
-            let `thisTime` {.used.} = `appStateIdent`.`confIdent`.getTime()
+            `appStateIdent`.`thisTime` = `appStateIdent`.`confIdent`.getTime()
             `loopStart`
             block:
                 `loopSystems`

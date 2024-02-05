@@ -1,53 +1,49 @@
 
 import macros, sets
-import archetype, archetypeBuilder, commonVars, systemGen
+import archetype, archetypeBuilder, commonVars, systemGen, ../runtime/directives
 
 let lastTime {.compileTime.} = ident("lastTime")
 
-proc deltaFields(name: string): seq[WorldField] = @[ (name, ident("float")), (lastTime.strVal, ident("float")) ]
+proc deltaFields(name: string): seq[WorldField] =
+    @[ (name, bindSym("TimeDelta")), (lastTime.strVal, ident("float")) ]
 
 proc generateDelta(details: GenerateContext, arg: SystemArg, name: string): NimNode =
     let timeDelta = name.ident
     case details.hook
     of Late:
         return quote:
-            `appStateIdent`.`timeDelta` = 0
+            `appStateIdent`.`timeDelta` = proc(): auto = `appStateIdent`.`thisTime` - `appStateIdent`.`lastTime`
     of BeforeLoop:
         return quote:
             `appStateIdent`.`lastTime` = `appStateIdent`.`startTime`
-    of LoopStart:
-        return quote:
-            `appStateIdent`.`timeDelta` = `thisTime` - `appStateIdent`.`lastTime`
     of LoopEnd:
         return quote:
-            `appStateIdent`.`lastTime` = `thisTime`
+            `appStateIdent`.`lastTime` = `appStateIdent`.`thisTime`
     else:
         return newEmptyNode()
 
 let deltaGenerator* {.compileTime.} = newGenerator(
     ident = "TimeDelta",
-    interest = { Late, BeforeLoop, LoopStart, LoopEnd },
+    interest = { Late, BeforeLoop, LoopEnd },
     generate = generateDelta,
     worldFields = deltaFields,
 )
 
-proc elapsedFields(name: string): seq[WorldField] = @[ (name, ident("float")) ]
+proc elapsedFields(name: string): seq[WorldField] = @[ (name, bindSym("TimeElapsed")) ]
 
 proc generateElapsed(details: GenerateContext, arg: SystemArg, name: string): NimNode =
     let timeElapsed = name.ident
     case details.hook
     of Late:
         return quote:
-            `appStateIdent`.`timeElapsed` = 0
-    of LoopStart:
-        return quote:
-            `appStateIdent`.`timeElapsed` = `thisTime` - `appStateIdent`.`startTime`
+            `appStateIdent`.`thisTime` = `appStateIdent`.`startTime`
+            `appStateIdent`.`timeElapsed` = proc(): auto = `appStateIdent`.`thisTime` - `appStateIdent`.`startTime`
     else:
         return newEmptyNode()
 
 let elapsedGenerator* {.compileTime.} = newGenerator(
     ident = "TimeElapsed",
-    interest = { Late, LoopStart },
+    interest = { Late },
     generate = generateElapsed,
     worldFields = elapsedFields,
 )

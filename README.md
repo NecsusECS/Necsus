@@ -52,8 +52,8 @@ proc create(spawn: Spawn[(Position, Velocity)]) {.startupSys.}=
 proc move(dt: TimeDelta, entities: Query[(ptr Position, Velocity)]) =
     ## Updates the positions of each component
     for (position, velocity) in entities:
-        position.x += dt * velocity.dx
-        position.y += dt * velocity.dy
+        position.x += dt() * velocity.dx
+        position.y += dt() * velocity.dy
 
 proc report(entities: FullQuery[(Position, )]) =
     ## Prints the position of each entity
@@ -372,26 +372,26 @@ proc myApp() {.necsus([~attachDetach], newNecsusConf()).}
 
 #### TimeDelta
 
-`TimeDelta` is a `float` filled with the amount of time since the last execution of a system
+`TimeDelta` is a `proc(): float` filled with the amount of time since the last execution of a system
 
 ```nim
 import necsus
 
 proc showTime(dt: TimeDelta) =
-    echo "Time since last system execution: ", dt
+    echo "Time since last system execution: ", dt()
 
 proc myApp() {.necsus([~showTime], newNecsusConf()).}
 ```
 
 #### TimeElapsed
 
-`TimeElapsed` is a `float` that tracks the amount of time spent executing the current application
+`TimeElapsed` is a `proc(): float` that tracks the amount of time spent executing the current application
 
 ```nim
 import necsus
 
 proc showTime(elapsed: TimeElapsed) =
-    echo "Time spent executing app: ", elapsed
+    echo "Time spent executing app: ", elapsed()
 
 proc myApp() {.necsus([~showTime], newNecsusConf()).}
 ```

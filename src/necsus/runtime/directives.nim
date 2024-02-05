@@ -20,10 +20,10 @@ type
     Outbox*[T] = proc(message: sink T): void
         ## Sends an event. Where `T` is the message being sent
 
-    TimeDelta* = float
+    TimeDelta* = proc(): float
         ## Tracks the amount of time since the last execution of a system
 
-    TimeElapsed* = float
+    TimeElapsed* = proc(): float
         ## The total amount of time spent in an app
 
     TickId* = proc(): uint

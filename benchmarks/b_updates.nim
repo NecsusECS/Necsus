@@ -25,8 +25,8 @@ proc setup(spawn: Spawn[(Comflabulation, Direction, Position)]) =
 
 proc movement(dt: TimeDelta, entities: Query[tuple[pos: ptr Position, dir: Direction]]) =
     for comp in entities:
-        comp.pos.x = comp.pos.x + (comp.dir.x * dt)
-        comp.pos.y = comp.pos.y + (comp.dir.y * dt)
+        comp.pos.x = comp.pos.x + (comp.dir.x * dt())
+        comp.pos.y = comp.pos.y + (comp.dir.y * dt())
 
 proc comflab(entities: Query[tuple[comflab: ptr Comflabulation]]) =
     for comp in entities:
