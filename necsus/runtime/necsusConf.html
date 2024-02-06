@@ -99,6 +99,12 @@ window.addEventListener('DOMContentLoaded', main);
   </div>
   <ul class="simple simple-toc" id="toc-list">
 <li>
+  <a class="reference reference-toplevel" href="#6" id="56">Imports</a>
+  <ul class="simple simple-toc-section">
+    
+  </ul>
+</li>
+<li>
   <a class="reference reference-toplevel" href="#7" id="57">Types</a>
   <ul class="simple simple-toc-section">
       <li><a class="reference" href="#NecsusConf"
@@ -106,7 +112,7 @@ window.addEventListener('DOMContentLoaded', main);
   entitySize*: int
   componentSize*: int
   eventQueueSize*: int
-  getTime*: proc (): float
+  getTime*: proc (): Nfloat
   log*: proc (message: string): void">NecsusConf</a></li>
 
   </ul>
@@ -122,10 +128,10 @@ window.addEventListener('DOMContentLoaded', main);
               componentSize: int = ceilDiv(entitySize, 3);
               eventQueueSize: int = ceilDiv(entitySize, 10)): NecsusConf</a></li>
   <li><a class="reference" href="#newNecsusConf%2Cproc%29%2Cproc%28string%29"
-    title="newNecsusConf(getTime: proc (): float; log: proc (message: string): void): NecsusConf">newNecsusConf(getTime: proc (): float; log: proc (message: string): void): NecsusConf</a></li>
+    title="newNecsusConf(getTime: proc (): Nfloat; log: proc (message: string): void): NecsusConf">newNecsusConf(getTime: proc (): Nfloat; log: proc (message: string): void): NecsusConf</a></li>
   <li><a class="reference" href="#newNecsusConf%2Cproc%29%2Cproc%28string%29%2Cint%2Cint%2Cint"
-    title="newNecsusConf(getTime: proc (): float; log: proc (message: string): void;
-              entitySize: int; componentSize: int; eventQueueSize: int): NecsusConf">newNecsusConf(getTime: proc (): float; log: proc (message: string): void;
+    title="newNecsusConf(getTime: proc (): Nfloat; log: proc (message: string): void;
+              entitySize: int; componentSize: int; eventQueueSize: int): NecsusConf">newNecsusConf(getTime: proc (): Nfloat; log: proc (message: string): void;
               entitySize: int; componentSize: int; eventQueueSize: int): NecsusConf</a></li>
 
   </ul>
@@ -141,7 +147,12 @@ window.addEventListener('DOMContentLoaded', main);
   <div id="tocRoot"></div>
   
   <p class="module-desc"></p>
-  <div class="section" id="7">
+  <div class="section" id="6">
+<h1><a class="toc-backref" href="#6">Imports</a></h1>
+<dl class="item">
+<a class="reference external" href="directives.html">directives</a>
+</dl></div>
+<div class="section" id="7">
 <h1><a class="toc-backref" href="#7">Types</a></h1>
 <dl class="item">
 <div id="NecsusConf">
@@ -149,7 +160,7 @@ window.addEventListener('DOMContentLoaded', main);
   <span class="Identifier">entitySize</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span>
   <span class="Identifier">componentSize</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span>
   <span class="Identifier">eventQueueSize</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span>
-  <span class="Identifier">getTime</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">float</span>
+  <span class="Identifier">getTime</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <a href="directives.html#Nfloat"><span class="Identifier">Nfloat</span></a>
   <span class="Identifier">log</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">message</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">void</span>
 </pre></dt>
 <dd>
@@ -175,7 +186,7 @@ Create a necsus configuration
 </dd>
 </div>
 <div id="newNecsusConf,proc),proc(string)">
-<dt><pre><span class="Keyword">proc</span> <a href="#newNecsusConf%2Cproc%29%2Cproc%28string%29"><span class="Identifier">newNecsusConf</span></a><span class="Other">(</span><span class="Identifier">getTime</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">float</span><span class="Other">;</span> <span class="Identifier">log</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">message</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">void</span><span class="Other">)</span><span class="Other">:</span> <a href="necsusConf.html#NecsusConf"><span class="Identifier">NecsusConf</span></a> {.
+<dt><pre><span class="Keyword">proc</span> <a href="#newNecsusConf%2Cproc%29%2Cproc%28string%29"><span class="Identifier">newNecsusConf</span></a><span class="Other">(</span><span class="Identifier">getTime</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <a href="directives.html#Nfloat"><span class="Identifier">Nfloat</span></a><span class="Other">;</span> <span class="Identifier">log</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">message</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">void</span><span class="Other">)</span><span class="Other">:</span> <a href="necsusConf.html#NecsusConf"><span class="Identifier">NecsusConf</span></a> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
@@ -184,7 +195,7 @@ Create a necsus configuration
 </dd>
 </div>
 <div id="newNecsusConf,proc),proc(string),int,int,int">
-<dt><pre><span class="Keyword">proc</span> <a href="#newNecsusConf%2Cproc%29%2Cproc%28string%29%2Cint%2Cint%2Cint"><span class="Identifier">newNecsusConf</span></a><span class="Other">(</span><span class="Identifier">getTime</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">float</span><span class="Other">;</span> <span class="Identifier">log</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">message</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">void</span><span class="Other">;</span>
+<dt><pre><span class="Keyword">proc</span> <a href="#newNecsusConf%2Cproc%29%2Cproc%28string%29%2Cint%2Cint%2Cint"><span class="Identifier">newNecsusConf</span></a><span class="Other">(</span><span class="Identifier">getTime</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <a href="directives.html#Nfloat"><span class="Identifier">Nfloat</span></a><span class="Other">;</span> <span class="Identifier">log</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">message</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">void</span><span class="Other">;</span>
                    <span class="Identifier">entitySize</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">;</span> <span class="Identifier">componentSize</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">;</span> <span class="Identifier">eventQueueSize</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">:</span> <a href="necsusConf.html#NecsusConf"><span class="Identifier">NecsusConf</span></a> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
@@ -203,7 +214,7 @@ Create a necsus configuration
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-02-05 15:48:18 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-02-06 17:19:11 UTC</small>
       </div>
     </div>
   </div>

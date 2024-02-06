@@ -119,6 +119,8 @@ window.addEventListener('DOMContentLoaded', main);
     title="EntityDebug = proc (entityId: EntityId): string">EntityDebug</a></li>
   <li><a class="reference" href="#Lookup"
     title="Lookup[C] = proc (entityId: EntityId): Option[C]">Lookup</a></li>
+  <li><a class="reference" href="#Nfloat"
+    title="Nfloat = float">Nfloat</a></li>
   <li><a class="reference" href="#Outbox"
     title="Outbox[T] = proc (message: sink T): void">Outbox</a></li>
   <li><a class="reference" href="#SystemInstance"
@@ -126,9 +128,9 @@ window.addEventListener('DOMContentLoaded', main);
   <li><a class="reference" href="#TickId"
     title="TickId = proc (): uint">TickId</a></li>
   <li><a class="reference" href="#TimeDelta"
-    title="TimeDelta = proc (): float">TimeDelta</a></li>
+    title="TimeDelta = proc (): Nfloat">TimeDelta</a></li>
   <li><a class="reference" href="#TimeElapsed"
-    title="TimeElapsed = proc (): float">TimeElapsed</a></li>
+    title="TimeElapsed = proc (): Nfloat">TimeElapsed</a></li>
 
   </ul>
 </li>
@@ -197,6 +199,14 @@ Looks up entity details based on its entity ID. Where <tt class="docutils litera
 
 </dd>
 </div>
+<div id="Nfloat">
+<dt><pre><a href="directives.html#Nfloat"><span class="Identifier">Nfloat</span></a> <span class="Other">=</span> <span class="Identifier">float</span></pre></dt>
+<dd>
+
+
+
+</dd>
+</div>
 <div id="Outbox">
 <dt><pre><a href="directives.html#Outbox"><span class="Identifier">Outbox</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">message</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">T</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">void</span></pre></dt>
 <dd>
@@ -222,7 +232,7 @@ An auto-incrementing ID for each tick
 </dd>
 </div>
 <div id="TimeDelta">
-<dt><pre><a href="directives.html#TimeDelta"><span class="Identifier">TimeDelta</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">float</span></pre></dt>
+<dt><pre><a href="directives.html#TimeDelta"><span class="Identifier">TimeDelta</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <a href="directives.html#Nfloat"><span class="Identifier">Nfloat</span></a></pre></dt>
 <dd>
 
 Tracks the amount of time since the last execution of a system
@@ -230,7 +240,7 @@ Tracks the amount of time since the last execution of a system
 </dd>
 </div>
 <div id="TimeElapsed">
-<dt><pre><a href="directives.html#TimeElapsed"><span class="Identifier">TimeElapsed</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">float</span></pre></dt>
+<dt><pre><a href="directives.html#TimeElapsed"><span class="Identifier">TimeElapsed</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <a href="directives.html#Nfloat"><span class="Identifier">Nfloat</span></a></pre></dt>
 <dd>
 
 The total amount of time spent in an app
@@ -247,7 +257,7 @@ The total amount of time spent in an app
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-02-05 15:48:18 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-02-06 17:19:10 UTC</small>
       </div>
     </div>
   </div>
