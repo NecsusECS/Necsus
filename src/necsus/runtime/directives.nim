@@ -1,5 +1,10 @@
 import entityId, options
 
+when defined(necsusFloat32):
+    type Nfloat* = float32
+else:
+    type Nfloat* = float
+
 type
 
     Delete* = proc(entityId: EntityId)
@@ -20,10 +25,10 @@ type
     Outbox*[T] = proc(message: sink T): void
         ## Sends an event. Where `T` is the message being sent
 
-    TimeDelta* = proc(): float
+    TimeDelta* = proc(): Nfloat
         ## Tracks the amount of time since the last execution of a system
 
-    TimeElapsed* = proc(): float
+    TimeElapsed* = proc(): Nfloat
         ## The total amount of time spent in an app
 
     TickId* = proc(): uint

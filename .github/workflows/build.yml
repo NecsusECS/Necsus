@@ -101,3 +101,23 @@ jobs:
       run: git config --global --add safe.directory "$(pwd)"
     - name: Test
       run: nimble -d:profile test
+
+  float32:
+    ## Confirm the tests are able to run when float32 is used
+    runs-on: ubuntu-latest
+    container: nimlang/choosenim
+    strategy:
+      matrix:
+        nim: [ 2.0.0, 1.6.14 ]
+    steps:
+    - uses: actions/checkout@v1
+    - name: Choose Nim
+      run: choosenim update -y ${{ matrix.nim }}
+    - name: Safe git directory
+      run: git config --global --add safe.directory "$(pwd)"
+    - name: Test
+      run: nimble -d:necsusFloat32 test
+    - name: Build readme code
+      run: nimble -d:necsusFloat32 readme
+    - name: Benchmark
+      run: nimble -y -d:release -d:necsusFloat32 benchmark
