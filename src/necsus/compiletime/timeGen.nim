@@ -5,7 +5,7 @@ import archetype, archetypeBuilder, commonVars, systemGen, ../runtime/directives
 let lastTime {.compileTime.} = ident("lastTime")
 
 proc deltaFields(name: string): seq[WorldField] =
-    @[ (name, bindSym("TimeDelta")), (lastTime.strVal, ident("float")) ]
+    @[ (name, bindSym("TimeDelta")), (lastTime.strVal, bindSym("Nfloat")) ]
 
 proc generateDelta(details: GenerateContext, arg: SystemArg, name: string): NimNode =
     let timeDelta = name.ident

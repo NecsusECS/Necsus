@@ -1,6 +1,6 @@
 import macros, options, tables, sequtils
 import worldEnum, codeGenInfo, archetype, commonVars, systemGen, tickGen, parse
-import ../runtime/[world, archetypeStore, necsusConf], ../util/profile
+import ../runtime/[world, archetypeStore, necsusConf, directives], ../util/profile
 
 proc fields(genInfo: CodeGenInfo): seq[(NimNode, NimNode)] =
     ## Produces a list of all fields to attach to the state object
@@ -8,8 +8,8 @@ proc fields(genInfo: CodeGenInfo): seq[(NimNode, NimNode)] =
 
     result.add (confIdent, bindSym("NecsusConf"))
     result.add (worldIdent, nnkBracketExpr.newTree(bindSym("World"), archetypeEnum))
-    result.add (thisTime, ident("float"))
-    result.add (startTime, ident("float"))
+    result.add (thisTime, bindSym("Nfloat"))
+    result.add (startTime, bindSym("Nfloat"))
 
     for archetype in genInfo.archetypes:
         let storageType = archetype.asStorageTuple
