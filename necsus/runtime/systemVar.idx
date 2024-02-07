@@ -11,8 +11,8 @@ set	necsus/runtime/systemVar.html#set,SystemVar[T],sinkT	systemVar: set[T](sysva
 `:=`	necsus/runtime/systemVar.html#:=,SystemVar[T],sinkT	systemVar: `:=`[T](sysvar: SystemVar[T]; value: sink T)	
 getOrRaise	necsus/runtime/systemVar.html#getOrRaise,SystemVar[T]	systemVar: getOrRaise[T](sysvar: SystemVar[T]): var T	
 getOrPut	necsus/runtime/systemVar.html#getOrPut.t,SystemVar[T],typed	systemVar: getOrPut[T](sysvar: SystemVar[T]; build: typed): var T	
-get	necsus/runtime/systemVar.html#get,SystemVar[T],T	systemVar: get[T](sysvar: SystemVar[T]; default: T): T	
-get	necsus/runtime/systemVar.html#get,SystemVar[T]	systemVar: get[T](sysvar: SystemVar[T]): T	
+get	necsus/runtime/systemVar.html#get,SystemVar[T],T	systemVar: get[T](sysvar: SystemVar[T]; default: T): var T	
+get	necsus/runtime/systemVar.html#get,SystemVar[T]	systemVar: get[T](sysvar: SystemVar[T]): var T	
 `==`	necsus/runtime/systemVar.html#==,SystemVar[T],T	systemVar: `==`[T](sysvar: SystemVar[T]; value: T): bool	
 unwrap	necsus/runtime/systemVar.html#unwrap	systemVar: unwrap[T](sysvar: SharedOrT[T] | LocalOrT[T]): T	
 unwrap	necsus/runtime/systemVar.html#unwrap,,T	systemVar: unwrap[T](sysvar: SharedOrT[T] | LocalOrT[T]; otherwise: T): T	

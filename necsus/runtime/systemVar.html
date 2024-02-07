@@ -137,9 +137,9 @@ window.addEventListener('DOMContentLoaded', main);
   </ul>
   <ul class="simple nested-toc-section">get
       <li><a class="reference" href="#get%2CSystemVar%5BT%5D"
-    title="get[T](sysvar: SystemVar[T]): T">get[T](sysvar: SystemVar[T]): T</a></li>
+    title="get[T](sysvar: SystemVar[T]): var T">get[T](sysvar: SystemVar[T]): var T</a></li>
   <li><a class="reference" href="#get%2CSystemVar%5BT%5D%2CT"
-    title="get[T](sysvar: SystemVar[T]; default: T): T">get[T](sysvar: SystemVar[T]; default: T): T</a></li>
+    title="get[T](sysvar: SystemVar[T]; default: T): var T">get[T](sysvar: SystemVar[T]; default: T): var T</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">getOrRaise
@@ -293,7 +293,7 @@ Returns whether a sysvar is set and equals the given value
 </dd>
 </div>
 <div id="get,SystemVar[T]">
-<dt><pre><span class="Keyword">proc</span> <a href="#get%2CSystemVar%5BT%5D"><span class="Identifier">get</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">sysvar</span><span class="Other">:</span> <a href="systemVar.html#SystemVar"><span class="Identifier">SystemVar</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">T</span> {.<span class="Identifier">inline</span>.}</pre></dt>
+<dt><pre><span class="Keyword">proc</span> <a href="#get%2CSystemVar%5BT%5D"><span class="Identifier">get</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">sysvar</span><span class="Other">:</span> <a href="systemVar.html#SystemVar"><span class="Identifier">SystemVar</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">T</span> {.<span class="Identifier">inline</span>.}</pre></dt>
 <dd>
 
 Returns the value in a system variable
@@ -301,7 +301,7 @@ Returns the value in a system variable
 </dd>
 </div>
 <div id="get,SystemVar[T],T">
-<dt><pre><span class="Keyword">proc</span> <a href="#get%2CSystemVar%5BT%5D%2CT"><span class="Identifier">get</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">sysvar</span><span class="Other">:</span> <a href="systemVar.html#SystemVar"><span class="Identifier">SystemVar</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">default</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">T</span> {.<span class="Identifier">inline</span>.}</pre></dt>
+<dt><pre><span class="Keyword">proc</span> <a href="#get%2CSystemVar%5BT%5D%2CT"><span class="Identifier">get</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">sysvar</span><span class="Other">:</span> <a href="systemVar.html#SystemVar"><span class="Identifier">SystemVar</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">default</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">)</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">T</span> {.<span class="Identifier">inline</span>.}</pre></dt>
 <dd>
 
 Returns the value in a system variable
@@ -408,7 +408,7 @@ Returns the value in a system variable
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-02-06 17:19:10 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-02-07 16:48:58 UTC</small>
       </div>
     </div>
   </div>
