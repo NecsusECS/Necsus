@@ -51,19 +51,16 @@ template getOrPut*[T](sysvar: SystemVar[T], build: typed): var T =
         sysvar := build
     sysvar.getOrRaise
 
-proc get*[T](sysvar: SystemVar[T], default: T): T {.inline.} =
+proc get*[T](sysvar: SystemVar[T], default: T): var T {.inline.} =
     ## Returns the value in a system variable
-    sysvar.extract.value.get(default)
+    sysvar.getOrPut(default)
 
-proc get*[T](sysvar: SystemVar[T]): T {.inline.} =
+proc get*[T](sysvar: SystemVar[T]): var T {.inline.} =
     ## Returns the value in a system variable
-    return sysvar.get(
-        when T is string: ""
-        elif T is SomeNumber: 0
-        elif compiles(get(sysvar, {})): {}
-        elif T is seq: @[]
-        else: default(T)
-    )
+    when T is ref:
+        sysvar.getOrRaise
+    else:
+        sysvar.getOrPut(default(T))
 
 proc `==`*[T](sysvar: SystemVar[T], value: T): bool {.inline.} =
     ## Returns whether a sysvar is set and equals the given value

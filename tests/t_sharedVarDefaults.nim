@@ -1,6 +1,10 @@
-import unittest, necsus
+import unittest, necsus, options
 
-type ExampleEnum = enum A, B, C
+type
+    ExampleEnum = enum A, B, C
+
+    ExampleObj = object
+        key: int
 
 proc system(
     sharedInt: Shared[int],
@@ -10,6 +14,8 @@ proc system(
     sharedSet: Shared[set[ExampleEnum]],
     sharedBool: Shared[bool],
     sharedSeq: Shared[seq[string]],
+    sharedObj: Shared[ExampleObj],
+    sharedRef: Shared[ref ExampleObj],
 ) =
     check(sharedInt.get == 0)
     check(sharedFloat.get == 0.0)
@@ -18,14 +24,10 @@ proc system(
     check(sharedSet.get == {})
     check(sharedBool.get == false)
     check(sharedSeq.get == newSeq[string]())
+    check(sharedObj.get.key == 0)
 
-    check(sharedInt != 0)
-    check(sharedFloat != 0.0)
-    check(sharedStr != "")
-    check(sharedEnum != A)
-    check(sharedSet != {})
-    check(sharedBool != false)
-    check(sharedSeq != newSeq[string]())
+    expect UnpackDefect:
+        discard sharedRef.get
 
 proc runOnce(tick: proc(): void) =
     tick()
