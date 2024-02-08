@@ -51,6 +51,10 @@ template getOrPut*[T](sysvar: SystemVar[T], build: typed): var T =
         sysvar := build
     sysvar.getOrRaise
 
+proc getOrPut*[T](sysvar: SystemVar[T]): var T =
+    ## Returns the value in a system variable
+    return getOrPut(sysvar, default(T))
+
 proc get*[T](sysvar: SystemVar[T], default: T): T {.inline.} =
     ## Returns the value in a system variable
     sysvar.extract.value.get(default)
