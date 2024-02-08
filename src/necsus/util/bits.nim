@@ -68,7 +68,7 @@ proc hash*(bitset: Bits): Hash =
     return bitset.cachedHash.get
 
 proc contains*(bitset: Bits, value: uint16): bool =
-    ## Returns whether _any_ of the bits overlap
+    ## Returns whether any of the bits overlap
     let (bucket, mask) = value.calculate
     if bitset.buckets.len < bucket.int + 1:
         return false
@@ -135,7 +135,7 @@ proc `<`*(a, b: Bits): bool =
             result = true
 
 proc anyIntersect*(a, b: Bits): bool =
-    ## Returns whether _any_ of the bits overlap
+    ## Returns whether any of the bits overlap
     for i, (aValue, bValue) in eachValue(a, b):
         if (bValue and aValue) > 0:
             return true

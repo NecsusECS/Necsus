@@ -1,4 +1,4 @@
-# Necsus
+# Necsus: An ECS for Nim
 
 [![Build](https://github.com/NecsusECS/Necsus/actions/workflows/build.yml/badge.svg)](https://github.com/NecsusECS/Necsus/actions/workflows/build.yml)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/NecsusECS/Necsus/blob/main/LICENSE)
@@ -83,7 +83,7 @@ app()
 
 API Documentation is available here:
 
-https://necsusecs.github.io/Necsus/
+[https://necsusecs.github.io/Necsus/](https://necsusecs.github.io/Necsus/necsus.html)
 
 ## Using Necsus
 

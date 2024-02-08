@@ -1,3 +1,11 @@
+##
+## Necsus: An ECS (entity component system) for Nim
+##
+## In depth documentation can be found here:
+##
+## * https://necsusecs.github.io/Necsus/
+##
+
 import necsus / runtime / [ entityId, query, systemVar, inbox, directives, necsusConf, spawn, pragmas ]
 import necsus / compiletime / [ parse, systemGen, codeGenInfo, worldGen, worldEnum, tickGen, commonVars ]
 

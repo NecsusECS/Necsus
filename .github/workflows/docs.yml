@@ -10,6 +10,7 @@ jobs:
     container: nimlang/nim
     steps:
     - uses: actions/checkout@v3
+    - run: nimble install -y markdown
     - run: nimble documentation
     - name: Deploy documents
       uses: peaceiris/actions-gh-pages@v3

@@ -39,4 +39,6 @@ task readme, "Compiles code in the readme":
 
 task documentation, "Generates API documentation":
     exec("nimble -y doc --index:on --out:docs --project src/necsus.nim")
-    exec("cp docs/necsus.html docs/index.html")
+
+    let body = staticExec("markdown < README.md")
+    writeFile("docs/index.html", readFile("docs/index.tpl.html").replace("{body}", body))
