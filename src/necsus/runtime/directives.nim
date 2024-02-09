@@ -31,7 +31,7 @@ type
     TimeElapsed* = proc(): Nfloat
         ## The total amount of time spent in an app
 
-    TickId* = proc(): uint
+    TickId* = proc(): uint32
         ## An auto-incrementing ID for each tick
 
     EntityDebug* = proc(entityId: EntityId): string

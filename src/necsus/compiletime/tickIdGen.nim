@@ -4,7 +4,8 @@ import commonVars, systemGen, ../runtime/directives
 let tickId {.compileTime.} = ident("tickId")
 let getTickId {.compileTime.} = ident("getTickId")
 
-proc fields(name: string): seq[WorldField] = @[ (tickId.strVal, ident("uint")), (getTickId.strVal, bindSym("TickId")) ]
+proc fields(name: string): seq[WorldField] =
+    @[ (tickId.strVal, ident("uint32")), (getTickId.strVal, bindSym("TickId")) ]
 
 proc sysArg(name: string): NimNode =
     return quote:
