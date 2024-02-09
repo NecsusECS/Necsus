@@ -13,7 +13,677 @@
     <body>
         <div class="document" id="documentId">
             <div class="container">
-                /bin/sh: 1: markdown: not found
+                <h1>Necsus: An ECS for Nim</h1>
+<p><a href="https://github.com/NecsusECS/Necsus/actions/workflows/build.yml"><img src="https://github.com/NecsusECS/Necsus/actions/workflows/build.yml/badge.svg" alt="Build" /></a>
+<a href="https://github.com/NecsusECS/Necsus/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" alt="License" /></a></p>
+<p><img src="https://github.com/NecsusECS/NecsusParticleDemo/blob/main/demo.gif?raw=true" alt="" /></p>
+<p>A &quot;disappearing&quot; ECS (entity component system) library for Nim. Necsus uses Nim macros to generate code for creating
+and executing an ECS based application. Components are just regular objects, systems are regular procs, and everything
+related to entities is handled for you.</p>
+<p>More details about how ECS architectures work can be found here:</p>
+<ul>
+<li><a href="http://gameprogrammingpatterns.com/component.html">Component game programming pattern</a></li>
+<li><a href="http://entity-systems.wikidot.com/">What's an Entity System?</a></li>
+<li><a href="https://cowboyprogramming.com/2007/01/05/evolve-your-heirachy/">Evolve your hierarchy</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Entity_component_system">ECS on wikipedia</a></li>
+</ul>
+<h3>Design</h3>
+<p>Necsus was born out of the idea that Nim's macros could drastically reduce the boilerplate required for building an ECS
+based application, while still being approachable and keeping the cognitive overhead low.</p>
+<ul>
+<li>Entities are managed on your behalf. Under the covers, they're represented as an <code>int32</code></li>
+<li>Components are regular Nim types. Just about any type can be be used as a component.</li>
+<li>Systems are <code>proc</code>s. They get access to the broader application state through arguments with special types; called
+directives</li>
+<li>Systems and components are wired together automatically into a <code>proc</code> called an &quot;app&quot;. Running your app is as simple
+as calling the genereated <code>proc</code>.</li>
+</ul>
+<h3>An example</h3>
+<pre><code class="language-nim">import necsus, random
+
+type
+    Position = object
+        x*, y*: float
+
+    Velocity = object
+        dx*, dy*: float
+
+proc create(spawn: Spawn[(Position, Velocity)]) {.startupSys.}=
+    ## Creates a handful entities at random positions with random velocities
+    for _ in 1..10:
+        spawn.with(
+            Position(x: rand(0.0..100.0), y: rand(0.0..100.0)),
+            Velocity(dx: rand(0.0..10.0), dy: rand(0.0..10.0))
+        )
+
+proc move(dt: TimeDelta, entities: Query[(ptr Position, Velocity)]) =
+    ## Updates the positions of each component
+    for (position, velocity) in entities:
+        position.x += dt() * velocity.dx
+        position.y += dt() * velocity.dy
+
+proc report(entities: FullQuery[(Position, )]) =
+    ## Prints the position of each entity
+    for eid, comp in entities:
+        echo eid, &quot; is at &quot;, comp[0]
+
+proc exiter(iterations: Local[int], exit: Shared[NecsusRun]) =
+    ## Keeps track of the number of iterations through the system and eventually exits
+    if iterations.get(0) &gt;= 100:
+        exit := ExitLoop
+    else:
+        iterations := iterations.get(0) + 1
+
+proc app() {.necsus([~create, ~move, ~report, ~exiter], newNecsusConf()).}
+    ## The skeleton into which the ECS code will be injected
+
+# Run your app
+app()
+</code></pre>
+<h3>More Examples</h3>
+<ul>
+<li><a href="https://github.com/NecsusECS/NecsusParticleDemo">Particle Demo</a></li>
+<li><a href="https://github.com/NecsusECS/NecsusAsteroids">Asteroids</a></li>
+</ul>
+<h2>API Documentation</h2>
+<p>API Documentation is available here:</p>
+<p><a href="https://necsusecs.github.io/Necsus/necsus.html">https://necsusecs.github.io/Necsus/</a></p>
+<h2>Using Necsus</h2>
+<p>To get started with Necsus, you define your app by adding the <code>necsus</code> pragma onto a function declaration:</p>
+<pre><code class="language-nim">import necsus
+
+proc myApp() {.necsus([], newNecsusConf()).}
+</code></pre>
+<p>That's it. At this point you have a functioning ECS setup, though it won't do much without systems attached. If you
+were to call <code>myApp</code> it would just loop infinitely.</p>
+<h3>Adding systems</h3>
+<p>To make your application do useful work, you need to wire up systems. Creating a system is easy -- it's just a <code>proc</code>.
+The name of that <code>proc</code> then prefixed with a <code>~</code> and passed into the <code>necsus</code> pragma:</p>
+<pre><code class="language-nim">import necsus
+
+proc helloWorld() =
+    echo &quot;hello world&quot;
+
+proc myApp() {.necsus([~helloWorld], newNecsusConf()).}
+</code></pre>
+<p>In the above example, if you called <code>myApp</code>, it would print <code>hello world</code> to the console in an infinite loop.</p>
+<p>If you're curious about the tilde prefix, it's used to convince the Nim type checker that all the give systems
+are actually compatible, despite being <code>proc</code>s with different arguments.</p>
+<h3>Passing multiple systems</h3>
+<p>When given multiple systems, they will be executed in the same order in which they are passed in:</p>
+<pre><code class="language-nim">import necsus
+
+proc first() =
+    discard
+
+proc second() =
+    discard
+
+proc myApp() {.necsus([~first, ~second], newNecsusConf()).}
+</code></pre>
+<h3>Types of Systems</h3>
+<p>Within the lifecycle of an app, there are three phases in which a system can be executed:</p>
+<ol>
+<li>Startup: The system is executed once when the app is started. Systems opt in to this phase by adding the
+<code>startupSys</code> pragma.</li>
+<li>Loop: The system is executed for every loop. Systems naturally exist in this phase, though you can also be
+explicit by adding the <code>loopSys</code> pragma to them.</li>
+<li>Teardown: The system is executed once after the loop exits. Systems opt in to this phase by adding the
+<code>teardownSys</code> pragma.</li>
+</ol>
+<pre><code class="language-nim">import necsus
+
+proc startupSystem() {.startupSys.} =
+    discard
+
+proc loopSystem() {.loopSys.} =
+    discard
+
+proc teardownSystem() {.teardownSys.} =
+    discard
+
+proc myApp(input: string) {.necsus([~startupSystem, ~loopSystem, ~teardownSystem], newNecsusConf()).}
+</code></pre>
+<h3>Directives</h3>
+<p>Systems interact with the rest of an app by using special method arguments, called <code>Directives</code>. These directives are
+just regular types that Necsus knows how to wire up in special ways.</p>
+<p>Systems can't have any other type of argument. If Necsus doesn't recognize how to wire-up an argument, the compile
+will fail.</p>
+<h4>Spawn</h4>
+<p>To create new entities, use a <code>Spawn</code> directive. This takes a single argument, which is the initial set of components
+to attach to the newly minted entity.</p>
+<p>There are two ways to spawn an entity, <code>Spawn</code> and <code>FullSpawn</code>. Under the covers, they do the same thing. The difference
+is that <code>FullSpawn</code> returns the generated <code>EntityId</code>, and <code>Spawn</code> does not. In general, you should use <code>Spawn</code> over
+<code>FullSpawn</code> whenever possible.</p>
+<pre><code class="language-nim">import necsus
+
+type
+    A = object
+    B = object
+
+proc spawningSystem(spawn: Spawn[(A, B)]) {.startupSys.} =
+    for i in 1..10:
+        spawn.with(A(), B())
+        echo &quot;Spawned a new entity!&quot;
+
+proc myApp() {.necsus([~spawningSystem], newNecsusConf()).}
+</code></pre>
+<h5>Why <code>Spawn</code> and <code>FullSpawn</code>?</h5>
+<p>During a build, Necsus automatically generates a set of all possible archetypes that could possibly exist at
+runtime. It does this by examining systems with <code>FullQuery</code>, <code>FullSpawn</code>, <code>Lookup</code>, and <code>Attach</code> directives then uses
+that to calculate all the combinatorial possibilities. Naively, this is an exponential algorithm. This is important
+because archetypes themselves aren't free. Each archetype that exists increases build times and slows down queries.</p>
+<p>Using <code>Spawn</code> instead of <code>FullSpawn</code> allows the underlying algorithm to ignore those directives when calculating the
+final set of archetypes. Because your system doesn't have access to the <code>EntityId</code>, it can't use the output of a
+<code>Spawn</code> call as the input to an <code>Attach</code> directive, which means it can't contribute to the list of archetypes.</p>
+<h4>Query</h4>
+<p>Queries allow you to iterate over entities that have a specific set of components attached to them. Queries are the
+primary mechanism for interacting with entities and components.</p>
+<p>There are two kinds of queries, <code>Query</code> and <code>FullQuery</code>. <code>Query</code> gives you access to the components, while <code>FullQuery</code>
+gives you access to the components <em>and</em> the <code>EntityId</code>. You should use <code>Query</code> wherever possible, then only use
+<code>FullQuery</code> when you explicitly need the <code>EntityId</code>. For details about why the two mechanisms exist, see the section
+above about <code>Spawn</code> versus <code>FullSpawn</code>.</p>
+<pre><code class="language-nim">import necsus
+
+type
+    A = object
+    B = object
+
+proc reportingSystem(query: Query[(A, B)]) =
+    for components in query:
+        echo &quot;Found entity with &quot;, components[0], &quot; and &quot;, components[1]
+
+proc reportingSystemWithEntity(query: FullQuery[(A, B)]) =
+    for eid, components in query:
+        echo &quot;Found entity &quot;, eid, &quot; with &quot;, components[0], &quot; and &quot;, components[1]
+
+proc myApp() {.necsus([~reportingSystem, ~reportingSystemWithEntity], newNecsusConf()).}
+</code></pre>
+<h4>Queries with Pointers</h4>
+<p>If you want to loop through a set of entities and update the values of their components, the most efficient
+mechanism available is to update those values in place. This is accomplished by requesting pointers when doing a query:</p>
+<pre><code class="language-nim">import necsus
+
+type
+    A = object
+        value: int
+
+proc inPlaceUpdate(query: Query[(ptr A, )]) =
+    for (a) in query:
+        a.value += 1
+
+proc myApp() {.necsus([~inPlaceUpdate], newNecsusConf()).}
+</code></pre>
+<h4>Queries that exclude components</h4>
+<p>There will be times you want to query for entities that <em>exclude</em> a set of
+components. This can be accomplished with the <code>Not</code> type:</p>
+<pre><code class="language-nim">import necsus
+
+type
+    A = object
+        a: string
+    B = object
+        b: string
+    C = object
+
+proc excludingC(query: Query[(A, B, Not[C])]) =
+    for (a, b, _) in query:
+        echo &quot;Found a with &quot;, a.a, &quot; and b with &quot;, b.b
+
+proc myApp() {.necsus([~excludingC], newNecsusConf()).}
+</code></pre>
+<h4>Queries with optional components</h4>
+<p>If you would like a query to include a component if it exists, but still return the entity if it doesn't exist, you
+can use an optional in the component query:</p>
+<pre><code class="language-nim">import necsus, options
+
+type
+    A = object
+        a: string
+    B = object
+        b: string
+
+proc optionalB(query: Query[(A, Option[B])]) =
+    for (a, b) in query:
+        echo &quot;Found a with &quot;, a.a
+        if b.isSome: echo &quot;Component B exists: &quot;, b.get().b
+
+proc myApp() {.necsus([~optionalB], newNecsusConf()).}
+</code></pre>
+<h4>Querying for a single value</h4>
+<p>For situations where you have a singleton instance, you can use the <code>single</code> method to pull it from a query:</p>
+<pre><code class="language-nim">import necsus, options
+
+type A = object
+
+proc oneInstance(query: Query[(A, )]) =
+    let (a) = query.single.get
+    echo a
+
+proc myApp() {.necsus([~oneInstance], newNecsusConf()).}
+</code></pre>
+<h4>Delete</h4>
+<p>Deleting is the opposite of spawning -- it deletes an entity and all the associated components:</p>
+<pre><code class="language-nim">import necsus
+
+type
+    A = object
+    B = object
+
+proc deletingSystem(query: FullQuery[(A, B)], delete: Delete) =
+    for eid, _ in query:
+        delete(eid)
+
+proc myApp() {.necsus([~deletingSystem], newNecsusConf()).}
+</code></pre>
+<h4>Lookup</h4>
+<p><code>Lookup</code> allows you to get components for an entity when you already have the entity id. It returns an <code>Option</code>, which
+will be a <code>Some</code> if the entity has the exact requested components:</p>
+<pre><code class="language-nim">import necsus, options
+
+type
+    A = object
+    B = object
+    C = object
+    D = object
+
+proc lookupSystem(query: FullQuery[(A, B)], lookup: Lookup[(C, D)]) =
+    for eid, _ in query:
+        let (c, d) = lookup(eid).get()
+        echo &quot;Found entity &quot;, eid, &quot; with &quot;, c, &quot; and &quot;, d
+
+proc myApp() {.necsus([~lookupSystem], newNecsusConf()).}
+</code></pre>
+<h4>Attach/Detach</h4>
+<p>Attaching and detaching allow you to add new components or remove existing components from an entity:</p>
+<pre><code class="language-nim">import necsus, options
+
+type
+    A = object
+    B = object
+    C = object
+
+proc attachDetach(query: FullQuery[(A, )], attachB: Attach[(B, )], detachC: Detach[(C, )]) =
+    for eid, _ in query:
+        eid.attachB((B(), ))
+        eid.detachC()
+
+proc myApp() {.necsus([~attachDetach], newNecsusConf()).}
+</code></pre>
+<h4>TimeDelta</h4>
+<p><code>TimeDelta</code> is a <code>proc(): float</code> filled with the amount of time since the last execution of a system</p>
+<pre><code class="language-nim">import necsus
+
+proc showTime(dt: TimeDelta) =
+    echo &quot;Time since last system execution: &quot;, dt()
+
+proc myApp() {.necsus([~showTime], newNecsusConf()).}
+</code></pre>
+<h4>TimeElapsed</h4>
+<p><code>TimeElapsed</code> is a <code>proc(): float</code> that tracks the amount of time spent executing the current application</p>
+<pre><code class="language-nim">import necsus
+
+proc showTime(elapsed: TimeElapsed) =
+    echo &quot;Time spent executing app: &quot;, elapsed()
+
+proc myApp() {.necsus([~showTime], newNecsusConf()).}
+</code></pre>
+<h4>Local</h4>
+<p>Local variables are a way to manage state that is specific to one system. Local variables will only be visible to the
+system that declares them as arguments.</p>
+<pre><code class="language-nim">import necsus
+
+proc localVars(executionCount: Local[int]) =
+    echo &quot;Total executions so far: &quot;, executionCount.get(0)
+    executionCount := executionCount.get(0) + 1
+
+proc myApp() {.necsus([~localVars], newNecsusConf()).}
+</code></pre>
+<h4>Shared</h4>
+<p>Shared variables are shared across all systems. Any shared variable with the same type will have access to the same
+underlying value.</p>
+<pre><code class="language-nim">import necsus
+
+proc updateCount(count: Shared[int]) =
+    count := count.get(0) + 1
+
+proc printCount(count: Shared[int]) =
+    echo &quot;Total executions so far: &quot;, count.get(0)
+
+proc myApp() {.necsus([~updateCount, ~printCount], newNecsusConf()).}
+</code></pre>
+<h4>Inbox/Outbox (aka Events)</h4>
+<p><code>Inbox</code> and <code>Outbox</code> represent the eventing system in Necsus. Events are published using the <code>Outbox</code> and read using
+the <code>Inbox</code>. Any <code>Inbox</code> or <code>Outbox</code> with the same type will shared the same underlying mailbox.</p>
+<pre><code class="language-nim">import necsus
+
+type SomeEvent = distinct string
+
+proc publish(sender: Outbox[SomeEvent]) =
+    sender(SomeEvent(&quot;This is a message&quot;))
+
+proc receive(receiver: Inbox[SomeEvent]) =
+    for event in receiver:
+        echo event.string
+
+proc myApp() {.necsus([~publish, ~receive], newNecsusConf()).}
+</code></pre>
+<h4>Bundles</h4>
+<p><code>Bundle</code>s are a way of grouping together multiple directives into a single object to make them easier pass around. They
+are useful when you want to encapsulate a set of logic that needs to operate on multiple directives.</p>
+<pre><code class="language-nim">import necsus
+
+type
+    A = object
+
+    B = object
+
+    MyBundle = object
+        spawn*: FullSpawn[(A, )]
+        attach*: Attach[(B, )]
+
+proc useBundle(bundle: Bundle[MyBundle]) =
+    let eid = bundle.spawn.with(A())
+    bundle.attach(eid, (B(), ))
+
+proc myApp() {.necsus([~useBundle], newNecsusConf()).}
+</code></pre>
+<h4>TickId</h4>
+<p><code>TickId</code> gives you an auto-incrementing ID for each time a <code>tick</code> is executed. This is useful, for example, if you need
+to track whether an operation has already been performed for the current tick.</p>
+<pre><code class="language-nim">import necsus
+
+proc printTickId(tickId: TickId) =
+    echo &quot;Current tick ID is &quot;, tickId()
+
+proc myApp() {.necsus([~printTickId], newNecsusConf()).}
+</code></pre>
+<h4>EntityDebug</h4>
+<p>When you find yourelf in a position that you need to see the exact state that an entity is in, you can get a string
+dump of that entity by using the <code>EntityDebug</code> directive:</p>
+<pre><code class="language-nim">import necsus
+
+type
+    A = object
+
+proc debuggingSystem(query: FullQuery[(A, )], debug: EntityDebug) =
+    for eid, _ in query:
+        echo debug(eid)
+
+proc myApp() {.necsus([~debuggingSystem], newNecsusConf()).}
+</code></pre>
+<h3>Extended System Usage</h3>
+<p>Beyond the basics of declaring systems and using directives, there are a few more advanced system use cases
+worth understanding.</p>
+<h4>Dependencies between systems</h4>
+<p>A system may require that another system always be paired with it. This can be accomplished by adding the  <code>depends</code>
+pragma, which declares that relationship:</p>
+<pre><code class="language-nim">import necsus
+
+proc runFirst() =
+    ## No-op system, but it gets run first
+    discard
+
+proc runSecond() {.depends(runFirst).} =
+    ## No-op system that gets run second
+    discard
+
+proc myApp() {.necsus([~runSecond], newNecsusConf()).}
+</code></pre>
+<h4>Instancing systems</h4>
+<p>For systems that need to maintain state, it can be convenient to hold on to an instance between invocations. The
+first step to setting is up is to mark a system with the <code>instanced</code> pragma. Then, you've got two options:</p>
+<p><strong>Option 1: Return a Proc</strong></p>
+<p>If your system returns a <code>proc</code>, that proc will get created during the startup phase, then invoked
+for every tick. The <code>proc</code> itself that gets returned here cannot take any arguments. For example:</p>
+<pre><code class="language-nim">import necsus
+
+proc someSystem(create: Spawn[(string, )], query: Query[(string,)]): auto {.instanced.} =
+    create.with(&quot;foo&quot;)
+    return proc() =
+        for (str,) in query:
+            echo str
+
+proc myApp() {.necsus([~someSystem], newNecsusConf()).}
+</code></pre>
+<p>Obviously, this makes it easier to capture the pragmas from your parent system as closure variables,
+which can then be freely used.</p>
+<p><strong>Option 2: Return an Object</strong></p>
+<p>Your other option is to return an object. The system proc will get invoked during the startup phase,
+then a <code>tick</code> proc will get invoked as part of the main loop. This also allows you to create a <code>=destroy</code>
+proc that gets invoked during teardown:</p>
+<pre><code class="language-nim">import necsus
+
+type SystemInstance = object
+    query: Query[(string,)]
+
+proc someSystem(create: Spawn[(string, )], query: Query[(string,)]): SystemInstance {.instanced.} =
+    create.with(&quot;foo&quot;)
+    result.query = query
+
+proc tick(system: var SystemInstance) =
+    for (str,) in system.query:
+        echo str
+
+proc `=destroy`(system: var SystemInstance) =
+    echo &quot;Destroying system&quot;
+
+proc myApp() {.necsus([~someSystem], newNecsusConf()).}
+</code></pre>
+<h4>Building Re-usable systems</h4>
+<p>Reusing code is obviously a fundamental aspect of programming, and using generics is a fundamental aspect of
+that in Nim. Necsus, however, can't resolve generic parameters by itself. It needs to know exactly what components
+need to be passed to each system at compile time.</p>
+<p>To work around this, you can assign systems to variables, then pass those variables into your app:</p>
+<pre><code class="language-nim">import necsus
+
+type
+    SomeComponent = object
+    AnotherComponent = object
+
+proc genericSpawner[T](): auto =
+    return proc (create: Spawn[(T, )]) =
+        create.with(T())
+
+let spawnSomeComponent = genericSpawner[SomeComponent]()
+let spawnAnotherComponent = genericSpawner[AnotherComponent]()
+
+proc myApp() {.necsus([~spawnSomeComponent, ~spawnAnotherComponent], newNecsusConf()).}
+</code></pre>
+<p>It's worth mentioning that if you start usin type aliases, Nim's type system has a tendency to hide those
+from the macro system -- they generally get resolved directly down to the type they are aliasing. To work around that,
+you can add in explicit type declarations or use templates to define your systems.</p>
+<h4>Game State Management</h4>
+<p>Often times, games will have various states they can be in at a high level.  For example, your game may have states to
+represent &quot;loading&quot;, &quot;playing&quot;, &quot;won&quot; or &quot;lost&quot;. For this, you can annotate a system with the <code>active</code> pragma so it
+only executes when the game is in a specific state. <code>Shared</code> directives are then used for changing between states.</p>
+<pre><code class="language-nim">import necsus
+
+type GameState = enum Loading, Playing, Won, Lost
+
+proc showWon() {.active(Won).} =
+    echo &quot;Game won!&quot;
+
+proc switchGameState(state: Shared[GameState]) =
+    ## System that changes the game state to &quot;won&quot;
+    state := Won
+
+proc myApp() {.necsus([~showWon, ~switchGameState], newNecsusConf()).}
+</code></pre>
+<h3>App</h3>
+<p>At an app level, there are a few more features worth discussing.</p>
+<h4>App Arguments</h4>
+<p>Any arguments passed in to your app will be available as <code>Shared</code> arguments to your systems:</p>
+<pre><code class="language-nim">import necsus
+
+proc exampleSystem(input: Shared[string]) =
+    echo input.get()
+
+proc myApp(input: string) {.necsus([~exampleSystem], newNecsusConf()).}
+</code></pre>
+<h4>App Return Type</h4>
+<p>If an app has a return value, it can be set in a system via a <code>Shared</code> argument:</p>
+<pre><code class="language-nim">import necsus
+
+proc setAppReturn(appReturns: Shared[string]) =
+    appReturns.set(&quot;Return value from app&quot;)
+
+proc myApp(): string {.necsus([~setAppReturn], newNecsusConf()).}
+</code></pre>
+<h4>App Configuration</h4>
+<p>Runtime configuration for the execution environment can be controlled through the <code>newNecsusConf()</code> call passed to the
+<code>necsus</code> pragma. For example, the number of entities to reserve at startup can be configured as follows:</p>
+<pre><code class="language-nim">import necsus
+
+proc myApp() {.necsus([], newNecsusConf(entitySize = 100_000)).}
+</code></pre>
+<h4>Exiting</h4>
+<p>With the default tick runner, exiting the app is done through a <code>Shared</code> directive:</p>
+<pre><code class="language-nim">import necsus
+
+proc immediateExit(exit: Shared[NecsusRun]) =
+    ## Immediately exit the first time this system is called
+    exit := ExitLoop
+
+proc myApp() {.necsus([~immediateExit], newNecsusConf()).}
+
+myApp()
+</code></pre>
+<h4>Custom runners</h4>
+<p>The <code>runner</code> is the function that is used to execute the primary system loop. The default runner is fairly simple -- it
+executes the loop systems repeatedly until the Shared <code>NecsusRun</code> variable flips over to <code>ExitLoop</code>. If you need more
+control over your game loop, you can pass in your own.</p>
+<p>The last argument for a custom runner must be the <code>tick</code> callback. Any other arguments will be processed in the same
+manner as a system. This allows your runner to access entities, shared values or events.</p>
+<pre><code class="language-nim">import necsus
+
+proc customRunner*(count: Shared[int], tick: proc(): void) =
+    # Loop until 1000 iterations completed
+    while count.get(0) &lt; 1_000:
+        tick()
+
+proc incrementer(count: Shared[int]) =
+    count.set(count.get(0) + 1)
+
+proc myApp() {.necsus(customRunner, [~incrementer], newNecsusConf()).}
+
+myApp()
+</code></pre>
+<h4>Don't call me, I'll call you</h4>
+<p>There are situations where you may not want Necsus to be in charge of executing the loop. For example, if you are
+integrating with an SDK that uses a callback mechanism for controlling the main game loop. For those situations,
+you can manually initialize your app and invoke the <code>tick</code> function that Necsus generates:</p>
+<pre><code class="language-nim">import necsus
+
+proc myExampleSystem() =
+    discard
+
+proc myApp() {.necsus([~myExampleSystem], newNecsusConf()).}
+
+# Initialize the app and execute the main loop 3 times
+var app = initMyApp()
+app.tick()
+app.tick()
+app.tick()
+</code></pre>
+<h2>Patterns</h2>
+<p>There are a few useful design patterns that are useful when using Necsus</p>
+<h3>Encapsulation using Bundles</h3>
+<p>Bundles provide a way to put all your entity state logic in one place, then call it from other places. For example,
+you might have a state machien for an enemy that can change in various ways. You can put that logic in a single
+file:</p>
+<pre><code class="language-nim">import necsus, options
+
+type
+    EnemyState = enum Alive, Atacking, KnockedBack, Dead
+
+    EnemyData = object
+        state: EnemyState
+        hitPoints: int
+
+    EnemyControl* = object
+        createEnemy: Spawn[(EnemyData, )]
+        findEnemy: Lookup[(ptr EnemyData, )]
+
+proc createEnemy*(control: Bundle[EnemyControl], hitPoints: int) =
+    control.createEnemy.with(EnemyData(state: Alive, hitPoints: hitPoints))
+
+proc damage*(control: Bundle[EnemyControl], enemy: EntityId, damage: int) =
+    control.findEnemy(enemy).map do (data: auto) -&gt; void:
+        data[0].hitPoints -= damage
+        if data[0].hitPoints &lt;= 0:
+            data[0].state = Dead
+        else:
+            data[0].state = KnockedBack
+</code></pre>
+<h3>Listening to state changes</h3>
+<p>When you have an action that needs to be executed once when a state changes, you can encapsulate your state changes
+into a <code>Bundle</code>, then publish an event into an <code>Outbox</code>. For example, imagine a project layed out in a few files
+like this:</p>
+<pre><code class="language-nim">##
+## gameState.nim
+##
+
+import necsus
+
+type
+    GameState* = enum Loading, Playing, Won, Lost
+
+    StateManager* = object
+        state: Shared[GameState]
+        stateChange: Outbox[GameState]
+
+proc change*(manager: Bundle[StateManager], newState: GameState) =
+    ## Central entry point when then game state needs to be changed
+    manager.state := newState
+    manager.stateChange(newState)
+
+##
+## customSystem.nim
+##
+
+proc customSystem*(stateChanges: Inbox[GameState]) =
+    for newState in stateChanges:
+        echo &quot;State changed to &quot;, newState
+
+##
+## changeStateSystem.nim
+##
+
+proc changeStateSystem(manager: Bundle[StateManager], winConditionMet: Shared[bool]) =
+    if winConditionMet.get(false):
+        manager.change(Won)
+
+##
+## app.nim
+##
+
+proc app() {.necsus([~customSystem, ~changeStateSystem], newNecsusConf()).}
+</code></pre>
+<h2>Testing Systems</h2>
+<p>To test a system, you can use the <code>runSystemOnce</code> macro. It accepts a single lambda as an
+argument, and will invoke that lambda as if it were a system. You can then pass those
+directives to other systems, or interact with them directly.</p>
+<pre><code class="language-nim">import unittest, necsus
+
+proc myExampleSystem(str: Shared[string]) =
+    str := &quot;foo&quot;
+
+runSystemOnce do (str: Shared[string]) -&gt; void:
+    test &quot;Execute myExampleSystem&quot;:
+        myExampleSystem(str)
+        check(str.get == &quot;foo&quot;)
+</code></pre>
+<h2>Profiling systems</h2>
+<p>To get a quick and dirty idea of how your app is performing, you can compile with the <code>-d:profile</code> flag set. This
+will cause Necsus to add profiling code that will report how long each system is taking. It takes measurements,
+then outputs the timings to the console.</p>
+<h2>Debugging Generated Code</h2>
+<p>If Necsus isn't behaving as you would expect, the best tool you've got in your toolbox is the ability to dump the code
+that it generates. This allows you to walk through what is happening, or even substitute the generated code into your
+app and execute it. This can be enabled by compiling with the <code>-d:dump</code> flag set.</p>
+<h1>License</h1>
+<p>Code released under the <a href="https://github.com/NecsusECS/Necsus/blob/main/LICENSE">Apache 2.0 license</a></p>
             </div>
         </div>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
