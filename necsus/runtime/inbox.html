@@ -99,17 +99,10 @@ window.addEventListener('DOMContentLoaded', main);
   </div>
   <ul class="simple simple-toc" id="toc-list">
 <li>
-  <a class="reference reference-toplevel" href="#6" id="56">Imports</a>
-  <ul class="simple simple-toc-section">
-    
-  </ul>
-</li>
-<li>
   <a class="reference reference-toplevel" href="#7" id="57">Types</a>
   <ul class="simple simple-toc-section">
       <li><a class="reference" href="#Inbox"
-    title="Inbox[T] = object
-  mailbox: ptr Mailbox[T]">Inbox</a></li>
+    title="Inbox[T] = distinct MailboxPtr[T]">Inbox</a></li>
 
   </ul>
 </li>
@@ -119,11 +112,6 @@ window.addEventListener('DOMContentLoaded', main);
       <ul class="simple nested-toc-section">len
       <li><a class="reference" href="#len%2CInbox%5BT%5D"
     title="len[T](inbox: Inbox[T]): uint">len[T](inbox: Inbox[T]): uint</a></li>
-
-  </ul>
-  <ul class="simple nested-toc-section">newInbox
-      <li><a class="reference" href="#newInbox%2CMailbox%5BT%5D"
-    title="newInbox[T](mailbox: var Mailbox[T]): Inbox[T]">newInbox[T](mailbox: var Mailbox[T]): Inbox[T]</a></li>
 
   </ul>
 
@@ -149,18 +137,11 @@ window.addEventListener('DOMContentLoaded', main);
   <div id="tocRoot"></div>
   
   <p class="module-desc"></p>
-  <div class="section" id="6">
-<h1><a class="toc-backref" href="#6">Imports</a></h1>
-<dl class="item">
-<a class="reference external" href="../util/mailbox.html">../util/mailbox</a>
-</dl></div>
-<div class="section" id="7">
+  <div class="section" id="7">
 <h1><a class="toc-backref" href="#7">Types</a></h1>
 <dl class="item">
 <div id="Inbox">
-<dt><pre><a href="inbox.html#Inbox"><span class="Identifier">Inbox</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">object</span>
-  <span class="Identifier">mailbox</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="../util/mailbox.html#Mailbox"><span class="Identifier">Mailbox</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span>
-</pre></dt>
+<dt><pre><a href="inbox.html#Inbox"><span class="Identifier">Inbox</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">distinct</span> <span class="Identifier">MailboxPtr</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span></pre></dt>
 <dd>
 
 Receives events
@@ -180,21 +161,13 @@ The number of events in this inbox
 
 </dd>
 </div>
-<div id="newInbox,Mailbox[T]">
-<dt><pre><span class="Keyword">proc</span> <a href="#newInbox%2CMailbox%5BT%5D"><span class="Identifier">newInbox</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">mailbox</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="../util/mailbox.html#Mailbox"><span class="Identifier">Mailbox</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="inbox.html#Inbox"><span class="Identifier">Inbox</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span></pre></dt>
-<dd>
-
-
-
-</dd>
-</div>
 
 </dl></div>
 <div class="section" id="15">
 <h1><a class="toc-backref" href="#15">Iterators</a></h1>
 <dl class="item">
 <div id="items.i,Inbox[T]">
-<dt><pre><span class="Keyword">iterator</span> <a href="#items.i%2CInbox%5BT%5D"><span class="Identifier">items</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">inbox</span><span class="Other">:</span> <a href="inbox.html#Inbox"><span class="Identifier">Inbox</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">lent</span> <span class="Identifier">T</span></pre></dt>
+<dt><pre><span class="Keyword">iterator</span> <a href="#items.i%2CInbox%5BT%5D"><span class="Identifier">items</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">inbox</span><span class="Other">:</span> <a href="inbox.html#Inbox"><span class="Identifier">Inbox</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">lent</span> <span class="Identifier">T</span> {.<span class="Identifier">inline</span>.}</pre></dt>
 <dd>
 
 Iterate over inbox items
@@ -211,7 +184,7 @@ Iterate over inbox items
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-02-09 05:38:37 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-02-13 16:47:29 UTC</small>
       </div>
     </div>
   </div>
