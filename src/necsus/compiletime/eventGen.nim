@@ -1,6 +1,6 @@
 import macros, strutils, tables, sequtils
 import directiveSet, monoDirective, nimNode, commonVars, systemGen
-import ../util/mailbox, ../runtime/[inbox, directives]
+import ../runtime/[inbox, directives]
 
 proc eventStorageIdent(event: MonoDirective | NimNode): NimNode =
     ## Returns the name of the identifier that holds the storage for an event
@@ -18,32 +18,27 @@ proc chooseInboxName(context, argName: NimNode, local: MonoDirective): string =
     return signature & argName.strVal
 
 proc inboxFields(name: string, dir: MonoDirective): seq[WorldField] = @[
-    (name, nnkBracketExpr.newTree(bindSym("Mailbox"), dir.argType))
+    (name, nnkBracketExpr.newTree(bindSym("seq"), dir.argType))
 ]
 
 proc inboxSystemArg(name: string, dir: MonoDirective): NimNode =
     let storageIdent = name.ident
     let eventType = dir.argType
     return quote:
-        newInbox[`eventType`](`appStateIdent`.`storageIdent`)
+        Inbox[`eventType`](addr `appStateIdent`.`storageIdent`)
 
 proc generateInbox(details: GenerateContext, arg: SystemArg, name: string, inbox: MonoDirective): NimNode =
     case details.hook
-    of Early:
-        let storageIdent = name.ident
-        let eventType = inbox.argType
-        return quote:
-            `appStateIdent`.`storageIdent` = newMailbox[`eventType`](`appStateIdent`.`confIdent`.eventQueueSize)
     of AfterActiveCheck:
         let eventStore = name.ident
         return quote:
-            clear(`appStateIdent`.`eventStore`)
+            setLen(`appStateIdent`.`eventStore`, 0)
     else:
         return newEmptyNode()
 
 let inboxGenerator* {.compileTime.} = newGenerator(
     ident = "Inbox",
-    interest = { Early, AfterActiveCheck },
+    interest = { AfterActiveCheck },
     chooseName = chooseInboxName,
     generate = generateInbox,
     worldFields = inboxFields,
@@ -71,7 +66,7 @@ proc generateOutbox(details: GenerateContext, arg: SystemArg, name: string, outb
         for sysArg in inboxes(details, outbox):
             let inboxIdent = details.nameOf(sysArg).ident
             body.add quote do:
-                send[`eventType`](`appStateIdent`.`inboxIdent`, `event`)
+                add[`eventType`](`appStateIdent`.`inboxIdent`, `event`)
 
         return quote:
             `appStateIdent`.`procName` = proc(`event`: sink `eventType`) = `body`

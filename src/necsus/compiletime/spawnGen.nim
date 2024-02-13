@@ -26,7 +26,7 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, dir: Tuple
             let ident = name.ident
             let archetype = newArchetype(dir.items.toSeq)
             let archetypeIdent = archetype.ident
-            result.add quote do:
+            discard result.add quote do:
                 `appStateIdent`.`ident` =
                     proc(): auto = beginSpawn(`appStateIdent`.`worldIdent`, `appStateIdent`.`archetypeIdent`)
         except UnsortedArchetype as e:
