@@ -1,3 +1,0 @@
-Inbox	necsus/runtime/inbox.html#Inbox	inbox: Inbox	
-items	necsus/runtime/inbox.html#items.i,Inbox[T]	inbox: items[T](inbox: Inbox[T]): lent T	
-len	necsus/runtime/inbox.html#len,Inbox[T]	inbox: len[T](inbox: Inbox[T]): uint	
