@@ -52,11 +52,6 @@ proc reserve*[T](vector: var SharedVector[T], size: uint) =
 
         vector.size = allocated
 
-proc newSharedVector*[T](initialSize: uint): SharedVector[T] =
-    ## Instantiate a new vector
-    result.size = 0
-    result.reserve(initialSize)
-
 proc len*[T](vector: SharedVector[T]): uint =
     ## Returns the size of this vector
     vector.size

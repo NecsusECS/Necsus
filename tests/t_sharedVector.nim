@@ -3,7 +3,8 @@ import unittest, necsus/util/sharedVector, sequtils
 suite "SharedVector":
 
     test "Setting and getting values":
-        var storage = newSharedVector[uint](100_000)
+        var storage: SharedVector[uint]
+        storage.reserve(1000)
 
         for i in 1'u..20:
             storage[i] = i
@@ -13,7 +14,7 @@ suite "SharedVector":
             require(storage[i] == i)
 
     test "Storage resizing":
-        var storage = newSharedVector[uint](10)
+        var storage: SharedVector[uint]
 
         for i in 1'u..100_000:
             storage[i] = i
@@ -22,18 +23,18 @@ suite "SharedVector":
             check(storage[i] == i)
 
     test "mget":
-        var storage = newSharedVector[string](1_000)
+        var storage: SharedVector[string]
         storage[20] = "foo"
         storage.mget(20).add("bar")
         check(storage[20] == "foobar")
 
     test "mget should resize":
-        var storage = newSharedVector[string](1_000)
+        var storage: SharedVector[string]
         storage.mget(20_000).add("foobar")
         check(storage[20_000] == "foobar")
 
     test "items":
-        var storage = newSharedVector[uint](1_000)
+        var storage: SharedVector[uint]
         for i in 0'u..10:
             storage[i] = i
 
