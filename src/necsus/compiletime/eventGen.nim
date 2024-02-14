@@ -1,6 +1,6 @@
 import macros, strutils, tables, sequtils
 import directiveSet, monoDirective, nimNode, commonVars, systemGen
-import ../runtime/[inbox, directives]
+import ../runtime/[mailbox, directives]
 
 proc eventStorageIdent(event: MonoDirective | NimNode): NimNode =
     ## Returns the name of the identifier that holds the storage for an event
@@ -18,7 +18,7 @@ proc chooseInboxName(context, argName: NimNode, local: MonoDirective): string =
     return signature & argName.strVal
 
 proc inboxFields(name: string, dir: MonoDirective): seq[WorldField] = @[
-    (name, nnkBracketExpr.newTree(bindSym("seq"), dir.argType))
+    (name, nnkBracketExpr.newTree(bindSym("Mailbox"), dir.argType))
 ]
 
 proc inboxSystemArg(name: string, dir: MonoDirective): NimNode =
@@ -32,13 +32,13 @@ proc generateInbox(details: GenerateContext, arg: SystemArg, name: string, inbox
     of AfterActiveCheck:
         let eventStore = name.ident
         return quote:
-            setLen(`appStateIdent`.`eventStore`, 0)
+            clear(`appStateIdent`.`eventStore`)
     else:
         return newEmptyNode()
 
 let inboxGenerator* {.compileTime.} = newGenerator(
     ident = "Inbox",
-    interest = { AfterActiveCheck },
+    interest = { Early, AfterActiveCheck },
     chooseName = chooseInboxName,
     generate = generateInbox,
     worldFields = inboxFields,
@@ -66,7 +66,7 @@ proc generateOutbox(details: GenerateContext, arg: SystemArg, name: string, outb
         for sysArg in inboxes(details, outbox):
             let inboxIdent = details.nameOf(sysArg).ident
             body.add quote do:
-                add[`eventType`](`appStateIdent`.`inboxIdent`, `event`)
+                send[`eventType`](`appStateIdent`.`inboxIdent`, `event`)
 
         return quote:
             `appStateIdent`.`procName` = proc(`event`: sink `eventType`) = `body`
