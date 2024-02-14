@@ -104,10 +104,13 @@ proc createAppStateInit*(genInfo: CodeGenInfo): NimNode =
     let initBody = quote:
         var `appStateIdent` = new(`appStateType`)
         `appStateIdent`.`confIdent` =  `createConfig`
+        `appStateIdent`.`confIdent`.log("Beginning app initialization")
         `appStateIdent`.`worldIdent` = newWorld[`archetypeEnum`](`appStateIdent`.`confIdent`.entitySize)
         `appStateIdent`.`startTime` = `appStateIdent`.`confIdent`.getTime()
+        `appStateIdent`.`confIdent`.log("Initializing archetypes")
         `archetypeDefs`
         `profilers`
+        `appStateIdent`.`confIdent`.log("Beginning startup sys execution")
         `earlyInit`
         `stdInit`
         `lateInit`

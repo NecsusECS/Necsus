@@ -51,6 +51,14 @@ proc wrapInProfiler(codeGenInfo: CodeGenInfo, i: int, node: NimNode): NimNode =
         `node`
         `appStateIdent`.profile[`i`].record(`appStateIdent`.config.getTime() - `profileVar`)
 
+proc logSystemCall(system: ParsedSystem, prefix: string): NimNode =
+    if defined(necsusLog):
+        let message = prefix & ": " & system.symbol.strVal
+        return quote:
+            `appStateIdent`.config.log(`message`)
+    else:
+        return newEmptyNode()
+
 proc callSystems*(codeGenInfo: CodeGenInfo, phase: SystemPhase): NimNode =
     ## Generates the code for invoke a list of systems
     result = newStmtList()
@@ -62,7 +70,12 @@ proc callSystems*(codeGenInfo: CodeGenInfo, phase: SystemPhase): NimNode =
             else: newEmptyNode()
 
         if invokeSystem.kind != nnkEmpty:
-            invokeSystem = newStmtList(invokeSystem, codeGenInfo.generateForHook(system, AfterSystem))
+            invokeSystem = newStmtList(
+                system.logSystemCall("Starting system"),
+                invokeSystem,
+                codeGenInfo.generateForHook(system, AfterSystem),
+                system.logSystemCall("System done"),
+            )
 
             if phase == SystemPhase.LoopPhase:
                 invokeSystem = codeGenInfo.wrapInProfiler(i, invokeSystem)
