@@ -38,7 +38,7 @@ proc generateInbox(details: GenerateContext, arg: SystemArg, name: string, inbox
 
 let inboxGenerator* {.compileTime.} = newGenerator(
     ident = "Inbox",
-    interest = { Early, AfterActiveCheck },
+    interest = { AfterActiveCheck },
     chooseName = chooseInboxName,
     generate = generateInbox,
     worldFields = inboxFields,
