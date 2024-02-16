@@ -61,15 +61,10 @@ proc generateOutbox(details: GenerateContext, arg: SystemArg, name: string, outb
         let event = "event".ident
         let procName = name.ident
         let eventType = outbox.argType
-
-        var body = newStmtList()
-        for sysArg in inboxes(details, outbox):
-            let inboxIdent = details.nameOf(sysArg).ident
-            body.add quote do:
-                send[`eventType`](`appStateIdent`.`inboxIdent`, `event`)
-
+        let sendProc = outbox.sendEventProcName
         return quote:
-            `appStateIdent`.`procName` = proc(`event`: sink `eventType`) = `body`
+            `appStateIdent`.`procName` = proc(`event`: sink `eventType`) =
+                `sendProc`(`appStateIdent`, `event`)
     else:
         return newEmptyNode()
 

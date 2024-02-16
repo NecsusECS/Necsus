@@ -732,6 +732,36 @@ app.tick()
 app.tick()
 ```
 
+When using Necsus in this setup, you can send data and events in from the outside world either through the
+initialization arguments, or using an inbox:
+
+```nim
+import necsus
+
+type
+    MyData = object
+        value: string
+
+    MyEvent = object
+        value: string
+
+proc printData(data: Shared[MyData]) =
+    echo data.get.value
+
+proc printEvent(events: Inbox[MyEvent]) =
+    for event in events:
+        echo event.value
+
+proc myApp(data: MyData) {.necsus([~printData, ~printEvent], newNecsusConf()).}
+
+var app = initMyApp(MyData(value: "some data"))
+
+app.sendMyEvent(MyEvent(value: "some event"))
+app.sendMyEvent(MyEvent(value: "another event"))
+
+app.tick()
+```
+
 ## Patterns
 
 There are a few useful design patterns that are useful when using Necsus

@@ -1,6 +1,6 @@
 import macros, options, tables, sequtils
-import worldEnum, codeGenInfo, archetype, commonVars, systemGen, tickGen, parse
-import ../runtime/[world, archetypeStore, necsusConf, directives], ../util/profile
+import worldEnum, codeGenInfo, archetype, commonVars, systemGen, tickGen, parse, eventGen, directiveSet, monoDirective
+import ../runtime/[world, archetypeStore, necsusConf, directives, mailbox], ../util/profile
 
 proc fields(genInfo: CodeGenInfo): seq[(NimNode, NimNode)] =
     ## Produces a list of all fields to attach to the state object
@@ -150,3 +150,36 @@ proc createAppStateDestructor*(genInfo: CodeGenInfo): NimNode =
             `beforeTeardown`
             `teardowns`
             `destroys`
+
+proc mailboxIndex(details: CodeGenInfo): Table[MonoDirective, seq[NimNode]] =
+    ## Creates a table of all inboxes keyd on the type of message they receive
+    result = initTable[MonoDirective, seq[NimNode]](64)
+    if inboxGenerator in details.directives:
+        for name, directive in details.directives[inboxGenerator]:
+            result.mgetOrPut(directive.monoDir, newSeq[NimNode]()).add(ident(name))
+
+    if outboxGenerator in details.directives:
+        for name, directive in details.directives[outboxGenerator]:
+            discard result.mgetOrPut(directive.monoDir, newSeq[NimNode]())
+
+proc createSendProcs*(details: CodeGenInfo): NimNode =
+    ## Generates a set of procs needed to send messages
+    result = newStmtList()
+    let appStateType = details.appStateTypeName
+    let event = ident("event")
+
+    for directive, inboxes in details.mailboxIndex:
+        let name = directive.sendEventProcName
+        let eventType = directive.argType
+
+        var body = newStmtList()
+
+        for inboxIdent in inboxes:
+            body.add quote do:
+                send[`eventType`](`appStateIdent`.`inboxIdent`, `event`)
+
+        if body.len == 0:
+            body.add(nnkDiscardStmt.newTree(newEmptyNode()))
+
+        result.add quote do:
+            proc `name`(`appStateIdent`: var `appStateType`, `event`: sink `eventType`) {.used.} = `body`

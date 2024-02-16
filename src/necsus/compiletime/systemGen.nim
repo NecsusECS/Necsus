@@ -282,3 +282,7 @@ iterator allArgs*(args: openArray[SystemArg]): SystemArg =
             yield nested
 
         yield arg
+
+proc sendEventProcName*(directive: MonoDirective): NimNode =
+    ## Generates the proc name for sending an event to all listening inboxes
+    ident("send" & directive.name.capitalizeAscii)

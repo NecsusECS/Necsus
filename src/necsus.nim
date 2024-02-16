@@ -51,6 +51,7 @@ proc buildApp(
         codeGenInfo.archetypeEnum.codeGen,
         codeGenInfo.createAppStateType(),
         codeGenInfo.createAppStateDestructor(),
+        codeGenInfo.createSendProcs(),
         codeGenInfo.generateForHook(GenerateHook.Outside),
         codeGenInfo.createAppStateInit(),
         codeGenInfo.createTickProc(),
