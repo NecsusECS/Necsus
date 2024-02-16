@@ -479,6 +479,10 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference external"
           data-doc-search-tag="worldGen: createAppStateType(genInfo: CodeGenInfo): NimNode" href="necsus/compiletime/worldGen.html#createAppStateType%2CCodeGenInfo">worldGen: createAppStateType(genInfo: CodeGenInfo): NimNode</a></li>
           </ul></dd>
+<dt><a name="createSendProcs" href="#createSendProcs"><span>createSendProcs:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="worldGen: createSendProcs(details: CodeGenInfo): NimNode" href="necsus/compiletime/worldGen.html#createSendProcs%2CCodeGenInfo">worldGen: createSendProcs(details: CodeGenInfo): NimNode</a></li>
+          </ul></dd>
 <dt><a name="createTickProc" href="#createTickProc"><span>createTickProc:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="tickGen: createTickProc(genInfo: CodeGenInfo): NimNode" href="necsus/compiletime/tickGen.html#createTickProc%2CCodeGenInfo">tickGen: createTickProc(genInfo: CodeGenInfo): NimNode</a></li>
@@ -1054,16 +1058,14 @@ window.addEventListener('DOMContentLoaded', main);
 <dt><a name="newNecsusConf" href="#newNecsusConf"><span>newNecsusConf:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="necsusConf: newNecsusConf(entitySize: int = DEFAULT_ENTITY_COUNT;
-              componentSize: int = ceilDiv(entitySize, 3);
-              eventQueueSize: int = ceilDiv(entitySize, 10)): NecsusConf" href="necsus/runtime/necsusConf.html#newNecsusConf%2Cint%2Cint%2Cint">necsusConf: newNecsusConf(entitySize: int = DEFAULT_ENTITY_COUNT;
-              componentSize: int = ceilDiv(entitySize, 3);
-              eventQueueSize: int = ceilDiv(entitySize, 10)): NecsusConf</a></li>
+              componentSize: int = ceilDiv(entitySize, 3)): NecsusConf" href="necsus/runtime/necsusConf.html#newNecsusConf%2Cint%2Cint">necsusConf: newNecsusConf(entitySize: int = DEFAULT_ENTITY_COUNT;
+              componentSize: int = ceilDiv(entitySize, 3)): NecsusConf</a></li>
           <li><a class="reference external"
           data-doc-search-tag="necsusConf: newNecsusConf(getTime: proc (): Nfloat; log: proc (message: string): void): NecsusConf" href="necsus/runtime/necsusConf.html#newNecsusConf%2Cproc%29%2Cproc%28string%29">necsusConf: newNecsusConf(getTime: proc (): Nfloat; log: proc (message: string): void): NecsusConf</a></li>
           <li><a class="reference external"
           data-doc-search-tag="necsusConf: newNecsusConf(getTime: proc (): Nfloat; log: proc (message: string): void;
-              entitySize: int; componentSize: int; eventQueueSize: int): NecsusConf" href="necsus/runtime/necsusConf.html#newNecsusConf%2Cproc%29%2Cproc%28string%29%2Cint%2Cint%2Cint">necsusConf: newNecsusConf(getTime: proc (): Nfloat; log: proc (message: string): void;
-              entitySize: int; componentSize: int; eventQueueSize: int): NecsusConf</a></li>
+              entitySize: int; componentSize: int): NecsusConf" href="necsus/runtime/necsusConf.html#newNecsusConf%2Cproc%29%2Cproc%28string%29%2Cint%2Cint">necsusConf: newNecsusConf(getTime: proc (): Nfloat; log: proc (message: string): void;
+              entitySize: int; componentSize: int): NecsusConf</a></li>
           </ul></dd>
 <dt><a name="newQuery" href="#newQuery"><span>newQuery:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -1090,10 +1092,6 @@ window.addEventListener('DOMContentLoaded', main);
     nestedArgs: seq[SystemArg] = @[]; directive: T): SystemArg" href="necsus/compiletime/systemGen.html#newSystemArg%2CNimNode%2CDirectiveGen%2Cstring%2Cstring%2Cseq%5BSystemArg%5D%2CT">systemGen: newSystemArg[T: TupleDirective | MonoDirective | void](source: NimNode;
     generator: DirectiveGen; originalName: string; name: string;
     nestedArgs: seq[SystemArg] = @[]; directive: T): SystemArg</a></li>
-          </ul></dd>
-<dt><a name="newSystemVar" href="#newSystemVar"><span>newSystemVar:</span></a></dt><dd><ul class="simple">
-<li><a class="reference external"
-          data-doc-search-tag="systemVar: newSystemVar[T](): SystemVarData[T]" href="necsus/runtime/systemVar.html#newSystemVar">systemVar: newSystemVar[T](): SystemVarData[T]</a></li>
           </ul></dd>
 <dt><a name="newTupleDir" href="#newTupleDir"><span>newTupleDir:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -1222,6 +1220,10 @@ window.addEventListener('DOMContentLoaded', main);
 <dt><a name="send" href="#send"><span>send:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="mailbox: send[T](mailbox: var Mailbox[T]; message: sink T)" href="necsus/runtime/mailbox.html#send%2CMailbox%5BT%5D%2CsinkT">mailbox: send[T](mailbox: var Mailbox[T]; message: sink T)</a></li>
+          </ul></dd>
+<dt><a name="sendEventProcName" href="#sendEventProcName"><span>sendEventProcName:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="systemGen: sendEventProcName(directive: MonoDirective): NimNode" href="necsus/compiletime/systemGen.html#sendEventProcName%2CMonoDirective">systemGen: sendEventProcName(directive: MonoDirective): NimNode</a></li>
           </ul></dd>
 <dt><a name="set" href="#set"><span>set:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -1434,7 +1436,7 @@ window.addEventListener('DOMContentLoaded', main);
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-02-15 15:45:57 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-02-16 05:20:07 UTC</small>
       </div>
     </div>
   </div>

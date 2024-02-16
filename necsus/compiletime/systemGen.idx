@@ -39,3 +39,4 @@ systemArg	necsus/compiletime/systemGen.html#systemArg,Table[DirectiveGen,Directi
 systemArg	necsus/compiletime/systemGen.html#systemArg,GenerateContext,SystemArg	systemGen: systemArg(ctx: GenerateContext; arg: SystemArg): NimNode	
 globalName	necsus/compiletime/systemGen.html#globalName,GenerateContext,string	systemGen: globalName(ctx: GenerateContext; name: string): NimNode	
 allArgs	necsus/compiletime/systemGen.html#allArgs.i,openArray[SystemArg]	systemGen: allArgs(args: openArray[SystemArg]): SystemArg	
+sendEventProcName	necsus/compiletime/systemGen.html#sendEventProcName,MonoDirective	systemGen: sendEventProcName(directive: MonoDirective): NimNode	

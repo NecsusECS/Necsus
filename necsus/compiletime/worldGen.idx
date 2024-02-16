@@ -3,3 +3,4 @@ createAppReturn	necsus/compiletime/worldGen.html#createAppReturn,CodeGenInfo,Nim
 createAppStateInit	necsus/compiletime/worldGen.html#createAppStateInit,CodeGenInfo	worldGen: createAppStateInit(genInfo: CodeGenInfo): NimNode	
 createAppStateInstance	necsus/compiletime/worldGen.html#createAppStateInstance,CodeGenInfo	worldGen: createAppStateInstance(genInfo: CodeGenInfo): NimNode	
 createAppStateDestructor	necsus/compiletime/worldGen.html#createAppStateDestructor,CodeGenInfo	worldGen: createAppStateDestructor(genInfo: CodeGenInfo): NimNode	
+createSendProcs	necsus/compiletime/worldGen.html#createSendProcs,CodeGenInfo	worldGen: createSendProcs(details: CodeGenInfo): NimNode	

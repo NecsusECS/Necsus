@@ -290,6 +290,11 @@ window.addEventListener('DOMContentLoaded', main);
     nestedArgs: seq[SystemArg] = @[]; directive: T): SystemArg</a></li>
 
   </ul>
+  <ul class="simple nested-toc-section">sendEventProcName
+      <li><a class="reference" href="#sendEventProcName%2CMonoDirective"
+    title="sendEventProcName(directive: MonoDirective): NimNode">sendEventProcName(directive: MonoDirective): NimNode</a></li>
+
+  </ul>
   <ul class="simple nested-toc-section">systemArg
       <li><a class="reference" href="#systemArg%2CGenerateContext%2CSystemArg"
     title="systemArg(ctx: GenerateContext; arg: SystemArg): NimNode">systemArg(ctx: GenerateContext; arg: SystemArg): NimNode</a></li>
@@ -640,6 +645,14 @@ Instantiates a SystemArg
 
 </dd>
 </div>
+<div id="sendEventProcName,MonoDirective">
+<dt><pre><span class="Keyword">proc</span> <a href="#sendEventProcName%2CMonoDirective"><span class="Identifier">sendEventProcName</span></a><span class="Other">(</span><span class="Identifier">directive</span><span class="Other">:</span> <a href="monoDirective.html#MonoDirective"><span class="Identifier">MonoDirective</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+Generates the proc name for sending an event to all listening inboxes
+
+</dd>
+</div>
 <div id="systemArg,GenerateContext,SystemArg">
 <dt><pre><span class="Keyword">proc</span> <a href="#systemArg%2CGenerateContext%2CSystemArg"><span class="Identifier">systemArg</span></a><span class="Other">(</span><span class="Identifier">ctx</span><span class="Other">:</span> <a href="systemGen.html#GenerateContext"><span class="Identifier">GenerateContext</span></a><span class="Other">;</span> <span class="Identifier">arg</span><span class="Other">:</span> <a href="systemGen.html#SystemArg"><span class="Identifier">SystemArg</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">,</span> <span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
@@ -691,7 +704,7 @@ Generates the code for a specific hook
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-02-15 15:45:57 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-02-16 05:20:07 UTC</small>
       </div>
     </div>
   </div>

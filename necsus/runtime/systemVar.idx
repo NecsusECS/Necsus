@@ -4,7 +4,6 @@ SharedOrT	necsus/runtime/systemVar.html#SharedOrT	systemVar: SharedOrT
 Local	necsus/runtime/systemVar.html#Local	systemVar: Local	
 LocalOrT	necsus/runtime/systemVar.html#LocalOrT	systemVar: LocalOrT	
 SystemVar	necsus/runtime/systemVar.html#SystemVar	systemVar: SystemVar	
-newSystemVar	necsus/runtime/systemVar.html#newSystemVar	systemVar: newSystemVar[T](): SystemVarData[T]	
 isEmpty	necsus/runtime/systemVar.html#isEmpty,SystemVar[T]	systemVar: isEmpty[T](sysvar: SystemVar[T]): bool	
 isSome	necsus/runtime/systemVar.html#isSome,SystemVar[T]	systemVar: isSome[T](sysvar: SystemVar[T]): bool	
 set	necsus/runtime/systemVar.html#set,SystemVar[T],sinkT	systemVar: set[T](sysvar: SystemVar[T]; value: sink T)	
