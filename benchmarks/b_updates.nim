@@ -41,7 +41,7 @@ proc runner(tick: proc(): void) =
 proc myApp() {.necsus(
     runner,
     [~setup, ~movement, ~comflab],
-    newNecsusConf(entityCount * 2, entityCount * 2, entityCount * 2)
+    newNecsusConf(entityCount * 2, entityCount * 2)
 ).}
 
 myApp()
