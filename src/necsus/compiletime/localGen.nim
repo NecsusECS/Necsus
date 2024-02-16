@@ -7,14 +7,7 @@ proc worldFields(name: string, dir: MonoDirective): seq[WorldField] =
     @[ (name, nnkBracketExpr.newTree(bindSym("SystemVarData"), dir.argType)) ]
 
 proc generateLocal(details: GenerateContext, arg: SystemArg, name: string, dir: MonoDirective): NimNode =
-    case details.hook
-    of Standard:
-        let varIdent = ident(name)
-        let argType = dir.argType
-        return quote:
-            `appStateIdent`.`varIdent` = newSystemVar[`argType`]()
-    else:
-        return newEmptyNode()
+    return newEmptyNode()
 
 proc systemArg(name: string, dir: MonoDirective): NimNode =
     let nameIdent = name.ident
@@ -23,7 +16,7 @@ proc systemArg(name: string, dir: MonoDirective): NimNode =
 
 let localGenerator* {.compileTime.} = newGenerator(
     ident = "Local",
-    interest = { Standard },
+    interest = {},
     generate = generateLocal,
     chooseName = chooseLocalName,
     worldFields = worldFields,

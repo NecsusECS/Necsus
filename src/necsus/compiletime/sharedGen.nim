@@ -9,9 +9,6 @@ proc generateShared(details: GenerateContext, arg: SystemArg, name: string, dir:
     case details.hook
     of Standard:
         let varIdent = ident(name)
-        let argType = dir.argType
-        result.add quote do:
-            `appStateIdent`.`varIdent` = newSystemVar[`argType`]()
 
         # Fill in any values from arguments passed to the app
         for (inputName, inputDir) in details.inputs:

@@ -21,10 +21,6 @@ type
 
 proc extract[T](sysvar: SystemVar[T]): ptr SystemVarData[T] {.inline.} = cast[ptr SystemVarData[T]](sysvar)
 
-proc newSystemVar*[T](): SystemVarData[T] =
-    ## Constructor
-    SystemVarData[T](value: none(T))
-
 proc isEmpty*[T](sysvar: SystemVar[T]): bool {.inline.} =
     ## Returns whether a system variable has a value
     sysvar.extract.value.isNone
