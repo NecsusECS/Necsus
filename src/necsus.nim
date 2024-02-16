@@ -42,10 +42,7 @@ proc buildApp(
 
     let parsedApp = parseApp(pragmaProc, runner)
 
-    let codeGenInfo = when not defined(nimsuggest):
-        newCodeGenInfo(conf, parsedApp, parseSystemList(systems))
-    else:
-        newEmptyCodeGenInfo(conf, parsedApp)
+    let codeGenInfo = newCodeGenInfo(conf, parsedApp, parseSystemList(systems))
 
     result = newStmtList(
         codeGenInfo.archetypeEnum.codeGen,
@@ -58,14 +55,11 @@ proc buildApp(
         pragmaProc
     )
 
-    pragmaProc.body = when not defined(nimsuggest):
-        newStmtList(
-            codeGenInfo.createAppStateInstance(),
-            codeGenInfo.createTickRunner(runner),
-            codeGenInfo.createAppReturn(pragmaProc),
-        )
-    else:
-        newStmtList()
+    pragmaProc.body = newStmtList(
+        codeGenInfo.createAppStateInstance(),
+        codeGenInfo.createTickRunner(runner),
+        codeGenInfo.createAppReturn(pragmaProc),
+    )
 
     when defined(dump):
         echo "import necsus/runtime/[world, archetypeStore], std/math, necsus/util/profile"
