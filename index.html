@@ -432,14 +432,15 @@ proc runSecond() {.depends(runFirst).} =
 proc myApp() {.necsus([~runSecond], newNecsusConf()).}
 </code></pre>
 <h4>Instancing systems</h4>
-<p>For systems that need to maintain state, it can be convenient to hold on to an instance between invocations. The
-first step to setting is up is to mark a system with the <code>instanced</code> pragma. Then, you've got two options:</p>
+<p>For systems that need to maintain state, it can be convenient to hold on to an instance between invocations. You've
+got two options:</p>
 <p><strong>Option 1: Return a Proc</strong></p>
-<p>If your system returns a <code>proc</code>, that proc will get created during the startup phase, then invoked
-for every tick. The <code>proc</code> itself that gets returned here cannot take any arguments. For example:</p>
+<p>If your system returns a <code>proc</code>, set the return type of your system to <code>SystemInstance</code>. Necsus will invoke your
+parent <code>proc</code> during setup, then the returned <code>proc</code> will be invoked for every tick. The <code>proc</code> itself that gets
+returned here cannot take any arguments. For example:</p>
 <pre><code class="language-nim">import necsus
 
-proc someSystem(create: Spawn[(string, )], query: Query[(string,)]): auto {.instanced.} =
+proc someSystem(create: Spawn[(string, )], query: Query[(string,)]): SystemInstance =
     create.with(&quot;foo&quot;)
     return proc() =
         for (str,) in query:
@@ -450,23 +451,23 @@ proc myApp() {.necsus([~someSystem], newNecsusConf()).}
 <p>Obviously, this makes it easier to capture the pragmas from your parent system as closure variables,
 which can then be freely used.</p>
 <p><strong>Option 2: Return an Object</strong></p>
-<p>Your other option is to return an object. The system proc will get invoked during the startup phase,
-then a <code>tick</code> proc will get invoked as part of the main loop. This also allows you to create a <code>=destroy</code>
-proc that gets invoked during teardown:</p>
+<p>Your other option is to return an object from the parent <code>proc</code>. First, mark your parent <code>proc</code> with the <code>instanced</code>
+pragma. The parent <code>proc</code> will get invoked once during the startup phase, then a <code>tick</code> proc will get invoked as part of
+the main loop. This also allows you to create a <code>=destroy</code> proc that gets invoked during teardown:</p>
 <pre><code class="language-nim">import necsus
 
-type SystemInstance = object
+type MySystem = object
     query: Query[(string,)]
 
-proc someSystem(create: Spawn[(string, )], query: Query[(string,)]): SystemInstance {.instanced.} =
+proc someSystem(create: Spawn[(string, )], query: Query[(string,)]): MySystem {.instanced.} =
     create.with(&quot;foo&quot;)
     result.query = query
 
-proc tick(system: var SystemInstance) =
+proc tick(system: var MySystem) =
     for (str,) in system.query:
         echo str
 
-proc `=destroy`(system: var SystemInstance) =
+proc `=destroy`(system: var MySystem) =
     echo &quot;Destroying system&quot;
 
 proc myApp() {.necsus([~someSystem], newNecsusConf()).}
