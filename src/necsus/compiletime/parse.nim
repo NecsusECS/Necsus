@@ -1,6 +1,6 @@
 import macros, sequtils, strformat, options, typeReader, strutils
 import componentDef, tupleDirective, monoDirective, systemGen
-import ../runtime/pragmas
+import ../runtime/[pragmas, directives]
 import spawnGen, queryGen, deleteGen, attachDetachGen, sharedGen, tickIdGen
 import localGen, lookupGen, eventGen, timeGen, debugGen, bundleGen
 
@@ -243,6 +243,8 @@ proc choosePhase(typeNode: NimNode): SystemPhase =
 
 proc determineInstancing(nodeImpl: NimNode, nodeTypeImpl: NimNode): Option[NimNode] =
     ## Determines whether a system is instanced, and returns the type to use for instancing
+    if nodeImpl.kind in RoutineNodes and nodeImpl.params[0] == bindSym("SystemInstance"):
+        return some(nodeImpl.params[0])
     for child in nodeImpl.findPragma:
         if child == bindSym("instanced"):
             return some(nodeTypeImpl[0][0])

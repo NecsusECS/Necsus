@@ -6,7 +6,7 @@ proc sys1(create: Spawn[(string, )], query: Query[(string,)]): auto {.instanced.
     return proc() =
         check(query.len == 2)
 
-proc sys2(create: Spawn[(int, )], query: Query[(string,)]): SystemInstance {.instanced.} =
+proc sys2(create: Spawn[(int, )], query: Query[(string,)]): SystemInstance =
     create.with(1)
     create.with(2)
     return proc() =

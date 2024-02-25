@@ -530,18 +530,19 @@ proc myApp() {.necsus([~runSecond], newNecsusConf()).}
 
 #### Instancing systems
 
-For systems that need to maintain state, it can be convenient to hold on to an instance between invocations. The
-first step to setting is up is to mark a system with the `instanced` pragma. Then, you've got two options:
+For systems that need to maintain state, it can be convenient to hold on to an instance between invocations. You've
+got two options:
 
 **Option 1: Return a Proc**
 
-If your system returns a `proc`, that proc will get created during the startup phase, then invoked
-for every tick. The `proc` itself that gets returned here cannot take any arguments. For example:
+If your system returns a `proc`, set the return type of your system to `SystemInstance`. Necsus will invoke your
+parent `proc` during setup, then the returned `proc` will be invoked for every tick. The `proc` itself that gets
+returned here cannot take any arguments. For example:
 
 ```nim
 import necsus
 
-proc someSystem(create: Spawn[(string, )], query: Query[(string,)]): auto {.instanced.} =
+proc someSystem(create: Spawn[(string, )], query: Query[(string,)]): SystemInstance =
     create.with("foo")
     return proc() =
         for (str,) in query:
@@ -555,25 +556,25 @@ which can then be freely used.
 
 **Option 2: Return an Object**
 
-Your other option is to return an object. The system proc will get invoked during the startup phase,
-then a `tick` proc will get invoked as part of the main loop. This also allows you to create a `=destroy`
-proc that gets invoked during teardown:
+Your other option is to return an object from the parent `proc`. First, mark your parent `proc` with the `instanced`
+pragma. The parent `proc` will get invoked once during the startup phase, then a `tick` proc will get invoked as part of
+the main loop. This also allows you to create a `=destroy` proc that gets invoked during teardown:
 
 ```nim
 import necsus
 
-type SystemInstance = object
+type MySystem = object
     query: Query[(string,)]
 
-proc someSystem(create: Spawn[(string, )], query: Query[(string,)]): SystemInstance {.instanced.} =
+proc someSystem(create: Spawn[(string, )], query: Query[(string,)]): MySystem {.instanced.} =
     create.with("foo")
     result.query = query
 
-proc tick(system: var SystemInstance) =
+proc tick(system: var MySystem) =
     for (str,) in system.query:
         echo str
 
-proc `=destroy`(system: var SystemInstance) =
+proc `=destroy`(system: var MySystem) =
     echo "Destroying system"
 
 proc myApp() {.necsus([~someSystem], newNecsusConf()).}
