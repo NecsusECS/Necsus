@@ -243,8 +243,9 @@ proc choosePhase(typeNode: NimNode): SystemPhase =
 
 proc determineInstancing(nodeImpl: NimNode, nodeTypeImpl: NimNode): Option[NimNode] =
     ## Determines whether a system is instanced, and returns the type to use for instancing
-    if nodeImpl.kind in RoutineNodes and nodeImpl.params[0] == bindSym("SystemInstance"):
-        return some(nodeImpl.params[0])
+    if nodeTypeImpl.kind == nnkProcTy and nodeTypeImpl.params[0] == bindSym("SystemInstance"):
+        return some(nodeTypeImpl.params[0])
+
     for child in nodeImpl.findPragma:
         if child == bindSym("instanced"):
             return some(nodeTypeImpl[0][0])

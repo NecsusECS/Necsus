@@ -12,12 +12,21 @@ proc sys2(create: Spawn[(int, )], query: Query[(string,)]): SystemInstance =
     return proc() =
         check(query.len == 2)
 
+proc buildSys2(): auto =
+    return proc (create: Spawn[(float, )], query: Query[(float,)]): SystemInstance =
+        create.with(1.0)
+        create.with(2.0)
+        return proc() =
+            check(query.len == 2)
+
 proc runner(tick: proc(): void) =
     tick()
     tick()
     tick()
 
-proc myApp() {.necsus(runner, [~sys1, ~sys2], newNecsusConf()).}
+let builtSys = buildSys2()
+
+proc myApp() {.necsus(runner, [~sys1, ~sys2, ~builtSys], newNecsusConf()).}
 
 test "Executed instanced systems that return procs":
     myApp()
