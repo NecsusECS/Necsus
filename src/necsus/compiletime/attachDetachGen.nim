@@ -51,7 +51,7 @@ proc createArchMove(
     return quote:
         moveEntity[`archetypeEnum`, `fromArchTuple`, `toArchTuple`](
             `appStateIdent`.`worldIdent`, `entityIndex`, `appStateIdent`.`fromArchIdent`, `appStateIdent`.`toArchIdent`,
-            proc (`existing`: sink `fromArchTuple`): auto = `createNewTuple`
+            proc (`existing`: sink `fromArchTuple`): auto {.gcsafe, raises: [].} = `createNewTuple`
         )
 
 proc isAttachable(gen: DirectiveGen): bool =
@@ -96,13 +96,13 @@ proc generateAttach(details: GenerateContext, arg: SystemArg, name: string, atta
                 `appStateIdent`: var `appStateTypeName`,
                 `entityId`: EntityId,
                 `newComps`: `componentTuple`
-            ) =
+            ) {.gcsafe, raises: [].} =
                 var `entityIndex` = `appStateIdent`.`worldIdent`[`entityId`]
                 `cases`
     of Standard:
         let procName = ident(name)
         return quote:
-            `appStateIdent`.`procName` = proc(`entityId`: EntityId, `newComps`: `componentTuple`) =
+            `appStateIdent`.`procName` = proc(`entityId`: EntityId, `newComps`: `componentTuple`) {.gcsafe, raises: [].} =
                 `attachProc`(`appStateIdent`, `entityId`, `newComps`)
     else:
         return newEmptyNode()

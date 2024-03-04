@@ -62,9 +62,11 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, dir: Tuple
         let (lenCalculation, iteratorBody) = details.walkArchetypes(name, dir, queryTuple)
 
         return quote do:
-            func `buildQueryProc`(`appStateIdent`: ptr `appStateTypeName`): RawQuery[`queryTuple`] =
-                proc getLen(): uint = `lenCalculation`
-                proc getIterator(): QueryIterator[`queryTuple`] =
+            func `buildQueryProc`(
+                `appStateIdent`: ptr `appStateTypeName`
+            ): RawQuery[`queryTuple`] {.gcsafe, raises: [].} =
+                func getLen(): uint = `lenCalculation`
+                func getIterator(): QueryIterator[`queryTuple`] =
                     return iterator(`slot`: var `queryTuple`): EntityId = `iteratorBody`
                 return newQuery[`queryTuple`](getLen, getIterator)
 

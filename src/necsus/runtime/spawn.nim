@@ -15,13 +15,13 @@ type
 proc beginSpawn*[Archs: enum, Comps: tuple](
     world: var World[Archs],
     store: var ArchetypeStore[Archs, Comps]
-): NewArchSlot[Comps] {.inline.} =
+): NewArchSlot[Comps] {.inline, gcsafe, raises: [].} =
     ## Spawns an entity in this archetype
     var newEntity = world.newEntity
     result = store.newSlot(newEntity.entityId)
     newEntity.setArchetypeDetails(store.archetype, result.index)
 
-proc set*[C: tuple](spawn: Spawn[C], values: sink C) {.inline.} =
+func set*[C: tuple](spawn: Spawn[C], values: sink C) {.inline, raises: [].} =
     ## Spawns an entity with the given components
     discard setComp(RawSpawn[C](spawn)(), values)
 

@@ -69,8 +69,8 @@ proc moveEntity*[Archs: enum, FromArch: tuple, ToArch: tuple](
     entityIndex: ptr EntityIndex[Archs],
     fromArch: var ArchetypeStore[Archs, FromArch],
     toArch: var ArchetypeStore[Archs, ToArch],
-    convert: proc (input: sink FromArch): ToArch
-) {.inline.} =
+    convert: proc (input: sink FromArch): ToArch {.gcsafe, raises: [].}
+) {.inline, gcsafe, raises: [].} =
     ## Moves the components for an entity from one archetype to another
     let deleted = fromArch.compStore.del(entityIndex.archetypeIndex)
     let existing = deleted.components
