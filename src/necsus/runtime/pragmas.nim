@@ -11,6 +11,9 @@ template teardownSys*() {.pragma.}
 template loopSys*() {.pragma.}
     ## Marks that a system should always be added as part of the standard loop
 
+template saveSys*() {.pragma.}
+    ## Marks that a proc generates a saved value
+
 template instanced*() {.pragma.}
     ## Indicates that a system proc should be used as an initializer to create
     ## an instance of a system. During the primary loop, the `tick` proc is

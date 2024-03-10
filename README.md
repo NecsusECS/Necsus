@@ -144,6 +144,11 @@ Within the lifecycle of an app, there are three phases in which a system can be 
 3. Teardown: The system is executed once after the loop exits. Systems opt in to this phase by adding the
    `teardownSys` pragma.
 
+There are also callback systems that are only invoked when a specific situation is engaged:
+
+1. Save callback: The system is executed anytime the 'Save' directive is invoked. Systems opt in to this phase
+   by adding the `saveSys` pragma. For these systems, the return type of the system is used as the value being
+   saved. More on this below.
 
 ```nim
 import necsus
@@ -157,7 +162,10 @@ proc loopSystem() {.loopSys.} =
 proc teardownSystem() {.teardownSys.} =
     discard
 
-proc myApp(input: string) {.necsus([~startupSystem, ~loopSystem, ~teardownSystem], newNecsusConf()).}
+proc savingSystem(): string {.saveSys.} =
+    "Value to save"
+
+proc myApp(input: string) {.necsus([~startupSystem, ~loopSystem, ~teardownSystem, ~savingSystem], newNecsusConf()).}
 ```
 
 ### Directives
@@ -471,6 +479,34 @@ proc useBundle(bundle: Bundle[MyBundle]) =
 
 proc myApp() {.necsus([~useBundle], newNecsusConf()).}
 ```
+
+#### Save
+
+The `Save` directive is a `proc` that performs the following actions:
+
+1. Invokes all the systems tagged with the `saveSys` pragma
+2. Serializes the results as a JSON object, where the names of the keys are the names of the _types_ returned
+   from the save systems
+3. Returns the serialized JSON string
+
+```nim
+import necsus
+
+type MyStrings = seq[string]
+
+proc saveValues(): MyStrings {.saveSys.} =
+    @[ "a", "b", "c" ]
+
+proc doSave(save: Save) =
+    echo save()
+    # The above statement prints: { "MyStrings": [ "a", "b", "c" ] }
+
+proc myApp() {.necsus([~saveValues, ~doSave], newNecsusConf()).}
+```
+
+The benefit of using the `Save` pragma is that it lets you separate your logic for _what_ needs to be serialized from
+your logic that defines _how_ to serialize. You can scatter your `saveSys` systems throughout your project so they
+are colocated with the other systems they are associated with.
 
 #### TickId
 

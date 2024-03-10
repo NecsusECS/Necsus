@@ -40,5 +40,8 @@ type
     Bundle*[T] = ptr T
         ## A group of directives bundled together in an object
 
+    Save* = proc(): string {.gcsafe, raises: [IOError, OSError, ValueError].}
+        ## Generates a saved game state as a json value
+
     SystemInstance* = proc(): void {.closure.}
         ## A callback used to invoke a specific system

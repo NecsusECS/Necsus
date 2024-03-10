@@ -2,10 +2,10 @@ import macros, sequtils, strformat, options, typeReader, strutils
 import componentDef, tupleDirective, monoDirective, systemGen
 import ../runtime/[pragmas, directives]
 import spawnGen, queryGen, deleteGen, attachDetachGen, sharedGen, tickIdGen
-import localGen, lookupGen, eventGen, timeGen, debugGen, bundleGen
+import localGen, lookupGen, eventGen, timeGen, debugGen, bundleGen, saveGen
 
 type
-    SystemPhase* = enum StartupPhase, LoopPhase, TeardownPhase
+    SystemPhase* = enum StartupPhase, LoopPhase, TeardownPhase, SaveCallback
         ## When a system should be executed
 
     ActiveCheck* = ref object
@@ -21,6 +21,7 @@ type
         depends: seq[NimNode]
         instanced*: Option[NimNode]
         checks*: seq[ActiveCheck]
+        returns*: NimNode
 
     ParsedApp* = ref object
         ## Parsed information about the application proc itself
@@ -66,6 +67,7 @@ proc parseArgKind(symbol: NimNode): Option[DirectiveGen] =
     of "Bundle": return some(bundleGenerator)
     of "Delete": return some(deleteGenerator)
     of "TickId": return some(tickIdGenerator)
+    of "Save": return some(saveGenerator)
     else: return none(DirectiveGen)
 
 proc parseDirectiveArg(symbol: NimNode, isPointer: bool = false, kind: DirectiveArgKind = Include): DirectiveArg =
@@ -230,6 +232,7 @@ proc choosePhase(typeNode: NimNode): SystemPhase =
     let startupPragma = bindSym("startupSys")
     let loopSysPragma = bindSym("loopSys")
     let teardownSysPragma = bindSym("teardownSys")
+    let saveSysPragma = bindSym("saveSys")
 
     for child in typeNode.findPragma:
         if child.kind == nnkSym:
@@ -239,6 +242,8 @@ proc choosePhase(typeNode: NimNode): SystemPhase =
                 return LoopPhase
             elif teardownSysPragma == child:
                 return TeardownPhase
+            elif saveSysPragma == child:
+                return SaveCallback
     return LoopPhase
 
 proc determineInstancing(nodeImpl: NimNode, nodeTypeImpl: NimNode): Option[NimNode] =
@@ -283,6 +288,7 @@ proc parseSystemDef*(ident: NimNode, impl: NimNode): ParsedSystem =
         depends: impl.readDependencies(),
         instanced: determineInstancing(impl, typeImpl),
         checks: parseActiveChecks(ident, impl),
+        returns: argSource[0]
     )
 
 proc parseSystem(ident: NimNode): ParsedSystem =
