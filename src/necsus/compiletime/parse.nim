@@ -2,10 +2,10 @@ import macros, sequtils, strformat, options, typeReader, strutils
 import componentDef, tupleDirective, monoDirective, systemGen
 import ../runtime/[pragmas, directives]
 import spawnGen, queryGen, deleteGen, attachDetachGen, sharedGen, tickIdGen
-import localGen, lookupGen, eventGen, timeGen, debugGen, bundleGen, saveGen
+import localGen, lookupGen, eventGen, timeGen, debugGen, bundleGen, saveGen, restoreGen
 
 type
-    SystemPhase* = enum StartupPhase, LoopPhase, TeardownPhase, SaveCallback
+    SystemPhase* = enum StartupPhase, LoopPhase, TeardownPhase, SaveCallback, RestoreCallback
         ## When a system should be executed
 
     ActiveCheck* = ref object
@@ -17,6 +17,7 @@ type
         ## Parsed information about a system proc
         phase*: SystemPhase
         symbol*: NimNode
+        prefixArgs*: seq[NimNode]
         args*: seq[SystemArg]
         depends: seq[NimNode]
         instanced*: Option[NimNode]
@@ -68,6 +69,7 @@ proc parseArgKind(symbol: NimNode): Option[DirectiveGen] =
     of "Delete": return some(deleteGenerator)
     of "TickId": return some(tickIdGenerator)
     of "Save": return some(saveGenerator)
+    of "Restore": return some(restoreGenerator)
     else: return none(DirectiveGen)
 
 proc parseDirectiveArg(symbol: NimNode, isPointer: bool = false, kind: DirectiveArgKind = Include): DirectiveArg =
@@ -233,6 +235,7 @@ proc choosePhase(typeNode: NimNode): SystemPhase =
     let loopSysPragma = bindSym("loopSys")
     let teardownSysPragma = bindSym("teardownSys")
     let saveSysPragma = bindSym("saveSys")
+    let restoreSysPragma = bindSym("restoreSys")
 
     for child in typeNode.findPragma:
         if child.kind == nnkSym:
@@ -244,6 +247,8 @@ proc choosePhase(typeNode: NimNode): SystemPhase =
                 return TeardownPhase
             elif saveSysPragma == child:
                 return SaveCallback
+            elif restoreSysPragma == child:
+                return RestoreCallback
     return LoopPhase
 
 proc determineInstancing(nodeImpl: NimNode, nodeTypeImpl: NimNode): Option[NimNode] =
@@ -277,14 +282,22 @@ proc parseSystemDef*(ident: NimNode, impl: NimNode): ParsedSystem =
         of nnkProcDef, nnkLambda: impl.params
         else: typeImpl[0]
 
-    let args = argSource.toSeq
-        .filterIt(it.kind == nnkIdentDefs)
-        .mapIt(parseSystemArg(ident, it))
+    var args = argSource.toSeq.filterIt(it.kind == nnkIdentDefs)
+    let phase = impl.choosePhase()
+
+    let prefixArgs: seq[NimNode] = case phase
+        of RestoreCallback:
+            let first = args[0]
+            args = args[1..^1]
+            @[ first ]
+        of StartupPhase, LoopPhase, TeardownPhase, SaveCallback:
+            newSeq[NimNode]()
 
     return ParsedSystem(
-        phase: impl.choosePhase(),
+        phase: phase,
         symbol: ident,
-        args: args,
+        prefixArgs: prefixArgs,
+        args: args.mapIt(parseSystemArg(ident, it)),
         depends: impl.readDependencies(),
         instanced: determineInstancing(impl, typeImpl),
         checks: parseActiveChecks(ident, impl),

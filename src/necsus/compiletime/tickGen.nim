@@ -20,7 +20,7 @@ proc callInstanced(codeGenInfo: CodeGenInfo, system: ParsedSystem, phase: System
     of TeardownPhase:
         let destroy = ident("=destroy")
         return quote: `appStateIdent`.`fieldName`.`destroy`()
-    of SaveCallback:
+    of SaveCallback, RestoreCallback:
         return newEmptyNode()
 
 proc addActiveChecks(
@@ -61,11 +61,19 @@ proc logSystemCall(system: ParsedSystem, prefix: string): NimNode =
     else:
         return newEmptyNode()
 
-proc invokeSystem*(codeGenInfo: CodeGenInfo, system: ParsedSystem, phase: SystemPhase): NimNode =
+proc invokeSystem*(
+    codeGenInfo: CodeGenInfo,
+    system: ParsedSystem,
+    phase: SystemPhase,
+    prefixArgs: openArray[NimNode] = []
+): NimNode =
     ## Generates the code needed call a single system
-    return if system.instanced.isSome: codeGenInfo.callInstanced(system, phase)
-    elif system.phase == phase: newCall(system.symbol, codeGenInfo.renderSystemArgs(system.args))
-    else: newEmptyNode()
+    return if system.instanced.isSome:
+        codeGenInfo.callInstanced(system, phase)
+    elif system.phase == phase:
+        newCall(system.symbol, concat(prefixArgs.toSeq, codeGenInfo.renderSystemArgs(system.args)))
+    else:
+        newEmptyNode()
 
 proc callSystems*(codeGenInfo: CodeGenInfo, phase: SystemPhase): NimNode =
     ## Generates the code for invoke a list of systems

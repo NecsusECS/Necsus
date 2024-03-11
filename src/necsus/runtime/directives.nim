@@ -1,4 +1,4 @@
-import entityId, options
+import entityId, options, std/json
 
 when defined(necsusFloat32):
     type Nfloat* = float32
@@ -42,6 +42,9 @@ type
 
     Save* = proc(): string {.gcsafe, raises: [IOError, OSError, ValueError].}
         ## Generates a saved game state as a json value
+
+    Restore* = proc(json: string) {.gcsafe, raises: [IOError, OSError, JsonParsingError, ValueError, Exception].}
+        ## Executes all 'restore' systems using the given json as input data
 
     SystemInstance* = proc(): void {.closure.}
         ## A callback used to invoke a specific system

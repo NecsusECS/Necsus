@@ -149,6 +149,9 @@ There are also callback systems that are only invoked when a specific situation 
 1. Save callback: The system is executed anytime the 'Save' directive is invoked. Systems opt in to this phase
    by adding the `saveSys` pragma. For these systems, the return type of the system is used as the value being
    saved. More on this below.
+2. Restore callback: The system is executed anytime the `Restore` directive is invoked. Systems opt in to this phase
+   with the `restoreSys` pragma. It is expected that the first parameter of these systems is not a directive, but is
+   instead the value being decoded.
 
 ```nim
 import necsus
@@ -165,7 +168,16 @@ proc teardownSystem() {.teardownSys.} =
 proc savingSystem(): string {.saveSys.} =
     "Value to save"
 
-proc myApp(input: string) {.necsus([~startupSystem, ~loopSystem, ~teardownSystem, ~savingSystem], newNecsusConf()).}
+proc restoringSystem(value: string) {.restoreSys.} =
+    echo "Restored value: ", value
+
+proc myApp(input: string) {.necsus([
+    ~startupSystem,
+    ~loopSystem,
+    ~teardownSystem,
+    ~savingSystem,
+    ~restoringSystem,
+], newNecsusConf()).}
 ```
 
 ### Directives
@@ -507,6 +519,28 @@ proc myApp() {.necsus([~saveValues, ~doSave], newNecsusConf()).}
 The benefit of using the `Save` pragma is that it lets you separate your logic for _what_ needs to be serialized from
 your logic that defines _how_ to serialize. You can scatter your `saveSys` systems throughout your project so they
 are colocated with the other systems they are associated with.
+
+#### Restore
+
+The `Restore` directive is the opposite of `Save`. It accepts a json blob, deserializes it, then invokes any systems
+marked with `restoreSys`. The key names of the JSON are expected to be the type names that get passed in to the
+`restoreSys` systems.
+
+```nim
+import necsus
+
+type MyStrings = seq[string]
+
+proc restoreValues(values: MyStrings, spawn: Spawn[(string, )]) {.restoreSys.} =
+    ## Called with decoded values with the `Restore` directive is used
+    for value in values:
+        spawn.with(value)
+
+proc doRestore(restore: Restore) =
+    restore("""{ "MyStrings": [ "a", "b", "c" ] }""")
+
+proc myApp() {.necsus([~restoreValues, ~doRestore], newNecsusConf()).}
+```
 
 #### TickId
 
