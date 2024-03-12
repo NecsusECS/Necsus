@@ -16,7 +16,7 @@ proc save2(): SaveMe2 {.saveSys.} =
     return 5
 
 proc doSave(save: Save) =
-    check(save() == """{"SaveMe1": ["bar", "baz", "foo"], "SaveMe2": 5}""")
+    check(save.toString == """{"SaveMe1": ["bar", "baz", "foo"], "SaveMe2": 5}""")
 
 proc runner(tick: proc(): void) =
     tick()

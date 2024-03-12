@@ -2,12 +2,12 @@ import macros, codeGenInfo, commonVars, parse, tickGen, std/[sequtils, marshal, 
 
 proc saveTypeName(genInfo: CodeGenInfo): NimNode = ident(genInfo.app.name & "Marshal")
 
-proc createSaveType(genInfo: CodeGenInfo, saves: openArray[ParsedSystem]): NimNode =
+proc createSaveType(genInfo: CodeGenInfo): NimNode =
     ## Generates the type definition needed to serialize an app
     var records = nnkRecList.newTree()
 
     var seen = initTable[string, NimNode]()
-    for system in saves:
+    for system in genInfo.systems.filterIt(it.phase == SaveCallback):
         if system.returns.strVal in seen:
             hint("Conflicting save system definition", seen[system.returns.strVal])
             error(
@@ -33,7 +33,6 @@ proc createSaveType(genInfo: CodeGenInfo, saves: openArray[ParsedSystem]): NimNo
     )
 
 let streamIdent {.compileTime.} = "stream".ident
-let jsonIdent {.compileTime.} = "json".ident
 let decoded {.compileTime.} = "decoded".ident
 
 proc createRestoreProc(genInfo: CodeGenInfo): NimNode =
@@ -52,8 +51,7 @@ proc createRestoreProc(genInfo: CodeGenInfo): NimNode =
             invocations.add(genInfo.invokeSystem(restore, RestoreCallback, [ readProp ]))
 
     return quote:
-
-        proc restoreFrom*(
+        proc restore*(
             `appStateIdent`: var `appStateType`,
             `streamIdent`: var Stream
         ) {.gcsafe, raises: [IOError, OSError, JsonParsingError, ValueError, Exception].} =
@@ -61,41 +59,21 @@ proc createRestoreProc(genInfo: CodeGenInfo): NimNode =
             load(`streamIdent`, `decoded`)
             `invocations`
 
-        proc restore*(
-            `appStateIdent`: var `appStateType`,
-            `jsonIdent`: string
-        ) {.used, gcsafe, raises: [IOError, OSError, JsonParsingError, ValueError, Exception].} =
-            var `streamIdent`: Stream = newStringStream(`jsonIdent`)
-            restoreFrom(`appStateIdent`, `streamIdent`)
-
 proc createSaveProc(genInfo: CodeGenInfo): NimNode =
     ## Generates a proc that calls all the 'save' systems and aggregates them into a single value
     let appStateType = genInfo.appStateTypeName
 
-    let saves = genInfo.systems.filterIt(it.phase == SaveCallback)
-    let saveType = genInfo.createSaveType(saves)
-
     var construct = nnkObjConstr.newTree(genInfo.saveTypeName)
-    for system in saves:
+    for system in genInfo.systems.filterIt(it.phase == SaveCallback):
         construct.add(nnkExprColonExpr.newTree(system.returns.strVal.ident, genInfo.invokeSystem(system, SaveCallback)))
 
     return quote:
-        `saveType`
-
-        proc saveTo*(
+        proc save*(
             `appStateIdent`: var `appStateType`,
             `streamIdent`: var Stream
         ) {.gcsafe, raises: [IOError, OSError, ValueError].} =
             store(`streamIdent`, `construct`)
 
-        proc save*(
-            `appStateIdent`: var `appStateType`
-        ): string {.used, gcsafe, raises: [IOError, OSError, ValueError].} =
-            var `streamIdent`: Stream = newStringStream("")
-            saveTo(`appStateIdent`, `streamIdent`)
-            `streamIdent`.setPosition(0)
-            return `streamIdent`.readAll()
-
 proc createMarshalProcs*(genInfo: CodeGenInfo): NimNode =
     ## Generates procs needed for saving and restoring game state
-    return newStmtList(createSaveProc(genInfo), createRestoreProc(genInfo))
+    return newStmtList(createSaveType(genInfo), createSaveProc(genInfo), createRestoreProc(genInfo))

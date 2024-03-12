@@ -499,7 +499,7 @@ The `Save` directive is a `proc` that performs the following actions:
 1. Invokes all the systems tagged with the `saveSys` pragma
 2. Serializes the results as a JSON object, where the names of the keys are the names of the _types_ returned
    from the save systems
-3. Returns the serialized JSON string
+3. Writes the serialized JSON to a stream
 
 ```nim
 import necsus
@@ -510,7 +510,7 @@ proc saveValues(): MyStrings {.saveSys.} =
     @[ "a", "b", "c" ]
 
 proc doSave(save: Save) =
-    echo save()
+    echo save.toString()
     # The above statement prints: { "MyStrings": [ "a", "b", "c" ] }
 
 proc myApp() {.necsus([~saveValues, ~doSave], newNecsusConf()).}
@@ -522,7 +522,7 @@ are colocated with the other systems they are associated with.
 
 #### Restore
 
-The `Restore` directive is the opposite of `Save`. It accepts a json blob, deserializes it, then invokes any systems
+The `Restore` directive is the opposite of `Save`. It accepts a json stream, deserializes it, then invokes any systems
 marked with `restoreSys`. The key names of the JSON are expected to be the type names that get passed in to the
 `restoreSys` systems.
 
@@ -537,7 +537,7 @@ proc restoreValues(values: MyStrings, spawn: Spawn[(string, )]) {.restoreSys.} =
         spawn.with(value)
 
 proc doRestore(restore: Restore) =
-    restore("""{ "MyStrings": [ "a", "b", "c" ] }""")
+    restore.fromString("""{ "MyStrings": [ "a", "b", "c" ] }""")
 
 proc myApp() {.necsus([~restoreValues, ~doRestore], newNecsusConf()).}
 ```

@@ -63,7 +63,7 @@ proc buildApp(
     )
 
     when defined(dump):
-        echo "import necsus/runtime/[world, archetypeStore], std/math, necsus/util/profile"
+        echo "import necsus/runtime/[world, archetypeStore], std/[math, streams, marshal, json], necsus/util/profile"
         echo "const DEFAULT_ENTITY_COUNT = 1_000"
         echo replace(result.repr, "proc =destroy", "proc `=destroy`")
 

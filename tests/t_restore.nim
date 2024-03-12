@@ -16,7 +16,7 @@ proc restore2(value: RestoreMe2, shared: Shared[int]) {.restoreSys.} =
     shared := value
 
 proc doRestore(restore: Restore, strings: Query[(string, )], shared: Shared[int]) =
-    restore("""{"RestoreMe1": ["bar", "baz", "foo"], "RestoreMe2": 5}""")
+    restore.fromString("""{"RestoreMe1": ["bar", "baz", "foo"], "RestoreMe2": 5}""")
     check(strings.toSeq.mapIt(it[0]) == ["bar", "baz", "foo"])
     check(shared.getOrRaise == 5)
 
