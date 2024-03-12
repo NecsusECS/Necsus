@@ -1,0 +1,1 @@
+createMarshalProcs	necsus/compiletime/marshalGen.html#createMarshalProcs,CodeGenInfo	marshalGen: createMarshalProcs(genInfo: CodeGenInfo): NimNode	

@@ -108,29 +108,51 @@ window.addEventListener('DOMContentLoaded', main);
   <a class="reference reference-toplevel" href="#7" id="57">Types</a>
   <ul class="simple simple-toc-section">
       <li><a class="reference" href="#Attach"
-    title="Attach[C] = proc (entityId: EntityId; components: C)">Attach</a></li>
+    title="Attach[C] = proc (entityId: EntityId; components: C) {.gcsafe, raises: [].}">Attach</a></li>
   <li><a class="reference" href="#Bundle"
     title="Bundle[T] = ptr T">Bundle</a></li>
   <li><a class="reference" href="#Delete"
-    title="Delete = proc (entityId: EntityId)">Delete</a></li>
+    title="Delete = proc (entityId: EntityId) {.gcsafe, raises: [].}">Delete</a></li>
   <li><a class="reference" href="#Detach"
-    title="Detach[C] = proc (entityId: EntityId)">Detach</a></li>
+    title="Detach[C] = proc (entityId: EntityId) {.gcsafe, raises: [].}">Detach</a></li>
   <li><a class="reference" href="#EntityDebug"
-    title="EntityDebug = proc (entityId: EntityId): string">EntityDebug</a></li>
+    title="EntityDebug = proc (entityId: EntityId): string {.gcsafe, raises: [].}">EntityDebug</a></li>
   <li><a class="reference" href="#Lookup"
-    title="Lookup[C] = proc (entityId: EntityId): Option[C]">Lookup</a></li>
+    title="Lookup[C] = proc (entityId: EntityId): Option[C] {.gcsafe, raises: [].}">Lookup</a></li>
   <li><a class="reference" href="#Nfloat"
     title="Nfloat = float">Nfloat</a></li>
   <li><a class="reference" href="#Outbox"
-    title="Outbox[T] = proc (message: sink T): void">Outbox</a></li>
+    title="Outbox[T] = proc (message: sink T): void {.gcsafe, raises: [].}">Outbox</a></li>
+  <li><a class="reference" href="#Restore"
+    title="Restore = proc (source: var Stream) {.gcsafe, raises: [IOError, OSError,
+    JsonParsingError, ValueError, Exception].}">Restore</a></li>
+  <li><a class="reference" href="#Save"
+    title="Save = proc (to: var Stream): void {.raises: [IOError, OSError, ValueError,
+    Exception].}">Save</a></li>
   <li><a class="reference" href="#SystemInstance"
-    title="SystemInstance = proc (): void">SystemInstance</a></li>
+    title="SystemInstance = proc (): void {.closure.}">SystemInstance</a></li>
   <li><a class="reference" href="#TickId"
-    title="TickId = proc (): uint32">TickId</a></li>
+    title="TickId = proc (): uint32 {.gcsafe, raises: [].}">TickId</a></li>
   <li><a class="reference" href="#TimeDelta"
-    title="TimeDelta = proc (): Nfloat">TimeDelta</a></li>
+    title="TimeDelta = proc (): Nfloat {.gcsafe, raises: [].}">TimeDelta</a></li>
   <li><a class="reference" href="#TimeElapsed"
-    title="TimeElapsed = proc (): Nfloat">TimeElapsed</a></li>
+    title="TimeElapsed = proc (): Nfloat {.gcsafe, raises: [].}">TimeElapsed</a></li>
+
+  </ul>
+</li>
+<li>
+  <a class="reference reference-toplevel" href="#12" id="62">Procs</a>
+  <ul class="simple simple-toc-section">
+      <ul class="simple nested-toc-section">fromString
+      <li><a class="reference" href="#fromString%2CRestore%2Cstring"
+    title="fromString(restore: Restore; source: string)">fromString(restore: Restore; source: string)</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">toString
+      <li><a class="reference" href="#toString%2CSave"
+    title="toString(save: Save): string">toString(save: Save): string</a></li>
+
+  </ul>
 
   </ul>
 </li>
@@ -152,7 +174,7 @@ window.addEventListener('DOMContentLoaded', main);
 <h1><a class="toc-backref" href="#7">Types</a></h1>
 <dl class="item">
 <div id="Attach">
-<dt><pre><a href="directives.html#Attach"><span class="Identifier">Attach</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">entityId</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">;</span> <span class="Identifier">components</span><span class="Other">:</span> <span class="Identifier">C</span><span class="Other">)</span></pre></dt>
+<dt><pre><a href="directives.html#Attach"><span class="Identifier">Attach</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">entityId</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">;</span> <span class="Identifier">components</span><span class="Other">:</span> <span class="Identifier">C</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 Describes a type that is able to update existing entities new entities. Where <tt class="docutils literal"><span class="pre"><span class="Identifier">C</span></span></tt> is a tuple with all the components to attach.
@@ -168,7 +190,7 @@ A group of directives bundled together in an object
 </dd>
 </div>
 <div id="Delete">
-<dt><pre><a href="directives.html#Delete"><span class="Identifier">Delete</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">entityId</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span></pre></dt>
+<dt><pre><a href="directives.html#Delete"><span class="Identifier">Delete</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">entityId</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 Deletes an entity and all associated components
@@ -176,7 +198,7 @@ Deletes an entity and all associated components
 </dd>
 </div>
 <div id="Detach">
-<dt><pre><a href="directives.html#Detach"><span class="Identifier">Detach</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">entityId</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span></pre></dt>
+<dt><pre><a href="directives.html#Detach"><span class="Identifier">Detach</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">entityId</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 Detaches a set of components from an entity. Where <tt class="docutils literal"><span class="pre"><span class="Identifier">C</span></span></tt> is a tuple describing all the components to detach
@@ -184,7 +206,7 @@ Detaches a set of components from an entity. Where <tt class="docutils literal">
 </dd>
 </div>
 <div id="EntityDebug">
-<dt><pre><a href="directives.html#EntityDebug"><span class="Identifier">EntityDebug</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">entityId</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span></pre></dt>
+<dt><pre><a href="directives.html#EntityDebug"><span class="Identifier">EntityDebug</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">entityId</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 Looks up an entity and returns debug data about it
@@ -192,7 +214,7 @@ Looks up an entity and returns debug data about it
 </dd>
 </div>
 <div id="Lookup">
-<dt><pre><a href="directives.html#Lookup"><span class="Identifier">Lookup</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">entityId</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Option</span><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span></pre></dt>
+<dt><pre><a href="directives.html#Lookup"><span class="Identifier">Lookup</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">entityId</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Option</span><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 Looks up entity details based on its entity ID. Where <tt class="docutils literal"><span class="pre"><span class="Identifier">C</span></span></tt> is a tuple with all the components to fetch
@@ -208,15 +230,33 @@ Looks up entity details based on its entity ID. Where <tt class="docutils litera
 </dd>
 </div>
 <div id="Outbox">
-<dt><pre><a href="directives.html#Outbox"><span class="Identifier">Outbox</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">message</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">T</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">void</span></pre></dt>
+<dt><pre><a href="directives.html#Outbox"><span class="Identifier">Outbox</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">message</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">T</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">void</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 Sends an event. Where <tt class="docutils literal"><span class="pre"><span class="Identifier">T</span></span></tt> is the message being sent
 
 </dd>
 </div>
+<div id="Restore">
+<dt><pre><a href="directives.html#Restore"><span class="Identifier">Restore</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">source</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">Stream</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">IOError</span><span class="Other">,</span> <span class="Identifier">OSError</span><span class="Other">,</span>
+    <span class="Identifier">JsonParsingError</span><span class="Other">,</span> <span class="Identifier">ValueError</span><span class="Other">,</span> <span class="Identifier">Exception</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+Executes all 'restore' systems using the given json as input data
+
+</dd>
+</div>
+<div id="Save">
+<dt><pre><a href="directives.html#Save"><span class="Identifier">Save</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">to</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">Stream</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">void</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">IOError</span><span class="Other">,</span> <span class="Identifier">OSError</span><span class="Other">,</span> <span class="Identifier">ValueError</span><span class="Other">,</span>
+    <span class="Identifier">Exception</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+Generates a saved game state as a json value
+
+</dd>
+</div>
 <div id="SystemInstance">
-<dt><pre><a href="directives.html#SystemInstance"><span class="Identifier">SystemInstance</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">void</span></pre></dt>
+<dt><pre><a href="directives.html#SystemInstance"><span class="Identifier">SystemInstance</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">void</span> {.<span class="Identifier">closure</span>.}</pre></dt>
 <dd>
 
 A callback used to invoke a specific system
@@ -224,7 +264,7 @@ A callback used to invoke a specific system
 </dd>
 </div>
 <div id="TickId">
-<dt><pre><a href="directives.html#TickId"><span class="Identifier">TickId</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">uint32</span></pre></dt>
+<dt><pre><a href="directives.html#TickId"><span class="Identifier">TickId</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">uint32</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 An auto-incrementing ID for each tick
@@ -232,7 +272,7 @@ An auto-incrementing ID for each tick
 </dd>
 </div>
 <div id="TimeDelta">
-<dt><pre><a href="directives.html#TimeDelta"><span class="Identifier">TimeDelta</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <a href="directives.html#Nfloat"><span class="Identifier">Nfloat</span></a></pre></dt>
+<dt><pre><a href="directives.html#TimeDelta"><span class="Identifier">TimeDelta</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <a href="directives.html#Nfloat"><span class="Identifier">Nfloat</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 Tracks the amount of time since the last execution of a system
@@ -240,10 +280,33 @@ Tracks the amount of time since the last execution of a system
 </dd>
 </div>
 <div id="TimeElapsed">
-<dt><pre><a href="directives.html#TimeElapsed"><span class="Identifier">TimeElapsed</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <a href="directives.html#Nfloat"><span class="Identifier">Nfloat</span></a></pre></dt>
+<dt><pre><a href="directives.html#TimeElapsed"><span class="Identifier">TimeElapsed</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <a href="directives.html#Nfloat"><span class="Identifier">Nfloat</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 The total amount of time spent in an app
+
+</dd>
+</div>
+
+</dl></div>
+<div class="section" id="12">
+<h1><a class="toc-backref" href="#12">Procs</a></h1>
+<dl class="item">
+<div id="fromString,Restore,string">
+<dt><pre><span class="Keyword">proc</span> <a href="#fromString%2CRestore%2Cstring"><span class="Identifier">fromString</span></a><span class="Other">(</span><span class="Identifier">restore</span><span class="Other">:</span> <a href="directives.html#Restore"><span class="Identifier">Restore</span></a><span class="Other">;</span> <span class="Identifier">source</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span>
+    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">IOError</span><span class="Other">,</span> <span class="Identifier">OSError</span><span class="Other">,</span> <span class="Identifier">ValueError</span><span class="Other">,</span> <span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+Executes a 'restore' operation using a string as input
+
+</dd>
+</div>
+<div id="toString,Save">
+<dt><pre><span class="Keyword">proc</span> <a href="#toString%2CSave"><span class="Identifier">toString</span></a><span class="Other">(</span><span class="Identifier">save</span><span class="Other">:</span> <a href="directives.html#Save"><span class="Identifier">Save</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">IOError</span><span class="Other">,</span> <span class="Identifier">OSError</span><span class="Other">,</span> <span class="Identifier">ValueError</span><span class="Other">,</span>
+    <span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">,</span> <span class="Identifier">ReadIOEffect</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+Executes a 'save' operation and converts it to a string
 
 </dd>
 </div>
@@ -257,7 +320,7 @@ The total amount of time spent in an app
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-02-25 23:59:51 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-03-12 04:29:36 UTC</small>
       </div>
     </div>
   </div>

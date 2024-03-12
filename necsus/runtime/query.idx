@@ -5,7 +5,7 @@ Query	necsus/runtime/query.html#Query	query: Query
 FullQuery	necsus/runtime/query.html#FullQuery	query: FullQuery	
 AnyQuery	necsus/runtime/query.html#AnyQuery	query: AnyQuery	
 Not	necsus/runtime/query.html#Not	query: Not	
-newQuery	necsus/runtime/query.html#newQuery,proc),proc)	query: newQuery[Comps: tuple](getLen: proc (): uint;\n                       getIterator: proc (): QueryIterator[Comps]): RawQuery[\n    Comps]	
+newQuery	necsus/runtime/query.html#newQuery,proc),proc)	query: newQuery[Comps: tuple](getLen: proc (): uint {.gcsafe, raises: [].}; getIterator: proc (): QueryIterator[\n    Comps] {.gcsafe, raises: [].}): RawQuery[Comps]	
 pairs	necsus/runtime/query.html#pairs.i,FullQuery[Comps: tuple]	query: pairs[Comps: tuple](query: FullQuery[Comps]): QueryItem[Comps]	
 items	necsus/runtime/query.html#items.i,AnyQuery[Comps: tuple]	query: items[Comps: tuple](query: AnyQuery[Comps]): Comps	
 len	necsus/runtime/query.html#len,AnyQuery[Comps: tuple]	query: len[Comps: tuple](query: AnyQuery[Comps]): uint	

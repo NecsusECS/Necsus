@@ -199,7 +199,8 @@ Describes a type that is able to create new entities. Where <tt class="docutils 
 <dl class="item">
 <div id="beginSpawn,World[Archs: enum],ArchetypeStore[Archs: enum,Comps: tuple]">
 <dt><pre><span class="Keyword">proc</span> <a href="#beginSpawn%2CWorld%5BArchs%3A%20enum%5D%2CArchetypeStore%5BArchs%3A%20enum%2CComps%3A%20tuple%5D"><span class="Identifier">beginSpawn</span></a><span class="Other">[</span><span class="Identifier">Archs</span><span class="Other">:</span> <span class="Keyword">enum</span><span class="Other">;</span> <span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">[</span><span class="Identifier">Archs</span><span class="Other">]</span><span class="Other">;</span>
-    <span class="Identifier">store</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">Archs</span><span class="Other">,</span> <span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="archetypeStore.html#NewArchSlot"><span class="Identifier">NewArchSlot</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span> {.<span class="Identifier">inline</span>.}</pre></dt>
+    <span class="Identifier">store</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">Archs</span><span class="Other">,</span> <span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="archetypeStore.html#NewArchSlot"><span class="Identifier">NewArchSlot</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span> {.<span class="Identifier">inline</span><span class="Other">,</span>
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 Spawns an entity in this archetype
@@ -215,7 +216,7 @@ Spawns an entity with the given components
 </dd>
 </div>
 <div id="set,Spawn[C: tuple],sinkC">
-<dt><pre><span class="Keyword">proc</span> <a href="#set%2CSpawn%5BC%3A%20tuple%5D%2CsinkC"><span class="Identifier">set</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">spawn</span><span class="Other">:</span> <a href="spawn.html#Spawn"><span class="Identifier">Spawn</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">values</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">C</span><span class="Other">)</span> {.<span class="Identifier">inline</span>.}</pre></dt>
+<dt><pre><span class="Keyword">func</span> <a href="#set%2CSpawn%5BC%3A%20tuple%5D%2CsinkC"><span class="Identifier">set</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">spawn</span><span class="Other">:</span> <a href="spawn.html#Spawn"><span class="Identifier">Spawn</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">values</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">C</span><span class="Other">)</span> {.<span class="Identifier">inline</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 Spawns an entity with the given components
@@ -253,7 +254,7 @@ spawns the given values
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-02-25 23:59:51 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-03-12 04:29:36 UTC</small>
       </div>
     </div>
   </div>

@@ -157,11 +157,11 @@ window.addEventListener('DOMContentLoaded', main);
     entityIndex: ptr EntityIndex[Archs];
     fromArch: var ArchetypeStore[Archs, FromArch];
     toArch: var ArchetypeStore[Archs, ToArch];
-    convert: proc (input: sink FromArch): ToArch)">moveEntity[Archs: enum; FromArch: tuple; ToArch: tuple](world: var World[Archs];
+    convert: proc (input: sink FromArch): ToArch {.gcsafe, raises: [].})">moveEntity[Archs: enum; FromArch: tuple; ToArch: tuple](world: var World[Archs];
     entityIndex: ptr EntityIndex[Archs];
     fromArch: var ArchetypeStore[Archs, FromArch];
     toArch: var ArchetypeStore[Archs, ToArch];
-    convert: proc (input: sink FromArch): ToArch)</a></li>
+    convert: proc (input: sink FromArch): ToArch {.gcsafe, raises: [].})</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">newArchetypeStore
@@ -300,7 +300,8 @@ Accessor for the archetype of a store
     <span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">[</span><span class="Identifier">Archs</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">entityIndex</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="world.html#EntityIndex"><span class="Identifier">EntityIndex</span></a><span class="Other">[</span><span class="Identifier">Archs</span><span class="Other">]</span><span class="Other">;</span>
     <span class="Identifier">fromArch</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">Archs</span><span class="Other">,</span> <span class="Identifier">FromArch</span><span class="Other">]</span><span class="Other">;</span>
     <span class="Identifier">toArch</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">Archs</span><span class="Other">,</span> <span class="Identifier">ToArch</span><span class="Other">]</span><span class="Other">;</span>
-    <span class="Identifier">convert</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">input</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">FromArch</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">ToArch</span><span class="Other">)</span> {.<span class="Identifier">inline</span>.}</pre></dt>
+    <span class="Identifier">convert</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">input</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">FromArch</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">ToArch</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}<span class="Other">)</span> {.
+    <span class="Identifier">inline</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 Moves the components for an entity from one archetype to another
@@ -359,7 +360,7 @@ Iterates over the components in a view
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-02-25 23:59:51 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-03-12 04:29:36 UTC</small>
       </div>
     </div>
   </div>

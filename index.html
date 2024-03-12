@@ -132,6 +132,15 @@ explicit by adding the <code>loopSys</code> pragma to them.</li>
 <li>Teardown: The system is executed once after the loop exits. Systems opt in to this phase by adding the
 <code>teardownSys</code> pragma.</li>
 </ol>
+<p>There are also callback systems that are only invoked when a specific situation is engaged:</p>
+<ol>
+<li>Save callback: The system is executed anytime the 'Save' directive is invoked. Systems opt in to this phase
+by adding the <code>saveSys</code> pragma. For these systems, the return type of the system is used as the value being
+saved. More on this below.</li>
+<li>Restore callback: The system is executed anytime the <code>Restore</code> directive is invoked. Systems opt in to this phase
+with the <code>restoreSys</code> pragma. It is expected that the first parameter of these systems is not a directive, but is
+instead the value being decoded.</li>
+</ol>
 <pre><code class="language-nim">import necsus
 
 proc startupSystem() {.startupSys.} =
@@ -143,7 +152,19 @@ proc loopSystem() {.loopSys.} =
 proc teardownSystem() {.teardownSys.} =
     discard
 
-proc myApp(input: string) {.necsus([~startupSystem, ~loopSystem, ~teardownSystem], newNecsusConf()).}
+proc savingSystem(): string {.saveSys.} =
+    &quot;Value to save&quot;
+
+proc restoringSystem(value: string) {.restoreSys.} =
+    echo &quot;Restored value: &quot;, value
+
+proc myApp(input: string) {.necsus([
+    ~startupSystem,
+    ~loopSystem,
+    ~teardownSystem,
+    ~savingSystem,
+    ~restoringSystem,
+], newNecsusConf()).}
 </code></pre>
 <h3>Directives</h3>
 <p>Systems interact with the rest of an app by using special method arguments, called <code>Directives</code>. These directives are
@@ -388,6 +409,48 @@ proc useBundle(bundle: Bundle[MyBundle]) =
     bundle.attach(eid, (B(), ))
 
 proc myApp() {.necsus([~useBundle], newNecsusConf()).}
+</code></pre>
+<h4>Save</h4>
+<p>The <code>Save</code> directive is a <code>proc</code> that performs the following actions:</p>
+<ol>
+<li>Invokes all the systems tagged with the <code>saveSys</code> pragma</li>
+<li>Serializes the results as a JSON object, where the names of the keys are the names of the <em>types</em> returned
+from the save systems</li>
+<li>Writes the serialized JSON to a stream</li>
+</ol>
+<pre><code class="language-nim">import necsus
+
+type MyStrings = seq[string]
+
+proc saveValues(): MyStrings {.saveSys.} =
+    @[ &quot;a&quot;, &quot;b&quot;, &quot;c&quot; ]
+
+proc doSave(save: Save) =
+    echo save.toString()
+    # The above statement prints: { &quot;MyStrings&quot;: [ &quot;a&quot;, &quot;b&quot;, &quot;c&quot; ] }
+
+proc myApp() {.necsus([~saveValues, ~doSave], newNecsusConf()).}
+</code></pre>
+<p>The benefit of using the <code>Save</code> pragma is that it lets you separate your logic for <em>what</em> needs to be serialized from
+your logic that defines <em>how</em> to serialize. You can scatter your <code>saveSys</code> systems throughout your project so they
+are colocated with the other systems they are associated with.</p>
+<h4>Restore</h4>
+<p>The <code>Restore</code> directive is the opposite of <code>Save</code>. It accepts a json stream, deserializes it, then invokes any systems
+marked with <code>restoreSys</code>. The key names of the JSON are expected to be the type names that get passed in to the
+<code>restoreSys</code> systems.</p>
+<pre><code class="language-nim">import necsus
+
+type MyStrings = seq[string]
+
+proc restoreValues(values: MyStrings, spawn: Spawn[(string, )]) {.restoreSys.} =
+    ## Called with decoded values with the `Restore` directive is used
+    for value in values:
+        spawn.with(value)
+
+proc doRestore(restore: Restore) =
+    restore.fromString(&quot;&quot;&quot;{ &quot;MyStrings&quot;: [ &quot;a&quot;, &quot;b&quot;, &quot;c&quot; ] }&quot;&quot;&quot;)
+
+proc myApp() {.necsus([~restoreValues, ~doRestore], newNecsusConf()).}
 </code></pre>
 <h4>TickId</h4>
 <p><code>TickId</code> gives you an auto-incrementing ID for each time a <code>tick</code> is executed. This is useful, for example, if you need

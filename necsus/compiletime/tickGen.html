@@ -122,6 +122,13 @@ window.addEventListener('DOMContentLoaded', main);
     title="createTickRunner(genInfo: CodeGenInfo; runner: NimNode): NimNode">createTickRunner(genInfo: CodeGenInfo; runner: NimNode): NimNode</a></li>
 
   </ul>
+  <ul class="simple nested-toc-section">invokeSystem
+      <li><a class="reference" href="#invokeSystem%2CCodeGenInfo%2CParsedSystem%2CSystemPhase%2CopenArray%5BNimNode%5D"
+    title="invokeSystem(codeGenInfo: CodeGenInfo; system: ParsedSystem; phase: SystemPhase;
+             prefixArgs: openArray[NimNode] = []): NimNode">invokeSystem(codeGenInfo: CodeGenInfo; system: ParsedSystem; phase: SystemPhase;
+             prefixArgs: openArray[NimNode] = []): NimNode</a></li>
+
+  </ul>
 
   </ul>
 </li>
@@ -169,6 +176,16 @@ Creates the code required to execute a single tick within the world
 
 </dd>
 </div>
+<div id="invokeSystem,CodeGenInfo,ParsedSystem,SystemPhase,openArray[NimNode]">
+<dt><pre><span class="Keyword">proc</span> <a href="#invokeSystem%2CCodeGenInfo%2CParsedSystem%2CSystemPhase%2CopenArray%5BNimNode%5D"><span class="Identifier">invokeSystem</span></a><span class="Other">(</span><span class="Identifier">codeGenInfo</span><span class="Other">:</span> <a href="codeGenInfo.html#CodeGenInfo"><span class="Identifier">CodeGenInfo</span></a><span class="Other">;</span> <span class="Identifier">system</span><span class="Other">:</span> <a href="parse.html#ParsedSystem"><span class="Identifier">ParsedSystem</span></a><span class="Other">;</span>
+                  <span class="Identifier">phase</span><span class="Other">:</span> <a href="parse.html#SystemPhase"><span class="Identifier">SystemPhase</span></a><span class="Other">;</span> <span class="Identifier">prefixArgs</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">NimNode</span><span class="Other">]</span> <span class="Other">=</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span> {.
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">,</span> <span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+Generates the code needed call a single system
+
+</dd>
+</div>
 
 </dl></div>
 
@@ -179,7 +196,7 @@ Creates the code required to execute a single tick within the world
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-02-25 23:59:51 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-03-12 04:29:36 UTC</small>
       </div>
     </div>
   </div>
