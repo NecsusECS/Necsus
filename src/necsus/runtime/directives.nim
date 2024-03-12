@@ -40,7 +40,7 @@ type
     Bundle*[T] = ptr T
         ## A group of directives bundled together in an object
 
-    Save* = proc(to: var Stream): void {.gcsafe, raises: [IOError, OSError, ValueError].}
+    Save* = proc(to: var Stream): void {.raises: [IOError, OSError, ValueError, Exception].}
         ## Generates a saved game state as a json value
 
     Restore* = proc(source: var Stream) {.gcsafe, raises: [IOError, OSError, JsonParsingError, ValueError, Exception].}
@@ -49,7 +49,7 @@ type
     SystemInstance* = proc(): void {.closure.}
         ## A callback used to invoke a specific system
 
-proc toString*(save: Save): string {.gcsafe, raises: [IOError, OSError, ValueError].} =
+proc toString*(save: Save): string {.raises: [IOError, OSError, ValueError, Exception].} =
     ## Executes a 'save' operation and converts it to a string
     var stream: Stream = newStringStream("")
     save(stream)

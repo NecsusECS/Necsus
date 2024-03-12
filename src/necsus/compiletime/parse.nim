@@ -282,6 +282,20 @@ proc getPrefixArgs(phase: SystemPhase, args: var seq[NimNode], instancing: Optio
     of StartupPhase, LoopPhase, TeardownPhase, SaveCallback:
         discard
 
+proc determineReturnType(sysTyp: NimNode, isInstanced: bool): NimNode =
+    case sysTyp.kind
+    of nnkSym:
+        let impl = sysTyp.getTypeImpl
+        if impl.kind == nnkObjectTy:
+            return if isInstanced: newEmptyNode() else: sysTyp
+        else:
+            return determineReturnType(impl, isInstanced)
+    of nnkProcTy, nnkLambda:
+        let typ = sysTyp.params[0]
+        return if isInstanced: determineReturnType(typ, false) else: typ
+    else:
+        sysTyp.expectKind({ nnkProcTy, nnkSym, nnkObjectTy })
+
 proc parseSystemDef*(ident: NimNode, impl: NimNode): ParsedSystem =
     ## Parses a single system proc
     ident.expectKind(nnkSym)
@@ -307,7 +321,7 @@ proc parseSystemDef*(ident: NimNode, impl: NimNode): ParsedSystem =
         depends: impl.readDependencies(),
         instanced: instancing,
         checks: parseActiveChecks(ident, impl),
-        returns: argSource[0]
+        returns: determineReturnType(typeImpl, instancing.isSome)
     )
 
     if phase == RestoreCallback and instancing.isSome:

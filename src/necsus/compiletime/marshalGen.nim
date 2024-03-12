@@ -71,7 +71,7 @@ proc createSaveProc(genInfo: CodeGenInfo): NimNode =
         proc save*(
             `appStateIdent`: var `appStateType`,
             `streamIdent`: var Stream
-        ) {.gcsafe, raises: [IOError, OSError, ValueError].} =
+        ) {.raises: [IOError, OSError, ValueError, Exception].} =
             store(`streamIdent`, `construct`)
 
 proc createMarshalProcs*(genInfo: CodeGenInfo): NimNode =

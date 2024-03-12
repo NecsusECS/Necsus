@@ -12,16 +12,16 @@ proc callInstanced(codeGenInfo: CodeGenInfo, system: ParsedSystem, phase: System
     of StartupPhase:
         let init = newCall(system.symbol, codeGenInfo.renderSystemArgs(system.args))
         return quote: `appStateIdent`.`fieldName` = `init`
-    of LoopPhase:
-        if fieldType.kind == nnkProcTy or fieldType == bindSym("SystemInstance"):
+    of LoopPhase, SaveCallback, RestoreCallback:
+        if phase != system.phase:
+            return newEmptyNode()
+        elif fieldType.kind == nnkProcTy or fieldType == bindSym("SystemInstance"):
             return quote: `appStateIdent`.`fieldName`()
         else:
             return quote: `appStateIdent`.`fieldName`.tick()
     of TeardownPhase:
         let destroy = ident("=destroy")
         return quote: `appStateIdent`.`fieldName`.`destroy`()
-    of SaveCallback, RestoreCallback:
-        return newEmptyNode()
 
 proc addActiveChecks(
     invocation: NimNode,
