@@ -1,5 +1,5 @@
 import macros, strutils, tables, sequtils
-import directiveSet, monoDirective, nimNode, commonVars, systemGen
+import monoDirective, nimNode, commonVars, systemGen
 import ../runtime/[mailbox, directives]
 
 proc eventStorageIdent(event: MonoDirective | NimNode): NimNode =
@@ -44,13 +44,6 @@ let inboxGenerator* {.compileTime.} = newGenerator(
     worldFields = inboxFields,
     systemArg = inboxSystemArg,
 )
-
-iterator inboxes(details: GenerateContext, outbox: MonoDirective): SystemArg =
-    ## Yields the inboxes an outbox should write to
-    if inboxGenerator in details.directives:
-        for _, sysArg in details.directives[inboxGenerator]:
-            if sysArg.monoDir.argType == outbox.argType:
-                yield sysArg
 
 proc outboxFields(name: string, dir: MonoDirective): seq[WorldField] =
     @[ (name, nnkBracketExpr.newTree(bindSym("Outbox"), dir.argType)) ]
