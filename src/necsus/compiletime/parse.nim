@@ -270,6 +270,18 @@ proc getSystemType(ident: NimNode, impl: NimNode): NimNode =
     else:
         return ident.getTypeImpl
 
+proc getPrefixArgs(phase: SystemPhase, args: var seq[NimNode], instancing: Option[NimNode]): seq[NimNode] =
+    case phase
+    of RestoreCallback:
+        if instancing.isNone:
+            result = @[ args[0] ]
+            args = args[1..^1]
+        else:
+            instancing.get.expectKind(nnkProcTy)
+            result = @[ instancing.get.params[1] ]
+    of StartupPhase, LoopPhase, TeardownPhase, SaveCallback:
+        discard
+
 proc parseSystemDef*(ident: NimNode, impl: NimNode): ParsedSystem =
     ## Parses a single system proc
     ident.expectKind(nnkSym)
@@ -284,25 +296,22 @@ proc parseSystemDef*(ident: NimNode, impl: NimNode): ParsedSystem =
 
     var args = argSource.toSeq.filterIt(it.kind == nnkIdentDefs)
     let phase = impl.choosePhase()
+    let instancing = determineInstancing(impl, typeImpl)
+    let prefixArgs = getPrefixArgs(phase, args, instancing)
 
-    let prefixArgs: seq[NimNode] = case phase
-        of RestoreCallback:
-            let first = args[0]
-            args = args[1..^1]
-            @[ first ]
-        of StartupPhase, LoopPhase, TeardownPhase, SaveCallback:
-            newSeq[NimNode]()
-
-    return ParsedSystem(
+    result = ParsedSystem(
         phase: phase,
         symbol: ident,
         prefixArgs: prefixArgs,
         args: args.mapIt(parseSystemArg(ident, it)),
         depends: impl.readDependencies(),
-        instanced: determineInstancing(impl, typeImpl),
+        instanced: instancing,
         checks: parseActiveChecks(ident, impl),
         returns: argSource[0]
     )
+
+    if phase == RestoreCallback and instancing.isSome:
+        error("Restore callbacks do not support instancing", ident)
 
 proc parseSystem(ident: NimNode): ParsedSystem =
     ## Parses a single system proc
