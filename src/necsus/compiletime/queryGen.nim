@@ -49,6 +49,8 @@ proc querySystemArg(name: string, dir: TupleDirective): NimNode = systemArg(bind
 
 proc fullQuerySystemArg(name: string, dir: TupleDirective): NimNode = systemArg(bindSym("FullQuery"), name, dir)
 
+let appStatePtr {.compileTime.} = ident("appStatePtr")
+
 proc generate(details: GenerateContext, arg: SystemArg, name: string, dir: TupleDirective): NimNode =
     ## Generates the code for instantiating queries
 
@@ -60,15 +62,23 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, dir: Tuple
         let queryTuple = dir.args.asTupleType
 
         let (lenCalculation, iteratorBody) = details.walkArchetypes(name, dir, queryTuple)
+        let getLen = details.globalName(name & "_getLen")
+        let getIterator = details.globalName(name & "_getIterator")
 
         return quote do:
+
+            func `getLen`(`appStatePtr`: pointer): uint {.fastcall.} =
+                let `appStateIdent` = cast[ptr `appStateTypeName`](`appStatePtr`)
+                return `lenCalculation`
+
+            func `getIterator`(`appStatePtr`: pointer): QueryIterator[`queryTuple`] {.fastcall.} =
+                let `appStateIdent` = cast[ptr `appStateTypeName`](`appStatePtr`)
+                return iterator(`slot`: var `queryTuple`): EntityId = `iteratorBody`
+
             func `buildQueryProc`(
                 `appStateIdent`: ptr `appStateTypeName`
             ): RawQuery[`queryTuple`] {.gcsafe, raises: [].} =
-                func getLen(): uint = `lenCalculation`
-                func getIterator(): QueryIterator[`queryTuple`] =
-                    return iterator(`slot`: var `queryTuple`): EntityId = `iteratorBody`
-                return newQuery[`queryTuple`](getLen, getIterator)
+                return newQuery[`queryTuple`](`appStateIdent`, `getLen`, `getIterator`)
 
     of GenerateHook.Standard:
         let ident = name.ident

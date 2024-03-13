@@ -11,8 +11,9 @@ type
     RawQuery*[Comps: tuple] = object
         ## Allows systems to query for entities with specific components. Where `Comps` is a tuple of
         ## the components to fetch in this query.
-        getLen: proc: uint {.gcsafe, raises: [].}
-        getIterator: proc: QueryIterator[Comps] {.gcsafe, raises: [].}
+        appState: pointer
+        getLen: proc(appState: pointer): uint {.gcsafe, raises: [], fastcall.}
+        getIterator: proc(appState: pointer): QueryIterator[Comps] {.gcsafe, raises: [], fastcall.}
 
     RawQueryPtr[Comps: tuple] = ptr RawQuery[Comps]
 
@@ -31,14 +32,16 @@ type
         ## the single component that should be excluded.
 
 proc newQuery*[Comps: tuple](
-    getLen: proc(): uint {.gcsafe, raises: [].},
-    getIterator: proc(): QueryIterator[Comps] {.gcsafe, raises: [].}
+    appState: pointer,
+    getLen: proc(appState: pointer): uint {.gcsafe, raises: [], fastcall.},
+    getIterator: proc(appState: pointer): QueryIterator[Comps] {.gcsafe, raises: [], fastcall.}
 ): RawQuery[Comps] =
-    RawQuery[Comps](getLen: getLen, getIterator: getIterator)
+    RawQuery[Comps](appState: appState, getLen: getLen, getIterator: getIterator)
 
 iterator pairs*[Comps: tuple](query: FullQuery[Comps]): QueryItem[Comps] =
     ## Iterates through the entities in a query
-    let iter = RawQueryPtr[Comps](query).getIterator()
+    let rawQuery = RawQueryPtr[Comps](query)
+    let iter = rawQuery.getIterator(rawQuery.appState)
     var slot: Comps
     for eid in iter(slot):
         yield (eid, slot)
@@ -50,7 +53,8 @@ iterator items*[Comps: tuple](query: AnyQuery[Comps]): Comps =
 
 proc len*[Comps: tuple](query: AnyQuery[Comps]): uint {.gcsafe, raises: [].} =
     ## Returns the number of entities in this query
-    RawQueryPtr[Comps](query).getLen()
+    let rawQuery = RawQueryPtr[Comps](query)
+    return rawQuery.getLen(rawQuery.appState)
 
 proc single*[Comps: tuple](query: AnyQuery[Comps]): Option[Comps] =
     ## Returns a single element from a query
