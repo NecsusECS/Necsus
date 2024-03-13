@@ -16,6 +16,9 @@ type
         data: ArrayBlock[EntryData[V]]
         len: Atomic[uint]
 
+    BlockIter* {.byref.} = object
+        max, index: uint
+
 proc newBlockStore*[V](size: SomeInteger): BlockStore[V] =
     ## Instantiates a new BlockStore
     BlockStore[V](recycle: newRingBuffer[uint](size), data: newArrayBlock[EntryData[V]](size))
@@ -80,13 +83,26 @@ template `[]=`*[V](store: BlockStore[V], idx: uint, newValue: V) =
     ## Sets a new value for a key
     store.data[idx].value = newValue
 
+proc next*[V](store: var BlockStore[V], iter: var BlockIter): ptr V =
+    ## Returns the next value in an iterator
+    if iter.max == 0:
+        iter.max = store.nextId.load
+
+    if iter.index >= iter.max:
+        return nil
+    elif store.data[iter.index].alive.load:
+        iter.index += 1
+        return addr store.data[iter.index - 1].value
+    else:
+        iter.index += 1
+        return store.next(iter)
+
 iterator items*[V](store: var BlockStore[V]): var V =
     ## Iterate through all values in this BlockStore
-    let upper = store.nextId.load
-    var accum = 0u
-    for entry in items(store.data):
-        accum += 1
-        if accum > upper:
+    var iter: BlockIter
+    var value: ptr V
+    while true:
+        value = store.next(iter)
+        if value == nil:
             break
-        if entry.alive.load:
-            yield entry.value
+        yield value[]
