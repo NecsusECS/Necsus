@@ -1,10 +1,8 @@
 import world, entityId, ../util/blockstore
 
 type
-    ArchRow*[Comps: tuple] = object
+    ArchRow*[Comps: tuple] = tuple[entityId: EntityId, components: Comps]
         ## A row of data stored about an entity that matches a specific archetype
-        entityId*: EntityId
-        components*: Comps
 
     ArchetypeStore*[Archs: enum, Comps: tuple] = ref object
         ## Stores a specific archetype shape
@@ -31,7 +29,7 @@ proc next*[Archs: enum, Comps: tuple](store: ArchetypeStore[Archs, Comps], iter:
     ## Returns the next value for an interator
     return if store.compStore == nil: nil else: store.compStore.next(BlockIter(iter))
 
-iterator items*[Archs: enum, Comps: tuple](store: ArchetypeStore[Archs, Comps]): var ArchRow[Comps] =
+iterator items*[Archs: enum, Comps: tuple](store: ArchetypeStore[Archs, Comps]): ptr ArchRow[Comps] =
     ## Iterates over the components in a view
     var iter: ArchetypeIter
     var value: ptr ArchRow[Comps]

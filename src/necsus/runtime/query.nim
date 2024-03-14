@@ -1,19 +1,28 @@
-import entityId, options
+import entityId, options, archetypeStore
 
 type
     QueryItem*[Comps: tuple] = tuple[entityId: EntityId, components: Comps]
         ## An individual value yielded by a query. Where `Comps` is a tuple of the components to fetch in
         ## this query
 
-    QueryIterator*[Comps: tuple] = iterator(slot: var Comps): EntityId {.gcsafe, raises: [].}
+    QueryIterator* = object
         ## An iterator over a query
+        continuationIdx*: uint16
+        iter*: ArchetypeIter
+
+    NextIterState* = enum DoneIter, ActiveIter, IncrementIter
+
+    NextEntityProc*[Comps: tuple] = proc(
+        iter: var QueryIterator, appStatePtr: pointer, slot: var QueryItem[Comps]
+    ): NextIterState {.gcsafe, raises: [], fastcall.}
+        ## Returns the next row in a query
 
     RawQuery*[Comps: tuple] = object
         ## Allows systems to query for entities with specific components. Where `Comps` is a tuple of
         ## the components to fetch in this query.
         appState: pointer
         getLen: proc(appState: pointer): uint {.gcsafe, raises: [], fastcall.}
-        getIterator: proc(appState: pointer): QueryIterator[Comps] {.gcsafe, raises: [], fastcall.}
+        nextEntity: NextEntityProc[Comps]
 
     RawQueryPtr[Comps: tuple] = ptr RawQuery[Comps]
 
@@ -34,17 +43,25 @@ type
 proc newQuery*[Comps: tuple](
     appState: pointer,
     getLen: proc(appState: pointer): uint {.gcsafe, raises: [], fastcall.},
-    getIterator: proc(appState: pointer): QueryIterator[Comps] {.gcsafe, raises: [], fastcall.}
-): RawQuery[Comps] =
-    RawQuery[Comps](appState: appState, getLen: getLen, getIterator: getIterator)
+    nextEntity: NextEntityProc[Comps],
+): RawQuery[Comps] {.inline.} =
+    RawQuery[Comps](appState: appState, getLen: getLen, nextEntity: nextEntity)
 
 iterator pairs*[Comps: tuple](query: FullQuery[Comps]): QueryItem[Comps] =
     ## Iterates through the entities in a query
     let rawQuery = RawQueryPtr[Comps](query)
-    let iter = rawQuery.getIterator(rawQuery.appState)
-    var slot: Comps
-    for eid in iter(slot):
-        yield (eid, slot)
+    var iter: QueryIterator
+    var slot: QueryItem[Comps]
+    while true:
+        let result = rawQuery.nextEntity(iter, rawQuery.appState, slot)
+        case result
+        of ActiveIter:
+            yield slot
+        of IncrementIter:
+            iter.continuationIdx += 1
+            iter.iter = default(ArchetypeIter)
+        of DoneIter:
+            break
 
 iterator items*[Comps: tuple](query: AnyQuery[Comps]): Comps =
     ## Iterates through the entities in a query

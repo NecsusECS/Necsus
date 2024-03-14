@@ -10,6 +10,7 @@ iterator selectArchetypes(details: GenerateContext, query: TupleDirective): Arch
 
 let slot {.compileTime.} = ident("slot")
 let entry {.compileTime.} = ident("entry")
+let iter {.compileTime.} = ident("iter")
 
 proc walkArchetypes(
     details: GenerateContext,
@@ -19,8 +20,9 @@ proc walkArchetypes(
 ): (NimNode, NimNode) =
     ## Creates the views that bind an archetype to a query
     var lenCalculation = newLit(0'u)
-    var iteratorBody = newStmtList()
+    var nextEntityBody = nnkCaseStmt.newTree(newDotExpr(iter, "continuationIdx".ident))
 
+    var index = 0
     for archetype in details.selectArchetypes(query):
         let archetypeIdent = archetype.ident
         let tupleCopy = newDotExpr(entry, ident("components")).copyTuple(archetype, query)
@@ -28,12 +30,20 @@ proc walkArchetypes(
         lenCalculation = quote do:
             `lenCalculation` + len(`appStateIdent`.`archetypeIdent`)
 
-        iteratorBody.add quote do:
-            for `entry` in items(`appStateIdent`.`archetypeIdent`):
-                `slot` = `tupleCopy`
-                yield `entry`.entityId
+        let nextBody = quote do:
+            var `entry` = `appStateIdent`.`archetypeIdent`.next(`iter`.iter)
+            if `entry` == nil:
+                return IncrementIter
+            else:
+                `slot` = (entityId: `entry`.entityId, components: `tupleCopy`)
+                return ActiveIter
 
-    return (lenCalculation, iteratorBody)
+        nextEntityBody.add nnkOfBranch.newTree(newLit(index), nextBody)
+        index += 1
+
+    nextEntityBody.add nnkElse.newTree(nnkReturnStmt.newTree(newLit(DoneIter)))
+
+    return (lenCalculation, nextEntityBody)
 
 proc worldFields(name: string, dir: TupleDirective): seq[WorldField] =
     @[ (name, nnkBracketExpr.newTree(bindSym("RawQuery"), dir.asTupleType)) ]
@@ -61,9 +71,9 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, dir: Tuple
         let appStateTypeName = details.appStateTypeName
         let queryTuple = dir.args.asTupleType
 
-        let (lenCalculation, iteratorBody) = details.walkArchetypes(name, dir, queryTuple)
+        let (lenCalculation, nextEntityBody) = details.walkArchetypes(name, dir, queryTuple)
         let getLen = details.globalName(name & "_getLen")
-        let getIterator = details.globalName(name & "_getIterator")
+        let nextEntity = details.globalName(name & "_nextEntity")
 
         return quote do:
 
@@ -71,14 +81,16 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, dir: Tuple
                 let `appStateIdent` = cast[ptr `appStateTypeName`](`appStatePtr`)
                 return `lenCalculation`
 
-            func `getIterator`(`appStatePtr`: pointer): QueryIterator[`queryTuple`] {.fastcall.} =
+            func `nextEntity`(
+                `iter`: var QueryIterator, `appStatePtr`: pointer, `slot`: var QueryItem[`queryTuple`]
+            ): NextIterState {.gcsafe, raises: [], fastcall.} =
                 let `appStateIdent` = cast[ptr `appStateTypeName`](`appStatePtr`)
-                return iterator(`slot`: var `queryTuple`): EntityId = `iteratorBody`
+                `nextEntityBody`
 
             func `buildQueryProc`(
                 `appStateIdent`: ptr `appStateTypeName`
             ): RawQuery[`queryTuple`] {.gcsafe, raises: [].} =
-                return newQuery[`queryTuple`](`appStateIdent`, `getLen`, `getIterator`)
+                return newQuery[`queryTuple`](`appStateIdent`, `getLen`, `nextEntity`)
 
     of GenerateHook.Standard:
         let ident = name.ident
