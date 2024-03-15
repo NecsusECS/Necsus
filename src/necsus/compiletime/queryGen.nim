@@ -66,16 +66,15 @@ let appStatePtr {.compileTime.} = ident("appStatePtr")
 proc generate(details: GenerateContext, arg: SystemArg, name: string, dir: TupleDirective): NimNode =
     ## Generates the code for instantiating queries
 
-    let buildQueryProc = details.globalName(name)
+    let queryTuple = dir.args.asTupleType
+    let getLen = details.globalName(name & "_getLen")
+    let nextEntity = details.globalName(name & "_nextEntity")
 
     case details.hook
     of GenerateHook.Outside:
         let appStateTypeName = details.appStateTypeName
-        let queryTuple = dir.args.asTupleType
 
         let (lenCalculation, nextEntityBody) = details.walkArchetypes(name, dir, queryTuple)
-        let getLen = details.globalName(name & "_getLen")
-        let nextEntity = details.globalName(name & "_nextEntity")
 
         return quote do:
 
@@ -89,15 +88,10 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, dir: Tuple
                 let `appStateIdent` = cast[ptr `appStateTypeName`](`appStatePtr`)
                 `nextEntityBody`
 
-            func `buildQueryProc`(
-                `appStateIdent`: ptr `appStateTypeName`
-            ): RawQuery[`queryTuple`] {.gcsafe, raises: [].} =
-                return newQuery[`queryTuple`](`appStateIdent`, `getLen`, `nextEntity`)
-
     of GenerateHook.Standard:
         let ident = name.ident
         return quote do:
-            `appStateIdent`.`ident` = `buildQueryProc`(addr `appStateIdent`)
+            `appStateIdent`.`ident` = newQuery[`queryTuple`](addr `appStateIdent`, `getLen`, `nextEntity`)
     else:
         return newEmptyNode()
 
