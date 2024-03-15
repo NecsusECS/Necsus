@@ -25,7 +25,10 @@ proc newArchetypeStore*[Archs: enum, Comps: tuple](
 proc archetype*[Archs: enum, Comps: tuple](store: ArchetypeStore[Archs, Comps]): Archs = store.archetype
     ## Accessor for the archetype of a store
 
-proc next*[Archs: enum, Comps: tuple](store: ArchetypeStore[Archs, Comps], iter: var ArchetypeIter): ptr ArchRow[Comps] =
+proc next*[Archs: enum, Comps: tuple](
+    store: ArchetypeStore[Archs, Comps],
+    iter: var ArchetypeIter
+): ptr ArchRow[Comps] =
     ## Returns the next value for an interator
     return if store.compStore == nil: nil else: store.compStore.next(BlockIter(iter))
 

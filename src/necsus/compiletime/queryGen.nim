@@ -26,17 +26,15 @@ proc walkArchetypes(
     var index = 0
     for archetype in details.selectArchetypes(query):
         let archetypeIdent = archetype.ident
-        let tupleCopy = newDotExpr(entry, ident("components")).copyTuple(archetype, query)
+        let tupleCopy = entry.copyTuple(archetype, query)
 
         lenCalculation = quote do:
             `lenCalculation` + len(`appStateIdent`.`archetypeIdent`)
 
         let nextBody = quote do:
-            var `entry` = `appStateIdent`.`archetypeIdent`.next(`iter`.iter)
+            let `entry` = `appStateIdent`.`archetypeIdent`.next(`iter`, `eid`, result)
             if `entry` != nil:
-                `eid`= `entry`.entityId
                 `slot` = `tupleCopy`
-                result = ActiveIter
 
         nextEntityBody.add nnkOfBranch.newTree(newLit(index), nextBody)
         index += 1
@@ -85,7 +83,6 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, dir: Tuple
                 `iter`: var QueryIterator, `appStatePtr`: pointer, `eid`: var EntityId, `slot`: var `queryTuple`
             ): NextIterState {.gcsafe, raises: [], fastcall.} =
                 let `appStateIdent` = cast[ptr `appStateTypeName`](`appStatePtr`)
-                result = IncrementIter
                 `nextEntityBody`
 
     of GenerateHook.Standard:

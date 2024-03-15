@@ -47,6 +47,21 @@ proc newQuery*[Comps: tuple](
 ): RawQuery[Comps] {.inline.} =
     RawQuery[Comps](appState: appState, getLen: getLen, nextEntity: nextEntity)
 
+proc next*[Archs: enum, Comps: tuple](
+    store: ArchetypeStore[Archs, Comps],
+    iter: var QueryIterator,
+    eid: var EntityId,
+    state: var NextIterState
+): ptr Comps =
+    ## Returns the next value for an interator
+    let row = store.next(iter.iter)
+    if row == nil:
+        state = IncrementIter
+    else:
+        eid = row.entityId
+        state = ActiveIter
+        return addr row.components
+
 iterator pairs*[Comps: tuple](query: FullQuery[Comps]): QueryItem[Comps] =
     ## Iterates through the entities in a query
     let rawQuery = RawQueryPtr[Comps](query)
