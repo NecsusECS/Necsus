@@ -153,6 +153,15 @@ window.addEventListener('DOMContentLoaded', main);
     Comps]</a></li>
 
   </ul>
+  <ul class="simple nested-toc-section">next
+      <li><a class="reference" href="#next%2CArchetypeStore%5BArchs%3A%20enum%2CComps%3A%20tuple%5D%2CQueryIterator%2CEntityId%2CNextIterState"
+    title="next[Archs: enum; Comps: tuple](store: ArchetypeStore[Archs, Comps];
+                                iter: var QueryIterator; eid: var EntityId;
+                                state: var NextIterState): ptr Comps">next[Archs: enum; Comps: tuple](store: ArchetypeStore[Archs, Comps];
+                                iter: var QueryIterator; eid: var EntityId;
+                                state: var NextIterState): ptr Comps</a></li>
+
+  </ul>
   <ul class="simple nested-toc-section">single
       <li><a class="reference" href="#single%2CAnyQuery%5BComps%3A%20tuple%5D"
     title="single[Comps: tuple](query: AnyQuery[Comps]): Option[Comps]">single[Comps: tuple](query: AnyQuery[Comps]): Option[Comps]</a></li>
@@ -299,6 +308,16 @@ Returns the number of entities in this query
 
 </dd>
 </div>
+<div id="next,ArchetypeStore[Archs: enum,Comps: tuple],QueryIterator,EntityId,NextIterState">
+<dt><pre><span class="Keyword">proc</span> <a href="#next%2CArchetypeStore%5BArchs%3A%20enum%2CComps%3A%20tuple%5D%2CQueryIterator%2CEntityId%2CNextIterState"><span class="Identifier">next</span></a><span class="Other">[</span><span class="Identifier">Archs</span><span class="Other">:</span> <span class="Keyword">enum</span><span class="Other">;</span> <span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">Archs</span><span class="Other">,</span> <span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">;</span>
+                                     <span class="Identifier">iter</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="query.html#QueryIterator"><span class="Identifier">QueryIterator</span></a><span class="Other">;</span> <span class="Identifier">eid</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">;</span>
+                                     <span class="Identifier">state</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="query.html#NextIterState"><span class="Identifier">NextIterState</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Keyword">ptr</span> <span class="Identifier">Comps</span></pre></dt>
+<dd>
+
+Returns the next value for an interator
+
+</dd>
+</div>
 <div id="single,AnyQuery[Comps: tuple]">
 <dt><pre><span class="Keyword">proc</span> <a href="#single%2CAnyQuery%5BComps%3A%20tuple%5D"><span class="Identifier">single</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">query</span><span class="Other">:</span> <a href="query.html#AnyQuery"><span class="Identifier">AnyQuery</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Option</span><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span></pre></dt>
 <dd>
@@ -338,7 +357,7 @@ Iterates through the entities in a query
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-03-15 05:25:21 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-03-15 16:02:42 UTC</small>
       </div>
     </div>
   </div>
