@@ -76,13 +76,13 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, dir: Tuple
         return quote do:
 
             func `getLen`(`appStatePtr`: pointer): uint {.fastcall.} =
-                let `appStateIdent` = cast[ptr `appStateTypeName`](`appStatePtr`)
+                let `appStateIdent` {.used.} = cast[ptr `appStateTypeName`](`appStatePtr`)
                 return `lenCalculation`
 
             func `nextEntity`(
                 `iter`: var QueryIterator, `appStatePtr`: pointer, `eid`: var EntityId, `slot`: var `queryTuple`
             ): NextIterState {.gcsafe, raises: [], fastcall.} =
-                let `appStateIdent` = cast[ptr `appStateTypeName`](`appStatePtr`)
+                let `appStateIdent` {.used.} = cast[ptr `appStateTypeName`](`appStatePtr`)
                 `nextEntityBody`
 
     of GenerateHook.Standard:
