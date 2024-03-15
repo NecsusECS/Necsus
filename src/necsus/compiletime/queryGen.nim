@@ -36,12 +36,13 @@ proc walkArchetypes(
             if `entry` != nil:
                 `eid`= `entry`.entityId
                 `slot` = `tupleCopy`
-                return ActiveIter
+                result = ActiveIter
 
         nextEntityBody.add nnkOfBranch.newTree(newLit(index), nextBody)
         index += 1
 
-    nextEntityBody.add nnkElse.newTree(nnkReturnStmt.newTree(newLit(DoneIter)))
+    nextEntityBody.add nnkElse.newTree quote do:
+        result = DoneIter
 
     return (lenCalculation, nextEntityBody)
 
@@ -84,8 +85,8 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, dir: Tuple
                 `iter`: var QueryIterator, `appStatePtr`: pointer, `eid`: var EntityId, `slot`: var `queryTuple`
             ): NextIterState {.gcsafe, raises: [], fastcall.} =
                 let `appStateIdent` = cast[ptr `appStateTypeName`](`appStatePtr`)
+                result = IncrementIter
                 `nextEntityBody`
-                return IncrementIter
 
     of GenerateHook.Standard:
         let ident = name.ident
