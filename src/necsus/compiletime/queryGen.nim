@@ -11,6 +11,7 @@ iterator selectArchetypes(details: GenerateContext, query: TupleDirective): Arch
 let slot {.compileTime.} = ident("slot")
 let entry {.compileTime.} = ident("entry")
 let iter {.compileTime.} = ident("iter")
+let eid {.compileTime.} = ident("eid")
 
 proc walkArchetypes(
     details: GenerateContext,
@@ -35,7 +36,8 @@ proc walkArchetypes(
             if `entry` == nil:
                 return IncrementIter
             else:
-                `slot` = (entityId: `entry`.entityId, components: `tupleCopy`)
+                `eid`= `entry`.entityId
+                `slot` = `tupleCopy`
                 return ActiveIter
 
         nextEntityBody.add nnkOfBranch.newTree(newLit(index), nextBody)
@@ -82,7 +84,7 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, dir: Tuple
                 return `lenCalculation`
 
             func `nextEntity`(
-                `iter`: var QueryIterator, `appStatePtr`: pointer, `slot`: var QueryItem[`queryTuple`]
+                `iter`: var QueryIterator, `appStatePtr`: pointer, `eid`: var EntityId, `slot`: var `queryTuple`
             ): NextIterState {.gcsafe, raises: [], fastcall.} =
                 let `appStateIdent` = cast[ptr `appStateTypeName`](`appStatePtr`)
                 `nextEntityBody`

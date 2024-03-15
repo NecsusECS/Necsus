@@ -13,7 +13,7 @@ type
     NextIterState* = enum DoneIter, ActiveIter, IncrementIter
 
     NextEntityProc*[Comps: tuple] = proc(
-        iter: var QueryIterator, appStatePtr: pointer, slot: var QueryItem[Comps]
+        iter: var QueryIterator, appStatePtr: pointer, eid: var EntityId, slot: var Comps
     ): NextIterState {.gcsafe, raises: [], fastcall.}
         ## Returns the next row in a query
 
@@ -51,12 +51,12 @@ iterator pairs*[Comps: tuple](query: FullQuery[Comps]): QueryItem[Comps] =
     ## Iterates through the entities in a query
     let rawQuery = RawQueryPtr[Comps](query)
     var iter: QueryIterator
-    var slot: QueryItem[Comps]
+    var slot: Comps
+    var eid: EntityId
     while true:
-        let result = rawQuery.nextEntity(iter, rawQuery.appState, slot)
-        case result
+        case rawQuery.nextEntity(iter, rawQuery.appState, eid, slot)
         of ActiveIter:
-            yield slot
+            yield (entityId: eid, components: slot)
         of IncrementIter:
             iter.continuationIdx += 1
             iter.iter = default(ArchetypeIter)
