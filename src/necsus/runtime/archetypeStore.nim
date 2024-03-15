@@ -22,7 +22,7 @@ proc newArchetypeStore*[Archs: enum, Comps: tuple](
     ## Creates a new storage block for an archetype
     ArchetypeStore[Archs, Comps](initialSize: initialSize.int, archetype: archetype)
 
-proc archetype*[Archs: enum, Comps: tuple](store: ArchetypeStore[Archs, Comps]): Archs {.inline.} = store.archetype
+proc archetype*[Archs: enum, Comps: tuple](store: ArchetypeStore[Archs, Comps]): Archs = store.archetype
     ## Accessor for the archetype of a store
 
 proc next*[Archs: enum, Comps: tuple](store: ArchetypeStore[Archs, Comps], iter: var ArchetypeIter): ptr ArchRow[Comps] =
@@ -39,14 +39,14 @@ iterator items*[Archs: enum, Comps: tuple](store: ArchetypeStore[Archs, Comps]):
             break
         yield value[]
 
-proc len*[Archs: enum, Comps: tuple](store: ArchetypeStore[Archs, Comps]): uint {.inline.} =
+proc len*[Archs: enum, Comps: tuple](store: ArchetypeStore[Archs, Comps]): uint =
     ## Accessor for the archetype of a store
     return if store.compStore == nil: 0 else: store.compStore.len
 
 proc newSlot*[Archs: enum, Comps: tuple](
     store: var ArchetypeStore[Archs, Comps],
     entityId: EntityId
-): NewArchSlot[Comps] {.inline.} =
+): NewArchSlot[Comps] =
     ## Reserves a slot for storing a new component
 
     if store.compStore == nil:
@@ -56,9 +56,9 @@ proc newSlot*[Archs: enum, Comps: tuple](
     slot.value.entityId = entityId
     return NewArchSlot[Comps](slot)
 
-proc index*[Comps: tuple](entry: NewArchSlot[Comps]): uint {.inline.} = Entry[ArchRow[Comps]](entry).index
+proc index*[Comps: tuple](entry: NewArchSlot[Comps]): uint = Entry[ArchRow[Comps]](entry).index
 
-proc setComp*[Comps: tuple](slot: NewArchSlot[Comps], comps: sink Comps): EntityId {.inline.} =
+proc setComp*[Comps: tuple](slot: NewArchSlot[Comps], comps: sink Comps): EntityId =
     ## Stores an entity and its components into this slot
     let entry = Entry[ArchRow[Comps]](slot)
     value(entry).components = comps
@@ -79,7 +79,7 @@ proc moveEntity*[Archs: enum, FromArch: tuple, ToArch: tuple](
     fromArch: var ArchetypeStore[Archs, FromArch],
     toArch: var ArchetypeStore[Archs, ToArch],
     convert: proc (input: sink FromArch): ToArch {.gcsafe, raises: [].}
-) {.inline, gcsafe, raises: [].} =
+) {.gcsafe, raises: [].} =
     ## Moves the components for an entity from one archetype to another
     let deleted = fromArch.compStore.del(entityIndex.archetypeIndex)
     let existing = deleted.components
