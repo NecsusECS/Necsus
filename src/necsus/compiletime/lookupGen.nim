@@ -25,7 +25,7 @@ proc buildArchetypeLookup(
             `appStateIdent`.`archetypeIdent`,
             `entityIndex`.archetypeIndex
         )
-        return some(`createTuple`)
+        result = some(`createTuple`)
 
 proc worldFields(name: string, dir: TupleDirective): seq[WorldField] =
     @[ (name, nnkBracketExpr.newTree(bindSym("Lookup"), dir.asTupleType)) ]
@@ -44,13 +44,8 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, lookup: Tu
     of GenerateHook.Outside:
         let appStateTypeName = details.appStateTypeName
 
-        let noneResult = quote: return none(`tupleType`)
-
-        var cases: NimNode
-        if details.archetypes.len == 0:
-            cases = noneResult
-
-        else:
+        var cases: NimNode = newEmptyNode()
+        if details.archetypes.len > 0:
             cases = nnkCaseStmt.newTree(newDotExpr(entityIndex, ident("archetype")))
 
             # Create a case statement where each branch is one of the archetypes
@@ -63,10 +58,12 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, lookup: Tu
 
             # Add a fall through 'else' branch for any archetypes that don't fit this lookup
             if needsElse:
-                cases.add(nnkElse.newTree(noneResult))
+                cases.add(nnkElse.newTree(nnkDiscardStmt.newTree(newEmptyNode())))
 
         return quote:
-            proc `lookupProc`(`appStateIdent`: var `appStateTypeName`, `entityId`: EntityId): Option[`tupleType`] =
+            proc `lookupProc`(
+                `appStateIdent`: var `appStateTypeName`, `entityId`: EntityId
+            ): Option[`tupleType`] {.fastcall, gcsafe, raises: [].} =
                 let `entityIndex` = `appStateIdent`.`worldIdent`[`entityId`]
                 `cases`
 
