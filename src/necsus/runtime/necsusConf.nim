@@ -8,7 +8,9 @@ type
         getTime*: proc(): Nfloat
         log*: proc(message: string): void
 
-proc logEcho(message: string) = echo message
+proc logEcho(message: string) =
+    when defined(necsusEchoLog):
+        echo message
 
 proc newNecsusConf*(
     getTime: proc(): Nfloat,
