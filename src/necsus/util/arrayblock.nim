@@ -1,13 +1,19 @@
 
-type ArrayBlock*[T] = object
-    ## A wrapper around UncheckedArray
-    size: uint
-    data: ptr UncheckedArray[T]
+type
+    ArrayBlockImpl = object
+        size: uint
+        data: pointer
 
-proc newArrayBlock*[T](len: SomeInteger): ArrayBlock[T] =
+    ArrayBlock*[T] = distinct ArrayBlockImpl
+        ## A wrapper around UncheckedArray
+
+proc newArrayBlock*[T](len: SomeInteger): ArrayBlock[T] {.inline.}=
     ## Create a new array block
-    result.size = len.uint
-    result.data = cast[ptr UncheckedArray[T]](allocShared0(uint(sizeof(T)) * len.uint))
+    return ArrayBlock[T](ArrayBlockImpl(size: len.uint, data: allocShared0(uint(sizeof(T)) * len.uint)))
+
+template data[T](ary: ArrayBlock[T]): ptr UncheckedArray[T] = cast[ptr UncheckedArray[T]](ArrayBlockImpl(ary).data)
+
+template size[T](ary: ArrayBlock[T]): uint = ArrayBlockImpl(ary).size
 
 template destructor(ary) =
     if ary.data != nil:
@@ -23,8 +29,8 @@ else:
 proc `=copy`*[T](target: var ArrayBlock[T], source: ArrayBlock[T]) {.error.}
 
 proc `=sink`*[T](target: var ArrayBlock[T], source: ArrayBlock[T]) =
-    target.size = source.size
-    target.data = source.data
+    ArrayBlockImpl(target).size = source.size
+    ArrayBlockImpl(target).data = source.data
 
 proc isNil*[T](ary: ArrayBlock[T]): bool {.inline.} =
     ## Whether an array block has been initialized
