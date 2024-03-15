@@ -33,9 +33,7 @@ proc walkArchetypes(
 
         let nextBody = quote do:
             var `entry` = `appStateIdent`.`archetypeIdent`.next(`iter`.iter)
-            if `entry` == nil:
-                return IncrementIter
-            else:
+            if `entry` != nil:
                 `eid`= `entry`.entityId
                 `slot` = `tupleCopy`
                 return ActiveIter
@@ -87,6 +85,7 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, dir: Tuple
             ): NextIterState {.gcsafe, raises: [], fastcall.} =
                 let `appStateIdent` = cast[ptr `appStateTypeName`](`appStatePtr`)
                 `nextEntityBody`
+                return IncrementIter
 
     of GenerateHook.Standard:
         let ident = name.ident
