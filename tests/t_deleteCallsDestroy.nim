@@ -8,6 +8,7 @@ proc `=copy`(a: var Thingy, b: Thingy) {.error.}
 
 var thingyDestroyCount = 0
 
+{.warning[Deprecated]:off.}
 proc `=destroy`(thingy: var Thingy) =
     if thingy.value == 123:
         assert(thingyDestroyCount <= 0)

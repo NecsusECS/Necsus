@@ -22,9 +22,9 @@ template destructor(ary) =
         deallocShared(ary.data)
 
 when NimMajor < 2:
-    proc `=destroy`*[T](ary: var ArrayBlock[T]) = destructor(ary)
+    proc `=destroy`*[T](ary: var ArrayBlock[T]) {.raises: [Exception].} = destructor(ary)
 else:
-    proc `=destroy`*[T](ary: ArrayBlock[T]) = destructor(ary)
+    proc `=destroy`*[T](ary: ArrayBlock[T]) {.raises: [Exception].} = destructor(ary)
 
 proc `=copy`*[T](target: var ArrayBlock[T], source: ArrayBlock[T]) {.error.}
 

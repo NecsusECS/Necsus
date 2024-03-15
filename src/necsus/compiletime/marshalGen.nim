@@ -68,6 +68,7 @@ proc createSaveProc(genInfo: CodeGenInfo): NimNode =
         construct.add(nnkExprColonExpr.newTree(system.returns.strVal.ident, genInfo.invokeSystem(system, SaveCallback)))
 
     return quote:
+        {.hint[XCannotRaiseY]:off.}
         proc save*(
             `appStateIdent`: var `appStateType`,
             `streamIdent`: var Stream

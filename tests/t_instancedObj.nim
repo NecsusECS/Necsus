@@ -14,7 +14,8 @@ proc tick(obj: var SystemInst) =
     obj.value = "bar"
     execStatus &= " tick"
 
-proc `=destroy`(obj: var SystemInst) =
+{.warning[Deprecated]:off.}
+proc `=destroy`(obj: var SystemInst) {.raises: [Exception].} =
     # When the object is first created, it destroys the place holder. So we need to handle both
     check(obj.value in ["", "bar"])
     execStatus &= " destroy"

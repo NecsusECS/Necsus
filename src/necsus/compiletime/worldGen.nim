@@ -146,7 +146,8 @@ proc createAppStateDestructor*(genInfo: CodeGenInfo): NimNode =
             `destroy`(`appStateIdent`.`name`)
 
     return quote:
-        proc `destroy`*(`appStateIdent`: var `appStateType`) =
+        {.warning[Deprecated]:off.}
+        proc `destroy`*(`appStateIdent`: var `appStateType`) {.raises: [Exception].} =
             `beforeTeardown`
             `teardowns`
             `destroys`

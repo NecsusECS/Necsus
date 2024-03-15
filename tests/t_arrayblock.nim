@@ -11,10 +11,15 @@ proc `=copy`(a: var ExampleValue, b: ExampleValue) {.error.}
 
 var deleteCount = 0
 
-proc `=destroy`(value: var DeleteCounted) =
+template destructor(value) =
     if value.initialized:
         assert(deleteCount <= 1)
         deleteCount += 1
+
+when NimMajor < 2:
+    proc `=destroy`(value: var DeleteCounted) = destructor(value)
+else:
+    proc `=destroy`(value: DeleteCounted) = destructor(value)
 
 suite "Array blocks":
     test "Array blocks should allow values to be added and deleted":
