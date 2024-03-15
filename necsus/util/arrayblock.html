@@ -102,9 +102,7 @@ window.addEventListener('DOMContentLoaded', main);
   <a class="reference reference-toplevel" href="#7" id="57">Types</a>
   <ul class="simple simple-toc-section">
       <li><a class="reference" href="#ArrayBlock"
-    title="ArrayBlock[T] = object
-  size: uint
-  data: ptr UncheckedArray[T]">ArrayBlock</a></li>
+    title="ArrayBlock[T] = distinct ArrayBlockImpl">ArrayBlock</a></li>
 
   </ul>
 </li>
@@ -178,10 +176,7 @@ window.addEventListener('DOMContentLoaded', main);
 <h1><a class="toc-backref" href="#7">Types</a></h1>
 <dl class="item">
 <div id="ArrayBlock">
-<dt><pre><a href="arrayblock.html#ArrayBlock"><span class="Identifier">ArrayBlock</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">object</span>
-  <span class="Identifier">size</span><span class="Other">:</span> <span class="Identifier">uint</span>
-  <span class="Identifier">data</span><span class="Other">:</span> <span class="Keyword">ptr</span> <span class="Identifier">UncheckedArray</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span>
-</pre></dt>
+<dt><pre><a href="arrayblock.html#ArrayBlock"><span class="Identifier">ArrayBlock</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">distinct</span> <span class="Identifier">ArrayBlockImpl</span></pre></dt>
 <dd>
 
 A wrapper around UncheckedArray
@@ -202,7 +197,7 @@ A wrapper around UncheckedArray
 </dd>
 </div>
 <div id="=destroy,ArrayBlock[T]">
-<dt><pre><span class="Keyword">proc</span> <a href="#%3Ddestroy%2CArrayBlock%5BT%5D"><span class="Identifier">`=destroy`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">ary</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="arrayblock.html#ArrayBlock"><span class="Identifier">ArrayBlock</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dt><pre><span class="Keyword">proc</span> <a href="#%3Ddestroy%2CArrayBlock%5BT%5D"><span class="Identifier">`=destroy`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">ary</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="arrayblock.html#ArrayBlock"><span class="Identifier">ArrayBlock</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 
@@ -250,7 +245,7 @@ Whether an array block has been initialized
 </dd>
 </div>
 <div id="newArrayBlock,SomeInteger">
-<dt><pre><span class="Keyword">proc</span> <a href="#newArrayBlock%2CSomeInteger"><span class="Identifier">newArrayBlock</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">len</span><span class="Other">:</span> <span class="Identifier">SomeInteger</span><span class="Other">)</span><span class="Other">:</span> <a href="arrayblock.html#ArrayBlock"><span class="Identifier">ArrayBlock</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span></pre></dt>
+<dt><pre><span class="Keyword">proc</span> <a href="#newArrayBlock%2CSomeInteger"><span class="Identifier">newArrayBlock</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">len</span><span class="Other">:</span> <span class="Identifier">SomeInteger</span><span class="Other">)</span><span class="Other">:</span> <a href="arrayblock.html#ArrayBlock"><span class="Identifier">ArrayBlock</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> {.<span class="Identifier">inline</span>.}</pre></dt>
 <dd>
 
 Create a new array block
@@ -280,7 +275,7 @@ Iterate through all values in this array
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-03-12 04:29:35 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-03-15 05:25:20 UTC</small>
       </div>
     </div>
   </div>

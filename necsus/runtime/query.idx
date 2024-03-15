@@ -1,11 +1,16 @@
 QueryItem	necsus/runtime/query.html#QueryItem	query: QueryItem	
 QueryIterator	necsus/runtime/query.html#QueryIterator	query: QueryIterator	
+DoneIter	necsus/runtime/query.html#DoneIter	NextIterState.DoneIter	
+ActiveIter	necsus/runtime/query.html#ActiveIter	NextIterState.ActiveIter	
+IncrementIter	necsus/runtime/query.html#IncrementIter	NextIterState.IncrementIter	
+NextIterState	necsus/runtime/query.html#NextIterState	query: NextIterState	
+NextEntityProc	necsus/runtime/query.html#NextEntityProc	query: NextEntityProc	
 RawQuery	necsus/runtime/query.html#RawQuery	query: RawQuery	
 Query	necsus/runtime/query.html#Query	query: Query	
 FullQuery	necsus/runtime/query.html#FullQuery	query: FullQuery	
 AnyQuery	necsus/runtime/query.html#AnyQuery	query: AnyQuery	
 Not	necsus/runtime/query.html#Not	query: Not	
-newQuery	necsus/runtime/query.html#newQuery,proc),proc)	query: newQuery[Comps: tuple](getLen: proc (): uint {.gcsafe, raises: [].}; getIterator: proc (): QueryIterator[\n    Comps] {.gcsafe, raises: [].}): RawQuery[Comps]	
+newQuery	necsus/runtime/query.html#newQuery,pointer,proc(pointer),NextEntityProc[Comps: tuple]	query: newQuery[Comps: tuple](appState: pointer; getLen: proc (appState: pointer): uint {.\n    gcsafe, raises: [], fastcall.}; nextEntity: NextEntityProc[Comps]): RawQuery[\n    Comps]	
 pairs	necsus/runtime/query.html#pairs.i,FullQuery[Comps: tuple]	query: pairs[Comps: tuple](query: FullQuery[Comps]): QueryItem[Comps]	
 items	necsus/runtime/query.html#items.i,AnyQuery[Comps: tuple]	query: items[Comps: tuple](query: AnyQuery[Comps]): Comps	
 len	necsus/runtime/query.html#len,AnyQuery[Comps: tuple]	query: len[Comps: tuple](query: AnyQuery[Comps]): uint	

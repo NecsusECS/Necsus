@@ -107,7 +107,10 @@ window.addEventListener('DOMContentLoaded', main);
 <li>
   <a class="reference reference-toplevel" href="#7" id="57">Types</a>
   <ul class="simple simple-toc-section">
-      <li><a class="reference" href="#BlockStore"
+      <li><a class="reference" href="#BlockIter"
+    title="BlockIter {.byref.} = object
+  max, index: uint">BlockIter</a></li>
+  <li><a class="reference" href="#BlockStore"
     title="BlockStore[V] = ref object
   nextId: Atomic[uint]
   hasRecycledValues: bool
@@ -150,6 +153,11 @@ window.addEventListener('DOMContentLoaded', main);
   <ul class="simple nested-toc-section">newBlockStore
       <li><a class="reference" href="#newBlockStore%2CSomeInteger"
     title="newBlockStore[V](size: SomeInteger): BlockStore[V]">newBlockStore[V](size: SomeInteger): BlockStore[V]</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">next
+      <li><a class="reference" href="#next%2CBlockStore%5BV%5D%2CBlockIter"
+    title="next[V](store: var BlockStore[V]; iter: var BlockIter): ptr V">next[V](store: var BlockStore[V]; iter: var BlockIter): ptr V</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">push
@@ -214,6 +222,16 @@ window.addEventListener('DOMContentLoaded', main);
 <div class="section" id="7">
 <h1><a class="toc-backref" href="#7">Types</a></h1>
 <dl class="item">
+<div id="BlockIter">
+<dt><pre><a href="blockstore.html#BlockIter"><span class="Identifier">BlockIter</span></a> {.<span class="Identifier">byref</span>.} <span class="Other">=</span> <span class="Keyword">object</span>
+  <span class="Identifier">max</span><span class="Other">,</span> <span class="Identifier">index</span><span class="Other">:</span> <span class="Identifier">uint</span>
+</pre></dt>
+<dd>
+
+
+
+</dd>
+</div>
 <div id="BlockStore">
 <dt><pre><a href="blockstore.html#BlockStore"><span class="Identifier">BlockStore</span></a><span class="Other">[</span><span class="Identifier">V</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">ref</span> <span class="Keyword">object</span>
   <span class="Identifier">nextId</span><span class="Other">:</span> <span class="Identifier">Atomic</span><span class="Other">[</span><span class="Identifier">uint</span><span class="Other">]</span>
@@ -289,6 +307,14 @@ Instantiates a new BlockStore
 
 </dd>
 </div>
+<div id="next,BlockStore[V],BlockIter">
+<dt><pre><span class="Keyword">proc</span> <a href="#next%2CBlockStore%5BV%5D%2CBlockIter"><span class="Identifier">next</span></a><span class="Other">[</span><span class="Identifier">V</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="blockstore.html#BlockStore"><span class="Identifier">BlockStore</span></a><span class="Other">[</span><span class="Identifier">V</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">iter</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="blockstore.html#BlockIter"><span class="Identifier">BlockIter</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Keyword">ptr</span> <span class="Identifier">V</span></pre></dt>
+<dd>
+
+Returns the next value in an iterator
+
+</dd>
+</div>
 <div id="push,BlockStore[V],sinkV">
 <dt><pre><span class="Keyword">proc</span> <a href="#push%2CBlockStore%5BV%5D%2CsinkV"><span class="Identifier">push</span></a><span class="Other">[</span><span class="Identifier">V</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="blockstore.html#BlockStore"><span class="Identifier">BlockStore</span></a><span class="Other">[</span><span class="Identifier">V</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">V</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">uint</span></pre></dt>
 <dd>
@@ -357,7 +383,7 @@ Returns the value of an entry
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-03-12 04:29:36 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-03-15 05:25:21 UTC</small>
       </div>
     </div>
   </div>

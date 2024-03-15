@@ -1,5 +1,6 @@
 Entry	necsus/util/blockstore.html#Entry	blockstore: Entry	
 BlockStore	necsus/util/blockstore.html#BlockStore	blockstore: BlockStore	
+BlockIter	necsus/util/blockstore.html#BlockIter	blockstore: BlockIter	
 newBlockStore	necsus/util/blockstore.html#newBlockStore,SomeInteger	blockstore: newBlockStore[V](size: SomeInteger): BlockStore[V]	
 len	necsus/util/blockstore.html#len,BlockStore[V]	blockstore: len[V](blockstore: var BlockStore[V]): uint	
 reserve	necsus/util/blockstore.html#reserve,BlockStore[V]	blockstore: reserve[V](blockstore: var BlockStore[V]): Entry[V]	
@@ -11,4 +12,5 @@ push	necsus/util/blockstore.html#push,BlockStore[V],sinkV	blockstore: push[V](st
 del	necsus/util/blockstore.html#del,BlockStore[V],uint	blockstore: del[V](store: var BlockStore[V]; idx: uint): V	
 `[]`	necsus/util/blockstore.html#[],BlockStore[V],uint	blockstore: `[]`[V](store: BlockStore[V]; idx: uint): var V	
 `[]=`	necsus/util/blockstore.html#[]=.t,BlockStore[V],uint,V	blockstore: `[]=`[V](store: BlockStore[V]; idx: uint; newValue: V)	
+next	necsus/util/blockstore.html#next,BlockStore[V],BlockIter	blockstore: next[V](store: var BlockStore[V]; iter: var BlockIter): ptr V	
 items	necsus/util/blockstore.html#items.i,BlockStore[V]	blockstore: items[V](store: var BlockStore[V]): var V	
