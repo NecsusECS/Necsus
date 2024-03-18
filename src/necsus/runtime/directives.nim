@@ -1,4 +1,4 @@
-import entityId, std/[json, options, streams]
+import entityId, std/[json, options]
 
 when defined(necsusFloat32):
     type Nfloat* = float32
@@ -40,23 +40,11 @@ type
     Bundle*[T] = ptr T
         ## A group of directives bundled together in an object
 
-    Save* = proc(to: var Stream): void {.raises: [IOError, OSError, ValueError, Exception].}
+    Save* = proc(): string {.raises: [IOError, OSError, ValueError, Exception].}
         ## Generates a saved game state as a json value
 
-    Restore* = proc(source: var Stream) {.gcsafe, raises: [IOError, OSError, JsonParsingError, ValueError, Exception].}
+    Restore* = proc(json: string) {.gcsafe, raises: [IOError, OSError, JsonParsingError, ValueError, Exception].}
         ## Executes all 'restore' systems using the given json as input data
 
     SystemInstance* = proc(): void {.closure.}
         ## A callback used to invoke a specific system
-
-proc toString*(save: Save): string {.raises: [IOError, OSError, ValueError, Exception].} =
-    ## Executes a 'save' operation and converts it to a string
-    var stream: Stream = newStringStream("")
-    save(stream)
-    stream.setPosition(0)
-    return stream.readAll()
-
-proc fromString*(restore: Restore, source: string) {.gcsafe, raises: [IOError, OSError, ValueError, Exception].} =
-    ## Executes a 'restore' operation using a string as input
-    var stream: Stream = newStringStream(source)
-    restore(stream)

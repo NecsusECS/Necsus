@@ -1,4 +1,4 @@
-import macros, codeGenInfo, commonVars, parse, tickGen, std/[sequtils, marshal, tables, streams, json]
+import macros, codeGenInfo, commonVars, parse, tickGen, std/[sequtils, tables, json, jsonutils]
 
 proc saveTypeName(genInfo: CodeGenInfo): NimNode = ident(genInfo.app.name & "Marshal")
 
@@ -53,10 +53,10 @@ proc createRestoreProc(genInfo: CodeGenInfo): NimNode =
     return quote:
         proc restore*(
             `appStateIdent`: var `appStateType`,
-            `streamIdent`: var Stream
+            `streamIdent`: string
         ) {.gcsafe, raises: [IOError, OSError, JsonParsingError, ValueError, Exception].} =
             var `decoded`: `saveTypeName`
-            load(`streamIdent`, `decoded`)
+            fromJson(`decoded`, parseJson(`streamIdent`))
             `invocations`
 
 proc createSaveProc(genInfo: CodeGenInfo): NimNode =
@@ -71,9 +71,8 @@ proc createSaveProc(genInfo: CodeGenInfo): NimNode =
         {.hint[XCannotRaiseY]:off.}
         proc save*(
             `appStateIdent`: var `appStateType`,
-            `streamIdent`: var Stream
-        ) {.raises: [IOError, OSError, ValueError, Exception].} =
-            store(`streamIdent`, `construct`)
+        ): string {.raises: [IOError, OSError, ValueError, Exception].} =
+            return $toJson(`construct`)
 
 proc createMarshalProcs*(genInfo: CodeGenInfo): NimNode =
     ## Generates procs needed for saving and restoring game state

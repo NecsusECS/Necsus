@@ -8,7 +8,7 @@ proc save(): auto {.saveSys, instanced.} =
         return @[ "a", "b", "c" ]
 
 proc doSave(save: Save) =
-    check(save.toString == """{"SaveMe": ["a", "b", "c"]}""")
+    check(save() == """{"SaveMe":["a","b","c"]}""")
 
 proc runner(tick: proc(): void) =
     tick()

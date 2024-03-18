@@ -1,4 +1,4 @@
-import macros, systemGen, commonVars, ../runtime/directives, std/streams
+import macros, systemGen, commonVars, ../runtime/directives
 
 proc worldFields(name: string): seq[WorldField] = @[ (name, bindSym("Restore")) ]
 
@@ -9,7 +9,7 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string): NimNode =
     of Late:
         let nameIdent = name.ident
         return quote:
-            `appStateIdent`.`nameIdent` = proc(`json`: var Stream): auto = restore(`appStateIdent`, `json`)
+            `appStateIdent`.`nameIdent` = proc(`json`: string): auto = restore(`appStateIdent`, `json`)
     else:
         return newEmptyNode()
 
