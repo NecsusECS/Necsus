@@ -426,7 +426,7 @@ proc saveValues(): MyStrings {.saveSys.} =
     @[ &quot;a&quot;, &quot;b&quot;, &quot;c&quot; ]
 
 proc doSave(save: Save) =
-    echo save.toString()
+    echo save()
     # The above statement prints: { &quot;MyStrings&quot;: [ &quot;a&quot;, &quot;b&quot;, &quot;c&quot; ] }
 
 proc myApp() {.necsus([~saveValues, ~doSave], newNecsusConf()).}
@@ -448,7 +448,7 @@ proc restoreValues(values: MyStrings, spawn: Spawn[(string, )]) {.restoreSys.} =
         spawn.with(value)
 
 proc doRestore(restore: Restore) =
-    restore.fromString(&quot;&quot;&quot;{ &quot;MyStrings&quot;: [ &quot;a&quot;, &quot;b&quot;, &quot;c&quot; ] }&quot;&quot;&quot;)
+    restore(&quot;&quot;&quot;{ &quot;MyStrings&quot;: [ &quot;a&quot;, &quot;b&quot;, &quot;c&quot; ] }&quot;&quot;&quot;)
 
 proc myApp() {.necsus([~restoreValues, ~doRestore], newNecsusConf()).}
 </code></pre>

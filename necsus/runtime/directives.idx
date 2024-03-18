@@ -12,5 +12,3 @@ Bundle	necsus/runtime/directives.html#Bundle	directives: Bundle
 Save	necsus/runtime/directives.html#Save	directives: Save	
 Restore	necsus/runtime/directives.html#Restore	directives: Restore	
 SystemInstance	necsus/runtime/directives.html#SystemInstance	directives: SystemInstance	
-toString	necsus/runtime/directives.html#toString,Save	directives: toString(save: Save): string	
-fromString	necsus/runtime/directives.html#fromString,Restore,string	directives: fromString(restore: Restore; source: string)	
