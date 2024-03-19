@@ -1,28 +1,34 @@
-import macros, codeGenInfo, commonVars, parse, tickGen, std/[sequtils, tables, json, jsonutils]
+import macros, codeGenInfo, commonVars, parse, tickGen, std/[sequtils, tables, json, jsonutils, sets]
 
 proc saveTypeName(genInfo: CodeGenInfo): NimNode = ident(genInfo.app.name & "Marshal")
+
+proc restoreSysType(sys: ParsedSystem): NimNode =
+    ## Returns the type that a restoreSys accepts for restoration
+    sys.prefixArgs[0][1]
+
+proc collectMarshalTypes(topics: openArray[NimNode], dedupe: var HashSet[string], records: var NimNode) =
+    var seen = initTable[string, NimNode]()
+    for topicType in topics:
+        let topicName = topicType.strVal
+        if topicName in seen:
+            hint("Conflicting marhasling definition", seen[topicName])
+            error(
+                "A type named '" & topicName & "' is already returned by a different marshaling system",
+                topicType
+            )
+        else:
+            seen[topicName] = topicType
+            if topicName notin dedupe:
+                dedupe.incl(topicName)
+                records.add(nnkIdentDefs.newTree(topicName.ident, topicType, newEmptyNode()))
 
 proc createSaveType(genInfo: CodeGenInfo): NimNode =
     ## Generates the type definition needed to serialize an app
     var records = nnkRecList.newTree()
+    var dedupe = initHashSet[string]()
 
-    var seen = initTable[string, NimNode]()
-    for system in genInfo.systems.filterIt(it.phase == SaveCallback):
-        if system.returns.strVal in seen:
-            hint("Conflicting save system definition", seen[system.returns.strVal])
-            error(
-                "A type named '" & system.returns.strVal & "' is already returned by a different save system",
-                system.returns
-            )
-        else:
-            seen[system.returns.strVal] = system.returns
-            records.add(
-                nnkIdentDefs.newTree(
-                    system.returns.strVal.ident,
-                    system.returns,
-                    newEmptyNode()
-                )
-            )
+    genInfo.systems.filterIt(it.phase == SaveCallback).mapIt(it.returns).collectMarshalTypes(dedupe, records)
+    genInfo.systems.filterIt(it.phase == RestoreCallback).mapIt(it.restoreSysType).collectMarshalTypes(dedupe, records)
 
     return nnkTypeSection.newTree(
         nnkTypeDef.newTree(
@@ -41,14 +47,10 @@ proc createRestoreProc(genInfo: CodeGenInfo): NimNode =
 
     let saveTypeName = genInfo.saveTypeName
 
-    let saves = genInfo.systems.filterIt(it.phase == SaveCallback).mapIt(it.returns.strVal)
-
     var invocations = newStmtList()
     for restore in genInfo.systems.filterIt(it.phase == RestoreCallback):
-        let restoreType = restore.prefixArgs[0][1]
-        if restoreType.strVal in saves:
-            let readProp = newDotExpr(decoded, restoreType.strVal.ident)
-            invocations.add(genInfo.invokeSystem(restore, RestoreCallback, [ readProp ]))
+        let readProp = newDotExpr(decoded, restore.restoreSysType.strVal.ident)
+        invocations.add(genInfo.invokeSystem(restore, RestoreCallback, [ readProp ]))
 
     return quote:
         proc restore*(
