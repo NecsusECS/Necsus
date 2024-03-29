@@ -88,14 +88,21 @@ proc parseDirectiveArgsFromTuple(tupleArg: NimNode): seq[DirectiveArg] =
     ## Parses the symbols out of a tuple definition
     case tupleArg.kind:
     of nnkTupleConstr, nnkTupleTy:
+        var output: seq[DirectiveArg]
         for child in tupleArg.children:
-            result.add(parseDirectiveArg(child, false))
+            output.add(parseDirectiveArg(child, false))
+        return output
     of nnkSym:
         return parseDirectiveArgsFromTuple(tupleArg.getImpl)
     of nnkTypeDef:
         return parseDirectiveArgsFromTuple(tupleArg[2])
+    of nnkBracketExpr:
+        let resolved = tupleArg.resolveTo({ nnkTupleConstr, nnkTupleTy, nnkSym, nnkTypeDef })
+        if resolved.isSome:
+            return parseDirectiveArgsFromTuple(resolved.get)
     else:
-        error(&"Unexpected directive argument tuple: {tupleArg.repr}", tupleArg)
+        discard
+    error(&"Unexpected directive argument tuple: {tupleArg.repr}", tupleArg)
 
 template orElse[T](optional: Option[T], exec: untyped): T =
     if optional.isSome: optional.get else: exec

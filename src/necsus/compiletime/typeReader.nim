@@ -64,7 +64,7 @@ proc resolveTo*(typeDef: NimNode, expectKind: set[NimNodeKind]): Option[NimNode]
     else:
         return none[NimNode]()
 
-proc resolveAlias*(typeDef: NimNode, typeArgs: openArray[NimNode] = []): Option[NimNode] =
+proc resolveAlias*(typeDef: NimNode): Option[NimNode] =
     ## Attempts to resolve any aliases until a concrete type is reached
     case typeDef.kind
     of nnkSym:
