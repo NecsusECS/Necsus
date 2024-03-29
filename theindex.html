@@ -577,6 +577,12 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference external"
           data-doc-search-tag="NextIterState.DoneIter" href="necsus/runtime/query.html#DoneIter">NextIterState.DoneIter</a></li>
           </ul></dd>
+<dt><a name="doSpawn" href="#doSpawn"><span>doSpawn:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="spawn: doSpawn[C: tuple](spawn: FullSpawn[C]; values: sink C): EntityId" href="necsus/runtime/spawn.html#doSpawn%2CFullSpawn%5BC%3A%20tuple%5D%2CsinkC">spawn: doSpawn[C: tuple](spawn: FullSpawn[C]; values: sink C): EntityId</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="spawn: doSpawn[C: tuple](spawn: Spawn[C]; values: sink C)" href="necsus/runtime/spawn.html#doSpawn%2CSpawn%5BC%3A%20tuple%5D%2CsinkC">spawn: doSpawn[C: tuple](spawn: Spawn[C]; values: sink C)</a></li>
+          </ul></dd>
 <dt><a name="drain" href="#drain"><span>drain:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="ringbuffer: drain[T](ring: var RingBuffer[T]): seq[T]" href="necsus/util/ringbuffer.html#drain%2CRingBuffer%5BT%5D">ringbuffer: drain[T](ring: var RingBuffer[T]): seq[T]</a></li>
@@ -1263,9 +1269,7 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="resolveAlias" href="#resolveAlias"><span>resolveAlias:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="typeReader: resolveAlias(typeDef: NimNode; typeArgs: openArray[NimNode] = []): Option[
-    NimNode]" href="necsus/compiletime/typeReader.html#resolveAlias%2CNimNode%2CopenArray%5BNimNode%5D">typeReader: resolveAlias(typeDef: NimNode; typeArgs: openArray[NimNode] = []): Option[
-    NimNode]</a></li>
+          data-doc-search-tag="typeReader: resolveAlias(typeDef: NimNode): Option[NimNode]" href="necsus/compiletime/typeReader.html#resolveAlias%2CNimNode">typeReader: resolveAlias(typeDef: NimNode): Option[NimNode]</a></li>
           </ul></dd>
 <dt><a name="resolveTo" href="#resolveTo"><span>resolveTo:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -1325,10 +1329,6 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="set" href="#set"><span>set:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="spawn: set[C: tuple](spawn: FullSpawn[C]; values: sink C): EntityId" href="necsus/runtime/spawn.html#set%2CFullSpawn%5BC%3A%20tuple%5D%2CsinkC">spawn: set[C: tuple](spawn: FullSpawn[C]; values: sink C): EntityId</a></li>
-          <li><a class="reference external"
-          data-doc-search-tag="spawn: set[C: tuple](spawn: Spawn[C]; values: sink C)" href="necsus/runtime/spawn.html#set%2CSpawn%5BC%3A%20tuple%5D%2CsinkC">spawn: set[C: tuple](spawn: Spawn[C]; values: sink C)</a></li>
-          <li><a class="reference external"
           data-doc-search-tag="systemVar: set[T](sysvar: SystemVar[T]; value: sink T)" href="necsus/runtime/systemVar.html#set%2CSystemVar%5BT%5D%2CsinkT">systemVar: set[T](sysvar: SystemVar[T]; value: sink T)</a></li>
           <li><a class="reference external"
           data-doc-search-tag="blockstore: set[V](entry: Entry[V]; value: sink V)" href="necsus/util/blockstore.html#set%2CEntry%5BV%5D%2CsinkV">blockstore: set[V](entry: Entry[V]; value: sink V)</a></li>
@@ -1534,7 +1534,7 @@ window.addEventListener('DOMContentLoaded', main);
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-03-29 02:02:11 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-03-29 04:55:08 UTC</small>
       </div>
     </div>
   </div>

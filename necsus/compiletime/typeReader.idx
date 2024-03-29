@@ -1,4 +1,4 @@
 findPragma	necsus/compiletime/typeReader.html#findPragma,NimNode	typeReader: findPragma(node: NimNode): NimNode	
 findChildSyms	necsus/compiletime/typeReader.html#findChildSyms,NimNode,seq[NimNode]	typeReader: findChildSyms(node: NimNode; output: var seq[NimNode])	
 resolveTo	necsus/compiletime/typeReader.html#resolveTo,NimNode,set[NimNodeKind]	typeReader: resolveTo(typeDef: NimNode; expectKind: set[NimNodeKind]): Option[NimNode]	
-resolveAlias	necsus/compiletime/typeReader.html#resolveAlias,NimNode,openArray[NimNode]	typeReader: resolveAlias(typeDef: NimNode; typeArgs: openArray[NimNode] = []): Option[\n    NimNode]	
+resolveAlias	necsus/compiletime/typeReader.html#resolveAlias,NimNode	typeReader: resolveAlias(typeDef: NimNode): Option[NimNode]	
