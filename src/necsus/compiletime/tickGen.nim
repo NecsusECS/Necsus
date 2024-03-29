@@ -12,7 +12,7 @@ proc callInstanced(codeGenInfo: CodeGenInfo, system: ParsedSystem, phase: System
     of StartupPhase:
         let init = newCall(system.symbol, codeGenInfo.renderSystemArgs(system.args))
         return quote: `appStateIdent`.`fieldName` = `init`
-    of LoopPhase, SaveCallback, RestoreCallback:
+    of LoopPhase, SaveCallback, RestoreCallback, EventCallback:
         if phase != system.phase:
             return newEmptyNode()
         elif fieldType.kind == nnkProcTy or fieldType == bindSym("SystemInstance"):

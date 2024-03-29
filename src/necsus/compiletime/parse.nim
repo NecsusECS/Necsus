@@ -5,7 +5,7 @@ import spawnGen, queryGen, deleteGen, attachDetachGen, sharedGen, tickIdGen
 import localGen, lookupGen, eventGen, timeGen, debugGen, bundleGen, saveGen, restoreGen
 
 type
-    SystemPhase* = enum StartupPhase, LoopPhase, TeardownPhase, SaveCallback, RestoreCallback
+    SystemPhase* = enum StartupPhase, LoopPhase, TeardownPhase, SaveCallback, RestoreCallback, EventCallback
         ## When a system should be executed
 
     ActiveCheck* = ref object
@@ -236,6 +236,7 @@ proc choosePhase(typeNode: NimNode): SystemPhase =
     let teardownSysPragma = bindSym("teardownSys")
     let saveSysPragma = bindSym("saveSys")
     let restoreSysPragma = bindSym("restoreSys")
+    let eventSysPragma = bindSym("eventSys")
 
     for child in typeNode.findPragma:
         if child.kind == nnkSym:
@@ -249,6 +250,8 @@ proc choosePhase(typeNode: NimNode): SystemPhase =
                 return SaveCallback
             elif restoreSysPragma == child:
                 return RestoreCallback
+            elif eventSysPragma == child:
+                return EventCallback
     return LoopPhase
 
 proc determineInstancing(nodeImpl: NimNode, nodeTypeImpl: NimNode): Option[NimNode] =
@@ -272,7 +275,7 @@ proc getSystemType(ident: NimNode, impl: NimNode): NimNode =
 
 proc getPrefixArgs(phase: SystemPhase, args: var seq[NimNode], instancing: Option[NimNode]): seq[NimNode] =
     case phase
-    of RestoreCallback:
+    of RestoreCallback, EventCallback:
         if instancing.isNone:
             result = @[ args[0] ]
             args = args[1..^1]

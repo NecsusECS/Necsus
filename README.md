@@ -152,6 +152,8 @@ There are also callback systems that are only invoked when a specific situation 
 2. Restore callback: The system is executed anytime the `Restore` directive is invoked. Systems opt in to this phase
    with the `restoreSys` pragma. It is expected that the first parameter of these systems is not a directive, but is
    instead the value being decoded.
+3. Event callback: The system is executed whenever an event is triggered by another system. The first argument of
+   of the system represents the type of event it listens to. Systems opt in to this phase with the `eventSys` pragma.
 
 ```nim
 import necsus
@@ -171,12 +173,16 @@ proc savingSystem(): string {.saveSys.} =
 proc restoringSystem(value: string) {.restoreSys.} =
     echo "Restored value: ", value
 
+proc eventSystem(event: int) {.eventSys.} =
+    echo "Event triggered: ", event
+
 proc myApp(input: string) {.necsus([
     ~startupSystem,
     ~loopSystem,
     ~teardownSystem,
     ~savingSystem,
     ~restoringSystem,
+    ~eventSystem,
 ], newNecsusConf()).}
 ```
 
@@ -467,6 +473,27 @@ proc receive(receiver: Inbox[SomeEvent]) =
 
 proc myApp() {.necsus([~publish, ~receive], newNecsusConf()).}
 ```
+
+Aside from an `Inbox`, the other way to listen for events sent to an `Outbox` is by marking a system with the `eventSys`
+pragma. Events with this pragma are executed immediately when an `Outbox` emits a message. The same code above can
+also be represented like this:
+
+```nim
+import necsus
+
+type SomeEvent = distinct string
+
+proc publish(sender: Outbox[SomeEvent]) =
+    sender(SomeEvent("This is a message"))
+
+proc receive(event: SomeEvent) {.eventSys.} =
+    echo event.string
+
+proc myApp() {.necsus([~publish, ~receive], newNecsusConf()).}
+```
+
+It's worth noting that event systems are executed immediately when an event is triggered. They will be directly invoked
+by the `Outbox`, within the call stack of the system that triggers the event.
 
 #### Bundles
 

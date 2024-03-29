@@ -22,7 +22,7 @@ type
         ## Looks up entity details based on its entity ID. Where `C` is a tuple with all the
         ## components to fetch
 
-    Outbox*[T] = proc(message: sink T): void {.gcsafe, raises: [].}
+    Outbox*[T] = proc(message: sink T): void
         ## Sends an event. Where `T` is the message being sent
 
     TimeDelta* = proc(): Nfloat {.gcsafe, raises: [].}

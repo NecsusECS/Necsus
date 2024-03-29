@@ -182,5 +182,9 @@ proc createSendProcs*(details: CodeGenInfo): NimNode =
         if body.len == 0:
             body.add(nnkDiscardStmt.newTree(newEmptyNode()))
 
+        for system in details.systems:
+            if system.phase == EventCallback and eventType == system.prefixArgs[0][1]:
+                body.add(details.invokeSystem(system, EventCallback, [ event ]))
+
         result.add quote do:
             proc `name`(`appStateIdent`: var `appStateType`, `event`: sink `eventType`) {.used.} = `body`

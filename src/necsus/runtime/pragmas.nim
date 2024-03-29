@@ -17,6 +17,9 @@ template saveSys*() {.pragma.}
 template restoreSys*() {.pragma.}
     ## Marks a proc that restores values from JSON
 
+template eventSys*() {.pragma.}
+    ## Marks that a system should be triggered for a specific kind of event
+
 template instanced*() {.pragma.}
     ## Indicates that a system proc should be used as an initializer to create
     ## an instance of a system. During the primary loop, the `tick` proc is
