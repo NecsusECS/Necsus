@@ -21,11 +21,11 @@ proc beginSpawn*[Archs: enum, Comps: tuple](
     result = store.newSlot(newEntity.entityId)
     newEntity.setArchetypeDetails(store.archetype, result.index)
 
-func set*[C: tuple](spawn: Spawn[C], values: sink C) {.inline, raises: [].} =
+func doSpawn*[C: tuple](spawn: Spawn[C], values: sink C) {.inline, raises: [].} =
     ## Spawns an entity with the given components
     discard setComp(RawSpawn[C](spawn)(), values)
 
-proc set*[C: tuple](spawn: FullSpawn[C], values: sink C): EntityId {.inline.} =
+proc doSpawn*[C: tuple](spawn: FullSpawn[C], values: sink C): EntityId {.inline.} =
     ## Spawns an entity with the given components
     setComp(RawSpawn[C](spawn)(), values)
 
@@ -35,8 +35,8 @@ macro buildTuple(values: varargs[untyped]): untyped =
 
 template with*[C: tuple](spawn: Spawn[C], values: varargs[typed]) =
     ## spawns the given values
-    set(spawn, buildTuple(values))
+    doSpawn(spawn, buildTuple(values))
 
 template with*[C: tuple](spawn: FullSpawn[C], values: varargs[typed]): EntityId =
     ## spawns the given values
-    set(spawn, buildTuple(values))
+    doSpawn(spawn, buildTuple(values))
