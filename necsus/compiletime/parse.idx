@@ -3,6 +3,7 @@ LoopPhase	necsus/compiletime/parse.html#LoopPhase	SystemPhase.LoopPhase
 TeardownPhase	necsus/compiletime/parse.html#TeardownPhase	SystemPhase.TeardownPhase	
 SaveCallback	necsus/compiletime/parse.html#SaveCallback	SystemPhase.SaveCallback	
 RestoreCallback	necsus/compiletime/parse.html#RestoreCallback	SystemPhase.RestoreCallback	
+EventCallback	necsus/compiletime/parse.html#EventCallback	SystemPhase.EventCallback	
 SystemPhase	necsus/compiletime/parse.html#SystemPhase	parse: SystemPhase	
 ActiveCheck	necsus/compiletime/parse.html#ActiveCheck	parse: ActiveCheck	
 ParsedSystem	necsus/compiletime/parse.html#ParsedSystem	parse: ParsedSystem	

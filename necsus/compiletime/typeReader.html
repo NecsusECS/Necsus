@@ -111,6 +111,13 @@ window.addEventListener('DOMContentLoaded', main);
     title="findPragma(node: NimNode): NimNode">findPragma(node: NimNode): NimNode</a></li>
 
   </ul>
+  <ul class="simple nested-toc-section">resolveAlias
+      <li><a class="reference" href="#resolveAlias%2CNimNode%2CopenArray%5BNimNode%5D"
+    title="resolveAlias(typeDef: NimNode; typeArgs: openArray[NimNode] = []): Option[
+    NimNode]">resolveAlias(typeDef: NimNode; typeArgs: openArray[NimNode] = []): Option[
+    NimNode]</a></li>
+
+  </ul>
   <ul class="simple nested-toc-section">resolveTo
       <li><a class="reference" href="#resolveTo%2CNimNode%2Cset%5BNimNodeKind%5D"
     title="resolveTo(typeDef: NimNode; expectKind: set[NimNodeKind]): Option[NimNode]">resolveTo(typeDef: NimNode; expectKind: set[NimNodeKind]): Option[NimNode]</a></li>
@@ -148,6 +155,15 @@ Finds the pragma node attached to a nim node
 
 </dd>
 </div>
+<div id="resolveAlias,NimNode,openArray[NimNode]">
+<dt><pre><span class="Keyword">proc</span> <a href="#resolveAlias%2CNimNode%2CopenArray%5BNimNode%5D"><span class="Identifier">resolveAlias</span></a><span class="Other">(</span><span class="Identifier">typeDef</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">;</span> <span class="Identifier">typeArgs</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">NimNode</span><span class="Other">]</span> <span class="Other">=</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Option</span><span class="Other">[</span>
+    <span class="Identifier">NimNode</span><span class="Other">]</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+Attempts to resolve any aliases until a concrete type is reached
+
+</dd>
+</div>
 <div id="resolveTo,NimNode,set[NimNodeKind]">
 <dt><pre><span class="Keyword">proc</span> <a href="#resolveTo%2CNimNode%2Cset%5BNimNodeKind%5D"><span class="Identifier">resolveTo</span></a><span class="Other">(</span><span class="Identifier">typeDef</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">;</span> <span class="Identifier">expectKind</span><span class="Other">:</span> <span class="Identifier">set</span><span class="Other">[</span><span class="Identifier">NimNodeKind</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Option</span><span class="Other">[</span><span class="Identifier">NimNode</span><span class="Other">]</span> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
@@ -167,7 +183,7 @@ Resolves the system parsable type of an identifier
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-03-18 15:48:43 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-03-29 02:02:10 UTC</small>
       </div>
     </div>
   </div>

@@ -140,6 +140,8 @@ saved. More on this below.</li>
 <li>Restore callback: The system is executed anytime the <code>Restore</code> directive is invoked. Systems opt in to this phase
 with the <code>restoreSys</code> pragma. It is expected that the first parameter of these systems is not a directive, but is
 instead the value being decoded.</li>
+<li>Event callback: The system is executed whenever an event is triggered by another system. The first argument of
+of the system represents the type of event it listens to. Systems opt in to this phase with the <code>eventSys</code> pragma.</li>
 </ol>
 <pre><code class="language-nim">import necsus
 
@@ -158,12 +160,16 @@ proc savingSystem(): string {.saveSys.} =
 proc restoringSystem(value: string) {.restoreSys.} =
     echo &quot;Restored value: &quot;, value
 
+proc eventSystem(event: int) {.eventSys.} =
+    echo &quot;Event triggered: &quot;, event
+
 proc myApp(input: string) {.necsus([
     ~startupSystem,
     ~loopSystem,
     ~teardownSystem,
     ~savingSystem,
     ~restoringSystem,
+    ~eventSystem,
 ], newNecsusConf()).}
 </code></pre>
 <h3>Directives</h3>
@@ -390,6 +396,23 @@ proc receive(receiver: Inbox[SomeEvent]) =
 
 proc myApp() {.necsus([~publish, ~receive], newNecsusConf()).}
 </code></pre>
+<p>Aside from an <code>Inbox</code>, the other way to listen for events sent to an <code>Outbox</code> is by marking a system with the <code>eventSys</code>
+pragma. Events with this pragma are executed immediately when an <code>Outbox</code> emits a message. The same code above can
+also be represented like this:</p>
+<pre><code class="language-nim">import necsus
+
+type SomeEvent = distinct string
+
+proc publish(sender: Outbox[SomeEvent]) =
+    sender(SomeEvent(&quot;This is a message&quot;))
+
+proc receive(event: SomeEvent) {.eventSys.} =
+    echo event.string
+
+proc myApp() {.necsus([~publish, ~receive], newNecsusConf()).}
+</code></pre>
+<p>It's worth noting that event systems are executed immediately when an event is triggered. They will be directly invoked
+by the <code>Outbox</code>, within the call stack of the system that triggers the event.</p>
 <h4>Bundles</h4>
 <p><code>Bundle</code>s are a way of grouping together multiple directives into a single object to make them easier pass around. They
 are useful when you want to encapsulate a set of logic that needs to operate on multiple directives.</p>
