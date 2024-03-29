@@ -42,6 +42,13 @@ proc replaceGenerics(typeDecl: NimNode, symLookup: Table[string, NimNode]): NimN
     for child in typeDecl.children:
         result.add(child.replaceGenerics(symLookup))
 
+proc resolveBracketGeneric(typeDef: NimNode): NimNode =
+    ## Replaces a generic alias with the underlying type it represents
+    let declaration = typeDef[0].getImpl
+    declaration.expectKind(nnkTypeDef)
+    let genericTable = declaration[1].asGenericTable(typeDef.children.toSeq[1..^1])
+    return declaration[2].replaceGenerics(genericTable)
+
 proc resolveTo*(typeDef: NimNode, expectKind: set[NimNodeKind]): Option[NimNode] =
     ## Resolves the system parsable type of an identifier
     if typeDef.kind in expectKind:
@@ -49,13 +56,22 @@ proc resolveTo*(typeDef: NimNode, expectKind: set[NimNodeKind]): Option[NimNode]
 
     case typeDef.kind:
     of nnkBracketExpr:
-        let declaration = typeDef[0].getImpl
-        declaration.expectKind(nnkTypeDef)
-        let genericTable = declaration[1].asGenericTable(typeDef.children.toSeq[1..^1])
-        return declaration[2].replaceGenerics(genericTable).resolveTo(expectKind)
+        return typeDef.resolveBracketGeneric().resolveTo(expectKind)
     of nnkSym:
         return typeDef.getImpl.resolveTo(expectKind)
     of nnkTypeDef:
         return typeDef[2].resolveTo(expectKind)
     else:
         return none[NimNode]()
+
+proc resolveAlias*(typeDef: NimNode, typeArgs: openArray[NimNode] = []): Option[NimNode] =
+    ## Attempts to resolve any aliases until a concrete type is reached
+    case typeDef.kind
+    of nnkSym:
+        let impl = typeDef.getImpl
+        if impl.kind == nnkTypeDef:
+            return some(impl[2])
+    of nnkBracketExpr:
+        return some(typeDef.resolveBracketGeneric())
+    else:
+        discard

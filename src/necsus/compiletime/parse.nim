@@ -162,15 +162,15 @@ proc parseArgType(context, argName, argType, original: NimNode): SystemArg =
     of nnkVarTy: parsed = some(parseArgType(context, argName, argType[0], original))
     else: parsed = none(SystemArg)
 
-    # If we were unable to parse the argument, it may be because it's a type alias. Lets try to resolve it
-    if parsed.isNone:
-        if argType.kind == nnkSym:
-            let impl = argType.getImpl
-            if impl.kind == nnkTypeDef:
-                return parseArgType(context, argName, impl[2], original)
-        error("Expecting an ECS interface type, but got: " & original.repr, original)
-    else:
+    if parsed.isSome:
         return parsed.get
+
+    # If we were unable to parse the argument, it may be because it's a type alias. Lets try to resolve it
+    let dealias = argType.resolveAlias
+    if dealias.isSome:
+        return parseArgType(context, argName, dealias.get, original)
+
+    error("Expecting an ECS interface type, but got: " & original.repr, original)
 
 proc parseSystemArg(context, identDef: NimNode): SystemArg =
     ## Parses a SystemArg from a proc argument
