@@ -2,7 +2,7 @@ RawSpawn	necsus/runtime/spawn.html#RawSpawn	spawn: RawSpawn
 Spawn	necsus/runtime/spawn.html#Spawn	spawn: Spawn	
 FullSpawn	necsus/runtime/spawn.html#FullSpawn	spawn: FullSpawn	
 beginSpawn	necsus/runtime/spawn.html#beginSpawn,World[Archs: enum],ArchetypeStore[Archs: enum,Comps: tuple]	spawn: beginSpawn[Archs: enum; Comps: tuple](world: var World[Archs];\n                                      store: var ArchetypeStore[Archs, Comps]): NewArchSlot[\n    Comps]	
-doSpawn	necsus/runtime/spawn.html#doSpawn,Spawn[C: tuple],sinkC	spawn: doSpawn[C: tuple](spawn: Spawn[C]; values: sink C)	
-doSpawn	necsus/runtime/spawn.html#doSpawn,FullSpawn[C: tuple],sinkC	spawn: doSpawn[C: tuple](spawn: FullSpawn[C]; values: sink C): EntityId	
+set	necsus/runtime/spawn.html#set,Spawn[C: tuple],sinkC	spawn: set[C: tuple](spawn: Spawn[C]; values: sink C)	
+set	necsus/runtime/spawn.html#set,FullSpawn[C: tuple],sinkC	spawn: set[C: tuple](spawn: FullSpawn[C]; values: sink C): EntityId	
 with	necsus/runtime/spawn.html#with.t,Spawn[C: tuple],varargs[typed]	spawn: with[C: tuple](spawn: Spawn[C]; values: varargs[typed])	
 with	necsus/runtime/spawn.html#with.t,FullSpawn[C: tuple],varargs[typed]	spawn: with[C: tuple](spawn: FullSpawn[C]; values: varargs[typed]): EntityId	
