@@ -396,6 +396,31 @@ proc attachDetach(query: FullQuery[(A, )], attachB: Attach[(B, )], detachC: Deta
 proc myApp() {.necsus([~attachDetach], newNecsusConf()).}
 ```
 
+Note that when detaching, an entity must have _all_ of the listed components for any of them to be detached.
+
+#### Swap
+
+If you need to attach a new component at the same time you need to detach other components, you can use the `Swap`
+directive. It takes two parameters: (1) a set of components to attach, and (2) a set of components to detach.
+
+```nim
+import necsus, options
+
+type
+    A = object
+    B = object
+    C = object
+
+proc swapComponents(query: FullQuery[(A, )], replace: Swap[(B, ), (C, )]) =
+    for eid, _ in query:
+        eid.replace((B(), ))
+
+proc myApp() {.necsus([~swapComponents], newNecsusConf()).}
+```
+
+One of the benefits of using `Swap` over combining `Detach` and `Attach` is that it allows Necsus to more intelligently
+create the list of archetypes that are needed. This will speed up build as well as runtime execution.
+
 #### TimeDelta
 
 `TimeDelta` is a `proc(): float` filled with the amount of time since the last execution of a system
