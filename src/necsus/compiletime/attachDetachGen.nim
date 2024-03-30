@@ -7,7 +7,11 @@ let entityIndex {.compileTime.} = ident("entityIndex")
 let newComps {.compileTime.} = ident("comps")
 let entityId {.compileTime.} = ident("entityId")
 
-proc createArchUpdate(details: GenerateContext, attach: TupleDirective, archetype: Archetype[ComponentDef]): NimNode =
+proc createArchUpdate(
+    details: GenerateContext,
+    attachComps: seq[ComponentDef],
+    archetype: Archetype[ComponentDef]
+): NimNode =
     ## Creates code for updating archetype information in place
     result = newStmtList()
 
@@ -22,14 +26,14 @@ proc createArchUpdate(details: GenerateContext, attach: TupleDirective, archetyp
             `entityIndex`.archetypeIndex
         )
 
-    for i, component in attach.items.toSeq:
+    for i, component in attachComps:
         let storageIndex = archetype.indexOf(component)
         result.add quote do:
             `existing`[`storageIndex`] = `newComps`[`i`]
 
 proc createArchMove(
     details: GenerateContext,
-    directive: TupleDirective,
+    newCompValues: seq[ComponentDef],
     fromArch: Archetype[ComponentDef],
     toArch: Archetype[ComponentDef]
 ): NimNode =
@@ -43,8 +47,8 @@ proc createArchMove(
 
     let createNewTuple = nnkTupleConstr.newTree()
     for comp in toArch.items:
-        if comp in directive:
-            createNewTuple.add(nnkBracketExpr.newTree(newComps, newLit(directive.indexOf(comp))))
+        if comp in newCompValues:
+            createNewTuple.add(nnkBracketExpr.newTree(newComps, newLit(newCompValues.find(comp))))
         else:
             createNewTuple.add(nnkBracketExpr.newTree(existing, newLit(fromArch.indexOf(comp))))
 
@@ -53,6 +57,39 @@ proc createArchMove(
             `appStateIdent`.`worldIdent`, `entityIndex`, `appStateIdent`.`fromArchIdent`, `appStateIdent`.`toArchIdent`,
             proc (`existing`: sink `fromArchTuple`): auto {.gcsafe, raises: [].} = `createNewTuple`
         )
+
+proc attachDetachProcBody(
+    details: GenerateContext,
+    attachComps: seq[ComponentDef],
+    detachComps: seq[ComponentDef]
+): NimNode =
+    ## Generates the logic needed to attach and detach components from an existing entity
+
+    # Generate a cases statement to do the work for each kind of archetype
+    var cases: NimNode = newEmptyNode()
+    if details.archetypes.len > 0:
+        var needsElse = false
+        cases = nnkCaseStmt.newTree(newDotExpr(entityIndex, ident("archetype")))
+        for (ofBranch, fromArch) in archetypeCases(details):
+            if detachComps.len == 0 or fromArch.containsAllOf(detachComps):
+                let toArch = fromArch + attachComps - detachComps
+                if fromArch == toArch:
+                    if attachComps.len > 0:
+                        cases.add(nnkOfBranch.newTree(ofBranch, details.createArchUpdate(attachComps, toArch)))
+                    else:
+                        needsElse = true
+                elif toArch in details.archetypes:
+                    cases.add(nnkOfBranch.newTree(ofBranch, details.createArchMove(attachComps, fromArch, toArch)))
+                else:
+                    needsElse = true
+            else:
+                needsElse = true
+        if needsElse:
+            cases.add(nnkElse.newTree(nnkDiscardStmt.newTree(newEmptyNode())))
+
+    return quote do:
+        var `entityIndex` = `appStateIdent`.`worldIdent`[`entityId`]
+        `cases`
 
 proc isAttachable(gen: DirectiveGen): bool =
     ## Returns whether this argument produces an entity that can be attached to
@@ -73,32 +110,15 @@ proc generateAttach(details: GenerateContext, arg: SystemArg, name: string, atta
 
     case details.hook
     of Outside:
+        let `body` = details.attachDetachProcBody(attach.comps, @[])
         let appStateTypeName = details.appStateTypeName
-
-        # Generate a cases statement to do the work for each kind of archetype
-        var cases: NimNode = newEmptyNode()
-        if details.archetypes.len > 0:
-            var needsElse = false
-            cases = nnkCaseStmt.newTree(newDotExpr(entityIndex, ident("archetype")))
-            for (ofBranch, fromArch) in archetypeCases(details):
-                let toArch = fromArch + attach.comps
-                if fromArch == toArch:
-                    cases.add(nnkOfBranch.newTree(ofBranch, details.createArchUpdate(attach, toArch)))
-                elif toArch in details.archetypes:
-                    cases.add(nnkOfBranch.newTree(ofBranch, details.createArchMove(attach, fromArch, toArch)))
-                else:
-                    needsElse = true
-            if needsElse:
-                cases.add(nnkElse.newTree(nnkDiscardStmt.newTree(newEmptyNode())))
-
         return quote do:
             proc `attachProc`(
                 `appStateIdent`: var `appStateTypeName`,
                 `entityId`: EntityId,
                 `newComps`: `componentTuple`
             ) {.gcsafe, raises: [].} =
-                var `entityIndex` = `appStateIdent`.`worldIdent`[`entityId`]
-                `cases`
+                `body`
     of Standard:
         let procName = ident(name)
         return quote:
@@ -129,25 +149,10 @@ proc generateDetach(details: GenerateContext, arg: SystemArg, name: string, deta
     case details.hook
     of GenerateHook.Outside:
         let appStateTypeName = details.appStateTypeName
-
-        var cases = newEmptyNode()
-        if details.archetypes.len > 0:
-            var needsElse = false
-            cases = nnkCaseStmt.newTree(newDotExpr(entityIndex, ident("archetype")))
-            for (ofBranch, fromArch) in archetypeCases(details):
-                if fromArch.containsAllOf(detach.comps):
-                    let toArch = fromArch - detach.comps
-                    cases.add(nnkOfBranch.newTree(ofBranch, details.createArchMove(detach, fromArch, toArch)))
-                else:
-                    needsElse = true
-
-            if needsElse:
-                cases.add(nnkElse.newTree(nnkDiscardStmt.newTree(newEmptyNode())))
-
+        let body = details.attachDetachProcBody(@[], detach.comps)
         return quote:
             proc `detachProc`(`appStateIdent`: var `appStateTypeName`, `entityId`: EntityId) =
-                let `entityIndex` = `appStateIdent`.`worldIdent`[`entityId`]
-                `cases`
+                `body`
 
     of GenerateHook.Standard:
         let procName = ident(name)
