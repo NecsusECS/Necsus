@@ -124,3 +124,10 @@ iterator items*[T](archetypes: ArchetypeSet[T]): Archetype[T] =
     ## Produces all the archetypes
     for archetype in items(archetypes.archetypes):
         yield archetype
+
+proc dumpAnalysis*[T](archetypes: ArchetypeSet[T]) =
+    ## Prints an analysis of the archetypes in a set
+    let allArchetypes = archetypes.toSeq
+    for archetype in allArchetypes.sortedByIt(it.name):
+        echo $archetype
+    echo "TOTAL: ", allArchetypes.len

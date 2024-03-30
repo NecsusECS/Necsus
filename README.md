@@ -962,17 +962,26 @@ runSystemOnce do (str: Shared[string]) -> void:
         check(str.get == "foo")
 ```
 
-## Profiling systems
+## Debugging
+
+### Profiling systems
 
 To get a quick and dirty idea of how your app is performing, you can compile with the `-d:profile` flag set. This
 will cause Necsus to add profiling code that will report how long each system is taking. It takes measurements,
 then outputs the timings to the console.
 
-## Debugging Generated Code
+### Dumping Generated Code
 
 If Necsus isn't behaving as you would expect, the best tool you've got in your toolbox is the ability to dump the code
 that it generates. This allows you to walk through what is happening, or even substitute the generated code into your
 app and execute it. This can be enabled by compiling with the `-d:dump` flag set.
+
+### Dumping Archetypes
+
+If you find that builds are slowing down, it's often caused by archetypes being created that are never used. You can
+set the `-d:archetypes` flag as part of your build to do a dump of all the archetypes that exist. This gives you
+a jumping off point to see which archetypes are never actually used, then update your project so they are never
+created in the first place. For example, with targetd usage of `Query` versus `FullQuery` or `Spawn` vs `FullSpawn`.
 
 # License
 

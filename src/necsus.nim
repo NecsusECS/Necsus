@@ -7,7 +7,8 @@
 ##
 
 import necsus / runtime / [ entityId, query, systemVar, mailbox, directives, necsusConf, spawn, pragmas ]
-import necsus / compiletime / [ parse, systemGen, codeGenInfo, worldGen, worldEnum, tickGen, commonVars, marshalGen ]
+import necsus / compiletime / [ parse, systemGen, codeGenInfo, worldGen, archetype ]
+import necsus / compiletime / [ worldEnum, tickGen, commonVars, marshalGen ]
 
 import sequtils, macros, options
 
@@ -61,6 +62,9 @@ proc buildApp(
         codeGenInfo.createTickRunner(runner),
         codeGenInfo.createAppReturn(pragmaProc),
     )
+
+    when defined(archetypes):
+        codeGenInfo.archetypes.dumpAnalysis
 
     when defined(dump):
         echo "import necsus/runtime/[world, archetypeStore], std/[math, streams, marshal, json], necsus/util/profile"
