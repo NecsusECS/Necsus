@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug",
+            "program": "${fileDirname}/${fileBasenameNoExtension}",
+            "preLaunchTask": "Compile Test",
+            "presentation": {
+                "hidden": false
+            }
+        }
+    ]
+}
