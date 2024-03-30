@@ -70,6 +70,7 @@ proc parseArgKind(symbol: NimNode): Option[DirectiveGen] =
     of "TickId": return some(tickIdGenerator)
     of "Save": return some(saveGenerator)
     of "Restore": return some(restoreGenerator)
+    of "Swap": return some(swapGenerator)
     else: return none(DirectiveGen)
 
 proc parseDirectiveArg(symbol: NimNode, isPointer: bool = false, kind: DirectiveArgKind = Include): DirectiveArg =

@@ -1,5 +1,5 @@
 import macros, sequtils
-import tools, tupleDirective, commonVars, queryGen, lookupGen, spawnGen
+import tools, tupleDirective, dualDirective, commonVars, queryGen, lookupGen, spawnGen
 import archetype, componentDef, worldEnum, systemGen, archetypeBuilder
 import ../runtime/[world, archetypeStore, directives], ../util/bits
 
@@ -168,4 +168,44 @@ let detachGenerator* {.compileTime.} = newGenerator(
     generate = generateDetach,
     archetype = detachArchetype,
     worldFields = detachFields,
+)
+
+proc generateSwap(details: GenerateContext, arg: SystemArg, name: string, dir: DualDirective): NimNode =
+    ## Generates the code for instantiating queries
+    let swapProc = details.globalName(name)
+    let componentTuple = dir.first.asTupleType
+
+    case details.hook
+    of Outside:
+        let `body` = details.attachDetachProcBody(dir.first, dir.second)
+        let appStateTypeName = details.appStateTypeName
+        return quote do:
+            proc `swapProc`(
+                `appStateIdent`: var `appStateTypeName`,
+                `entityId`: EntityId,
+                `newComps`: `componentTuple`
+            ) {.gcsafe, raises: [].} =
+                `body`
+    of Standard:
+        let procName = ident(name)
+        return quote:
+            `appStateIdent`.`procName` = proc(`entityId`: EntityId, `newComps`: `componentTuple`) {.gcsafe, raises: [].} =
+                `swapProc`(`appStateIdent`, `entityId`, `newComps`)
+    else:
+        return newEmptyNode()
+
+proc swapArchetype(builder: var ArchetypeBuilder[ComponentDef], systemArgs: seq[SystemArg], dir: DualDirective) =
+    for arg in systemArgs.allArgs:
+        if arg.generator.isAttachable:
+            builder.attachDetach(dir.first, dir.second, arg.tupleDir.filter)
+
+proc swapFields(name: string, dir: DualDirective): seq[WorldField] =
+    @[ (name, nnkBracketExpr.newTree(bindSym("Swap"), dir.first.asTupleType, dir.second.asTupleType)) ]
+
+let swapGenerator* {.compileTime.} = newGenerator(
+    ident = "Swap",
+    interest = { Outside, Standard },
+    generate = generateSwap,
+    archetype = swapArchetype,
+    worldFields = swapFields,
 )

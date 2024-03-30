@@ -22,6 +22,12 @@ proc copyTuple*(fromVar: NimNode, fromArch: Archetype[ComponentDef], directive: 
             else:
                 result.add(newCall(nnkBracketExpr.newTree(bindSym("none"), arg.type)))
 
+proc asTupleType*(components: openarray[ComponentDef]): NimNode =
+    ## Creates a tuple type from a list of components
+    result = nnkTupleConstr.newTree()
+    for comp in components:
+        result.add(comp.node)
+
 proc asTupleType*(args: openarray[DirectiveArg]): NimNode =
     ## Creates a tuple type from a list of components
     result = nnkTupleConstr.newTree()

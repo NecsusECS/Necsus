@@ -18,6 +18,9 @@ type
         ## Detaches a set of components from an entity. Where `C` is a tuple describing all
         ## the components to detach
 
+    Swap*[A: tuple, B: tuple] = proc(entityId: EntityId, components: A) {.gcsafe, raises: [].}
+        ## A directive that adds components in `A` and removes components in `B`
+
     Lookup*[C: tuple] = proc(entityId: EntityId): Option[C] {.gcsafe, raises: [].}
         ## Looks up entity details based on its entity ID. Where `C` is a tuple with all the
         ## components to fetch
