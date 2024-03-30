@@ -1,4 +1,4 @@
-import options, hashes, tables, macros, archetype, strformat, strutils, sequtils
+import options, hashes, tables, macros, archetype, strformat, strutils, sequtils, dualDirective
 import monoDirective, tupleDirective, archetypeBuilder, componentDef, worldEnum, directiveSet, commonVars
 
 type
@@ -19,7 +19,7 @@ type
         appStateTypeName*: NimNode
 
     DirectiveKind* {.pure.} = enum
-        Tuple, Mono, None
+        Dual, Tuple, Mono, None
 
     WorldField* = tuple[name: string, typ: NimNode]
         ## A field to add to the world object
@@ -67,6 +67,13 @@ type
             generateNone*: HookGenerator[void]
             worldFieldsNone: proc(name: string): seq[WorldField]
             systemArgNone*: SystemArgExtractor[void]
+        of DirectiveKind.Dual:
+            generateDual*: HookGenerator[DualDirective]
+            archetypeDual*: BuildArchetype[DualDirective]
+            chooseNameDual*: NameChooser[DualDirective]
+            worldFieldsDual*: proc(name: string, returns: DualDirective): seq[WorldField]
+            systemArgDual*: SystemArgExtractor[DualDirective]
+            nestedArgsDual*: NestedArgsExtractor[DualDirective]
 
     SystemArg* = ref object
         ## A single arg within a system proc
@@ -82,18 +89,20 @@ type
             monoDir*: MonoDirective
         of DirectiveKind.None:
             discard
+        of DirectiveKind.Dual:
+            dualDir*: DualDirective
         nestedArgs*: seq[SystemArg]
 
 proc noArchetype[T](builder: var ArchetypeBuilder[ComponentDef], systemArgs: seq[SystemArg], dir: T) = discard
 
-proc defaultName(context, argName: NimNode, dir: MonoDirective | TupleDirective): string = dir.name
+proc defaultName(context, argName: NimNode, dir: MonoDirective | TupleDirective | DualDirective): string = dir.name
 
-proc defaultWorldField(name: string, dir: MonoDirective | TupleDirective): seq[WorldField] = @[]
+proc defaultWorldField(name: string, dir: MonoDirective | TupleDirective | DualDirective): seq[WorldField] = @[]
 
-proc defaultSystemArg(name: string, dir: MonoDirective | TupleDirective): NimNode =
+proc defaultSystemArg(name: string, dir: MonoDirective | TupleDirective | DualDirective): NimNode =
     newDotExpr(appStateIdent, name.ident)
 
-proc defaultNestedArgs(dir: MonoDirective | TupleDirective): seq[RawNestedArg] = @[]
+proc defaultNestedArgs(dir: MonoDirective | TupleDirective | DualDirective): seq[RawNestedArg] = @[]
 
 proc newGenerator*(
     ident: string,
@@ -164,11 +173,35 @@ proc newGenerator*(
     result.worldFieldsNone = worldFields
     result.systemArgNone = systemArg
 
+proc newGenerator*(
+    ident: string,
+    interest: set[GenerateHook],
+    generate: HookGenerator[DualDirective],
+    archetype: BuildArchetype[DualDirective] = noArchetype,
+    chooseName: NameChooser[DualDirective] = defaultName,
+    worldFields: proc(name: string, dir: DualDirective): seq[WorldField] = defaultWorldField,
+    systemArg: SystemArgExtractor[DualDirective] = defaultSystemArg,
+    nestedArgs: NestedArgsExtractor[DualDirective] = defaultNestedArgs,
+): DirectiveGen =
+    ## Create a tuple based generator
+    return DirectiveGen(
+        ident: ident,
+        interest: interest,
+        cachedHash: hash(ident),
+        kind: DirectiveKind.Dual,
+        generateDual: generate,
+        archetypeDual: archetype,
+        chooseNameDual: chooseName,
+        worldFieldsDual: worldFields,
+        systemArgDual: systemArg,
+        nestedArgsDual: nestedArgs,
+    )
+
 proc `==`*(a, b: DirectiveGen): bool = a.ident == b.ident
 
 proc hash*(gen: DirectiveGen): Hash = gen.cachedHash
 
-proc newSystemArg*[T : TupleDirective | MonoDirective | void](
+proc newSystemArg*[T : TupleDirective | MonoDirective | DualDirective | void](
     source: NimNode,
     generator: DirectiveGen,
     originalName: string,
@@ -193,6 +226,10 @@ proc newSystemArg*[T : TupleDirective | MonoDirective | void](
         result.kind = DirectiveKind.Mono
         result.monoDir = directive
         result.cachedHash = baseHash !& directive.hash
+    elif T is DualDirective:
+        result.kind = DirectiveKind.Dual
+        result.dualDir = directive
+        result.cachedHash = baseHash !& directive.hash
     else:
         result.kind = DirectiveKind.None
         result.cachedHash = baseHash
@@ -201,6 +238,7 @@ proc `$`*(arg: SystemArg): string =
     let directive = case arg.kind
         of DirectiveKind.Tuple: $arg.tupleDir
         of DirectiveKind.Mono: $arg.monoDir
+        of DirectiveKind.Dual: $arg.dualDir
         of DirectiveKind.None: "none"
     let nestedStr = arg.nestedArgs.mapIt($it).join(", ")
     &"{arg.originalName}({arg.generator.ident}, name: {arg.name}, {arg.kind}: {directive}, nested: [{nestedStr}])"
@@ -212,13 +250,14 @@ proc `==`*(a, b: SystemArg): bool =
         return case a.kind
         of DirectiveKind.Tuple: a.tupleDir == b.tupleDir
         of DirectiveKind.Mono: a.monoDir == b.monoDir
+        of DirectiveKind.Dual: a.dualDir == b.dualDir
         of DirectiveKind.None: true
 
 proc hash*(arg: SystemArg): Hash = arg.cachedHash
 
 proc generateName*(arg: SystemArg): string =
     case arg.kind
-    of DirectiveKind.Tuple, DirectiveKind.Mono: arg.name
+    of DirectiveKind.Tuple, DirectiveKind.Mono, DirectiveKind.Dual: arg.name
     of DirectiveKind.None: arg.generator.ident
 
 proc buildArchetype*(builder: var ArchetypeBuilder[ComponentDef], systemArgs: seq[SystemArg], arg: SystemArg) =
@@ -227,6 +266,7 @@ proc buildArchetype*(builder: var ArchetypeBuilder[ComponentDef], systemArgs: se
         case arg.kind
         of DirectiveKind.Tuple: arg.generator.archetypeTuple(builder, systemArgs, arg.tupleDir)
         of DirectiveKind.Mono: arg.generator.archetypeMono(builder, systemArgs, arg.monoDir)
+        of DirectiveKind.Dual: arg.generator.archetypeDual(builder, systemArgs, arg.dualDir)
         of DirectiveKind.None: discard
     except UnsortedArchetype as e:
         error(e.msg, arg.source)
@@ -236,6 +276,7 @@ proc generateForHook*(arg: SystemArg, details: GenerateContext, name: string): N
     case arg.kind
     of DirectiveKind.Tuple: arg.generator.generateTuple(details, arg, name, arg.tupleDir)
     of DirectiveKind.Mono: arg.generator.generateMono(details, arg, name, arg.monoDir)
+    of DirectiveKind.Dual: arg.generator.generateDual(details, arg, name, arg.dualDir)
     of DirectiveKind.None: arg.generator.generateNone(details, arg, name)
 
 proc worldFields*(arg: SystemArg, name: string): seq[WorldField] =
@@ -243,6 +284,7 @@ proc worldFields*(arg: SystemArg, name: string): seq[WorldField] =
     case arg.kind
     of DirectiveKind.Tuple: arg.generator.worldFieldsTuple(name, arg.tupleDir)
     of DirectiveKind.Mono: arg.generator.worldFieldsMono(name, arg.monoDir)
+    of DirectiveKind.Dual: arg.generator.worldFieldsDual(name, arg.dualDir)
     of DirectiveKind.None: arg.generator.worldFieldsNone(name)
 
 proc systemArg(arg: SystemArg, name: string): NimNode =
@@ -250,6 +292,7 @@ proc systemArg(arg: SystemArg, name: string): NimNode =
     case arg.kind
     of DirectiveKind.Tuple: arg.generator.systemArgTuple(name, arg.tupleDir)
     of DirectiveKind.Mono: arg.generator.systemArgMono(name, arg.monoDir)
+    of DirectiveKind.Dual: arg.generator.systemArgDual(name, arg.dualDir)
     of DirectiveKind.None: arg.generator.systemArgNone(name)
 
 proc nameOf*(ctx: GenerateContext, arg: SystemArg): string =

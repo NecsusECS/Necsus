@@ -1,5 +1,5 @@
 import macros, sequtils, strformat, options, typeReader, strutils
-import componentDef, tupleDirective, monoDirective, systemGen
+import componentDef, tupleDirective, monoDirective, dualDirective, systemGen
 import ../runtime/[pragmas, directives]
 import spawnGen, queryGen, deleteGen, attachDetachGen, sharedGen, tickIdGen
 import localGen, lookupGen, eventGen, timeGen, debugGen, bundleGen, saveGen, restoreGen
@@ -115,17 +115,15 @@ proc parseNestedArgs(context: NimNode, nestedArgs: seq[RawNestedArg]): seq[Syste
         result.add parseArgType(context, name, argType, argType)
 
 proc parseParametricArg(
-    context,
-    argName,
-    directiveSymbol,
-    directiveParametric: NimNode
+    context, argName, directiveSymbol: NimNode;
+    directiveParametrics: openarray[NimNode]
 ): Option[SystemArg] =
     ## Parses a system arg given a specific symbol and tuple
     let gen = parseArgKind(directiveSymbol).orElse: return none(SystemArg)
 
     case gen.kind
     of DirectiveKind.Tuple:
-        let tupleDir = newTupleDir(directiveParametric.parseDirectiveArgsFromTuple)
+        let tupleDir = newTupleDir(directiveParametrics[0].parseDirectiveArgsFromTuple)
         let nestedArgs = gen.nestedArgsTuple(tupleDir)
         return some(newSystemArg[TupleDirective](
             source = directiveSymbol,
@@ -136,7 +134,7 @@ proc parseParametricArg(
             nestedArgs = parseNestedArgs(context, nestedArgs)
         ))
     of DirectiveKind.Mono:
-        let monoDir = newMonoDir(directiveParametric)
+        let monoDir = newMonoDir(directiveParametrics[0])
         let nestedArgs = gen.nestedArgsMono(monoDir)
         return some(newSystemArg[MonoDirective](
             source = directiveSymbol,
@@ -146,6 +144,17 @@ proc parseParametricArg(
             directive = monoDir,
             nestedArgs = parseNestedArgs(context, nestedArgs)
         ))
+    of DirectiveKind.Dual:
+        let dualDir = newDualDir(directiveParametrics)
+        let nestedArgs = gen.nestedArgsDual(dualDir)
+        return some(newSystemArg[DualDirective](
+            source = directiveSymbol,
+            generator = gen,
+            originalName = argName.strVal,
+            name = gen.chooseNameDual(context, argName, dualDir),
+            directive = dualDir,
+            nestedArgs = parseNestedArgs(context, nestedArgs)
+        ))
     of DirectiveKind.None:
         error("System argument does not support tuple parameters: " & $gen.kind)
 
@@ -153,7 +162,7 @@ proc parseFlagSystemArg(name: NimNode, directiveSymbol: NimNode): Option[SystemA
     ## Parses unparameterized system args
     let gen = parseArgKind(directiveSymbol).orElse: return none(SystemArg)
     case gen.kind
-    of DirectiveKind.Tuple, DirectiveKind.Mono:
+    of DirectiveKind.Tuple, DirectiveKind.Mono, DirectiveKind.Dual:
         error("System argument is not flag based: " & $gen.kind)
     of DirectiveKind.None:
         return some(newSystemArg[void](directiveSymbol, gen, name.strVal, directiveSymbol.strVal))
@@ -163,8 +172,8 @@ proc parseArgType(context, argName, argType, original: NimNode): SystemArg =
 
     var parsed: Option[SystemArg]
     case argType.kind:
-    of nnkBracketExpr: parsed = parseParametricArg(original, argName, argType[0], argType[1])
-    of nnkCall: parsed = parseParametricArg(context, argName, argType[1], argType[2])
+    of nnkBracketExpr: parsed = parseParametricArg(original, argName, argType[0], argType[1..^1])
+    of nnkCall: parsed = parseParametricArg(context, argName, argType[1], argType[2..^1])
     of nnkSym: parsed = parseFlagSystemArg(argName, argType)
     of nnkVarTy: parsed = some(parseArgType(context, argName, argType[0], original))
     else: parsed = none(SystemArg)
@@ -369,6 +378,8 @@ iterator components*(arg: SystemArg): ComponentDef =
     case arg.kind
     of DirectiveKind.Tuple:
         for component in arg.tupleDir: yield component
+    of DirectiveKind.Dual:
+        for component in arg.dualDir: yield component
     of DirectiveKind.Mono, DirectiveKind.None:
         discard
 

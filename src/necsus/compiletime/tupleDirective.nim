@@ -14,7 +14,7 @@ type
         kind*: DirectiveArgKind
 
     TupleDirective* = ref object
-        ## Parent type for all tuple based directives
+        ## A directive that contains a single tuple
         args*: seq[DirectiveArg]
         name*: string
         filter: BitsFilter
@@ -98,6 +98,7 @@ proc `<`*(a, b: TupleDirective): auto =
     return false
 
 proc filter*(dir: TupleDirective): BitsFilter =
+    ## Returns the filter for a tuple
     if dir.filter == nil:
         var required = Bits()
         var excluded = Bits()
