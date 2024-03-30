@@ -88,7 +88,7 @@ proc attachDetachProcBody(
             cases.add(nnkElse.newTree(nnkDiscardStmt.newTree(newEmptyNode())))
 
     return quote do:
-        var `entityIndex` = `appStateIdent`.`worldIdent`[`entityId`]
+        var `entityIndex` {.used.} = `appStateIdent`.`worldIdent`[`entityId`]
         `cases`
 
 proc isAttachable(gen: DirectiveGen): bool =
