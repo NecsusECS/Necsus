@@ -1,25 +1,56 @@
-import tables, sets, sequtils, archetype, algorithm, ../util/bits
+import tables, sets, sequtils, archetype, algorithm, ../util/bits, hashes
 
 export archetype, bits.hash, bits.`$`, bits.`==`
 
 type
-    AttachableValues = tuple[archetype: Bits, filter: BitsFilter]
+    BuilderAction = object
+        case filtered: bool
+        of true: filter: BitsFilter
+        of false: discard
+
+        case attaching: bool
+        of true: attach: Bits
+        of false: discard
+
+        case detaching: bool
+        of true: detach: Bits
+        of false: discard
 
     ArchetypeBuilder*[T] = ref object
         ## A builder for creating a list of all known archetypes
         lookup: seq[T]
         archetypes: HashSet[Bits]
-        attachable: HashSet[AttachableValues]
-        detachable: HashSet[Bits]
+        actions: HashSet[BuilderAction]
 
 proc newArchetypeBuilder*[T](): ArchetypeBuilder[T] =
     ## Creates a new ArchetypeBuilder
     ArchetypeBuilder[T](
         lookup: newSeq[T](256),
         archetypes: initHashSet[Bits](),
-        attachable: initHashSet[AttachableValues](),
-        detachable: initHashSet[Bits](),
+        actions: initHashSet[BuilderAction](),
     )
+
+proc hash*(action: BuilderAction): Hash =
+    if action.filtered:
+        result = action.filter.hash
+    if action.attaching:
+        result = result !& action.attach.hash
+    if action.detaching:
+        result = result !& action.detach.hash
+
+proc `==`*(a, b: BuilderAction): bool =
+    if a.filtered != b.filtered:
+        return false
+    elif a.filtered and a.filtered != b.filtered:
+        return false
+    elif a.attaching == b.attaching:
+        return false
+    elif a.attaching and a.attach != b.attach:
+        return false
+    elif a.detaching == b.detaching:
+        return false
+    elif a.detaching and a.detach != b.detach:
+        return false
 
 proc asBits[T](builder: var ArchetypeBuilder[T], values: openarray[T]): Bits =
     result = Bits()
@@ -38,27 +69,39 @@ proc define*[T](builder: var ArchetypeBuilder[T], values: openarray[T]) =
 
 proc attachable*[T](builder: var ArchetypeBuilder[T], values: openarray[T], filter: BitsFilter) =
     ## Describes components that can be attached to entities to create new archetypes
-    builder.attachable.incl((asBits(builder, values), filter))
+    builder.actions.incl(
+        BuilderAction(filtered: true, filter: filter, attaching: true, attach: asBits(builder, values)))
 
 proc detachable*[T](builder: var ArchetypeBuilder[T], values: openarray[T]) =
     ## Describes components that can be detached from entities to create new archetypes
-    builder.detachable.incl(asBits(builder, values))
+    builder.actions.incl(BuilderAction(detaching: true, detach: asBits(builder, values)))
+
+proc attachDetach*[T](
+    builder: var ArchetypeBuilder[T],
+    attach: openarray[T],
+    detach: openarray[T],
+    filter: BitsFilter = builder.filter([], [])
+) =
+    ## Describes components that can be attached to entities to create new archetypes
+    builder.actions.incl(
+        BuilderAction(
+            filtered: true, filter: filter,
+            attaching: true, attach: asBits(builder, attach),
+            detaching: true, detach: asBits(builder, detach)
+        )
+    )
 
 proc process[T](builder: ArchetypeBuilder[T], next: Bits, output: var HashSet[Bits], workQueue: var HashSet[Bits]) =
     if next.card > 0 and next notin output:
         output.incl(next)
 
-        # Create all variations of existing archetypes for when a new component combination is attached
-        for attachable in builder.attachable:
-            if next.matches(attachable.filter):
-                let variant = next + attachable.archetype
-                if variant notin output:
-                    workQueue.incl(variant)
-
-        # Create all variations of existing archetypes for when a new component combination is detached
-        for detachable in builder.detachable.items:
-            if detachable < next:
-                let variant = next - detachable
+        for action in builder.actions:
+            if not action.filtered or next.matches(action.filter):
+                var variant = next
+                if action.attaching:
+                    variant = variant + action.attach
+                if action.detaching:
+                    variant = variant - action.detach
                 if variant notin output:
                     workQueue.incl(variant)
 

@@ -75,6 +75,19 @@ suite "Creating archetypes":
             "{A}", "{A, D}", "{A, B, C}", "{B}", "{D}", "{B, C, D}", "{B, C}", "{A, B, C, D}", "{A, B}"
         ]))
 
+    test "Attaching and detaching in a single action":
+        var builder = newArchetypeBuilder[string]()
+        builder.define([ "A", "B" ])
+        builder.define([ "A", "B", "C" ])
+        builder.define([ "B", "C" ])
+
+        builder.attachDetach([ "D", "E" ], [ "A" ])
+        let archetypes = builder.build()
+
+        check(archetypes.toSeq.mapIt($it).toHashSet == toHashSet([
+            "{A, B}", "{A, B, C}", "{B, C}", "{B, D, E}", "{B, C, D, E}"
+        ]))
+
     test "Require that the same archetype be added with elements in the same order":
         var builder = newArchetypeBuilder[string]()
         builder.define([ "A", "B", "C" ])
