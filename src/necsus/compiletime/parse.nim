@@ -1,5 +1,5 @@
 import macros, sequtils, strformat, options, typeReader, strutils
-import componentDef, tupleDirective, monoDirective, dualDirective, systemGen
+import componentDef, tupleDirective, monoDirective, dualDirective, systemGen, directiveArg
 import ../runtime/[pragmas, directives]
 import spawnGen, queryGen, deleteGen, attachDetachGen, sharedGen, tickIdGen
 import localGen, lookupGen, eventGen, timeGen, debugGen, bundleGen, saveGen, restoreGen

@@ -1,5 +1,5 @@
 import macros, options, sequtils
-import tupleDirective, componentDef, archetype, worldEnum, systemGen
+import tupleDirective, componentDef, archetype, worldEnum, systemGen, directiveArg
 import ../runtime/query
 
 proc read(fromVar: NimNode, fromArch: Archetype[ComponentDef], arg: DirectiveArg): NimNode =
