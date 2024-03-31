@@ -1,4 +1,4 @@
-import componentDef, hashes, sequtils, macros, strutils, ../util/bits, directiveArg
+import componentDef, hashes, sequtils, strutils, ../util/bits, directiveArg
 
 type
     TupleDirective* = ref object
@@ -9,7 +9,7 @@ type
 
 proc newTupleDir*(args: openarray[DirectiveArg]): TupleDirective =
     ## Create a TupleDirective
-    return TupleDirective(args: args.toSeq, name: args.items.toSeq.mapIt(it.component).generateName)
+    return TupleDirective(args: args.toSeq, name: args.generateName)
 
 proc `$`*(dir: TupleDirective): string =
     dir.name & "(" & join(dir.args, ", ") & ")"

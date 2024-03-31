@@ -1,5 +1,5 @@
 import macros, sequtils
-import tools, tupleDirective, dualDirective, commonVars, queryGen, lookupGen, spawnGen
+import tools, tupleDirective, dualDirective, commonVars, queryGen, lookupGen, spawnGen, directiveArg
 import archetype, componentDef, worldEnum, systemGen, archetypeBuilder
 import ../runtime/[world, archetypeStore, directives], ../util/bits
 
@@ -177,7 +177,7 @@ proc generateSwap(details: GenerateContext, arg: SystemArg, name: string, dir: D
 
     case details.hook
     of Outside:
-        let `body` = details.attachDetachProcBody(dir.first, dir.second)
+        let `body` = details.attachDetachProcBody(dir.first.comps, dir.second.comps)
         let appStateTypeName = details.appStateTypeName
         return quote do:
             proc `swapProc`(
@@ -197,7 +197,7 @@ proc generateSwap(details: GenerateContext, arg: SystemArg, name: string, dir: D
 proc swapArchetype(builder: var ArchetypeBuilder[ComponentDef], systemArgs: seq[SystemArg], dir: DualDirective) =
     for arg in systemArgs.allArgs:
         if arg.generator.isAttachable:
-            builder.attachDetach(dir.first, dir.second, arg.tupleDir.filter)
+            builder.attachDetach(dir.first.comps, dir.second.comps, arg.tupleDir.filter)
 
 proc swapFields(name: string, dir: DualDirective): seq[WorldField] =
     @[ (name, nnkBracketExpr.newTree(bindSym("Swap"), dir.first.asTupleType, dir.second.asTupleType)) ]

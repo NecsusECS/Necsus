@@ -1,19 +1,15 @@
-import componentDef, strutils, hashes, sequtils, macros
+import componentDef, strutils, hashes, directiveArg
 
 type
     DualDirective* = ref object
         ## A directive that contains two tuples
-        first*: seq[ComponentDef]
-        second*: seq[ComponentDef]
+        first*: seq[DirectiveArg]
+        second*: seq[DirectiveArg]
         name*: string
 
-proc newDualDir*(args: openarray[NimNode]): DualDirective =
+proc newDualDir*(first: seq[DirectiveArg], second: seq[DirectiveArg]): DualDirective =
     ## Create a new dual directive
-    result = DualDirective(
-        first: args[0].children.toSeq.mapIt(newComponentDef(it)),
-        second: args[1].children.toSeq.mapIt(newComponentDef(it)),
-    )
-    result.name = result.first.generateName & "_" & result.second.generateName
+    return DualDirective(first: first, second: second, name: first.generateName & "_" & second.generateName)
 
 proc hash*(directive: DualDirective): Hash = hash(directive.first) !& hash(directive.second)
 
@@ -22,5 +18,5 @@ proc `$`*(dir: DualDirective): string =
 
 iterator items*(directive: DualDirective): ComponentDef =
     ## Produce all components in a directive
-    for arg in directive.first: yield arg
-    for arg in directive.second: yield arg
+    for arg in directive.first: yield arg.component
+    for arg in directive.second: yield arg.component

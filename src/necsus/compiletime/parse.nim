@@ -146,7 +146,10 @@ proc parseParametricArg(
             nestedArgs = parseNestedArgs(context, nestedArgs)
         ))
     of DirectiveKind.Dual:
-        let dualDir = newDualDir(directiveParametrics)
+        let dualDir = newDualDir(
+            directiveParametrics[0].parseDirectiveArgsFromTuple,
+            directiveParametrics[1].parseDirectiveArgsFromTuple
+        )
         let nestedArgs = gen.nestedArgsDual(dualDir)
         return some(newSystemArg[DualDirective](
             source = directiveSymbol,
