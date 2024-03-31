@@ -61,7 +61,8 @@ proc createArchMove(
 proc attachDetachProcBody(
     details: GenerateContext,
     attachComps: seq[ComponentDef],
-    detachComps: seq[ComponentDef]
+    detachComps: seq[ComponentDef],
+    optDetachComps: seq[ComponentDef]
 ): NimNode =
     ## Generates the logic needed to attach and detach components from an existing entity
 
@@ -72,7 +73,7 @@ proc attachDetachProcBody(
         cases = nnkCaseStmt.newTree(newDotExpr(entityIndex, ident("archetype")))
         for (ofBranch, fromArch) in archetypeCases(details):
             if detachComps.len == 0 or fromArch.containsAllOf(detachComps):
-                let toArch = fromArch + attachComps - detachComps
+                let toArch = fromArch + attachComps - detachComps - optDetachComps
                 if fromArch == toArch:
                     if attachComps.len > 0:
                         cases.add(nnkOfBranch.newTree(ofBranch, details.createArchUpdate(attachComps, toArch)))
@@ -110,7 +111,7 @@ proc generateAttach(details: GenerateContext, arg: SystemArg, name: string, atta
 
     case details.hook
     of Outside:
-        let `body` = details.attachDetachProcBody(attach.comps, @[])
+        let `body` = details.attachDetachProcBody(attach.comps, @[], @[])
         let appStateTypeName = details.appStateTypeName
         return quote do:
             proc `attachProc`(
@@ -135,8 +136,16 @@ let attachGenerator* {.compileTime.} = newGenerator(
     worldFields = attachFields
 )
 
+proc splitDetachArgs(args: openarray[DirectiveArg]): tuple[detach: seq[ComponentDef], optDetach: seq[ComponentDef]] =
+    for arg in args:
+        if arg.kind == Optional:
+            result.optDetach.add(arg.component)
+        else:
+            result.detach.add(arg.component)
+
 proc detachArchetype(builder: var ArchetypeBuilder[ComponentDef], systemArgs: seq[SystemArg], dir: TupleDirective) =
-    builder.detachable(dir.comps)
+    let partition = dir.args.splitDetachArgs
+    builder.detachable(partition.detach, partition.optDetach)
 
 proc detachFields(name: string, dir: TupleDirective): seq[WorldField] =
     @[ (name, nnkBracketExpr.newTree(bindSym("Detach"), dir.asTupleType)) ]
@@ -149,7 +158,8 @@ proc generateDetach(details: GenerateContext, arg: SystemArg, name: string, deta
     case details.hook
     of GenerateHook.Outside:
         let appStateTypeName = details.appStateTypeName
-        let body = details.attachDetachProcBody(@[], detach.comps)
+        let (detachComps, optDetachComps) = detach.args.splitDetachArgs
+        let body = details.attachDetachProcBody(@[], detachComps, optDetachComps)
         return quote:
             proc `detachProc`(`appStateIdent`: var `appStateTypeName`, `entityId`: EntityId) =
                 `body`
@@ -177,7 +187,8 @@ proc generateSwap(details: GenerateContext, arg: SystemArg, name: string, dir: D
 
     case details.hook
     of Outside:
-        let `body` = details.attachDetachProcBody(dir.first.comps, dir.second.comps)
+        let (detachComps, optDetachComps) = dir.second.splitDetachArgs
+        let `body` = details.attachDetachProcBody(dir.first.comps, detachComps, optDetachComps)
         let appStateTypeName = details.appStateTypeName
         return quote do:
             proc `swapProc`(
@@ -195,9 +206,11 @@ proc generateSwap(details: GenerateContext, arg: SystemArg, name: string, dir: D
         return newEmptyNode()
 
 proc swapArchetype(builder: var ArchetypeBuilder[ComponentDef], systemArgs: seq[SystemArg], dir: DualDirective) =
+    let attach = dir.first.comps
+    let (detach, optDetach) = dir.second.splitDetachArgs
     for arg in systemArgs.allArgs:
         if arg.generator.isAttachable:
-            builder.attachDetach(dir.first.comps, dir.second.comps, [], arg.tupleDir.filter)
+            builder.attachDetach(attach, detach, optDetach, arg.tupleDir.filter)
 
 proc swapFields(name: string, dir: DualDirective): seq[WorldField] =
     @[ (name, nnkBracketExpr.newTree(bindSym("Swap"), dir.first.asTupleType, dir.second.asTupleType)) ]
