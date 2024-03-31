@@ -101,7 +101,8 @@ proc process[T](builder: ArchetypeBuilder[T], next: Bits, output: var HashSet[Bi
                 if action.attaching:
                     variant = variant + action.attach
                 if action.detaching:
-                    variant = variant - action.detach
+                    if action.detach <= variant:
+                        variant = variant - action.detach
                 if variant notin output:
                     workQueue.incl(variant)
 
