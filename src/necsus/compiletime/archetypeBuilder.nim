@@ -13,8 +13,11 @@ type
         of false: discard
 
         case detaching: bool
-        of true: detach: Bits
-        of false: discard
+        of true:
+            detach: Bits
+            optDetach: Bits
+        of false:
+            discard
 
     ArchetypeBuilder*[T] = ref object
         ## A builder for creating a list of all known archetypes
@@ -72,14 +75,21 @@ proc attachable*[T](builder: var ArchetypeBuilder[T], values: openarray[T], filt
     builder.actions.incl(
         BuilderAction(filtered: true, filter: filter, attaching: true, attach: asBits(builder, values)))
 
-proc detachable*[T](builder: var ArchetypeBuilder[T], values: openarray[T]) =
+proc detachable*[T](builder: var ArchetypeBuilder[T], values: openarray[T], optional: openarray[T] = []) =
     ## Describes components that can be detached from entities to create new archetypes
-    builder.actions.incl(BuilderAction(detaching: true, detach: asBits(builder, values)))
+    builder.actions.incl(
+        BuilderAction(
+            detaching: true,
+            detach: asBits(builder, values),
+            optDetach: asBits(builder, optional)
+        )
+    )
 
 proc attachDetach*[T](
     builder: var ArchetypeBuilder[T],
     attach: openarray[T],
     detach: openarray[T],
+    optDetach: openarray[T] = [],
     filter: BitsFilter = builder.filter([], [])
 ) =
     ## Describes components that can be attached to entities to create new archetypes
@@ -87,7 +97,7 @@ proc attachDetach*[T](
         BuilderAction(
             filtered: true, filter: filter,
             attaching: true, attach: asBits(builder, attach),
-            detaching: true, detach: asBits(builder, detach)
+            detaching: true, detach: asBits(builder, detach), optDetach: asBits(builder, optDetach)
         )
     )
 
@@ -103,6 +113,7 @@ proc process[T](builder: ArchetypeBuilder[T], next: Bits, output: var HashSet[Bi
                 if action.detaching:
                     if action.detach <= variant:
                         variant = variant - action.detach
+                    variant = variant - action.optDetach
                 if variant notin output:
                     workQueue.incl(variant)
 

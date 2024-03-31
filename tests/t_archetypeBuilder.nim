@@ -100,6 +100,18 @@ suite "Creating archetypes":
             "{A, B, C}", "{B, C, D}", "{B}"
         ]))
 
+    test "Optional detaching":
+        var builder = newArchetypeBuilder[string]()
+        builder.define([ "A", "B", "C", "D" ])
+        builder.define([ "A", "C", "D", "E" ])
+
+        builder.detachable([ "C", "D" ], [ "E" ])
+        let archetypes = builder.build()
+
+        check(archetypes.toSeq.mapIt($it).toHashSet == toHashSet([
+            "{A, B, C, D}", "{A, C, D, E}", "{A, B}", "{A}"
+        ]))
+
     test "Require that the same archetype be added with elements in the same order":
         var builder = newArchetypeBuilder[string]()
         builder.define([ "A", "B", "C" ])

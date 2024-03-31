@@ -197,7 +197,7 @@ proc generateSwap(details: GenerateContext, arg: SystemArg, name: string, dir: D
 proc swapArchetype(builder: var ArchetypeBuilder[ComponentDef], systemArgs: seq[SystemArg], dir: DualDirective) =
     for arg in systemArgs.allArgs:
         if arg.generator.isAttachable:
-            builder.attachDetach(dir.first.comps, dir.second.comps, arg.tupleDir.filter)
+            builder.attachDetach(dir.first.comps, dir.second.comps, [], arg.tupleDir.filter)
 
 proc swapFields(name: string, dir: DualDirective): seq[WorldField] =
     @[ (name, nnkBracketExpr.newTree(bindSym("Swap"), dir.first.asTupleType, dir.second.asTupleType)) ]
