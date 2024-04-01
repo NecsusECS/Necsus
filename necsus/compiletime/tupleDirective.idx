@@ -1,15 +1,4 @@
-Include	necsus/compiletime/tupleDirective.html#Include	DirectiveArgKind.Include	
-Exclude	necsus/compiletime/tupleDirective.html#Exclude	DirectiveArgKind.Exclude	
-Optional	necsus/compiletime/tupleDirective.html#Optional	DirectiveArgKind.Optional	
-DirectiveArgKind	necsus/compiletime/tupleDirective.html#DirectiveArgKind	tupleDirective: DirectiveArgKind	
-DirectiveArg	necsus/compiletime/tupleDirective.html#DirectiveArg	tupleDirective: DirectiveArg	
 TupleDirective	necsus/compiletime/tupleDirective.html#TupleDirective	tupleDirective: TupleDirective	
-newDirectiveArg	necsus/compiletime/tupleDirective.html#newDirectiveArg,ComponentDef,bool,DirectiveArgKind	tupleDirective: newDirectiveArg(component: ComponentDef; isPointer: bool; kind: DirectiveArgKind): DirectiveArg	
-`$`	necsus/compiletime/tupleDirective.html#$,DirectiveArg	tupleDirective: `$`(arg: DirectiveArg): string	
-`==`	necsus/compiletime/tupleDirective.html#==,DirectiveArg,DirectiveArg	tupleDirective: `==`(a, b: DirectiveArg): auto	
-`&lt;`	necsus/compiletime/tupleDirective.html#<,DirectiveArg,DirectiveArg	tupleDirective: `&lt;`(a, b: DirectiveArg): auto	
-hash	necsus/compiletime/tupleDirective.html#hash,DirectiveArg	tupleDirective: hash(arg: DirectiveArg): Hash	
-`type`	necsus/compiletime/tupleDirective.html#type,DirectiveArg	tupleDirective: `type`(def: DirectiveArg): NimNode	
 newTupleDir	necsus/compiletime/tupleDirective.html#newTupleDir,openArray[DirectiveArg]	tupleDirective: newTupleDir(args: openArray[DirectiveArg]): TupleDirective	
 `$`	necsus/compiletime/tupleDirective.html#$,TupleDirective	tupleDirective: `$`(dir: TupleDirective): string	
 items	necsus/compiletime/tupleDirective.html#items.i,TupleDirective	tupleDirective: items(directive: TupleDirective): ComponentDef	

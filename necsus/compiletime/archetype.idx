@@ -22,3 +22,4 @@ newArchetypeSet	necsus/compiletime/archetype.html#newArchetypeSet,openArray[Arch
 len	necsus/compiletime/archetype.html#len,ArchetypeSet[T]	archetype: len[T](archetypes: ArchetypeSet[T]): int	
 contains	necsus/compiletime/archetype.html#contains,ArchetypeSet[T],Archetype[T]	archetype: contains[T](archetypes: ArchetypeSet[T]; archetype: Archetype[T]): bool	
 items	necsus/compiletime/archetype.html#items.i,ArchetypeSet[T]	archetype: items[T](archetypes: ArchetypeSet[T]): Archetype[T]	
+dumpAnalysis	necsus/compiletime/archetype.html#dumpAnalysis,ArchetypeSet[T]	archetype: dumpAnalysis[T](archetypes: ArchetypeSet[T])	

@@ -1,2 +1,3 @@
 attachGenerator	necsus/compiletime/attachDetachGen.html#attachGenerator	attachDetachGen: attachGenerator	
 detachGenerator	necsus/compiletime/attachDetachGen.html#detachGenerator	attachDetachGen: detachGenerator	
+swapGenerator	necsus/compiletime/attachDetachGen.html#swapGenerator	attachDetachGen: swapGenerator	

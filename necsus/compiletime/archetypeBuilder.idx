@@ -1,7 +1,10 @@
 ArchetypeBuilder	necsus/compiletime/archetypeBuilder.html#ArchetypeBuilder	archetypeBuilder: ArchetypeBuilder	
 newArchetypeBuilder	necsus/compiletime/archetypeBuilder.html#newArchetypeBuilder	archetypeBuilder: newArchetypeBuilder[T](): ArchetypeBuilder[T]	
+hash	necsus/compiletime/archetypeBuilder.html#hash,BuilderAction	archetypeBuilder: hash(action: BuilderAction): Hash	
+`==`	necsus/compiletime/archetypeBuilder.html#==,BuilderAction,BuilderAction	archetypeBuilder: `==`(a, b: BuilderAction): bool	
 filter	necsus/compiletime/archetypeBuilder.html#filter,ArchetypeBuilder[T],openArray[T],openArray[T]	archetypeBuilder: filter[T](builder: var ArchetypeBuilder[T]; mustContain: openArray[T];\n          mustExclude: openArray[T]): BitsFilter	
 define	necsus/compiletime/archetypeBuilder.html#define,ArchetypeBuilder[T],openArray[T]	archetypeBuilder: define[T](builder: var ArchetypeBuilder[T]; values: openArray[T])	
 attachable	necsus/compiletime/archetypeBuilder.html#attachable,ArchetypeBuilder[T],openArray[T],BitsFilter	archetypeBuilder: attachable[T](builder: var ArchetypeBuilder[T]; values: openArray[T];\n              filter: BitsFilter)	
-detachable	necsus/compiletime/archetypeBuilder.html#detachable,ArchetypeBuilder[T],openArray[T]	archetypeBuilder: detachable[T](builder: var ArchetypeBuilder[T]; values: openArray[T])	
+detachable	necsus/compiletime/archetypeBuilder.html#detachable,ArchetypeBuilder[T],openArray[T],openArray[T]	archetypeBuilder: detachable[T](builder: var ArchetypeBuilder[T]; values: openArray[T];\n              optional: openArray[T] = [])	
+attachDetach	necsus/compiletime/archetypeBuilder.html#attachDetach,ArchetypeBuilder[T],openArray[T],openArray[T],openArray[T],BitsFilter	archetypeBuilder: attachDetach[T](builder: var ArchetypeBuilder[T]; attach: openArray[T];\n                detach: openArray[T]; optDetach: openArray[T] = [];\n                filter: BitsFilter = builder.filter([], []))	
 build	necsus/compiletime/archetypeBuilder.html#build,ArchetypeBuilder[T]	archetypeBuilder: build[T](builder: ArchetypeBuilder[T]): ArchetypeSet[T]	

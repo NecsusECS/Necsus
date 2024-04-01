@@ -128,6 +128,8 @@ window.addEventListener('DOMContentLoaded', main);
     JsonParsingError, ValueError, Exception].}">Restore</a></li>
   <li><a class="reference" href="#Save"
     title="Save = proc (): string {.raises: [IOError, OSError, ValueError, Exception].}">Save</a></li>
+  <li><a class="reference" href="#Swap"
+    title="Swap[A; B] = proc (entityId: EntityId; components: A) {.gcsafe, raises: [].}">Swap</a></li>
   <li><a class="reference" href="#SystemInstance"
     title="SystemInstance = proc (): void {.closure.}">SystemInstance</a></li>
   <li><a class="reference" href="#TickId"
@@ -237,6 +239,14 @@ Generates a saved game state as a json value
 
 </dd>
 </div>
+<div id="Swap">
+<dt><pre><a href="directives.html#Swap"><span class="Identifier">Swap</span></a><span class="Other">[</span><span class="Identifier">A</span><span class="Other">;</span> <span class="Identifier">B</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">entityId</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">;</span> <span class="Identifier">components</span><span class="Other">:</span> <span class="Identifier">A</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+A directive that adds components in <tt class="docutils literal"><span class="pre"><span class="Identifier">A</span></span></tt> and removes components in <tt class="docutils literal"><span class="pre"><span class="Identifier">B</span></span></tt>
+
+</dd>
+</div>
 <div id="SystemInstance">
 <dt><pre><a href="directives.html#SystemInstance"><span class="Identifier">SystemInstance</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">void</span> {.<span class="Identifier">closure</span>.}</pre></dt>
 <dd>
@@ -279,7 +289,7 @@ The total amount of time spent in an app
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-03-29 15:42:07 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-04-01 00:54:18 UTC</small>
       </div>
     </div>
   </div>

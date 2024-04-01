@@ -2,6 +2,7 @@ Nfloat	necsus/runtime/directives.html#Nfloat	directives: Nfloat
 Delete	necsus/runtime/directives.html#Delete	directives: Delete	
 Attach	necsus/runtime/directives.html#Attach	directives: Attach	
 Detach	necsus/runtime/directives.html#Detach	directives: Detach	
+Swap	necsus/runtime/directives.html#Swap	directives: Swap	
 Lookup	necsus/runtime/directives.html#Lookup	directives: Lookup	
 Outbox	necsus/runtime/directives.html#Outbox	directives: Outbox	
 TimeDelta	necsus/runtime/directives.html#TimeDelta	directives: TimeDelta	

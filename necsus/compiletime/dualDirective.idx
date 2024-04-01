@@ -1,0 +1,5 @@
+DualDirective	necsus/compiletime/dualDirective.html#DualDirective	dualDirective: DualDirective	
+newDualDir	necsus/compiletime/dualDirective.html#newDualDir,seq[DirectiveArg],seq[DirectiveArg]	dualDirective: newDualDir(first: seq[DirectiveArg]; second: seq[DirectiveArg]): DualDirective	
+hash	necsus/compiletime/dualDirective.html#hash,DualDirective	dualDirective: hash(directive: DualDirective): Hash	
+`$`	necsus/compiletime/dualDirective.html#$,DualDirective	dualDirective: `$`(dir: DualDirective): string	
+items	necsus/compiletime/dualDirective.html#items.i,DualDirective	dualDirective: items(directive: DualDirective): ComponentDef	

@@ -17,7 +17,7 @@
 <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro:400,500,600' rel='stylesheet' type='text/css'/>
 
 <!-- CSS -->
-<title>src/necsus/util/profile</title>
+<title>src/necsus/compiletime/dualDirective</title>
 <link rel="stylesheet" type="text/css" href="../../nimdoc.out.css">
 
 <script type="text/javascript" src="../../dochack.js"></script>
@@ -69,7 +69,7 @@ window.addEventListener('DOMContentLoaded', main);
 <body>
 <div class="document" id="documentId">
   <div class="container">
-    <h1 class="title">src/necsus/util/profile</h1>
+    <h1 class="title">src/necsus/compiletime/dualDirective</h1>
     <div class="row">
   <div class="three columns">
   <div class="theme-switch-wrapper">
@@ -107,25 +107,41 @@ window.addEventListener('DOMContentLoaded', main);
 <li>
   <a class="reference reference-toplevel" href="#7" id="57">Types</a>
   <ul class="simple simple-toc-section">
-      <li><a class="reference" href="#Profiler"
-    title="Profiler = object
-  name*: string
-  next: uint
-  readings: array[READINGS, Nfloat]">Profiler</a></li>
+      <li><a class="reference" href="#DualDirective"
+    title="DualDirective = ref object
+  first*: seq[DirectiveArg]
+  second*: seq[DirectiveArg]
+  name*: string">DualDirective</a></li>
 
   </ul>
 </li>
 <li>
   <a class="reference reference-toplevel" href="#12" id="62">Procs</a>
   <ul class="simple simple-toc-section">
-      <ul class="simple nested-toc-section">record
-      <li><a class="reference" href="#record%2CProfiler%2CNfloat"
-    title="record(profiler: var Profiler; time: Nfloat)">record(profiler: var Profiler; time: Nfloat)</a></li>
+      <ul class="simple nested-toc-section">$
+      <li><a class="reference" href="#%24%2CDualDirective"
+    title="`$`(dir: DualDirective): string">`$`(dir: DualDirective): string</a></li>
 
   </ul>
-  <ul class="simple nested-toc-section">summarize
-      <li><a class="reference" href="#summarize%2CopenArray%5BProfiler%5D%2CNecsusConf"
-    title="summarize(profilers: var openArray[Profiler]; conf: NecsusConf)">summarize(profilers: var openArray[Profiler]; conf: NecsusConf)</a></li>
+  <ul class="simple nested-toc-section">hash
+      <li><a class="reference" href="#hash%2CDualDirective"
+    title="hash(directive: DualDirective): Hash">hash(directive: DualDirective): Hash</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">newDualDir
+      <li><a class="reference" href="#newDualDir%2Cseq%5BDirectiveArg%5D%2Cseq%5BDirectiveArg%5D"
+    title="newDualDir(first: seq[DirectiveArg]; second: seq[DirectiveArg]): DualDirective">newDualDir(first: seq[DirectiveArg]; second: seq[DirectiveArg]): DualDirective</a></li>
+
+  </ul>
+
+  </ul>
+</li>
+<li>
+  <a class="reference reference-toplevel" href="#15" id="65">Iterators</a>
+  <ul class="simple simple-toc-section">
+      <ul class="simple nested-toc-section">items
+      <li><a class="reference" href="#items.i%2CDualDirective"
+    title="items(directive: DualDirective): ComponentDef">items(directive: DualDirective): ComponentDef</a></li>
 
   </ul>
 
@@ -143,20 +159,20 @@ window.addEventListener('DOMContentLoaded', main);
   <div class="section" id="6">
 <h1><a class="toc-backref" href="#6">Imports</a></h1>
 <dl class="item">
-<a class="reference external" href="../runtime/necsusConf.html">../runtime/necsusConf</a>, <a class="reference external" href="../runtime/directives.html">../runtime/directives</a>
+<a class="reference external" href="componentDef.html">componentDef</a>, <a class="reference external" href="directiveArg.html">directiveArg</a>
 </dl></div>
 <div class="section" id="7">
 <h1><a class="toc-backref" href="#7">Types</a></h1>
 <dl class="item">
-<div id="Profiler">
-<dt><pre><a href="profile.html#Profiler"><span class="Identifier">Profiler</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
+<div id="DualDirective">
+<dt><pre><a href="dualDirective.html#DualDirective"><span class="Identifier">DualDirective</span></a> <span class="Other">=</span> <span class="Keyword">ref</span> <span class="Keyword">object</span>
+  <span class="Identifier">first</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="directiveArg.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a><span class="Other">]</span>
+  <span class="Identifier">second</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="directiveArg.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a><span class="Other">]</span>
   <span class="Identifier">name</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">string</span>
-  <span class="Identifier">next</span><span class="Other">:</span> <span class="Identifier">uint</span>
-  <span class="Identifier">readings</span><span class="Other">:</span> <span class="Identifier">array</span><span class="Other">[</span><span class="Identifier">READINGS</span><span class="Other">,</span> <a href="../runtime/directives.html#Nfloat"><span class="Identifier">Nfloat</span></a><span class="Other">]</span>
 </pre></dt>
 <dd>
 
-
+A directive that contains two tuples
 
 </dd>
 </div>
@@ -165,20 +181,41 @@ window.addEventListener('DOMContentLoaded', main);
 <div class="section" id="12">
 <h1><a class="toc-backref" href="#12">Procs</a></h1>
 <dl class="item">
-<div id="record,Profiler,Nfloat">
-<dt><pre><span class="Keyword">proc</span> <a href="#record%2CProfiler%2CNfloat"><span class="Identifier">record</span></a><span class="Other">(</span><span class="Identifier">profiler</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="profile.html#Profiler"><span class="Identifier">Profiler</span></a><span class="Other">;</span> <span class="Identifier">time</span><span class="Other">:</span> <a href="../runtime/directives.html#Nfloat"><span class="Identifier">Nfloat</span></a><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<div id="$,DualDirective">
+<dt><pre><span class="Keyword">proc</span> <a href="#%24%2CDualDirective"><span class="Identifier">`$`</span></a><span class="Other">(</span><span class="Identifier">dir</span><span class="Other">:</span> <a href="dualDirective.html#DualDirective"><span class="Identifier">DualDirective</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
-Records a reading
+
 
 </dd>
 </div>
-<div id="summarize,openArray[Profiler],NecsusConf">
-<dt><pre><span class="Keyword">proc</span> <a href="#summarize%2CopenArray%5BProfiler%5D%2CNecsusConf"><span class="Identifier">summarize</span></a><span class="Other">(</span><span class="Identifier">profilers</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">openArray</span><span class="Other">[</span><a href="profile.html#Profiler"><span class="Identifier">Profiler</span></a><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">conf</span><span class="Other">:</span> <a href="../runtime/necsusConf.html#NecsusConf"><span class="Identifier">NecsusConf</span></a><span class="Other">)</span> {.
-    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">,</span> <span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span></span>.}</pre></dt>
+<div id="hash,DualDirective">
+<dt><pre><span class="Keyword">proc</span> <a href="#hash%2CDualDirective"><span class="Identifier">hash</span></a><span class="Other">(</span><span class="Identifier">directive</span><span class="Other">:</span> <a href="dualDirective.html#DualDirective"><span class="Identifier">DualDirective</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Hash</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 
+
+</dd>
+</div>
+<div id="newDualDir,seq[DirectiveArg],seq[DirectiveArg]">
+<dt><pre><span class="Keyword">proc</span> <a href="#newDualDir%2Cseq%5BDirectiveArg%5D%2Cseq%5BDirectiveArg%5D"><span class="Identifier">newDualDir</span></a><span class="Other">(</span><span class="Identifier">first</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="directiveArg.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">second</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="directiveArg.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="dualDirective.html#DualDirective"><span class="Identifier">DualDirective</span></a> {.
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+Create a new dual directive
+
+</dd>
+</div>
+
+</dl></div>
+<div class="section" id="15">
+<h1><a class="toc-backref" href="#15">Iterators</a></h1>
+<dl class="item">
+<div id="items.i,DualDirective">
+<dt><pre><span class="Keyword">iterator</span> <a href="#items.i%2CDualDirective"><span class="Identifier">items</span></a><span class="Other">(</span><span class="Identifier">directive</span><span class="Other">:</span> <a href="dualDirective.html#DualDirective"><span class="Identifier">DualDirective</span></a><span class="Other">)</span><span class="Other">:</span> <a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+Produce all components in a directive
 
 </dd>
 </div>

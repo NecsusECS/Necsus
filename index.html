@@ -338,6 +338,25 @@ proc attachDetach(query: FullQuery[(A, )], attachB: Attach[(B, )], detachC: Deta
 
 proc myApp() {.necsus([~attachDetach], newNecsusConf()).}
 </code></pre>
+<p>Note that when detaching, an entity must have <em>all</em> of the listed components for any of them to be detached.</p>
+<h4>Swap</h4>
+<p>If you need to attach a new component at the same time you need to detach other components, you can use the <code>Swap</code>
+directive. It takes two parameters: (1) a set of components to attach, and (2) a set of components to detach.</p>
+<pre><code class="language-nim">import necsus, options
+
+type
+    A = object
+    B = object
+    C = object
+
+proc swapComponents(query: FullQuery[(A, )], replace: Swap[(B, ), (C, )]) =
+    for eid, _ in query:
+        eid.replace((B(), ))
+
+proc myApp() {.necsus([~swapComponents], newNecsusConf()).}
+</code></pre>
+<p>One of the benefits of using <code>Swap</code> over combining <code>Detach</code> and <code>Attach</code> is that it allows Necsus to more intelligently
+create the list of archetypes that are needed. This will speed up build as well as runtime execution.</p>
 <h4>TimeDelta</h4>
 <p><code>TimeDelta</code> is a <code>proc(): float</code> filled with the amount of time since the last execution of a system</p>
 <pre><code class="language-nim">import necsus
@@ -789,14 +808,20 @@ runSystemOnce do (str: Shared[string]) -&gt; void:
         myExampleSystem(str)
         check(str.get == &quot;foo&quot;)
 </code></pre>
-<h2>Profiling systems</h2>
+<h2>Debugging</h2>
+<h3>Profiling systems</h3>
 <p>To get a quick and dirty idea of how your app is performing, you can compile with the <code>-d:profile</code> flag set. This
 will cause Necsus to add profiling code that will report how long each system is taking. It takes measurements,
 then outputs the timings to the console.</p>
-<h2>Debugging Generated Code</h2>
+<h3>Dumping Generated Code</h3>
 <p>If Necsus isn't behaving as you would expect, the best tool you've got in your toolbox is the ability to dump the code
 that it generates. This allows you to walk through what is happening, or even substitute the generated code into your
 app and execute it. This can be enabled by compiling with the <code>-d:dump</code> flag set.</p>
+<h3>Dumping Archetypes</h3>
+<p>If you find that builds are slowing down, it's often caused by archetypes being created that are never used. You can
+set the <code>-d:archetypes</code> flag as part of your build to do a dump of all the archetypes that exist. This gives you
+a jumping off point to see which archetypes are never actually used, then update your project so they are never
+created in the first place. For example, with targetd usage of <code>Query</code> versus <code>FullQuery</code> or <code>Spawn</code> vs <code>FullSpawn</code>.</p>
 <h1>License</h1>
 <p>Code released under the <a href="https://github.com/NecsusECS/Necsus/blob/main/LICENSE">Apache 2.0 license</a></p>
             </div>
