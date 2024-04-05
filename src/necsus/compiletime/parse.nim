@@ -427,10 +427,15 @@ proc parseRunner(runner: NimNode): seq[SystemArg] =
 
 proc parseApp*(appProc: NimNode, runner: NimNode): ParsedApp =
     ## Parses the app proc
-    result.new
-    result.name = appProc.name.strVal
+    let returnNode = appProc.params[0]
 
-    result.inputs = @[]
+    result = ParsedApp(
+        name: appProc.name.strVal,
+        inputs: @[],
+        runnerArgs: parseRunner(runner),
+        returns: if returnNode.kind == nnkEmpty: none(MonoDirective) else: some(newMonoDir(returnNode))
+    )
+
     for param in appProc.params[1..^1]:
         case param.kind
         of nnkEmpty: discard
@@ -439,10 +444,7 @@ proc parseApp*(appProc: NimNode, runner: NimNode): ParsedApp =
             param[1].expectKind(nnkIdent)
             result.inputs.add((param[0].strVal, newMonoDir(param[1])))
         else: param.expectKind({nnkEmpty, nnkIdentDefs})
-    result.runnerArgs = parseRunner(runner)
 
-    let returnNode = appProc.params[0]
-    result.returns = if returnNode.kind == nnkEmpty: none(MonoDirective) else: some(newMonoDir(returnNode))
 
 proc newEmptyApp*(name: string): ParsedApp =
     ## Creates an empty parsed app
