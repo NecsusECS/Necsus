@@ -329,3 +329,15 @@ iterator allArgs*(args: openArray[SystemArg]): SystemArg =
 proc sendEventProcName*(directive: MonoDirective): NimNode =
     ## Generates the proc name for sending an event to all listening inboxes
     ident("send" & directive.name.capitalizeAscii)
+
+iterator nodes*(arg: SystemArg): NimNode =
+    ## Pulls all nodes out of an arg
+    case arg.kind
+    of DirectiveKind.Tuple:
+        for component in arg.tupleDir: yield component.node
+    of DirectiveKind.Dual:
+        for component in arg.dualDir: yield component.node
+    of DirectiveKind.Mono:
+        yield arg.monoDir.argType
+    of DirectiveKind.None:
+        discard

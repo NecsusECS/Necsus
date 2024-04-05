@@ -9,11 +9,8 @@
 import necsus / runtime / [ entityId, query, systemVar, mailbox, directives, necsusConf, spawn, pragmas ]
 import necsus / compiletime / [ parse, systemGen, codeGenInfo, worldGen, archetype ]
 import necsus / compiletime / [ worldEnum, tickGen, commonVars, marshalGen ]
-
+import necsus/util/dump
 import sequtils, macros, options
-
-when defined(dump):
-    import strutils
 
 export entityId, query, query.items, necsusConf, systemVar, mailbox, directives, spawn, pragmas
 
@@ -42,8 +39,9 @@ proc buildApp(
     ## Creates an ECS world
 
     let parsedApp = parseApp(pragmaProc, runner)
+    let parsedSystems = parseSystemList(systems)
 
-    let codeGenInfo = newCodeGenInfo(conf, parsedApp, parseSystemList(systems))
+    let codeGenInfo = newCodeGenInfo(conf, parsedApp, parsedSystems)
 
     result = newStmtList(
         codeGenInfo.archetypeEnum.codeGen,
@@ -67,9 +65,7 @@ proc buildApp(
         codeGenInfo.archetypes.dumpAnalysis
 
     when defined(dump):
-        echo "import necsus/runtime/[world, archetypeStore], std/[math, json, jusonutils], necsus/util/profile"
-        echo "const DEFAULT_ENTITY_COUNT = 1_000"
-        echo replace(result.repr, "proc =destroy", "proc `=destroy`")
+        result.dumpGeneratedCode(parsedApp, parsedSystems)
 
 macro necsus*(
     runner: typed{sym},
