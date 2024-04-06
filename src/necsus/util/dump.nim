@@ -30,24 +30,20 @@ proc getModule(node: NimNode): string =
                 result = owner.strVal
             else:
                 result = parent & "/" & owner.strVal
-    of nnkNilLit:
-        return ""
     else:
-        node.expectKind({ nnkSym, nnkTypeDef, nnkPragmaExpr, nnkProcDef })
+        return ""
 
 proc collectImports(node: NimNode, into: var HashSet[string]) =
     case node.kind
     of nnkSym:
         into.incl(node.getImpl.getModule())
-    of nnkNilLit, nnkIntLit, nnkFloatLit, nnkStrLit, nnkCharLit:
-        discard
     of nnkIdentDefs:
         node[1].collectImports(into)
     of nnkBracketExpr, nnkTupleTy:
         for child in node.children:
             child.collectImports(into)
     else:
-        node.expectKind({nnkSym, nnkBracketExpr, nnkTupleTy})
+        discard
 
 proc collectImports(nodes: openarray[NimNode], into: var HashSet[string]) =
     for node in nodes:
