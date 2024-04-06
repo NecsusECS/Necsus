@@ -1,8 +1,10 @@
 import world, entityId, ../util/blockstore
 
 type
-    ArchRow*[Comps: tuple] = tuple[entityId: EntityId, components: Comps]
+    ArchRow*[Comps: tuple] = object
         ## A row of data stored about an entity that matches a specific archetype
+        entityId*: EntityId
+        components*: Comps
 
     ArchetypeStore*[Archs: enum, Comps: tuple] = ref object
         ## Stores a specific archetype shape
@@ -14,6 +16,8 @@ type
 
     ArchetypeIter* = distinct BlockIter
         ## A manual iterator instance
+
+proc `=copy`*[Comps: tuple](target: var ArchRow[Comps], source: ArchRow[Comps]) {.error.}
 
 proc newArchetypeStore*[Archs: enum, Comps: tuple](
     archetype: Archs,
