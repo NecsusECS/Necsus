@@ -17,3 +17,5 @@ for nimVersion in 2.0.0 1.6.14; do
         act -W .github/workflows/build.yml -j "$target" --matrix "nim:$nimVersion";
     done
 done
+
+act -W .github/workflows/docs.yml
