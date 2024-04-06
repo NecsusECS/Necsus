@@ -39,7 +39,7 @@ proc collectImports(node: NimNode, into: var HashSet[string]) =
     case node.kind
     of nnkSym:
         into.incl(node.getImpl.getModule())
-    of nnkNilLit:
+    of nnkNilLit, nnkIntLit, nnkFloatLit, nnkStrLit, nnkCharLit:
         discard
     of nnkIdentDefs:
         node[1].collectImports(into)
