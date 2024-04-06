@@ -70,7 +70,7 @@ proc setComp*[Comps: tuple](slot: NewArchSlot[Comps], comps: sink Comps): Entity
 
 proc getComps*[Archs: enum, Comps: tuple](store: var ArchetypeStore[Archs, Comps], index: uint): ptr Comps =
     ## Return the components for an archetype
-    unsafeAddr store.compStore[index].components
+    addr store.compStore[index].components
 
 proc del*(store: var ArchetypeStore, index: uint) =
     ## Return the components for an archetype
