@@ -4,7 +4,7 @@ import archetype, componentDef, worldEnum, systemGen, archetypeBuilder
 import ../runtime/[world, archetypeStore, directives], ../util/bits
 
 let entityIndex {.compileTime.} = ident("entityIndex")
-let newComps {.compileTime.} = ident("comps")
+let newComps {.compileTime.} = ident("newComps")
 let entityId {.compileTime.} = ident("entityId")
 
 proc createArchUpdate(
@@ -31,19 +31,34 @@ proc createArchUpdate(
         result.add quote do:
             `existing`[`storageIndex`] = `newComps`[`i`]
 
-proc createArchMove(
+proc tupleConvertProcName(
     details: GenerateContext,
-    newCompValues: seq[ComponentDef],
     fromArch: Archetype[ComponentDef],
+    newCompValues: seq[ComponentDef],
+    toArch: Archetype[ComponentDef]
+): auto =
+    ## Returns the name of a proc for converting to the given archetype
+    details.globalName("convert_" & fromArch.name & "_with_" & newCompValues.generateName & "_to_" & toArch.name)
+
+let existing {.compileTime.} = ident("existing")
+
+proc newCompsTupleType(newCompValues: seq[ComponentDef]): NimNode =
+    ## Creates the type definition to use for a tuple that represents new values passed into a convert proc
+    if newCompValues.len > 0:
+        return newCompValues.asTupleType
+    else:
+        return quote: (int, )
+
+proc createTupleConvertProc(
+    details: GenerateContext,
+    fromArch: Archetype[ComponentDef],
+    newCompValues: seq[ComponentDef],
     toArch: Archetype[ComponentDef]
 ): NimNode =
-    ## Creates code for copying from one archetype to another
-    let fromArchIdent = fromArch.ident
+    ## Creates a tuple that is able to convert from one tuple to another
     let fromArchTuple = fromArch.asStorageTuple
+    let newCompsType = newCompValues.newCompsTupleType()
     let toArchTuple = toArch.asStorageTuple
-    let toArchIdent = toArch.ident
-    let archetypeEnum = details.archetypeEnum.ident
-    let existing = ident("existing")
 
     let createNewTuple = nnkTupleConstr.newTree()
     for comp in toArch.items:
@@ -52,10 +67,39 @@ proc createArchMove(
         else:
             createNewTuple.add(nnkBracketExpr.newTree(existing, newLit(fromArch.indexOf(comp))))
 
+    let procName = details.tupleConvertProcName(fromArch, newCompValues, toArch)
     return quote:
-        moveEntity[`archetypeEnum`, `fromArchTuple`, `toArchTuple`](
-            `appStateIdent`.`worldIdent`, `entityIndex`, `appStateIdent`.`fromArchIdent`, `appStateIdent`.`toArchIdent`,
-            proc (`existing`: sink `fromArchTuple`): auto {.gcsafe, raises: [].} = `createNewTuple`
+        proc `procName`(
+            `existing`: sink `fromArchTuple`,
+            `newComps`: sink `newCompsType`
+        ): `toArchTuple` {.gcsafe, raises: [], fastcall, used.} =
+            `createNewTuple`
+
+proc createArchMove(
+    details: GenerateContext,
+    fromArch: Archetype[ComponentDef],
+    newCompValues: seq[ComponentDef],
+    toArch: Archetype[ComponentDef]
+): NimNode =
+    ## Creates code for copying from one archetype to another
+    let fromArchIdent = fromArch.ident
+    let fromArchTuple = fromArch.asStorageTuple
+    let toArchTuple = toArch.asStorageTuple
+    let toArchIdent = toArch.ident
+    let archetypeEnum = details.archetypeEnum.ident
+    let convertProc = details.tupleConvertProcName(fromArch, newCompValues, toArch)
+    let newCompsType = newCompValues.newCompsTupleType()
+
+    let newCompsArg = if newCompValues.len > 0: newComps else: quote: (0, )
+
+    return quote:
+        moveEntity[`archetypeEnum`, `fromArchTuple`,  `newCompsType`, `toArchTuple`](
+            `appStateIdent`.`worldIdent`,
+            `entityIndex`,
+            `appStateIdent`.`fromArchIdent`,
+            `appStateIdent`.`toArchIdent`,
+            `newCompsArg`,
+            `convertProc`
         )
 
 proc attachDetachProcBody(
@@ -63,8 +107,10 @@ proc attachDetachProcBody(
     attachComps: seq[ComponentDef],
     detachComps: seq[ComponentDef],
     optDetachComps: seq[ComponentDef]
-): NimNode =
+): tuple[procBody: NimNode, convertProcs: NimNode] =
     ## Generates the logic needed to attach and detach components from an existing entity
+
+    result.convertProcs = newStmtList()
 
     # Generate a cases statement to do the work for each kind of archetype
     var cases: NimNode = newEmptyNode()
@@ -76,11 +122,13 @@ proc attachDetachProcBody(
                 let toArch = fromArch + attachComps - detachComps - optDetachComps
                 if fromArch == toArch:
                     if attachComps.len > 0:
+                        result.convertProcs.add(details.createTupleConvertProc(fromArch, attachComps, toArch))
                         cases.add(nnkOfBranch.newTree(ofBranch, details.createArchUpdate(attachComps, toArch)))
                     else:
                         needsElse = true
                 elif toArch in details.archetypes:
-                    cases.add(nnkOfBranch.newTree(ofBranch, details.createArchMove(attachComps, fromArch, toArch)))
+                    result.convertProcs.add(details.createTupleConvertProc(fromArch, attachComps, toArch))
+                    cases.add(nnkOfBranch.newTree(ofBranch, details.createArchMove(fromArch, attachComps, toArch)))
                 else:
                     needsElse = true
             else:
@@ -88,7 +136,7 @@ proc attachDetachProcBody(
         if needsElse:
             cases.add(nnkElse.newTree(nnkDiscardStmt.newTree(newEmptyNode())))
 
-    return quote do:
+    result.procBody = quote do:
         var `entityIndex` {.used.} = `appStateIdent`.`worldIdent`[`entityId`]
         `cases`
 
@@ -111,13 +159,14 @@ proc generateAttach(details: GenerateContext, arg: SystemArg, name: string, atta
 
     case details.hook
     of Outside:
-        let `body` = details.attachDetachProcBody(attach.comps, @[], @[])
+        let (body, convertProcs) = details.attachDetachProcBody(attach.comps, @[], @[])
         let appStateTypeName = details.appStateTypeName
         return quote do:
+            `convertProcs`
             proc `attachProc`(
                 `appStateIdent`: var `appStateTypeName`,
                 `entityId`: EntityId,
-                `newComps`: `componentTuple`
+                `newComps`: sink `componentTuple`
             ) {.gcsafe, raises: [].} =
                 `body`
     of Standard:
@@ -159,8 +208,9 @@ proc generateDetach(details: GenerateContext, arg: SystemArg, name: string, deta
     of GenerateHook.Outside:
         let appStateTypeName = details.appStateTypeName
         let (detachComps, optDetachComps) = detach.args.splitDetachArgs
-        let body = details.attachDetachProcBody(@[], detachComps, optDetachComps)
+        let (body, convertProcs) = details.attachDetachProcBody(@[], detachComps, optDetachComps)
         return quote:
+            `convertProcs`
             proc `detachProc`(`appStateIdent`: var `appStateTypeName`, `entityId`: EntityId) =
                 `body`
 
@@ -188,13 +238,14 @@ proc generateSwap(details: GenerateContext, arg: SystemArg, name: string, dir: D
     case details.hook
     of Outside:
         let (detachComps, optDetachComps) = dir.second.splitDetachArgs
-        let `body` = details.attachDetachProcBody(dir.first.comps, detachComps, optDetachComps)
+        let (body, convertProcs) = details.attachDetachProcBody(dir.first.comps, detachComps, optDetachComps)
         let appStateTypeName = details.appStateTypeName
         return quote do:
+            `convertProcs`
             proc `swapProc`(
                 `appStateIdent`: var `appStateTypeName`,
                 `entityId`: EntityId,
-                `newComps`: `componentTuple`
+                `newComps`: sink `componentTuple`
             ) {.gcsafe, raises: [].} =
                 `body`
     of Standard:
