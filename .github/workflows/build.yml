@@ -75,7 +75,7 @@ jobs:
     container: nimlang/choosenim
     strategy:
       matrix:
-        nim: [ 2.0.0, 1.6.14 ]
+        nim: [ 2.0.0 ]
         flag: [profile, dump, archetypes, necsusFloat32]
     steps:
     - uses: actions/checkout@v1
@@ -83,8 +83,6 @@ jobs:
       run: choosenim update -y ${{ matrix.nim }}
     - name: Safe git directory
       run: git config --global --add safe.directory "$(pwd)"
-    - name: Benchmark
-      run: nimble -y -d:release -d:${{ matrix.flag }} benchmark
     - name: Test
       run: nimble -d:${{ matrix.flag }} test
     - name: Build readme code

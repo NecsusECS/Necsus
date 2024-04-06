@@ -14,10 +14,10 @@ for nimVersion in 2.0.0 1.6.14; do
     done
 
     act -W .github/workflows/build.yml -j readme --matrix "nim:$nimVersion";
+done
 
-    for flag in profile dump archetypes necsusFloat32; do
-        act -W .github/workflows/build.yml -j flags --matrix "nim:$nimVersion" --matrix "flag:$flag";
-    done
+for flag in profile dump archetypes necsusFloat32; do
+    act -W .github/workflows/build.yml -j flags --matrix "nim:$nimVersion" --matrix "flag:$flag";
 done
 
 act -W .github/workflows/docs.yml
