@@ -161,6 +161,8 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="%60%3Dcopy%60" href="#%60%3Dcopy%60"><span>`=copy`:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
+          data-doc-search-tag="archetypeStore: `=copy`[Comps: tuple](target: var ArchRow[Comps]; source: ArchRow[Comps])" href="necsus/runtime/archetypeStore.html#%3Dcopy%2CArchRow%5BComps%3A%20tuple%5D%2CArchRow%5BComps%3A%20tuple%5D">archetypeStore: `=copy`[Comps: tuple](target: var ArchRow[Comps]; source: ArchRow[Comps])</a></li>
+          <li><a class="reference external"
           data-doc-search-tag="world: `=copy`[Archs](target: var World[Archs]; source: World[Archs])" href="necsus/runtime/world.html#%3Dcopy%2CWorld%5BArchs%5D%2CWorld%5BArchs%5D">world: `=copy`[Archs](target: var World[Archs]; source: World[Archs])</a></li>
           <li><a class="reference external"
           data-doc-search-tag="arrayblock: `=copy`[T](target: var ArrayBlock[T]; source: ArrayBlock[T])" href="necsus/util/arrayblock.html#%3Dcopy%2CArrayBlock%5BT%5D%2CArrayBlock%5BT%5D">arrayblock: `=copy`[T](target: var ArrayBlock[T]; source: ArrayBlock[T])</a></li>
@@ -969,15 +971,17 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="moveEntity" href="#moveEntity"><span>moveEntity:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="archetypeStore: moveEntity[Archs: enum; FromArch: tuple; ToArch: tuple](world: var World[Archs];
-    entityIndex: ptr EntityIndex[Archs];
+          data-doc-search-tag="archetypeStore: moveEntity[Archs: enum; FromArch: tuple; NewComps: tuple; ToArch: tuple](
+    world: var World[Archs]; entityIndex: ptr EntityIndex[Archs];
     fromArch: var ArchetypeStore[Archs, FromArch];
-    toArch: var ArchetypeStore[Archs, ToArch];
-    convert: proc (input: sink FromArch): ToArch {.gcsafe, raises: [].})" href="necsus/runtime/archetypeStore.html#moveEntity%2CWorld%5BArchs%3A%20enum%5D%2Cptr.EntityIndex%5BArchs%3A%20enum%5D%2CArchetypeStore%5BArchs%3A%20enum%2CFromArch%3A%20tuple%5D%2CArchetypeStore%5BArchs%3A%20enum%2CToArch%3A%20tuple%5D%2Cproc%28sinkFromArch%29">archetypeStore: moveEntity[Archs: enum; FromArch: tuple; ToArch: tuple](world: var World[Archs];
-    entityIndex: ptr EntityIndex[Archs];
+    toArch: var ArchetypeStore[Archs, ToArch]; newValues: sink NewComps; combine: proc (
+    existing: sink FromArch; newValues: sink NewComps): ToArch {.gcsafe,
+    raises: [], fastcall.})" href="necsus/runtime/archetypeStore.html#moveEntity%2CWorld%5BArchs%3A%20enum%5D%2Cptr.EntityIndex%5BArchs%3A%20enum%5D%2CArchetypeStore%5BArchs%3A%20enum%2CFromArch%3A%20tuple%5D%2CArchetypeStore%5BArchs%3A%20enum%2CToArch%3A%20tuple%5D%2CsinkNewComps%2Cproc%28sinkFromArch%2CsinkNewComps%29">archetypeStore: moveEntity[Archs: enum; FromArch: tuple; NewComps: tuple; ToArch: tuple](
+    world: var World[Archs]; entityIndex: ptr EntityIndex[Archs];
     fromArch: var ArchetypeStore[Archs, FromArch];
-    toArch: var ArchetypeStore[Archs, ToArch];
-    convert: proc (input: sink FromArch): ToArch {.gcsafe, raises: [].})</a></li>
+    toArch: var ArchetypeStore[Archs, ToArch]; newValues: sink NewComps; combine: proc (
+    existing: sink FromArch; newValues: sink NewComps): ToArch {.gcsafe,
+    raises: [], fastcall.})</a></li>
           </ul></dd>
 <dt><a name="NameChooser" href="#NameChooser"><span>NameChooser:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -1216,6 +1220,10 @@ window.addEventListener('DOMContentLoaded', main);
 <dt><a name="Nfloat" href="#Nfloat"><span>Nfloat:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="directives: Nfloat" href="necsus/runtime/directives.html#Nfloat">directives: Nfloat</a></li>
+          </ul></dd>
+<dt><a name="nodes" href="#nodes"><span>nodes:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="systemGen: nodes(arg: SystemArg): NimNode" href="necsus/compiletime/systemGen.html#nodes.i%2CSystemArg">systemGen: nodes(arg: SystemArg): NimNode</a></li>
           </ul></dd>
 <dt><a name="Not" href="#Not"><span>Not:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -1592,7 +1600,7 @@ window.addEventListener('DOMContentLoaded', main);
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-04-01 00:54:18 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-04-06 04:27:10 UTC</small>
       </div>
     </div>
   </div>
