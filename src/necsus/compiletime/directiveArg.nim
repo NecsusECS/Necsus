@@ -7,7 +7,7 @@ type
 
     DirectiveArg* = ref object
         ## Represents a single argument within a directive. For example, in:
-        ## Query[(Foo, Bar, Baz)]
+        ## `Query[(Foo, Bar, Baz)]`
         ## This would just represent `Foo` or `Bar` or `Baz`
         component*: ComponentDef
         isPointer*: bool

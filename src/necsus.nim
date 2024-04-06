@@ -9,8 +9,10 @@
 import necsus / runtime / [ entityId, query, systemVar, mailbox, directives, necsusConf, spawn, pragmas ]
 import necsus / compiletime / [ parse, systemGen, codeGenInfo, worldGen, archetype ]
 import necsus / compiletime / [ worldEnum, tickGen, commonVars, marshalGen ]
-import necsus/util/dump
 import sequtils, macros, options
+
+when defined(dump):
+    import necsus/util/dump
 
 export entityId, query, query.items, necsusConf, systemVar, mailbox, directives, spawn, pragmas
 

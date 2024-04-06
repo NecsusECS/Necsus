@@ -1,5 +1,5 @@
-import std/[macros, strutils, sequtils, sets]
-import necsus/compiletime/[parse, systemGen]
+import std/[macros, strutils, sets]
+import ../compiletime/[parse, systemGen]
 
 proc modulePath(node: NimNode): string =
     ## Attempts to determine if there is a full path available for a given module
