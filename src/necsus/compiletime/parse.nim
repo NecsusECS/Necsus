@@ -47,6 +47,15 @@ proc `$`*(system: ParsedSystem): string =
 
 proc kind*(arg: SystemArg): auto = arg.kind
 
+iterator allArgs*(system: ParsedSystem): SystemArg =
+    ## Yields all args in a system
+    for arg in system.args.allArgs:
+        yield arg
+
+    # Yield all arguments mentioned in the active system checks
+    for check in system.checks:
+        yield check.arg
+
 proc parseArgKind(symbol: NimNode): Option[DirectiveGen] =
     ## Parses a type symbol to a SystemArgKind
     symbol.expectKind({ nnkSym, nnkIdent })
@@ -319,6 +328,18 @@ proc determineReturnType(sysTyp: NimNode, isInstanced: bool): NimNode =
     else:
         sysTyp.expectKind({ nnkProcTy, nnkSym, nnkObjectTy })
 
+proc validateNoOutboxes(system: ParsedSystem) =
+    ## Fails if this system references any outboxes
+    for arg in system.allArgs:
+        if arg.generator == outboxGenerator:
+            hint("Outbox found here", arg.source)
+            error(
+                "Event systems can't reference any Outboxes as it can cause infinite loops. " &
+                "See compiler hints to find the location of the Outbox.",
+                system.symbol
+            )
+            return
+
 proc parseSystemDef*(ident: NimNode, impl: NimNode): ParsedSystem =
     ## Parses a single system proc
     ident.expectKind(nnkSym)
@@ -347,8 +368,14 @@ proc parseSystemDef*(ident: NimNode, impl: NimNode): ParsedSystem =
         returns: determineReturnType(typeImpl, instancing.isSome)
     )
 
-    if phase == RestoreCallback and instancing.isSome:
-        error("Restore callbacks do not support instancing", ident)
+    case phase
+    of RestoreCallback:
+        if instancing.isSome:
+            error("Restore callbacks do not support instancing", ident)
+    of EventCallback:
+        result.validateNoOutboxes()
+    else:
+        discard
 
 proc parseSystem(ident: NimNode): ParsedSystem =
     ## Parses a single system proc
@@ -393,15 +420,6 @@ iterator components*(systems: openarray[ParsedSystem]): ComponentDef =
         for arg in system.args:
             for component in arg.components:
                 yield component
-
-iterator allArgs*(system: ParsedSystem): SystemArg =
-    ## Yields all args in a system
-    for arg in system.args.allArgs:
-        yield arg
-
-    # Yield all arguments mentioned in the active system checks
-    for check in system.checks:
-        yield check.arg
 
 iterator args*(systems: openarray[ParsedSystem]): SystemArg =
     ## Yields all args in a system
