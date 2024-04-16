@@ -129,7 +129,8 @@ window.addEventListener('DOMContentLoaded', main);
   returns*: NimNode">ParsedSystem</a></li>
   <li><a class="reference" href="#SystemPhase"
     title="SystemPhase = enum
-  StartupPhase, LoopPhase, TeardownPhase, SaveCallback, RestoreCallback, EventCallback ## When a system should be executed">SystemPhase</a></li>
+  StartupPhase, LoopPhase, TeardownPhase, SaveCallback, RestoreCallback,
+  EventCallback, IndirectEventCallback">SystemPhase</a></li>
 
   </ul>
 </li>
@@ -141,6 +142,16 @@ window.addEventListener('DOMContentLoaded', main);
     title="`$`(check: ActiveCheck): string">`$`(check: ActiveCheck): string</a></li>
   <li><a class="reference" href="#%24%2CParsedSystem"
     title="`$`(system: ParsedSystem): string">`$`(system: ParsedSystem): string</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">callbackSysMailboxName
+      <li><a class="reference" href="#callbackSysMailboxName%2CParsedSystem"
+    title="callbackSysMailboxName(system: ParsedSystem): NimNode">callbackSysMailboxName(system: ParsedSystem): NimNode</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">callbackSysType
+      <li><a class="reference" href="#callbackSysType%2CParsedSystem"
+    title="callbackSysType(system: ParsedSystem): NimNode">callbackSysType(system: ParsedSystem): NimNode</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">instancedInfo
@@ -263,10 +274,11 @@ Parsed information about a system proc
 </div>
 <div id="SystemPhase">
 <dt><pre><a href="parse.html#SystemPhase"><span class="Identifier">SystemPhase</span></a> <span class="Other">=</span> <span class="Keyword">enum</span>
-  <span class="Identifier">StartupPhase</span><span class="Other">,</span> <span class="Identifier">LoopPhase</span><span class="Other">,</span> <span class="Identifier">TeardownPhase</span><span class="Other">,</span> <span class="Identifier">SaveCallback</span><span class="Other">,</span> <span class="Identifier">RestoreCallback</span><span class="Other">,</span> <span class="Identifier">EventCallback</span> <span class="Comment">## When a system should be executed</span></pre></dt>
+  <span class="Identifier">StartupPhase</span><span class="Other">,</span> <span class="Identifier">LoopPhase</span><span class="Other">,</span> <span class="Identifier">TeardownPhase</span><span class="Other">,</span> <span class="Identifier">SaveCallback</span><span class="Other">,</span> <span class="Identifier">RestoreCallback</span><span class="Other">,</span>
+  <span class="Identifier">EventCallback</span><span class="Other">,</span> <span class="Identifier">IndirectEventCallback</span></pre></dt>
 <dd>
 
-
+When a system should be executed
 
 </dd>
 </div>
@@ -288,6 +300,23 @@ Parsed information about a system proc
 <dd>
 
 
+
+</dd>
+</div>
+<div id="callbackSysMailboxName,ParsedSystem">
+<dt><pre><span class="Keyword">proc</span> <a href="#callbackSysMailboxName%2CParsedSystem"><span class="Identifier">callbackSysMailboxName</span></a><span class="Other">(</span><span class="Identifier">system</span><span class="Other">:</span> <a href="parse.html#ParsedSystem"><span class="Identifier">ParsedSystem</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+The name of the mailbox to use for an event callback system
+
+</dd>
+</div>
+<div id="callbackSysType,ParsedSystem">
+<dt><pre><span class="Keyword">proc</span> <a href="#callbackSysType%2CParsedSystem"><span class="Identifier">callbackSysType</span></a><span class="Other">(</span><span class="Identifier">system</span><span class="Other">:</span> <a href="parse.html#ParsedSystem"><span class="Identifier">ParsedSystem</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+Returns the event type handled by a callback system
 
 </dd>
 </div>
@@ -400,7 +429,7 @@ Pulls all components from a list of parsed systems
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-04-14 17:55:12 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-04-16 01:45:16 UTC</small>
       </div>
     </div>
   </div>

@@ -407,9 +407,17 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference external"
           data-doc-search-tag="bundleGen: bundleGenerator" href="necsus/compiletime/bundleGen.html#bundleGenerator">bundleGen: bundleGenerator</a></li>
           </ul></dd>
+<dt><a name="callbackSysMailboxName" href="#callbackSysMailboxName"><span>callbackSysMailboxName:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="parse: callbackSysMailboxName(system: ParsedSystem): NimNode" href="necsus/compiletime/parse.html#callbackSysMailboxName%2CParsedSystem">parse: callbackSysMailboxName(system: ParsedSystem): NimNode</a></li>
+          </ul></dd>
+<dt><a name="callbackSysType" href="#callbackSysType"><span>callbackSysType:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="parse: callbackSysType(system: ParsedSystem): NimNode" href="necsus/compiletime/parse.html#callbackSysType%2CParsedSystem">parse: callbackSysType(system: ParsedSystem): NimNode</a></li>
+          </ul></dd>
 <dt><a name="callSystems" href="#callSystems"><span>callSystems:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="tickGen: callSystems(codeGenInfo: CodeGenInfo; phase: SystemPhase): NimNode" href="necsus/compiletime/tickGen.html#callSystems%2CCodeGenInfo%2CSystemPhase">tickGen: callSystems(codeGenInfo: CodeGenInfo; phase: SystemPhase): NimNode</a></li>
+          data-doc-search-tag="tickGen: callSystems(codeGenInfo: CodeGenInfo; phases: set[SystemPhase]): NimNode" href="necsus/compiletime/tickGen.html#callSystems%2CCodeGenInfo%2Cset%5BSystemPhase%5D">tickGen: callSystems(codeGenInfo: CodeGenInfo; phases: set[SystemPhase]): NimNode</a></li>
           </ul></dd>
 <dt><a name="capacity" href="#capacity"><span>capacity:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -554,6 +562,10 @@ window.addEventListener('DOMContentLoaded', main);
 <dt><a name="depends" href="#depends"><span>depends:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="pragmas: depends(dependencies: varargs[typed])" href="necsus/runtime/pragmas.html#depends.t%2Cvarargs%5Btyped%5D">pragmas: depends(dependencies: varargs[typed])</a></li>
+          </ul></dd>
+<dt><a name="destroySystems" href="#destroySystems"><span>destroySystems:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="tickGen: destroySystems(codeGenInfo: CodeGenInfo): NimNode" href="necsus/compiletime/tickGen.html#destroySystems%2CCodeGenInfo">tickGen: destroySystems(codeGenInfo: CodeGenInfo): NimNode</a></li>
           </ul></dd>
 <dt><a name="Detach" href="#Detach"><span>Detach:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -817,6 +829,14 @@ window.addEventListener('DOMContentLoaded', main);
           <li><a class="reference external"
           data-doc-search-tag="tupleDirective: indexOf(directive: TupleDirective; comp: ComponentDef): int" href="necsus/compiletime/tupleDirective.html#indexOf%2CTupleDirective%2CComponentDef">tupleDirective: indexOf(directive: TupleDirective; comp: ComponentDef): int</a></li>
           </ul></dd>
+<dt><a name="IndirectEventCallback" href="#IndirectEventCallback"><span>IndirectEventCallback:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="SystemPhase.IndirectEventCallback" href="necsus/compiletime/parse.html#IndirectEventCallback">SystemPhase.IndirectEventCallback</a></li>
+          </ul></dd>
+<dt><a name="initializeSystems" href="#initializeSystems"><span>initializeSystems:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="tickGen: initializeSystems(codeGenInfo: CodeGenInfo): NimNode" href="necsus/compiletime/tickGen.html#initializeSystems%2CCodeGenInfo">tickGen: initializeSystems(codeGenInfo: CodeGenInfo): NimNode</a></li>
+          </ul></dd>
 <dt><a name="instanced" href="#instanced"><span>instanced:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="pragmas: instanced()" href="necsus/runtime/pragmas.html#instanced.t">pragmas: instanced()</a></li>
@@ -829,9 +849,9 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="invokeSystem" href="#invokeSystem"><span>invokeSystem:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="tickGen: invokeSystem(codeGenInfo: CodeGenInfo; system: ParsedSystem; phase: SystemPhase;
-             prefixArgs: openArray[NimNode] = []): NimNode" href="necsus/compiletime/tickGen.html#invokeSystem%2CCodeGenInfo%2CParsedSystem%2CSystemPhase%2CopenArray%5BNimNode%5D">tickGen: invokeSystem(codeGenInfo: CodeGenInfo; system: ParsedSystem; phase: SystemPhase;
-             prefixArgs: openArray[NimNode] = []): NimNode</a></li>
+          data-doc-search-tag="tickGen: invokeSystem(codeGenInfo: CodeGenInfo; system: ParsedSystem;
+             phases: set[SystemPhase]; prefixArgs: openArray[NimNode] = []): NimNode" href="necsus/compiletime/tickGen.html#invokeSystem%2CCodeGenInfo%2CParsedSystem%2Cset%5BSystemPhase%5D%2CopenArray%5BNimNode%5D">tickGen: invokeSystem(codeGenInfo: CodeGenInfo; system: ParsedSystem;
+             phases: set[SystemPhase]; prefixArgs: openArray[NimNode] = []): NimNode</a></li>
           </ul></dd>
 <dt><a name="isEmpty" href="#isEmpty"><span>isEmpty:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -1600,7 +1620,7 @@ window.addEventListener('DOMContentLoaded', main);
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-04-14 17:55:12 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-04-16 01:45:16 UTC</small>
       </div>
     </div>
   </div>

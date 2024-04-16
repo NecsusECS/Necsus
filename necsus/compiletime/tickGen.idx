@@ -1,4 +1,6 @@
-invokeSystem	necsus/compiletime/tickGen.html#invokeSystem,CodeGenInfo,ParsedSystem,SystemPhase,openArray[NimNode]	tickGen: invokeSystem(codeGenInfo: CodeGenInfo; system: ParsedSystem; phase: SystemPhase;\n             prefixArgs: openArray[NimNode] = []): NimNode	
-callSystems	necsus/compiletime/tickGen.html#callSystems,CodeGenInfo,SystemPhase	tickGen: callSystems(codeGenInfo: CodeGenInfo; phase: SystemPhase): NimNode	
+invokeSystem	necsus/compiletime/tickGen.html#invokeSystem,CodeGenInfo,ParsedSystem,set[SystemPhase],openArray[NimNode]	tickGen: invokeSystem(codeGenInfo: CodeGenInfo; system: ParsedSystem;\n             phases: set[SystemPhase]; prefixArgs: openArray[NimNode] = []): NimNode	
+callSystems	necsus/compiletime/tickGen.html#callSystems,CodeGenInfo,set[SystemPhase]	tickGen: callSystems(codeGenInfo: CodeGenInfo; phases: set[SystemPhase]): NimNode	
 createTickProc	necsus/compiletime/tickGen.html#createTickProc,CodeGenInfo	tickGen: createTickProc(genInfo: CodeGenInfo): NimNode	
 createTickRunner	necsus/compiletime/tickGen.html#createTickRunner,CodeGenInfo,NimNode	tickGen: createTickRunner(genInfo: CodeGenInfo; runner: NimNode): NimNode	
+initializeSystems	necsus/compiletime/tickGen.html#initializeSystems,CodeGenInfo	tickGen: initializeSystems(codeGenInfo: CodeGenInfo): NimNode	
+destroySystems	necsus/compiletime/tickGen.html#destroySystems,CodeGenInfo	tickGen: destroySystems(codeGenInfo: CodeGenInfo): NimNode	

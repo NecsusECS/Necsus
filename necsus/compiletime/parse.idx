@@ -4,6 +4,7 @@ TeardownPhase	necsus/compiletime/parse.html#TeardownPhase	SystemPhase.TeardownPh
 SaveCallback	necsus/compiletime/parse.html#SaveCallback	SystemPhase.SaveCallback	
 RestoreCallback	necsus/compiletime/parse.html#RestoreCallback	SystemPhase.RestoreCallback	
 EventCallback	necsus/compiletime/parse.html#EventCallback	SystemPhase.EventCallback	
+IndirectEventCallback	necsus/compiletime/parse.html#IndirectEventCallback	SystemPhase.IndirectEventCallback	
 SystemPhase	necsus/compiletime/parse.html#SystemPhase	parse: SystemPhase	
 ActiveCheck	necsus/compiletime/parse.html#ActiveCheck	parse: ActiveCheck	
 ParsedSystem	necsus/compiletime/parse.html#ParsedSystem	parse: ParsedSystem	
@@ -21,3 +22,5 @@ components	necsus/compiletime/parse.html#components.i,ParsedApp	parse: component
 parseApp	necsus/compiletime/parse.html#parseApp,NimNode,NimNode	parse: parseApp(appProc: NimNode; runner: NimNode): ParsedApp	
 newEmptyApp	necsus/compiletime/parse.html#newEmptyApp,string	parse: newEmptyApp(name: string): ParsedApp	
 instancedInfo	necsus/compiletime/parse.html#instancedInfo,ParsedSystem	parse: instancedInfo(system: ParsedSystem): Option[\n    tuple[fieldName: NimNode, typ: NimNode]]	
+callbackSysMailboxName	necsus/compiletime/parse.html#callbackSysMailboxName,ParsedSystem	parse: callbackSysMailboxName(system: ParsedSystem): NimNode	
+callbackSysType	necsus/compiletime/parse.html#callbackSysType,ParsedSystem	parse: callbackSysType(system: ParsedSystem): NimNode	
