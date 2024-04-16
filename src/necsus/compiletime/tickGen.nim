@@ -5,24 +5,6 @@ proc renderSystemArgs(codeGenInfo: CodeGenInfo, args: openarray[SystemArg]): seq
     ## Renders system arguments down to nim code
     args.mapIt: systemArg(codeGenInfo, it)
 
-proc callInstanced(codeGenInfo: CodeGenInfo, system: ParsedSystem, phase: SystemPhase): NimNode =
-    ## Generates the code for handling an instanced system in the given phase
-    let (fieldName, fieldType) = system.instancedInfo.unsafeGet
-    case phase
-    of StartupPhase:
-        let init = newCall(system.symbol, codeGenInfo.renderSystemArgs(system.args))
-        return quote: `appStateIdent`.`fieldName` = `init`
-    of LoopPhase, SaveCallback, RestoreCallback, EventCallback:
-        if phase != system.phase:
-            return newEmptyNode()
-        elif fieldType.kind == nnkProcTy or fieldType == bindSym("SystemInstance"):
-            return quote: `appStateIdent`.`fieldName`()
-        else:
-            return quote: `appStateIdent`.`fieldName`.tick()
-    of TeardownPhase:
-        let destroy = ident("=destroy")
-        return quote: `appStateIdent`.`fieldName`.`destroy`()
-
 proc addActiveChecks(
     invocation: NimNode,
     codeGenInfo: CodeGenInfo,
@@ -68,12 +50,16 @@ proc invokeSystem*(
     prefixArgs: openArray[NimNode] = []
 ): NimNode =
     ## Generates the code needed call a single system
-    return if system.instanced.isSome:
-        codeGenInfo.callInstanced(system, phase)
-    elif system.phase == phase:
-        newCall(system.symbol, concat(prefixArgs.toSeq, codeGenInfo.renderSystemArgs(system.args)))
+    if phase != system.phase:
+        return newEmptyNode()
+    elif system.instanced.isSome:
+        let (fieldName, fieldType) = system.instancedInfo.unsafeGet
+        if fieldType.kind == nnkProcTy or fieldType == bindSym("SystemInstance"):
+            return quote: `appStateIdent`.`fieldName`()
+        else:
+            return quote: `appStateIdent`.`fieldName`.tick()
     else:
-        newEmptyNode()
+        return newCall(system.symbol, concat(prefixArgs.toSeq, codeGenInfo.renderSystemArgs(system.args)))
 
 proc callSystems*(codeGenInfo: CodeGenInfo, phase: SystemPhase): NimNode =
     ## Generates the code for invoke a list of systems
@@ -138,3 +124,26 @@ proc createTickRunner*(genInfo: CodeGenInfo, runner: NimNode): NimNode =
     call.add(runAppStateIdent)
 
     result.add(call)
+
+
+iterator instancedSystems(codeGenInfo: CodeGenInfo): (NimNode, NimNode, seq[SystemArg]) =
+    for i, system in codeGenInfo.systems:
+        if system.instancedInfo.isSome:
+            let (fieldName, _) = system.instancedInfo.unsafeGet
+            yield (fieldName, system.symbol, system.args)
+
+proc initializeSystems*(codeGenInfo: CodeGenInfo): NimNode =
+    ## Invokes any system initializers that are required
+    result = newStmtList()
+    for (fieldName, symbol, args) in codeGenInfo.instancedSystems:
+        let init = newCall(symbol, codeGenInfo.renderSystemArgs(args))
+        result.add quote do:
+            `appStateIdent`.`fieldName` = `init`
+
+proc destroySystems*(codeGenInfo: CodeGenInfo): NimNode =
+    ## Invokes any system destructors
+    result = newStmtList()
+    let destroy = ident("=destroy")
+    for (fieldName, symbol, args) in codeGenInfo.instancedSystems:
+        result.add quote do:
+            `appStateIdent`.`fieldName`.`destroy`()

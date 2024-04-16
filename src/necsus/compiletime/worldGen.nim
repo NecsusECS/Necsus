@@ -97,6 +97,7 @@ proc createAppStateInit*(genInfo: CodeGenInfo): NimNode =
     let earlyInit = genInfo.generateForHook(GenerateHook.Early)
     let stdInit = genInfo.generateForHook(GenerateHook.Standard)
     let lateInit = genInfo.generateForHook(GenerateHook.Late)
+    let initializers = genInfo.initializeSystems()
     let startups = genInfo.callSystems(StartupPhase)
     let beforeLoop = genInfo.generateForHook(GenerateHook.BeforeLoop)
     let profilers = genInfo.initProfilers()
@@ -114,6 +115,7 @@ proc createAppStateInit*(genInfo: CodeGenInfo): NimNode =
         `earlyInit`
         `stdInit`
         `lateInit`
+        `initializers`
         `startups`
         `beforeLoop`
         return `appStateIdent`
@@ -139,7 +141,7 @@ proc createAppStateDestructor*(genInfo: CodeGenInfo): NimNode =
     let beforeTeardown = genInfo.generateForHook(GenerateHook.BeforeTeardown)
     let teardowns = genInfo.callSystems(TeardownPhase)
 
-    let destroys = newStmtList()
+    let destroys = newStmtList(genInfo.destroySystems())
 
     for (name, _) in items(genInfo.fields):
         destroys.add quote do:
