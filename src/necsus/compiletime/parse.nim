@@ -5,8 +5,15 @@ import spawnGen, queryGen, deleteGen, attachDetachGen, sharedGen, tickIdGen
 import localGen, lookupGen, eventGen, timeGen, debugGen, bundleGen, saveGen, restoreGen
 
 type
-    SystemPhase* = enum StartupPhase, LoopPhase, TeardownPhase, SaveCallback, RestoreCallback, EventCallback
+    SystemPhase* = enum
         ## When a system should be executed
+        StartupPhase,
+        LoopPhase,
+        TeardownPhase,
+        SaveCallback,
+        RestoreCallback,
+        EventCallback,
+        IndirectEventCallback
 
     ActiveCheck* = ref object
         ## A check that needs to be made before executing a system as part of the loop phase
@@ -304,7 +311,7 @@ proc getSystemType(ident: NimNode, impl: NimNode): NimNode =
 
 proc getPrefixArgs(phase: SystemPhase, args: var seq[NimNode], instancing: Option[NimNode]): seq[NimNode] =
     case phase
-    of RestoreCallback, EventCallback:
+    of RestoreCallback, EventCallback, IndirectEventCallback:
         if instancing.isNone:
             result = @[ args[0] ]
             args = args[1..^1]
@@ -327,18 +334,6 @@ proc determineReturnType(sysTyp: NimNode, isInstanced: bool): NimNode =
         return if isInstanced: determineReturnType(typ, false) else: typ
     else:
         sysTyp.expectKind({ nnkProcTy, nnkSym, nnkObjectTy })
-
-proc validateNoOutboxes(system: ParsedSystem) =
-    ## Fails if this system references any outboxes
-    for arg in system.allArgs:
-        if arg.generator == outboxGenerator:
-            hint("Outbox found here", arg.source)
-            error(
-                "Event systems can't reference any Outboxes as it can cause infinite loops. " &
-                "See compiler hints to find the location of the Outbox.",
-                system.symbol
-            )
-            return
 
 proc parseSystemDef*(ident: NimNode, impl: NimNode): ParsedSystem =
     ## Parses a single system proc
@@ -368,12 +363,18 @@ proc parseSystemDef*(ident: NimNode, impl: NimNode): ParsedSystem =
         returns: determineReturnType(typeImpl, instancing.isSome)
     )
 
+    # For event callbacks, if the system invokes any Outboxes, we need to break any infinite loop
+    # cycles, so we flip it to an IndirectEventCallback instead
+    if result.phase == EventCallback:
+        for arg in result.allArgs:
+            if arg.generator == outboxGenerator:
+                result.phase = IndirectEventCallback
+                break
+
     case phase
     of RestoreCallback:
         if instancing.isSome:
             error("Restore callbacks do not support instancing", ident)
-    of EventCallback:
-        result.validateNoOutboxes()
     else:
         discard
 
@@ -475,3 +476,10 @@ proc instancedInfo*(system: ParsedSystem): Option[tuple[fieldName: NimNode, typ:
     else:
         none(tuple[fieldName: NimNode, typ: NimNode])
 
+proc callbackSysMailboxName*(system: ParsedSystem): NimNode =
+    ## The name of the mailbox to use for an event callback system
+    ident("event_mailbox_" & system.symbol.strVal)
+
+proc callbackSysType*(system: ParsedSystem): NimNode =
+    ## Returns the event type handled by a callback system
+    system.prefixArgs[0][1]

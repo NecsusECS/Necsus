@@ -12,7 +12,7 @@ proc addActiveChecks(
     phase: SystemPhase,
 ): NimNode =
     ## Wraps the system invocation code in the checks required
-    if phase != LoopPhase or checks.len == 0:
+    if phase notin {LoopPhase, IndirectEventCallback} or checks.len == 0:
         return invocation
 
     var condition: NimNode = newLit(false)
@@ -43,16 +43,9 @@ proc logSystemCall(system: ParsedSystem, prefix: string): NimNode =
     else:
         return newEmptyNode()
 
-proc invokeSystem*(
-    codeGenInfo: CodeGenInfo,
-    system: ParsedSystem,
-    phase: SystemPhase,
-    prefixArgs: openArray[NimNode] = []
-): NimNode =
-    ## Generates the code needed call a single system
-    if phase != system.phase:
-        return newEmptyNode()
-    elif system.instanced.isSome:
+proc singleInvokeSystem(codeGenInfo: CodeGenInfo, system: ParsedSystem, prefixArgs: openArray[NimNode]): NimNode =
+    ## Generates the code needed call a system once
+    if system.instanced.isSome:
         let (fieldName, fieldType) = system.instancedInfo.unsafeGet
         if fieldType.kind == nnkProcTy or fieldType == bindSym("SystemInstance"):
             return quote: `appStateIdent`.`fieldName`()
@@ -61,12 +54,34 @@ proc invokeSystem*(
     else:
         return newCall(system.symbol, concat(prefixArgs.toSeq, codeGenInfo.renderSystemArgs(system.args)))
 
-proc callSystems*(codeGenInfo: CodeGenInfo, phase: SystemPhase): NimNode =
+proc invokeSystem*(
+    codeGenInfo: CodeGenInfo,
+    system: ParsedSystem,
+    phases: set[SystemPhase],
+    prefixArgs: openArray[NimNode] = []
+): NimNode =
+    ## Generates the code needed call a single system
+    if system.phase notin phases:
+        return newEmptyNode()
+
+    elif system.phase == IndirectEventCallback:
+        let eachEvent = genSym(nskForVar, "event")
+        let mailboxName = system.callbackSysMailboxName
+        let invoke = codeGenInfo.singleInvokeSystem(system, [ eachEvent ])
+        return quote:
+            for `eachEvent` in `appStateIdent`.`mailboxName`:
+                `invoke`
+            `appStateIdent`.`mailboxName`.clear()
+
+    else:
+        return codeGenInfo.singleInvokeSystem(system, prefixArgs)
+
+proc callSystems*(codeGenInfo: CodeGenInfo, phases: set[SystemPhase]): NimNode =
     ## Generates the code for invoke a list of systems
     result = newStmtList()
     for i, system in codeGenInfo.systems:
 
-        var invokeSystem = codeGenInfo.invokeSystem(system, phase)
+        var invokeSystem = codeGenInfo.invokeSystem(system, phases)
 
         if invokeSystem.kind != nnkEmpty:
             invokeSystem = newStmtList(
@@ -76,11 +91,10 @@ proc callSystems*(codeGenInfo: CodeGenInfo, phase: SystemPhase): NimNode =
                 system.logSystemCall("System done"),
             )
 
-            if phase == SystemPhase.LoopPhase:
-                invokeSystem = codeGenInfo.wrapInProfiler(i, invokeSystem)
+            invokeSystem = codeGenInfo.wrapInProfiler(i, invokeSystem)
 
             result.add(newStmtList(
-                invokeSystem.addActiveChecks(codeGenInfo, system.checks, phase),
+                invokeSystem.addActiveChecks(codeGenInfo, system.checks, system.phase),
                 codeGenInfo.generateForHook(system, AfterActiveCheck)
             ))
 
@@ -88,7 +102,7 @@ proc createTickProc*(genInfo: CodeGenInfo): NimNode =
     ## Creates a function that executes the next tick
     let appStateType = genInfo.appStateTypeName
 
-    let loopSystems = genInfo.callSystems(LoopPhase)
+    let loopSystems = genInfo.callSystems({LoopPhase, IndirectEventCallback})
 
     let loopStart = genInfo.generateForHook(GenerateHook.LoopStart)
     let loopEnd = genInfo.generateForHook(GenerateHook.LoopEnd)

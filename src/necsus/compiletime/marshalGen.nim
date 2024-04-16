@@ -50,7 +50,7 @@ proc createRestoreProc(genInfo: CodeGenInfo): NimNode =
     var invocations = newStmtList()
     for restore in genInfo.systems.filterIt(it.phase == RestoreCallback):
         let readProp = newDotExpr(decoded, restore.restoreSysType.strVal.ident)
-        invocations.add(genInfo.invokeSystem(restore, RestoreCallback, [ readProp ]))
+        invocations.add(genInfo.invokeSystem(restore, {RestoreCallback}, [ readProp ]))
 
     return quote:
         proc restore*(
@@ -67,7 +67,12 @@ proc createSaveProc(genInfo: CodeGenInfo): NimNode =
 
     var construct = nnkObjConstr.newTree(genInfo.saveTypeName)
     for system in genInfo.systems.filterIt(it.phase == SaveCallback):
-        construct.add(nnkExprColonExpr.newTree(system.returns.strVal.ident, genInfo.invokeSystem(system, SaveCallback)))
+        construct.add(
+            nnkExprColonExpr.newTree(
+                system.returns.strVal.ident,
+                genInfo.invokeSystem(system, {SaveCallback})
+            )
+        )
 
     return quote:
         {.hint[XCannotRaiseY]:off.}

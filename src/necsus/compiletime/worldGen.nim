@@ -11,6 +11,11 @@ proc fields(genInfo: CodeGenInfo): seq[(NimNode, NimNode)] =
     result.add (thisTime, bindSym("Nfloat"))
     result.add (startTime, bindSym("Nfloat"))
 
+    for system in genInfo.systems:
+        if system.phase == IndirectEventCallback:
+            let typ = nnkBracketExpr.newTree(bindSym("Mailbox"), system.callbackSysType)
+            result.add (system.callbackSysMailboxName, typ)
+
     for archetype in genInfo.archetypes:
         let storageType = archetype.asStorageTuple
         let typ = nnkBracketExpr.newTree(bindSym("ArchetypeStore"), archetypeEnum, storageType)
@@ -98,7 +103,7 @@ proc createAppStateInit*(genInfo: CodeGenInfo): NimNode =
     let stdInit = genInfo.generateForHook(GenerateHook.Standard)
     let lateInit = genInfo.generateForHook(GenerateHook.Late)
     let initializers = genInfo.initializeSystems()
-    let startups = genInfo.callSystems(StartupPhase)
+    let startups = genInfo.callSystems({StartupPhase})
     let beforeLoop = genInfo.generateForHook(GenerateHook.BeforeLoop)
     let profilers = genInfo.initProfilers()
 
@@ -139,7 +144,7 @@ proc createAppStateDestructor*(genInfo: CodeGenInfo): NimNode =
     let appStateType = genInfo.appStateStruct
     let destroy = "=destroy".ident
     let beforeTeardown = genInfo.generateForHook(GenerateHook.BeforeTeardown)
-    let teardowns = genInfo.callSystems(TeardownPhase)
+    let teardowns = genInfo.callSystems({TeardownPhase})
 
     let destroys = newStmtList(genInfo.destroySystems())
 
@@ -181,12 +186,21 @@ proc createSendProcs*(details: CodeGenInfo): NimNode =
             body.add quote do:
                 send[`eventType`](`appStateIdent`.`inboxIdent`, `event`)
 
+        for system in details.systems:
+            case system.phase
+            of EventCallback:
+                if eventType == system.callbackSysType:
+                    body.add(details.invokeSystem(system, {EventCallback}, [ event ]))
+            of IndirectEventCallback:
+                if eventType == system.callbackSysType:
+                    let inboxIdent = system.callbackSysMailboxName
+                    body.add quote do:
+                        send[`eventType`](`appStateIdent`.`inboxIdent`, `event`)
+            else:
+                discard
+
         if body.len == 0:
             body.add(nnkDiscardStmt.newTree(newEmptyNode()))
-
-        for system in details.systems:
-            if system.phase == EventCallback and eventType == system.prefixArgs[0][1]:
-                body.add(details.invokeSystem(system, EventCallback, [ event ]))
 
         result.add quote do:
             proc `name`(`appStateIdent`: var `appStateType`, `event`: sink `eventType`) {.used.} = `body`
