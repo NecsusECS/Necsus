@@ -1,6 +1,6 @@
-import macros, sequtils, strformat, options, typeReader, strutils
+import macros, sequtils, strformat, options, strutils
 import componentDef, tupleDirective, monoDirective, dualDirective, systemGen, directiveArg
-import ../runtime/[pragmas, directives]
+import ../runtime/[pragmas, directives], ../util/typeReader
 import spawnGen, queryGen, deleteGen, attachDetachGen, sharedGen, tickIdGen
 import localGen, lookupGen, eventGen, timeGen, debugGen, bundleGen, saveGen, restoreGen
 
