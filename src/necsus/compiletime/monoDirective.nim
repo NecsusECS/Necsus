@@ -1,4 +1,4 @@
-import hashes, nimNode, strutils, macros
+import hashes, ../util/nimNode, strutils, macros
 
 type
      MonoDirective* = ref object

@@ -1,4 +1,4 @@
-import macros, hashes, sequtils, strutils, nimNode, tables
+import macros, hashes, sequtils, strutils, ../util/nimNode, tables
 
 type
     ComponentDef* = ref object

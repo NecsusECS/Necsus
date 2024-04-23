@@ -1,6 +1,6 @@
 import macros, strutils, tables, sequtils
-import monoDirective, nimNode, commonVars, systemGen
-import ../runtime/[mailbox, directives]
+import monoDirective, commonVars, systemGen
+import ../runtime/[mailbox, directives], ../util/nimNode
 
 proc eventStorageIdent(event: MonoDirective | NimNode): NimNode =
     ## Returns the name of the identifier that holds the storage for an event
