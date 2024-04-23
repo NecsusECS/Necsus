@@ -1,4 +1,4 @@
-import entityId, world, archetypeStore, macros
+import entityId, world, archetypeStore, std/[options, macros, algorithm], ../util/[typeReader, nimNode]
 
 type
     RawSpawn*[C: tuple] = proc(): NewArchSlot[C]
@@ -40,3 +40,19 @@ template with*[C: tuple](spawn: Spawn[C], values: varargs[typed]) =
 template with*[C: tuple](spawn: FullSpawn[C], values: varargs[typed]): EntityId =
     ## spawns the given values
     set(spawn, buildTuple(values))
+
+macro extend*(a, b: typedesc): typedesc =
+    ## Combines two tuples to create a new tuple
+    let tupleA = a.resolveTo({nnkTupleConstr}).get(a)
+    tupleA.expectKind(nnkTupleConstr)
+
+    let tupleB = b.resolveTo({nnkTupleConstr}).get(b)
+    tupleB.expectKind(nnkTupleConstr)
+
+    var children: seq[NimNode]
+    for child in tupleA: children.add(child)
+    for child in tupleB: children.add(child)
+    children.sort(nimNode.cmp)
+
+    result = nnkTupleConstr.newTree(children)
+    result.copyLineInfo(a)
