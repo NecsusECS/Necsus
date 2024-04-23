@@ -1,4 +1,4 @@
-import entityId, world, archetypeStore, std/[options, macros, algorithm], ../util/[typeReader, nimNode]
+import entityId, world, archetypeStore, std/[options, macros, algorithm, sequtils], ../util/[typeReader, nimNode]
 
 type
     RawSpawn*[C: tuple] = proc(): NewArchSlot[C]
@@ -41,18 +41,45 @@ template with*[C: tuple](spawn: FullSpawn[C], values: varargs[typed]): EntityId 
     ## spawns the given values
     set(spawn, buildTuple(values))
 
+proc asTupleConstr(typ: NimNode): NimNode =
+    result = typ.resolveTo({nnkTupleConstr}).get(typ)
+    result.expectKind(nnkTupleConstr)
+
 macro extend*(a, b: typedesc): typedesc =
     ## Combines two tuples to create a new tuple
-    let tupleA = a.resolveTo({nnkTupleConstr}).get(a)
-    tupleA.expectKind(nnkTupleConstr)
+    let tupleA = a.asTupleConstr()
+    let tupleB = b.asTupleConstr()
 
-    let tupleB = b.resolveTo({nnkTupleConstr}).get(b)
-    tupleB.expectKind(nnkTupleConstr)
-
-    var children: seq[NimNode]
-    for child in tupleA: children.add(child)
-    for child in tupleB: children.add(child)
+    var children = concat(tupleA.children.toSeq, tupleB.children.toSeq)
     children.sort(nimNode.cmp)
 
     result = nnkTupleConstr.newTree(children)
     result.copyLineInfo(a)
+
+macro join*(aType, bType: typedesc, a, b: typed): untyped =
+    ## Combines two tuple values into a single tuple value according to the sorting
+    ## rules or archetype component types
+    let tupleA = aType.asTupleConstr()
+    let tupleB = bType.asTupleConstr()
+
+    var children: seq[(bool, int, NimNode)]
+    for i, child in tupleA: children.add((true, i, child))
+    for i, child in tupleB: children.add((false, i, child))
+    children.sort do (a, b: (bool, int, NimNode)) -> int:
+        return nimNode.cmp(a[2], b[2])
+
+    let aVar = genSym(nskLet, "tupleA")
+    let bVar = genSym(nskLet, "tupleB")
+    var output = nnkTupleConstr.newTree()
+
+    result = newStmtList(
+        nnkLetSection.newTree(
+            nnkIdentDefs.newTree(aVar, tupleA, a),
+            nnkIdentDefs.newTree(bVar, tupleB, b),
+        ),
+        output
+    )
+
+    for (aOrB, idx, _) in children:
+        let source = if aOrB: aVar else: bVar
+        output.add(nnkBracketExpr.newTree(source, newLit(idx)))

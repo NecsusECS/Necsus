@@ -2,21 +2,17 @@ import unittest, necsus, std/options
 
 type
     A = int
-    B = int
-    C = int
-    D = int
+    B = string
+    C = float
+    D = bool
 
     BaseTuple = (A, C)
 
 proc spawner(spawn: Spawn[extend(BaseTuple, (B, D))]) =
-    spawn.with(1, 2, 3, 4)
+    spawn.set(join(BaseTuple, (B, D), (1, 3.14), ("bar", true)))
 
 proc checker(query: Query[extend(BaseTuple, (B, D))]) =
-    let values: (A, B, C, D) = query.single.get
-    check(values[0] == 1)
-    check(values[1] == 2)
-    check(values[2] == 3)
-    check(values[3] == 4)
+    check(query.single.get == (1, "bar", 3.14, true))
 
 proc runner(tick: proc(): void) = tick()
 

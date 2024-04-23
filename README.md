@@ -894,7 +894,8 @@ There are a few useful design patterns that are useful when using Necsus
 There will be times when you want to create the similar entities, but with slightly different overall
 sets of components. You could use generics for this purpose, but Necsus has rules around the sort
 order of entities, so this doesn't always work. Instead, you can use the `extend` macro to combine
-two tuples into one:
+two tuples into one. You can also use the `join` macro to create actual instances of a tuple that
+was defined using `extend`:
 
 ```nim
 import necsus
@@ -910,12 +911,14 @@ type
 
     BaseEnemyComponents = (EnemyState, Health)
 
+proc base(health: int): BaseEnemyComponents = (Alive, health)
+
 proc createEnemies*(
     createGround: Spawn[extend(BaseEnemyComponents, (GroundUnit, ))],
     createSky: Spawn[extend(BaseEnemyComponents, (SkyUnit, ))],
 ) {.startupSys.} =
-    createGround.with(Alive, GroundUnit(), Health(123))
-    createSky.with(Alive, Health(200), SkyUnit())
+    createGround.set(join(BaseEnemyComponents, (GroundUnit, ), base(200), (GroundUnit(), )))
+    createSky.set(join(BaseEnemyComponents, (SkyUnit, ), base(100), (SkyUnit(), )))
 
 proc myApp() {.necsus([~createEnemies], newNecsusConf()).}
 ```
