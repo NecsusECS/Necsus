@@ -1,0 +1,3 @@
+symbols	necsus/util/nimNode.html#symbols,NimNode	nimNode: symbols(node: NimNode): seq[string]	
+hash	necsus/util/nimNode.html#hash,NimNode	nimNode: hash(node: NimNode): Hash	
+cmp	necsus/util/nimNode.html#cmp,NimNode,NimNode	nimNode: cmp(a: NimNode; b: NimNode): int	

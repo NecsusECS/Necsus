@@ -6,3 +6,5 @@ set	necsus/runtime/spawn.html#set,Spawn[C: tuple],sinkC	spawn: set[C: tuple](spa
 set	necsus/runtime/spawn.html#set,FullSpawn[C: tuple],sinkC	spawn: set[C: tuple](spawn: FullSpawn[C]; values: sink C): EntityId	
 with	necsus/runtime/spawn.html#with.t,Spawn[C: tuple],varargs[typed]	spawn: with[C: tuple](spawn: Spawn[C]; values: varargs[typed])	
 with	necsus/runtime/spawn.html#with.t,FullSpawn[C: tuple],varargs[typed]	spawn: with[C: tuple](spawn: FullSpawn[C]; values: varargs[typed]): EntityId	
+extend	necsus/runtime/spawn.html#extend.m,typedesc,typedesc	spawn: extend(a, b: typedesc): typedesc	
+join	necsus/runtime/spawn.html#join.m,typedesc,typedesc,typed,typed	spawn: join(aType, bType: typedesc; a, b: typed): untyped	
