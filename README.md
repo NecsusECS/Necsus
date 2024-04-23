@@ -889,6 +889,37 @@ app.tick()
 
 There are a few useful design patterns that are useful when using Necsus
 
+### Extending Tuples
+
+There will be times when you want to create the similar entities, but with slightly different overall
+sets of components. You could use generics for this purpose, but Necsus has rules around the sort
+order of entities, so this doesn't always work. Instead, you can use the `extend` macro to combine
+two tuples into one:
+
+```nim
+import necsus
+
+type
+    EnemyState = enum Alive, Dead
+
+    Health = int
+
+    GroundUnit = object
+
+    SkyUnit = object
+
+    BaseEnemyComponents = (EnemyState, Health)
+
+proc createEnemies*(
+    createGround: Spawn[extend(BaseEnemyComponents, (GroundUnit, ))],
+    createSky: Spawn[extend(BaseEnemyComponents, (SkyUnit, ))],
+) {.startupSys.} =
+    createGround.with(Alive, GroundUnit(), Health(123))
+    createSky.with(Alive, Health(200), SkyUnit())
+
+proc myApp() {.necsus([~createEnemies], newNecsusConf()).}
+```
+
 ### Encapsulation using Bundles
 
 Bundles provide a way to put all your entity state logic in one place, then call it from other places. For example,
