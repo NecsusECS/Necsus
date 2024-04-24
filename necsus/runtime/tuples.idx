@@ -1,0 +1,2 @@
+extend	necsus/runtime/tuples.html#extend.m,typedesc,typedesc	tuples: extend(a, b: typedesc): typedesc	
+join	necsus/runtime/tuples.html#join.m,typedesc,typedesc,typed,typed	tuples: join(aType, bType: typedesc; a, b: typed): untyped	
