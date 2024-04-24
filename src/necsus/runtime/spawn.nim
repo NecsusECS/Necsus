@@ -1,4 +1,4 @@
-import entityId, world, archetypeStore, std/[options, macros, algorithm, sequtils], ../util/[typeReader, nimNode]
+import entityId, world, archetypeStore, std/macros
 
 type
     RawSpawn*[C: tuple] = proc(): NewArchSlot[C]
