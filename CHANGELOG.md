@@ -1,5 +1,30 @@
 # Changelog
 
+## 0.9.0
+
+### Breaking Changes
+
+No known breaking changes
+
+### New Features
+
+* `extend` and `join` macros for combining tuple types
+* `eventSys` system type
+* Include `import` statements when using `-d:dump`
+* Support for `Optional` components in `Detach` directives
+* Add the `Swap` directive
+* Add the `-d:archetypes` build flag
+* Support component aliases with generics
+* `Save` and `Restore` directives, along with `saveSys` and `restoreSys` system types
+* Returning `SystemInstance` automatically flags a system as instanced.
+
+### Other Changes
+
+* Ensure that archetype rows are never copied
+* Silence noisy compiler warnings
+* Reduce size of generated code by around 50%
+* Logger is disabled by default
+
 ## 0.8.0
 
 ### New Features
