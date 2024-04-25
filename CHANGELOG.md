@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.9.1
+
+### Bug Fixes
+
+* Fix `Lookup` directives that contain a `Not` clause
+
 ## 0.9.0
 
 ### Breaking Changes
