@@ -1,6 +1,6 @@
 import macros, sequtils, options, tables
 import tupleDirective, tools, commonVars, archetype, componentDef, worldEnum, systemGen
-import ../runtime/[world, archetypeStore, directives]
+import ../runtime/[world, archetypeStore, directives], ../util/bits
 
 let entityId {.compileTime.} = ident("entityId")
 
@@ -30,10 +30,6 @@ proc buildArchetypeLookup(
 proc worldFields(name: string, dir: TupleDirective): seq[WorldField] =
     @[ (name, nnkBracketExpr.newTree(bindSym("Lookup"), dir.asTupleType)) ]
 
-proc canCreateFrom(lookup: TupleDirective, archetype: Archetype[ComponentDef]): bool =
-    ## Returns whether a lookup can be created from an archetype
-    lookup.items.toSeq.allIt(it in archetype)
-
 proc generate(details: GenerateContext, arg: SystemArg, name: string, lookup: TupleDirective): NimNode =
     ## Generates the code for instantiating queries
 
@@ -51,7 +47,7 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, lookup: Tu
             # Create a case statement where each branch is one of the archetypes
             var needsElse = false
             for (ofBranch, archetype) in archetypeCases(details):
-                if lookup.canCreateFrom(archetype):
+                if archetype.bitset.matches(lookup.filter):
                     cases.add(nnkOfBranch.newTree(ofBranch, details.buildArchetypeLookup(lookup, archetype)))
                 else:
                     needsElse = true
