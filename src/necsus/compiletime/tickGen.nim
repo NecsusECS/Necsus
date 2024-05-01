@@ -47,10 +47,11 @@ proc singleInvokeSystem(codeGenInfo: CodeGenInfo, system: ParsedSystem, prefixAr
     ## Generates the code needed call a system once
     if system.instanced.isSome:
         let (fieldName, fieldType) = system.instancedInfo.unsafeGet
-        if fieldType.kind == nnkProcTy or fieldType == bindSym("SystemInstance"):
-            return quote: `appStateIdent`.`fieldName`()
+        let target = if fieldType.kind == nnkProcTy or fieldType == bindSym("SystemInstance"):
+            newDotExpr(appStateIdent, fieldName)
         else:
-            return quote: `appStateIdent`.`fieldName`.tick()
+            newDotExpr(newDotExpr(appStateIdent, fieldName), ident("tick"))
+        newCall(target, prefixArgs.toSeq)
     else:
         return newCall(system.symbol, concat(prefixArgs.toSeq, codeGenInfo.renderSystemArgs(system.args)))
 
