@@ -85,7 +85,8 @@ suite "RingBuffer":
             var q = newRingBuffer[int](2048)
 
             proc pushIt(value: int) {.gcsafe.} =
-                require(q.tryPush(value))
+                {.cast(gcsafe).}:
+                    require(q.tryPush(value))
 
             for i in 0..<2000:
                 spawn pushIt(i)
@@ -93,8 +94,9 @@ suite "RingBuffer":
             var results: SharedList[int]
             results.init
 
-            proc shiftIt() =
-                results.add(q.tryShift().get)
+            proc shiftIt() {.gcsafe.} =
+                {.cast(gcsafe).}:
+                    results.add(q.tryShift().get)
 
             for i in 0..<2000:
                 spawn shiftIt()
@@ -109,12 +111,13 @@ suite "RingBuffer":
                 var length: Atomic[int]
 
                 proc act(randomInt: uint64) {.gcsafe.} =
-                    if randomInt mod 2 == 0:
-                        if q.tryPush(randomInt):
-                            length += 1
-                    else:
-                        if q.tryShift().isSome:
-                            length -= 1
+                    {.cast(gcsafe).}:
+                        if randomInt mod 2 == 0:
+                            if q.tryPush(randomInt):
+                                length += 1
+                        else:
+                            if q.tryShift().isSome:
+                                length -= 1
 
                 var rand = initRand(i)
                 for _ in 0..<2000:

@@ -12,7 +12,7 @@
 ## * https://github.com/eldipa/loki
 ##
 
-import threads, math, options, arrayblock
+import threads, math, options
 
 type
     RingBuffer*[T] {.byref.} = object
@@ -51,7 +51,7 @@ type
         pad2: array[13, uint]
             ## More padding to prevent false sharing
 
-        data: ArrayBlock[T]
+        data: seq[T]
 
         size: uint
             ## The length of data being stored
@@ -59,7 +59,7 @@ type
 proc newRingBuffer*[T](minimumSize: SomeInteger): RingBuffer[T] =
     let size = nextPowerOfTwo(minimumSize.int).uint
     result.size = size - 1
-    result.data = newArrayBlock[T](size)
+    result.data = newSeq[T](size)
 
     # Assuming a size power of 2 N, we can compute X % N as X & mask for any integer. (where & is faster than %).
     result.prodMask = size - 1

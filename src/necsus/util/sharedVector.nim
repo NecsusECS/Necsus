@@ -1,4 +1,4 @@
-import macros, threads, arrayblock
+import macros, threads
 
 ##
 ## Resizable array of values stored in large buckets of memory. The benefit of this
@@ -13,7 +13,7 @@ type
         ## Resizable vector of values
         resizeLock: Lock
         size: uint
-        buckets: array[32, ArrayBlock[T]]
+        buckets: array[32, seq[T]]
 
 proc `=copy`*[T](dest: var SharedVector[T], src: SharedVector[T]) {.error.}
 
@@ -27,7 +27,7 @@ iterator bucketDetails*[T](vector: SharedVector[T]): tuple[index: uint, size: ui
     var bucketSize = 1'u
     for bucket in 0'u..<len(vector.buckets):
 
-        if vector.buckets[bucket].isNil:
+        if vector.buckets[bucket].len == 0:
             break
 
         yield (bucket, bucketSize)
@@ -44,8 +44,8 @@ proc reserve*[T](vector: var SharedVector[T], size: uint) =
         var bucketSize = 1'u
 
         while allocated <= size:
-            if vector.buckets[bucket].isNil:
-                vector.buckets[bucket] = newArrayBlock[T](bucketSize)
+            if vector.buckets[bucket].len == 0:
+                vector.buckets[bucket] = newSeq[T](bucketSize)
             allocated += bucketSize
             bucket += 1
             bucketSize *= 2
@@ -86,7 +86,7 @@ template entryRef[T](vector: SharedVector[T], key: uint, allowResize: static boo
     let bucket = determineBucket(key)
     let index = key - (1'u shl bucket) + 1
 
-    if vector.buckets[bucket].isNil:
+    if vector.buckets[bucket].len == 0:
         when allowResize:
             reserve(vector, key)
         elif compileOption("boundChecks"):

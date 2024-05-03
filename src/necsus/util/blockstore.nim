@@ -1,4 +1,4 @@
-import threads, ringbuffer, arrayblock, options
+import threads, ringbuffer, options
 
 type
     EntryData[V] = object
@@ -13,7 +13,7 @@ type
         nextId: Atomic[uint]
         hasRecycledValues: bool
         recycle: RingBuffer[uint]
-        data: ArrayBlock[EntryData[V]]
+        data: seq[EntryData[V]]
         len: Atomic[uint]
 
     BlockIter* {.byref.} = object
@@ -21,7 +21,7 @@ type
 
 proc newBlockStore*[V](size: SomeInteger): BlockStore[V] =
     ## Instantiates a new BlockStore
-    BlockStore[V](recycle: newRingBuffer[uint](size), data: newArrayBlock[EntryData[V]](size))
+    BlockStore[V](recycle: newRingBuffer[uint](size), data: newSeq[EntryData[V]](size))
 
 proc len*[V](blockstore: var BlockStore[V]): uint = blockstore.len.load
     ## Returns the length of this blockstore
@@ -70,7 +70,7 @@ proc del*[V](store: var BlockStore[V], idx: uint): V =
     var falsey = true
     if store.data[idx].alive.compareExchange(falsey, false):
         store.len.atomicDec(1)
-        let deleted = store.data.del(idx)
+        let deleted = move(store.data[idx])
         result = deleted.value
         discard store.recycle.tryPush(idx)
         store.hasRecycledValues = true
