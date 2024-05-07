@@ -8,40 +8,36 @@ import macros, threads
 ## Based on https://philosopherdeveloper.com/posts/how-to-build-a-thread-safe-lock-free-resizable-array.html
 ##
 
+# Preallocate a certain number of slots
+const PREALLOC_SIZE = 7'u
+
+# The number of dynamic buckets to create
+const DYN_BUCKETS = 29
+
 type
     SharedVector*[T] {.byref.} = object
         ## Resizable vector of values
         resizeLock: Lock
         size: uint
-        buckets: array[32, seq[T]]
+        prealloc: array[PREALLOC_SIZE, T]
+        buckets: array[DYN_BUCKETS, seq[T]]
 
 proc `=copy`*[T](dest: var SharedVector[T], src: SharedVector[T]) {.error.}
 
 proc `=sink`*[T](dest: var SharedVector[T], src: SharedVector[T]) =
     dest.size = src.size
+    `=sink`(dest.prealloc, src.prealloc)
     for i in 0'u..<len(src.buckets):
         `=sink`(dest.buckets[i], src.buckets[i])
-
-iterator bucketDetails*[T](vector: SharedVector[T]): tuple[index: uint, size: uint] =
-    ## Iterate through all the used buckets in this vector, along with their length
-    var bucketSize = 1'u
-    for bucket in 0'u..<len(vector.buckets):
-
-        if vector.buckets[bucket].len == 0:
-            break
-
-        yield (bucket, bucketSize)
-
-        bucketSize *= 2
 
 proc reserve*[T](vector: var SharedVector[T], size: uint) =
     ## Ensures this vector can hold at least the given number of elements
 
     vector.resizeLock.withLock:
 
-        var allocated = 0'u
+        var allocated = PREALLOC_SIZE
         var bucket = 0'u
-        var bucketSize = 1'u
+        var bucketSize = PREALLOC_SIZE + 1
 
         while allocated <= size:
             if vector.buckets[bucket].len == 0:
@@ -50,11 +46,11 @@ proc reserve*[T](vector: var SharedVector[T], size: uint) =
             bucket += 1
             bucketSize *= 2
 
-        vector.size = allocated
+        vector.size = allocated - PREALLOC_SIZE
 
 proc len*[T](vector: SharedVector[T]): uint =
     ## Returns the size of this vector
-    vector.size
+    vector.size + PREALLOC_SIZE
 
 macro generateKeyToBucketTable(): untyped =
     ## Creates a lookup table that maps a key back to the bucket its in. This is equivalent
@@ -62,9 +58,9 @@ macro generateKeyToBucketTable(): untyped =
     let keyNode: NimNode = ident("key")
     result = nnkCaseStmt.newTree(keyNode)
 
-    var bucketSize = 1'u
-    var accum = 0'u
-    for bucket in 0'u..<32:
+    var bucketSize = PREALLOC_SIZE + 1
+    var accum = PREALLOC_SIZE
+    for bucket in 0'u..<DYN_BUCKETS:
         let first = accum
         let last = accum + bucketSize - 1
         result.add(
@@ -84,7 +80,7 @@ proc determineBucket(key: uint): uint =
 
 template entryRef[T](vector: SharedVector[T], key: uint, allowResize: static bool): untyped =
     let bucket = determineBucket(key)
-    let index = key - (1'u shl bucket) + 1
+    let index = key - (1'u shl (bucket + 32 - DYN_BUCKETS)) + 1
 
     if vector.buckets[bucket].len == 0:
         when allowResize:
@@ -98,22 +94,40 @@ template entryRef[T](vector: SharedVector[T], key: uint, allowResize: static boo
 
 proc `[]=`*[T](vector: var SharedVector[T], key: uint, value: sink T) =
     ## Set a value
-    entryRef(vector, key, true) = value
+    if key < PREALLOC_SIZE:
+        vector.prealloc[key] = value
+    else:
+        entryRef(vector, key, true) = value
 
 proc `[]`*[T](vector: SharedVector[T], key: uint): lent T =
     ## Returns a value
-    entryRef(vector, key, false)
+    if key < PREALLOC_SIZE:
+        return vector.prealloc[key]
+    else:
+        return entryRef(vector, key, false)
 
 proc `[]`*[T](vector: var SharedVector[T], key: uint): var T =
     ## Returns a value
-    entryRef(vector, key, false)
+    if key < PREALLOC_SIZE:
+        return vector.prealloc[key]
+    else:
+        return entryRef(vector, key, false)
 
 proc mget*[T](vector: var SharedVector[T], key: uint): var T =
     ## Returns a mutable reference to a value
-    entryRef(vector, key, true)
+    if key < PREALLOC_SIZE:
+        return vector.prealloc[key]
+    else:
+        return entryRef(vector, key, true)
 
 iterator items*[T](vector: SharedVector[T]): lent T =
     ## Iterate through all values in this vector
-    for (bucket, bucketSize) in vector.bucketDetails:
-        for index in 0..<bucketSize:
-            yield vector.buckets[bucket][index]
+    for i in 0..<PREALLOC_SIZE:
+        yield vector.prealloc[i]
+
+    for bucketId in 0..<len(vector.buckets):
+        let bucketLen = len(vector.buckets[bucketId])
+        if bucketLen == 0:
+            break
+        for idx in 0..<bucketLen:
+            yield vector.buckets[bucketId][idx]
