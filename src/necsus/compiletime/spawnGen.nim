@@ -1,6 +1,6 @@
 import macros, sequtils, sets
 import tools, tupleDirective, archetype, archetypeBuilder, componentDef, commonVars, systemGen
-import ../runtime/spawn
+import ../runtime/[spawn, archetypeStore]
 
 proc archetypes(builder: var ArchetypeBuilder[ComponentDef], systemArgs: seq[SystemArg], dir: TupleDirective) =
     builder.define(dir.comps)
@@ -26,9 +26,12 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, dir: Tuple
             let ident = name.ident
             let archetype = newArchetype(dir.items.toSeq)
             let archetypeIdent = archetype.ident
+            let log = emitEntityTrace("Spawned ", newCall(bindSym("entityId"), ident("result")), " of kind ", archetype.name)
             let assignment = quote do:
                 `appStateIdent`.`ident` =
-                    proc(): auto = beginSpawn(`appStateIdent`.`worldIdent`, `appStateIdent`.`archetypeIdent`)
+                    proc(): auto =
+                        result = beginSpawn(`appStateIdent`.`worldIdent`, `appStateIdent`.`archetypeIdent`)
+                        `log`
             discard result.add(assignment)
         except UnsortedArchetype as e:
             error(e.msg, arg.source)

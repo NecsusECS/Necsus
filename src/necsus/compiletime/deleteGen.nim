@@ -28,9 +28,12 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string): NimNode =
         else:
             cases = newEmptyNode()
 
+        let log = emitEntityTrace("Deleting ", entity)
+
         return quote do:
-            proc `deleteProcName`(`appStateIdent`: var `appStateTypeName`, `entity`: EntityId) =
+            proc `deleteProcName`(`appStateIdent`: var `appStateTypeName`, `entity`: EntityId) {.gcsafe, raises: [].} =
                 let `entityIndex` = del[`archetypeEnum`](`appStateIdent`.`worldIdent`, `entity`)
+                `log`
                 `cases`
     of Standard:
         let deleteProc = name.ident

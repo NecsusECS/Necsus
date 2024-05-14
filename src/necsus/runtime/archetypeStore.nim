@@ -63,6 +63,9 @@ proc newSlot*[Archs: enum, Comps: tuple](
     slot.value.entityId = entityId
     return NewArchSlot[Comps](slot)
 
+proc entityId*[Comps: tuple](entry: NewArchSlot[Comps]): EntityId =
+    Entry[ArchRow[Comps]](entry).value.entityId
+
 proc index*[Comps: tuple](entry: NewArchSlot[Comps]): uint = Entry[ArchRow[Comps]](entry).index
 
 proc setComp*[Comps: tuple](slot: NewArchSlot[Comps], comps: sink Comps): EntityId =

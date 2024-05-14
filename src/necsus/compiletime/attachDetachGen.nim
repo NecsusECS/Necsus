@@ -9,11 +9,12 @@ let entityId {.compileTime.} = ident("entityId")
 
 proc createArchUpdate(
     details: GenerateContext,
+    title: string,
     attachComps: seq[ComponentDef],
     archetype: Archetype[ComponentDef]
 ): NimNode =
     ## Creates code for updating archetype information in place
-    result = newStmtList()
+    result = newStmtList(emitEntityTrace(title, " ", entityId, " for ", archetype.name))
 
     let archIdent = archetype.ident
     let archTuple = archetype.asStorageTuple
@@ -77,6 +78,7 @@ proc createTupleConvertProc(
 
 proc createArchMove(
     details: GenerateContext,
+    title: string,
     fromArch: Archetype[ComponentDef],
     newCompValues: seq[ComponentDef],
     toArch: Archetype[ComponentDef]
@@ -92,7 +94,10 @@ proc createArchMove(
 
     let newCompsArg = if newCompValues.len > 0: newComps else: quote: (0, )
 
+    let log = emitEntityTrace(title, " ", entityId, " from ", fromArch.name, " to ", toArch.name)
+
     return quote:
+        `log`
         moveEntity[`archetypeEnum`, `fromArchTuple`,  `newCompsType`, `toArchTuple`](
             `appStateIdent`.`worldIdent`,
             `entityIndex`,
@@ -104,6 +109,7 @@ proc createArchMove(
 
 proc attachDetachProcBody(
     details: GenerateContext,
+    title: string,
     attachComps: seq[ComponentDef],
     detachComps: seq[ComponentDef],
     optDetachComps: seq[ComponentDef]
@@ -123,12 +129,14 @@ proc attachDetachProcBody(
                 if fromArch == toArch:
                     if attachComps.len > 0:
                         result.convertProcs.add(details.createTupleConvertProc(fromArch, attachComps, toArch))
-                        cases.add(nnkOfBranch.newTree(ofBranch, details.createArchUpdate(attachComps, toArch)))
+                        cases.add(
+                            nnkOfBranch.newTree(ofBranch, details.createArchUpdate(title, attachComps, toArch)))
                     else:
                         needsElse = true
                 elif toArch in details.archetypes:
                     result.convertProcs.add(details.createTupleConvertProc(fromArch, attachComps, toArch))
-                    cases.add(nnkOfBranch.newTree(ofBranch, details.createArchMove(fromArch, attachComps, toArch)))
+                    cases.add(
+                        nnkOfBranch.newTree(ofBranch, details.createArchMove(title, fromArch, attachComps, toArch)))
                 else:
                     needsElse = true
             else:
@@ -159,7 +167,7 @@ proc generateAttach(details: GenerateContext, arg: SystemArg, name: string, atta
 
     case details.hook
     of Outside:
-        let (body, convertProcs) = details.attachDetachProcBody(attach.comps, @[], @[])
+        let (body, convertProcs) = details.attachDetachProcBody("Attaching", attach.comps, @[], @[])
         let appStateTypeName = details.appStateTypeName
         return quote do:
             `convertProcs`
@@ -208,7 +216,7 @@ proc generateDetach(details: GenerateContext, arg: SystemArg, name: string, deta
     of GenerateHook.Outside:
         let appStateTypeName = details.appStateTypeName
         let (detachComps, optDetachComps) = detach.args.splitDetachArgs
-        let (body, convertProcs) = details.attachDetachProcBody(@[], detachComps, optDetachComps)
+        let (body, convertProcs) = details.attachDetachProcBody("Detaching", @[], detachComps, optDetachComps)
         return quote:
             `convertProcs`
             proc `detachProc`(`appStateIdent`: var `appStateTypeName`, `entityId`: EntityId) =
@@ -238,7 +246,7 @@ proc generateSwap(details: GenerateContext, arg: SystemArg, name: string, dir: D
     case details.hook
     of Outside:
         let (detachComps, optDetachComps) = dir.second.splitDetachArgs
-        let (body, convertProcs) = details.attachDetachProcBody(dir.first.comps, detachComps, optDetachComps)
+        let (body, convertProcs) = details.attachDetachProcBody("Swapping", dir.first.comps, detachComps, optDetachComps)
         let appStateTypeName = details.appStateTypeName
         return quote do:
             `convertProcs`

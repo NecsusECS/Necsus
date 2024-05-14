@@ -1029,6 +1029,13 @@ To get a quick and dirty idea of how your app is performing, you can compile wit
 will cause Necsus to add profiling code that will report how long each system is taking. It takes measurements,
 then outputs the timings to the console.
 
+### Tracing
+
+To understand what is happening in various systems over time, there are various flags that can be enabled
+to emit trace level logs. They are:
+
+* `-d:necsusEntityTrace`: Logs whenever an entity is spawned, deleted, or modified in some way
+
 ### Dumping Generated Code
 
 If Necsus isn't behaving as you would expect, the best tool you've got in your toolbox is the ability to dump the code

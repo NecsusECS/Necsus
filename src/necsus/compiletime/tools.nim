@@ -1,5 +1,5 @@
 import macros, options, sequtils
-import tupleDirective, componentDef, archetype, worldEnum, systemGen, directiveArg
+import tupleDirective, componentDef, archetype, worldEnum, systemGen, directiveArg, commonVars
 import ../runtime/query
 
 proc read(fromVar: NimNode, fromArch: Archetype[ComponentDef], arg: DirectiveArg): NimNode =
@@ -43,3 +43,29 @@ proc asTupleType*(tupleDir: TupleDirective): NimNode = tupleDir.args.toSeq.asTup
 iterator archetypeCases*(details: GenerateContext): tuple[ofBranch: NimNode, archetype: Archetype[ComponentDef]] =
     for archetype in details.archetypes:
         yield (details.archetypeEnum.ident(archetype), archetype)
+
+proc joinStrs*(args: varargs[NimNode]): NimNode =
+    ## Joins a set of stringable nim nodes into a string
+    if args.len == 0:
+        result = newLit("")
+    else:
+        result = newEmptyNode()
+        for arg in args:
+            let argStr = nnkPrefix.newTree(ident("$"), arg)
+            if result.kind == nnkEmpty:
+                result = argStr
+            else:
+                result = nnkInfix.newTree(ident("&"), result, argStr)
+
+proc loggable*(node: NimNode): NimNode = node
+
+proc loggable*(str: string): NimNode = newLit(str)
+
+proc emitEntityTrace*(args: varargs[NimNode, loggable]): NimNode =
+    ## Emits function call for logging an execution event
+    if defined(necsusEntityTrace):
+        let msg = args.joinStrs
+        return quote:
+            `appStateIdent`.config.log(`msg`)
+    else:
+        return newEmptyNode()
