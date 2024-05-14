@@ -1,12 +1,14 @@
 import math, directives
 
 type
+    NecsusLogger* = proc(message: string): void {.gcsafe, raises: [].}
+
     NecsusConf* = ref object
         ## Used to configure
         entitySize*: int
         componentSize*: int
         getTime*: proc(): Nfloat
-        log*: proc(message: string): void
+        log*: NecsusLogger
 
 proc logEcho(message: string) =
     when defined(necsusEchoLog):
@@ -14,7 +16,7 @@ proc logEcho(message: string) =
 
 proc newNecsusConf*(
     getTime: proc(): Nfloat,
-    log: proc(message: string): void,
+    log: NecsusLogger,
     entitySize: int,
     componentSize: int,
 ): NecsusConf =
@@ -26,7 +28,7 @@ proc newNecsusConf*(
         log: log,
     )
 
-proc newNecsusConf*(getTime: proc(): Nfloat, log: proc(message: string): void): NecsusConf =
+proc newNecsusConf*(getTime: proc(): Nfloat, log: NecsusLogger): NecsusConf =
     ## Create a necsus configuration
     NecsusConf(entitySize: 1_000, componentSize: 400, getTime: getTime, log: log)
 
