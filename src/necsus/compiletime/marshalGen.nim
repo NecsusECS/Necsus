@@ -1,4 +1,4 @@
-import macros, codeGenInfo, commonVars, parse, tickGen, std/[sequtils, tables, json, jsonutils, sets]
+import macros, codeGenInfo, commonVars, parse, tickGen, tools, std/[sequtils, tables, json, jsonutils, sets]
 
 proc saveTypeName(genInfo: CodeGenInfo): NimNode = ident(genInfo.app.name & "Marshal")
 
@@ -52,6 +52,8 @@ proc createRestoreProc(genInfo: CodeGenInfo): NimNode =
         let readProp = newDotExpr(decoded, restore.restoreSysType.strVal.ident)
         invocations.add(genInfo.invokeSystem(restore, {RestoreCallback}, [ readProp ]))
 
+    let log = emitSaveTrace("Restoring from ", streamIdent, " as ", decoded)
+
     return quote:
         proc restore*(
             `appStateIdent`: var `appStateType`,
@@ -59,6 +61,7 @@ proc createRestoreProc(genInfo: CodeGenInfo): NimNode =
         ) {.gcsafe, raises: [IOError, OSError, JsonParsingError, ValueError, Exception].} =
             var `decoded`: `saveTypeName`
             fromJson(`decoded`, parseJson(`streamIdent`))
+            `log`
             `invocations`
 
 proc createSaveProc(genInfo: CodeGenInfo): NimNode =
@@ -74,12 +77,15 @@ proc createSaveProc(genInfo: CodeGenInfo): NimNode =
             )
         )
 
+    let log = emitSaveTrace("Saved: ", ident("result"))
+
     return quote:
         {.hint[XCannotRaiseY]:off.}
         proc save*(
             `appStateIdent`: var `appStateType`,
         ): string {.raises: [IOError, OSError, ValueError, Exception].} =
-            return $toJson(`construct`)
+            result = $toJson(`construct`)
+            `log`
 
 proc createMarshalProcs*(genInfo: CodeGenInfo): NimNode =
     ## Generates procs needed for saving and restoring game state

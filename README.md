@@ -1037,6 +1037,7 @@ to emit trace level logs. They are:
 * `-d:necsusEntityTrace`: Logs whenever an entity is spawned, deleted, or modified in some way
 * `-d:necsusEventTrace`: Logs whenever an event is sent
 * `-d:necsusQueryTrace`: Logs when a query is executed
+* `-d:necsusSaveTrace`: Logs whenever save or restore is triggered
 
 ### Dumping Generated Code
 

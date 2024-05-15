@@ -76,7 +76,16 @@ jobs:
     strategy:
       matrix:
         nim: [ 2.0.0 ]
-        flag: [profile, dump, archetypes, necsusFloat32, necsusEntityTrace, necsusEventTrace, necsusQueryTrace]
+        flag: [
+          profile,
+          dump,
+          archetypes,
+          necsusFloat32,
+          necsusEntityTrace,
+          necsusEventTrace,
+          necsusQueryTrace,
+          necsusSaveTrace
+        ]
     steps:
     - uses: actions/checkout@v1
     - name: Choose Nim
