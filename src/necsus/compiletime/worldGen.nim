@@ -1,5 +1,6 @@
 import macros, options, tables, sequtils
-import worldEnum, codeGenInfo, archetype, commonVars, systemGen, tickGen, parse, eventGen, directiveSet, monoDirective
+import tools, codeGenInfo, archetype, commonVars, systemGen
+import worldEnum, tickGen, parse, eventGen, directiveSet, monoDirective
 import ../runtime/[world, archetypeStore, necsusConf, directives, mailbox], ../util/profile
 
 proc fields(genInfo: CodeGenInfo): seq[(NimNode, NimNode)] =
@@ -180,7 +181,9 @@ proc createSendProcs*(details: CodeGenInfo): NimNode =
         let name = directive.sendEventProcName
         let eventType = directive.argType
 
-        var body = newStmtList()
+        var body = newStmtList(
+            emitEventTrace("Event ", directive.name, ": ", `event`)
+        )
 
         for inboxIdent in inboxes:
             body.add quote do:

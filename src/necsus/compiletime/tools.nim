@@ -61,11 +61,16 @@ proc loggable*(node: NimNode): NimNode = node
 
 proc loggable*(str: string): NimNode = newLit(str)
 
+proc emitLog*(args: varargs[NimNode, loggable]): NimNode =
+    ## Generates code to emit a log message
+    let msg = args.joinStrs
+    return quote:
+        `appStateIdent`.config.log(`msg`)
+
 proc emitEntityTrace*(args: varargs[NimNode, loggable]): NimNode =
-    ## Emits function call for logging an execution event
-    if defined(necsusEntityTrace):
-        let msg = args.joinStrs
-        return quote:
-            `appStateIdent`.config.log(`msg`)
-    else:
-        return newEmptyNode()
+    ## Emits function call for logging an entity related event
+    return if defined(necsusEntityTrace): emitLog(args) else: return newEmptyNode()
+
+proc emitEventTrace*(args: varargs[NimNode, loggable]): NimNode =
+    ## Emits code needed to generate an event tracing log
+    return if defined(necsusEventTrace): emitLog(args) else: return newEmptyNode()

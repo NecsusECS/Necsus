@@ -1035,6 +1035,7 @@ To understand what is happening in various systems over time, there are various 
 to emit trace level logs. They are:
 
 * `-d:necsusEntityTrace`: Logs whenever an entity is spawned, deleted, or modified in some way
+* `-d:necsusEventTrace`: Logs whenever an event is sent
 
 ### Dumping Generated Code
 
