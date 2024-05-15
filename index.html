@@ -843,6 +843,15 @@ runSystemOnce do (str: Shared[string]) -&gt; void:
 <p>To get a quick and dirty idea of how your app is performing, you can compile with the <code>-d:profile</code> flag set. This
 will cause Necsus to add profiling code that will report how long each system is taking. It takes measurements,
 then outputs the timings to the console.</p>
+<h3>Tracing</h3>
+<p>To understand what is happening in various systems over time, there are various flags that can be enabled
+to emit trace level logs. They are:</p>
+<ul>
+<li><code>-d:necsusEntityTrace</code>: Logs whenever an entity is spawned, deleted, or modified in some way</li>
+<li><code>-d:necsusEventTrace</code>: Logs whenever an event is sent</li>
+<li><code>-d:necsusQueryTrace</code>: Logs when a query is executed</li>
+<li><code>-d:necsusSaveTrace</code>: Logs whenever save or restore is triggered</li>
+</ul>
 <h3>Dumping Generated Code</h3>
 <p>If Necsus isn't behaving as you would expect, the best tool you've got in your toolbox is the ability to dump the code
 that it generates. This allows you to walk through what is happening, or even substitute the generated code into your

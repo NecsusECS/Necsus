@@ -2,6 +2,7 @@ Entry	necsus/util/blockstore.html#Entry	blockstore: Entry
 BlockStore	necsus/util/blockstore.html#BlockStore	blockstore: BlockStore	
 BlockIter	necsus/util/blockstore.html#BlockIter	blockstore: BlockIter	
 newBlockStore	necsus/util/blockstore.html#newBlockStore,SomeInteger	blockstore: newBlockStore[V](size: SomeInteger): BlockStore[V]	
+isFirst	necsus/util/blockstore.html#isFirst,BlockIter	blockstore: isFirst(iter: BlockIter): bool	
 len	necsus/util/blockstore.html#len,BlockStore[V]	blockstore: len[V](blockstore: var BlockStore[V]): uint	
 reserve	necsus/util/blockstore.html#reserve,BlockStore[V]	blockstore: reserve[V](blockstore: var BlockStore[V]): Entry[V]	
 index	necsus/util/blockstore.html#index,Entry[V]	blockstore: index[V](entry: Entry[V]): uint	

@@ -115,7 +115,7 @@ window.addEventListener('DOMContentLoaded', main);
   nextId: Atomic[uint]
   hasRecycledValues: bool
   recycle: RingBuffer[uint]
-  data: ArrayBlock[EntryData[V]]
+  data: seq[EntryData[V]]
   len: Atomic[uint]">BlockStore</a></li>
   <li><a class="reference" href="#Entry"
     title="Entry[V] = ptr EntryData[V]">Entry</a></li>
@@ -143,6 +143,11 @@ window.addEventListener('DOMContentLoaded', main);
   <ul class="simple nested-toc-section">index
       <li><a class="reference" href="#index%2CEntry%5BV%5D"
     title="index[V](entry: Entry[V]): uint">index[V](entry: Entry[V]): uint</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">isFirst
+      <li><a class="reference" href="#isFirst%2CBlockIter"
+    title="isFirst(iter: BlockIter): bool">isFirst(iter: BlockIter): bool</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">len
@@ -217,7 +222,7 @@ window.addEventListener('DOMContentLoaded', main);
   <div class="section" id="6">
 <h1><a class="toc-backref" href="#6">Imports</a></h1>
 <dl class="item">
-<a class="reference external" href="threads.html">threads</a>, <a class="reference external" href="ringbuffer.html">ringbuffer</a>, <a class="reference external" href="arrayblock.html">arrayblock</a>
+<a class="reference external" href="threads.html">threads</a>, <a class="reference external" href="ringbuffer.html">ringbuffer</a>
 </dl></div>
 <div class="section" id="7">
 <h1><a class="toc-backref" href="#7">Types</a></h1>
@@ -237,7 +242,7 @@ window.addEventListener('DOMContentLoaded', main);
   <span class="Identifier">nextId</span><span class="Other">:</span> <span class="Identifier">Atomic</span><span class="Other">[</span><span class="Identifier">uint</span><span class="Other">]</span>
   <span class="Identifier">hasRecycledValues</span><span class="Other">:</span> <span class="Identifier">bool</span>
   <span class="Identifier">recycle</span><span class="Other">:</span> <a href="ringbuffer.html#RingBuffer"><span class="Identifier">RingBuffer</span></a><span class="Other">[</span><span class="Identifier">uint</span><span class="Other">]</span>
-  <span class="Identifier">data</span><span class="Other">:</span> <a href="arrayblock.html#ArrayBlock"><span class="Identifier">ArrayBlock</span></a><span class="Other">[</span><span class="Identifier">EntryData</span><span class="Other">[</span><span class="Identifier">V</span><span class="Other">]</span><span class="Other">]</span>
+  <span class="Identifier">data</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">EntryData</span><span class="Other">[</span><span class="Identifier">V</span><span class="Other">]</span><span class="Other">]</span>
   <span class="Identifier">len</span><span class="Other">:</span> <span class="Identifier">Atomic</span><span class="Other">[</span><span class="Identifier">uint</span><span class="Other">]</span>
 </pre></dt>
 <dd>
@@ -288,6 +293,14 @@ Deletes a field
 <dd>
 
 Returns the index of an entry
+
+</dd>
+</div>
+<div id="isFirst,BlockIter">
+<dt><pre><span class="Keyword">proc</span> <a href="#isFirst%2CBlockIter"><span class="Identifier">isFirst</span></a><span class="Other">(</span><span class="Identifier">iter</span><span class="Other">:</span> <a href="blockstore.html#BlockIter"><span class="Identifier">BlockIter</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+
 
 </dd>
 </div>
@@ -383,7 +396,7 @@ Returns the value of an entry
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-05-01 04:35:21 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-05-15 16:19:17 UTC</small>
       </div>
     </div>
   </div>

@@ -3,3 +3,11 @@ asTupleType	necsus/compiletime/tools.html#asTupleType,openArray[ComponentDef]	to
 asTupleType	necsus/compiletime/tools.html#asTupleType,openArray[DirectiveArg]	tools: asTupleType(args: openArray[DirectiveArg]): NimNode	
 asTupleType	necsus/compiletime/tools.html#asTupleType,TupleDirective	tools: asTupleType(tupleDir: TupleDirective): NimNode	
 archetypeCases	necsus/compiletime/tools.html#archetypeCases.i,GenerateContext	tools: archetypeCases(details: GenerateContext): tuple[ofBranch: NimNode,\n    archetype: Archetype[ComponentDef]]	
+joinStrs	necsus/compiletime/tools.html#joinStrs,varargs[NimNode]	tools: joinStrs(args: varargs[NimNode]): NimNode	
+loggable	necsus/compiletime/tools.html#loggable,NimNode	tools: loggable(node: NimNode): NimNode	
+loggable	necsus/compiletime/tools.html#loggable,string	tools: loggable(str: string): NimNode	
+emitLog	necsus/compiletime/tools.html#emitLog,varargs[NimNode,loggable]	tools: emitLog(args: varargs[NimNode, loggable]): NimNode	
+emitEntityTrace	necsus/compiletime/tools.html#emitEntityTrace,varargs[NimNode,loggable]	tools: emitEntityTrace(args: varargs[NimNode, loggable]): NimNode	
+emitEventTrace	necsus/compiletime/tools.html#emitEventTrace,varargs[NimNode,loggable]	tools: emitEventTrace(args: varargs[NimNode, loggable]): NimNode	
+emitQueryTrace	necsus/compiletime/tools.html#emitQueryTrace,varargs[NimNode,loggable]	tools: emitQueryTrace(args: varargs[NimNode, loggable]): NimNode	
+emitSaveTrace	necsus/compiletime/tools.html#emitSaveTrace,varargs[NimNode,loggable]	tools: emitSaveTrace(args: varargs[NimNode, loggable]): NimNode	

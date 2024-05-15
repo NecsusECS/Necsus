@@ -1,4 +1,5 @@
+NecsusLogger	necsus/runtime/necsusConf.html#NecsusLogger	necsusConf: NecsusLogger	
 NecsusConf	necsus/runtime/necsusConf.html#NecsusConf	necsusConf: NecsusConf	
-newNecsusConf	necsus/runtime/necsusConf.html#newNecsusConf,proc),proc(string),int,int	necsusConf: newNecsusConf(getTime: proc (): Nfloat; log: proc (message: string): void;\n              entitySize: int; componentSize: int): NecsusConf	
-newNecsusConf	necsus/runtime/necsusConf.html#newNecsusConf,proc),proc(string)	necsusConf: newNecsusConf(getTime: proc (): Nfloat; log: proc (message: string): void): NecsusConf	
+newNecsusConf	necsus/runtime/necsusConf.html#newNecsusConf,proc),NecsusLogger,int,int	necsusConf: newNecsusConf(getTime: proc (): Nfloat; log: NecsusLogger; entitySize: int;\n              componentSize: int): NecsusConf	
+newNecsusConf	necsus/runtime/necsusConf.html#newNecsusConf,proc),NecsusLogger	necsusConf: newNecsusConf(getTime: proc (): Nfloat; log: NecsusLogger): NecsusConf	
 newNecsusConf	necsus/runtime/necsusConf.html#newNecsusConf,int,int	necsusConf: newNecsusConf(entitySize: int = DEFAULT_ENTITY_COUNT;\n              componentSize: int = ceilDiv(entitySize, 3)): NecsusConf	
