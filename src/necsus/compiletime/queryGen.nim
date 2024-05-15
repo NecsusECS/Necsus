@@ -73,16 +73,25 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, dir: Tuple
 
         let (lenCalculation, nextEntityBody) = details.walkArchetypes(name, dir, queryTuple)
 
+        let trace = emitQueryTrace("Query for ", dir.name, " returned ", newCall(getLen, appStatePtr), " result(s)")
+        let log = if trace.kind != nnkEmpty:
+            quote:
+                if `iter`.isFirst:
+                    `trace`
+        else:
+            newEmptyNode()
+
         return quote do:
 
             func `getLen`(`appStatePtr`: pointer): uint {.fastcall.} =
                 let `appStateIdent` {.used.} = cast[ptr `appStateTypeName`](`appStatePtr`)
                 return `lenCalculation`
 
-            func `nextEntity`(
+            proc `nextEntity`(
                 `iter`: var QueryIterator, `appStatePtr`: pointer, `eid`: var EntityId, `slot`: var `queryTuple`
             ): NextIterState {.gcsafe, raises: [], fastcall.} =
                 let `appStateIdent` {.used.} = cast[ptr `appStateTypeName`](`appStatePtr`)
+                `log`
                 `nextEntityBody`
 
     of GenerateHook.Standard:

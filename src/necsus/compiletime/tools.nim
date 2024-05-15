@@ -74,3 +74,7 @@ proc emitEntityTrace*(args: varargs[NimNode, loggable]): NimNode =
 proc emitEventTrace*(args: varargs[NimNode, loggable]): NimNode =
     ## Emits code needed to generate an event tracing log
     return if defined(necsusEventTrace): emitLog(args) else: return newEmptyNode()
+
+proc emitQueryTrace*(args: varargs[NimNode, loggable]): NimNode =
+    ## Emits code needed to generate query tracing logs
+    return if defined(necsusQueryTrace): emitLog(args) else: return newEmptyNode()

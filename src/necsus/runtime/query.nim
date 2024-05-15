@@ -47,6 +47,8 @@ proc newQuery*[Comps: tuple](
 ): RawQuery[Comps] {.inline.} =
     RawQuery[Comps](appState: appState, getLen: getLen, nextEntity: nextEntity)
 
+proc isFirst*(iter: QueryIterator): bool = iter.continuationIdx == 0 and iter.iter.isFirst
+
 proc next*[Archs: enum, Comps: tuple](
     store: ArchetypeStore[Archs, Comps],
     iter: var QueryIterator,

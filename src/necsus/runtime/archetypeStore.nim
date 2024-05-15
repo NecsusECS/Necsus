@@ -26,6 +26,8 @@ proc newArchetypeStore*[Archs: enum, Comps: tuple](
     ## Creates a new storage block for an archetype
     ArchetypeStore[Archs, Comps](initialSize: initialSize.int, archetype: archetype)
 
+proc isFirst*(iter: ArchetypeIter): bool = BlockIter(iter).isFirst
+
 proc archetype*[Archs: enum, Comps: tuple](store: ArchetypeStore[Archs, Comps]): Archs = store.archetype
     ## Accessor for the archetype of a store
 

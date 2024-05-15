@@ -23,6 +23,8 @@ proc newBlockStore*[V](size: SomeInteger): BlockStore[V] =
     ## Instantiates a new BlockStore
     BlockStore[V](recycle: newRingBuffer[uint](size), data: newSeq[EntryData[V]](size))
 
+proc isFirst*(iter: BlockIter): bool = iter.index == 0
+
 proc len*[V](blockstore: var BlockStore[V]): uint = blockstore.len.load
     ## Returns the length of this blockstore
 
