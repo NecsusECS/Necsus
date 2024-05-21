@@ -122,7 +122,7 @@ window.addEventListener('DOMContentLoaded', main);
   <li><a class="reference" href="#Nfloat"
     title="Nfloat = float">Nfloat</a></li>
   <li><a class="reference" href="#Outbox"
-    title="Outbox[T] = proc (message: sink T): void">Outbox</a></li>
+    title="Outbox[T] = proc (message: T): void">Outbox</a></li>
   <li><a class="reference" href="#Restore"
     title="Restore = proc (json: string) {.gcsafe, raises: [IOError, OSError,
     JsonParsingError, ValueError, Exception].}">Restore</a></li>
@@ -215,7 +215,7 @@ Looks up entity details based on its entity ID. Where <tt class="docutils litera
 </dd>
 </div>
 <div id="Outbox">
-<dt><pre><a href="directives.html#Outbox"><span class="Identifier">Outbox</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">message</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">T</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">void</span></pre></dt>
+<dt><pre><a href="directives.html#Outbox"><span class="Identifier">Outbox</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">message</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">void</span></pre></dt>
 <dd>
 
 Sends an event. Where <tt class="docutils literal"><span class="pre"><span class="Identifier">T</span></span></tt> is the message being sent
@@ -289,7 +289,7 @@ The total amount of time spent in an app
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-05-15 16:19:17 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-05-21 15:56:44 UTC</small>
       </div>
     </div>
   </div>
