@@ -3,6 +3,8 @@ import unittest, necsus
 type SomeEvent = ref object
     value: int
 
+proc `$`*(event: SomeEvent): string = "SomeEvent(" & $event.value & ")"
+
 proc sender(count: Local[int], emit: Outbox[SomeEvent]) =
     count := count.get(0) + 1
     for i in 0..count.get:
