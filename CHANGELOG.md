@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.10.0
+
+### Bug Fixes
+
+* Fix memory corruption bug caused by Nim mishandling sink parameters
+* Support tuples in `Shared` and `Local`
+* Fix a bug where an instanced `eventSys` can't be invoked
+
+### New Features
+
+* Add compiler flags for tracing various behavior during execution
+    * `-d:necsusSaveTrace` -- Log save and restore activity
+    * `-d:necsusQueryTrace` -- Log executed queries
+    * `-d:necsusEventTrace` -- Log when an event is sent
+    * `-d:necsusEntityTrace` -- Log when entities are created, modified or deleted
+* Overall reduction of memory allocations
+
+### Backwards incompatible changes
+
+* Mark the logger parameter as `gcsafe` and `raises: []`
+* Remove the `sink` flag from the `Outbox` proc parameter
+
 ## 0.9.1
 
 ### Bug Fixes
@@ -77,7 +99,7 @@ No known breaking changes
 
    proc app() {.necsus([~startupSys, ~loopSys, ~teardownSys], newNecsusConf).}
    ```
-2. `Spawn` and `Query` no longer return an `EntityId`. If you need them, use a `FullSpawn` or a `FullQuery` instead. This change allows Necsus to improve build speeds and produce less output code. If you're interested in the details, read on. 
+2. `Spawn` and `Query` no longer return an `EntityId`. If you need them, use a `FullSpawn` or a `FullQuery` instead. This change allows Necsus to improve build speeds and produce less output code. If you're interested in the details, read on.
 
    During a build, Necsus automatically generates a set of all possible archetypes that could possibly exist at runtime. It does this by examining systems with `FullQuery`, `FullSpawn`, `Lookup`, and `Attach` directives, then uses that to calculate all the combinatorial possibilities. Naively, this is an exponential algorithm. This is important because archetypes themselves aren't free. Each archetype that exists increases build times and slows down queries.
 
