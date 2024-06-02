@@ -1,5 +1,18 @@
 name: Build
 on: [push, pull_request]
+
+env:
+  ALL_FLAGS: >
+    [
+      "profile",
+      "dump",
+      "archetypes",
+      "necsusEntityTrace",
+      "necsusEventTrace",
+      "necsusQueryTrace",
+      "necsusSaveTrace"
+    ]
+
 jobs:
 
   test:
@@ -76,16 +89,7 @@ jobs:
     strategy:
       matrix:
         nim: [ 2.0.0 ]
-        flag: [
-          profile,
-          dump,
-          archetypes,
-          necsusFloat32,
-          necsusEntityTrace,
-          necsusEventTrace,
-          necsusQueryTrace,
-          necsusSaveTrace
-        ]
+        flag: ${{ fromJson(env.ALL_FLAGS) }}
     steps:
     - uses: actions/checkout@v1
     - name: Choose Nim
@@ -94,5 +98,3 @@ jobs:
       run: git config --global --add safe.directory "$(pwd)"
     - name: Test
       run: nimble -d:${{ matrix.flag }} test
-    - name: Build readme code
-      run: nimble -d:${{ matrix.flag }} readme
