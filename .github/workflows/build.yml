@@ -1,18 +1,5 @@
 name: Build
 on: [push, pull_request]
-
-env:
-  ALL_FLAGS: >
-    [
-      "profile",
-      "dump",
-      "archetypes",
-      "necsusEntityTrace",
-      "necsusEventTrace",
-      "necsusQueryTrace",
-      "necsusSaveTrace"
-    ]
-
 jobs:
 
   test:
@@ -89,7 +76,16 @@ jobs:
     strategy:
       matrix:
         nim: [ 2.0.0 ]
-        flag: ${{ fromJson(env.ALL_FLAGS) }}
+        flag: [
+          profile,
+          dump,
+          archetypes,
+          necsusFloat32,
+          necsusEntityTrace,
+          necsusEventTrace,
+          necsusQueryTrace,
+          necsusSaveTrace
+        ]
     steps:
     - uses: actions/checkout@v1
     - name: Choose Nim
