@@ -12,6 +12,10 @@ type
     BDF = (B, D, F)
     ABCDEF = (A, B, C, D, E, F)
 
+    AB = (A, B)
+    WithCD = extend(AB, (C, D))
+    WithEF = extend(WithCD, (E, F))
+
 let ace: ACE = ("foo", 3.14, E())
 let bdf: BDF = (123, true, @[1])
 let abcdef: ABCDEF = ("foo", 123, 3.14, true, E(), @[1])
@@ -39,3 +43,8 @@ suite "Tuple tools":
         check(join(tuple[a: A, c: C, e: E], BDF, ace, bdf) == abcdef)
         check(join(ACE, tuple[b: B, d: D, f: F], ace, bdf) == abcdef)
         check(join(tuple[a: A, c: C, e: E], tuple[b: B, d: D, f: F], ace, bdf) == abcdef)
+
+    test "Tuples should be derivable from other derived tuples":
+        check(WithCD is (A, B, C, D))
+        check(WithEF is ABCDEF)
+        check(join(WithCD, (E, F), ("foo", 123, 3.14, true), (E(), @[1])) == abcdef)

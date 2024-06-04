@@ -1,7 +1,7 @@
 import std/[options, macros, algorithm, sequtils], ../util/[typeReader, nimNode]
 
 proc getTupleSubtypes(typ: NimNode): seq[NimNode] =
-    let resolved = typ.resolveTo({nnkTupleConstr, nnkTupleTy}).get(typ)
+    let resolved = typ.resolveTo({nnkTupleConstr, nnkTupleTy, nnkCall}).get(typ)
     case resolved.kind
     of nnkTupleConstr:
         result = resolved.children.toSeq
@@ -9,8 +9,13 @@ proc getTupleSubtypes(typ: NimNode): seq[NimNode] =
         for child in resolved:
             child.expectKind(nnkIdentDefs)
             result.add(child[1])
+    of nnkCall:
+        if resolved[0].strval == "extend":
+            result = resolved[1].getTupleSubtypes() & resolved[2].getTupleSubtypes()
+        else:
+            error("Unable to resolve tuple type for " & resolved.repr, resolved)
     else:
-        resolved.expectKind({nnkTupleConstr, nnkTupleTy})
+        resolved.expectKind({nnkTupleConstr, nnkTupleTy, nnkSym})
 
 macro extend*(a, b: typedesc): typedesc =
     ## Combines two tuples to create a new tuple
