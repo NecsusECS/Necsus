@@ -33,18 +33,27 @@ suite "Tuple tools":
         check(extend(tuple[a: A, c: C, e: E], tuple[b: B, d: D, f: F]) is ABCDEF)
 
     test "Tuples should be joinable":
-
-        check(join(ACE, BDF, ace, bdf) == abcdef)
-        check(join((A, C, E), BDF, ace, bdf) == abcdef)
-        check(join(ACE, (B, D, F), ace, bdf) == abcdef)
-        check(join((A, C, E), (B, D, F), ace, bdf) == abcdef)
+        check(join(ace as ACE, bdf as BDF) == abcdef)
+        check(join(ace as (A, C, E), bdf as BDF) == abcdef)
+        check(join(ace as ACE, bdf as (B, D, F)) == abcdef)
+        check(join(ace as (A, C, E), bdf as (B, D, F)) == abcdef)
 
     test "Tuples with labels should be joinable":
-        check(join(tuple[a: A, c: C, e: E], BDF, ace, bdf) == abcdef)
-        check(join(ACE, tuple[b: B, d: D, f: F], ace, bdf) == abcdef)
-        check(join(tuple[a: A, c: C, e: E], tuple[b: B, d: D, f: F], ace, bdf) == abcdef)
+        check(join(ace as tuple[a: A, c: C, e: E], bdf as BDF) == abcdef)
+        check(join(ace as ACE, bdf as tuple[b: B, d: D, f: F]) == abcdef)
+        check(join(ace as tuple[a: A, c: C, e: E], bdf as tuple[b: B, d: D, f: F]) == abcdef)
 
     test "Tuples should be derivable from other derived tuples":
         check(WithCD is (A, B, C, D))
         check(WithEF is ABCDEF)
-        check(join(WithCD, (E, F), ("foo", 123, 3.14, true), (E(), @[1])) == abcdef)
+        check(join(("foo", 123, 3.14, true) as WithCD, (E(), @[1]) as (E, F)) == abcdef)
+
+    test "Join multiple tuple types":
+        let joined = join(
+            ("foo", ) as (A, ),
+            (123, ) as (B, ),
+            (3.14, true) as (C, D),
+            (E(), @[1]) as (E, F)
+        )
+
+        check(joined == abcdef)

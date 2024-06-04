@@ -917,8 +917,8 @@ proc createEnemies*(
     createGround: Spawn[extend(BaseEnemyComponents, (GroundUnit, ))],
     createSky: Spawn[extend(BaseEnemyComponents, (SkyUnit, ))],
 ) {.startupSys.} =
-    createGround.set(join(BaseEnemyComponents, (GroundUnit, ), base(200), (GroundUnit(), )))
-    createSky.set(join(BaseEnemyComponents, (SkyUnit, ), base(100), (SkyUnit(), )))
+    createGround.set(join(base(200) as BaseEnemyComponents, (GroundUnit(), ) as (GroundUnit, )))
+    createSky.set(join(base(100) as BaseEnemyComponents, (SkyUnit(), ) as (SkyUnit, )))
 
 proc myApp() {.necsus([~createEnemies], newNecsusConf()).}
 ```

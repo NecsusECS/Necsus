@@ -9,7 +9,7 @@ type
     BaseTuple = (A, C)
 
 proc spawner(spawn: Spawn[extend(BaseTuple, (B, D))]) =
-    spawn.set(join(BaseTuple, (B, D), (1, 3.14), ("bar", true)))
+    spawn.set(join((1, 3.14) as BaseTuple, ("bar", true) as (B, D)))
 
 proc checker(query: Query[extend(BaseTuple, (B, D))]) =
     check(query.single.get == (1, "bar", 3.14, true))

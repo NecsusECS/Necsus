@@ -28,30 +28,35 @@ macro extend*(a, b: typedesc): typedesc =
     result = nnkTupleConstr.newTree(children)
     result.copyLineInfo(a)
 
-macro join*(aType, bType: typedesc, a, b: typed): untyped =
-    ## Combines two tuple values into a single tuple value according to the sorting
-    ## rules or archetype component types
-    let tupleA = aType.getTupleSubtypes()
-    let tupleB = bType.getTupleSubtypes()
+proc `as`*[T: tuple](value: T, typ: typedesc): T =
+    ## Casts a value to a type and returns it. Used for joining tuples
+    static:
+        assert(typ is T)
+    value
 
-    var children: seq[(bool, int, NimNode)]
-    for i, child in tupleA: children.add((true, i, child))
-    for i, child in tupleB: children.add((false, i, child))
-    children.sort do (a, b: (bool, int, NimNode)) -> int:
+macro join*(exprs: varargs[typed]): untyped =
+    ## Combines two tuple values into a single tuple value according to the sorting
+    ## rules for archetype component types
+
+    exprs.expectKind(nnkBracket)
+
+    var lets = nnkLetSection.newTree()
+    var children: seq[(NimNode, int, NimNode)]
+
+    for tup in exprs:
+        tup.expectKind(nnkInfix)
+        let thisVar = genSym(nskLet, "tuple")
+        lets.add(nnkIdentDefs.newTree(thisVar, tup[2], tup[1]))
+
+        let tupleSubs = tup[2].getTupleSubtypes()
+        for i, child in tupleSubs:
+            children.add((thisVar, i, child))
+
+    children.sort do (a, b: (NimNode, int, NimNode)) -> int:
         return nimNode.cmp(a[2], b[2])
 
-    let aVar = genSym(nskLet, "tupleA")
-    let bVar = genSym(nskLet, "tupleB")
     var output = nnkTupleConstr.newTree()
-
-    result = newStmtList(
-        nnkLetSection.newTree(
-            nnkIdentDefs.newTree(aVar, aType, a),
-            nnkIdentDefs.newTree(bVar, bType, b),
-        ),
-        output
-    )
-
-    for (aOrB, idx, _) in children:
-        let source = if aOrB: aVar else: bVar
+    for (source, idx, _) in children:
         output.add(nnkBracketExpr.newTree(source, newLit(idx)))
+
+    return newStmtList(lets, output)
