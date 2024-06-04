@@ -1,2 +1,3 @@
-extend	necsus/runtime/tuples.html#extend.m,typedesc,typedesc	tuples: extend(a, b: typedesc): typedesc	
-join	necsus/runtime/tuples.html#join.m,typedesc,typedesc,typed,typed	tuples: join(aType, bType: typedesc; a, b: typed): untyped	
+extend	necsus/runtime/tuples.html#extend.m,varargs[typed]	tuples: extend(tuples: varargs[typed]): typedesc	
+`as`	necsus/runtime/tuples.html#as,T,typedesc	tuples: `as`[T: tuple](value: T; typ: typedesc): T	
+join	necsus/runtime/tuples.html#join.m,varargs[typed]	tuples: join(exprs: varargs[typed]): untyped	
