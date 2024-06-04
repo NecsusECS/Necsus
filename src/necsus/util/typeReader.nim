@@ -1,4 +1,4 @@
-import macros, options, tables, sequtils
+import macros, options, tables
 
 proc findPragma*(node: NimNode): NimNode =
     ## Finds the pragma node attached to a nim node
@@ -46,7 +46,7 @@ proc resolveBracketGeneric(typeDef: NimNode): NimNode =
     ## Replaces a generic alias with the underlying type it represents
     let declaration = typeDef[0].getImpl
     declaration.expectKind(nnkTypeDef)
-    let genericTable = declaration[1].asGenericTable(typeDef.children.toSeq[1..^1])
+    let genericTable = declaration[1].asGenericTable(typeDef[1..^1])
     return declaration[2].replaceGenerics(genericTable)
 
 proc resolveTo*(typeDef: NimNode, expectKind: set[NimNodeKind]): Option[NimNode] =
