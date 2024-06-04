@@ -17,16 +17,16 @@ proc getTupleSubtypes(typ: NimNode): seq[NimNode] =
     else:
         resolved.expectKind({nnkTupleConstr, nnkTupleTy, nnkSym})
 
-macro extend*(a, b: typedesc): typedesc =
-    ## Combines two tuples to create a new tuple
-    let tupleA = a.getTupleSubtypes()
-    let tupleB = b.getTupleSubtypes()
+macro extend*(tuples: varargs[typed]): typedesc =
+    ## Combines tuples type definitions to create a new tuple type
+    var subtypes: seq[NimNode]
+    for tup in tuples:
+        subtypes.add(tup.getTupleSubtypes())
 
-    var children = concat(tupleA, tupleB)
-    children.sort(nimNode.cmp)
+    subtypes.sort(nimNode.cmp)
 
-    result = nnkTupleConstr.newTree(children)
-    result.copyLineInfo(a)
+    result = nnkTupleConstr.newTree(subtypes)
+    result.copyLineInfo(tuples[0])
 
 proc `as`*[T: tuple](value: T, typ: typedesc): T =
     ## Casts a value to a type and returns it. Used for joining tuples

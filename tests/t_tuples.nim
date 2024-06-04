@@ -27,7 +27,9 @@ suite "Tuple tools":
         check(extend(ACE, (B, D, F)) is ABCDEF)
         check(extend((A, C, E), (B, D, F)) is ABCDEF)
 
-    test "Tuples with labels hsould be extendable":
+        check(extend(AB, (C, D), (E, F)) is ABCDEF)
+
+    test "Tuples with labels should be extendable":
         check(extend(tuple[a: A, c: C, e: E], BDF) is ABCDEF)
         check(extend(ACE, tuple[b: B, d: D, f: F]) is ABCDEF)
         check(extend(tuple[a: A, c: C, e: E], tuple[b: B, d: D, f: F]) is ABCDEF)
