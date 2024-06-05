@@ -17,17 +17,22 @@ proc buildArchetypeLookup(
     let archetypeType = archetype.asStorageTuple
     let archetypeIdent = archetype.ident
     let archetypeEnum = details.archetypeEnum.ident
-    let createTuple = compsIdent.copyTuple(output, archetype, lookup)
+    let convert = details.converterName((archetype, lookup))
 
     return quote do:
         let `compsIdent` = getComps[`archetypeEnum`, `archetypeType`](
             `appStateIdent`.`archetypeIdent`,
             `entityIndex`.archetypeIndex
         )
-        `createTuple`
+        `convert`(`compsIdent`, `output`)
 
 proc worldFields(name: string, dir: TupleDirective): seq[WorldField] =
     @[ (name, nnkBracketExpr.newTree(bindSym("Lookup"), dir.asTupleType)) ]
+
+proc converters(ctx: GenerateContext, dir: TupleDirective): seq[ConverterDef] =
+    for archetype in ctx.archetypes:
+        if archetype.bitset.matches(dir.filter):
+            result.add((input: archetype, output: dir))
 
 proc generate(details: GenerateContext, arg: SystemArg, name: string, lookup: TupleDirective): NimNode =
     ## Generates the code for instantiating queries
@@ -81,4 +86,5 @@ let lookupGenerator* {.compileTime.} = newGenerator(
     interest = { Standard, Outside },
     generate = generate,
     worldFields = worldFields,
+    converters = converters,
 )

@@ -39,6 +39,12 @@ type
     SystemArgExtractor*[T] = proc(name: string, dir: T): NimNode
         ## The callback used for determining the value to pass when calling the system
 
+    ConverterDef* = tuple[input: Archetype[ComponentDef], output: TupleDirective]
+        ## Defines a function for converting from one tuple shape to another
+
+    ConvertExtractor*[T] = proc(context: GenerateContext, dir: T): seq[ConverterDef]
+        ## The callback for determining what converters to execute
+
     BuildArchetype*[T] = proc(builder: var ArchetypeBuilder[ComponentDef], systemArgs: seq[SystemArg], dir: T)
         ## A callback used to construct an archetype
 
@@ -63,6 +69,7 @@ type
             worldFieldsTuple*: proc(name: string, returns: TupleDirective): seq[WorldField]
             systemArgTuple*: SystemArgExtractor[TupleDirective]
             nestedArgsTuple*: NestedArgsExtractor[TupleDirective]
+            convertersTuple*: ConvertExtractor[TupleDirective]
         of DirectiveKind.None:
             generateNone*: HookGenerator[void]
             worldFieldsNone: proc(name: string): seq[WorldField]
@@ -74,6 +81,7 @@ type
             worldFieldsDual*: proc(name: string, returns: DualDirective): seq[WorldField]
             systemArgDual*: SystemArgExtractor[DualDirective]
             nestedArgsDual*: NestedArgsExtractor[DualDirective]
+            convertersDual*: ConvertExtractor[DualDirective]
 
     SystemArg* = ref object
         ## A single arg within a system proc
@@ -104,6 +112,8 @@ proc defaultSystemArg(name: string, dir: MonoDirective | TupleDirective | DualDi
 
 proc defaultNestedArgs(dir: MonoDirective | TupleDirective | DualDirective): seq[RawNestedArg] = @[]
 
+proc defaultConverters(context: GenerateContext, dir: TupleDirective | DualDirective): seq[ConverterDef] = @[]
+
 proc newGenerator*(
     ident: string,
     interest: set[GenerateHook],
@@ -113,6 +123,7 @@ proc newGenerator*(
     worldFields: proc(name: string, dir: TupleDirective): seq[WorldField] = defaultWorldField,
     systemArg: SystemArgExtractor[TupleDirective] = defaultSystemArg,
     nestedArgs: NestedArgsExtractor[TupleDirective] = defaultNestedArgs,
+    converters: ConvertExtractor[TupleDirective] = defaultConverters,
 ): DirectiveGen =
     ## Create a tuple based generator
     result.new
@@ -126,6 +137,7 @@ proc newGenerator*(
     result.worldFieldsTuple = worldFields
     result.systemArgTuple = systemArg
     result.nestedArgsTuple = nestedArgs
+    result.convertersTuple = converters
 
 proc defaultSystemReturn(args: DirectiveSet[SystemArg], returns: MonoDirective): Option[NimNode] = none(NimNode)
 
@@ -182,6 +194,7 @@ proc newGenerator*(
     worldFields: proc(name: string, dir: DualDirective): seq[WorldField] = defaultWorldField,
     systemArg: SystemArgExtractor[DualDirective] = defaultSystemArg,
     nestedArgs: NestedArgsExtractor[DualDirective] = defaultNestedArgs,
+    converters: ConvertExtractor[DualDirective] = defaultConverters,
 ): DirectiveGen =
     ## Create a tuple based generator
     return DirectiveGen(
@@ -195,6 +208,7 @@ proc newGenerator*(
         worldFieldsDual: worldFields,
         systemArgDual: systemArg,
         nestedArgsDual: nestedArgs,
+        convertersDual: converters,
     )
 
 proc `==`*(a, b: DirectiveGen): bool = a.ident == b.ident
@@ -287,6 +301,13 @@ proc worldFields*(arg: SystemArg, name: string): seq[WorldField] =
     of DirectiveKind.Dual: arg.generator.worldFieldsDual(name, arg.dualDir)
     of DirectiveKind.None: arg.generator.worldFieldsNone(name)
 
+proc converters*(ctx: GenerateContext, arg: SystemArg): seq[ConverterDef] =
+    ## Returns a list of all the convertsers needed by a system
+    case arg.kind
+    of DirectiveKind.Tuple: return arg.generator.convertersTuple(ctx, arg.tupleDir)
+    of DirectiveKind.Dual: return arg.generator.convertersDual(ctx, arg.dualDir)
+    of DirectiveKind.Mono, DirectiveKind.None: return @[]
+
 proc systemArg(arg: SystemArg, name: string): NimNode =
     ## Generates the argument to pass in when calling a system
     case arg.kind
@@ -341,3 +362,7 @@ iterator nodes*(arg: SystemArg): NimNode =
         yield arg.monoDir.argType
     of DirectiveKind.None:
         discard
+
+proc converterName*(ctx: GenerateContext, convert: ConverterDef): NimNode =
+    ## Returns the name for referencing a `ConverterDef`
+    ctx.globalName("conv_" & convert.input.name & "_to_" & convert.output.name)

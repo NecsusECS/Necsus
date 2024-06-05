@@ -7,7 +7,7 @@
 ##
 
 import necsus / runtime / [ entityId, query, systemVar, inbox, directives, necsusConf, spawn, pragmas, tuples ]
-import necsus / compiletime / [ parse, systemGen, codeGenInfo, worldGen, archetype ]
+import necsus / compiletime / [ parse, systemGen, codeGenInfo, worldGen, archetype, converters ]
 import necsus / compiletime / [ worldEnum, tickGen, common, marshalGen ]
 import sequtils, macros, options
 
@@ -49,6 +49,7 @@ proc buildApp(
         codeGenInfo.archetypeEnum.codeGen,
         codeGenInfo.createAppStateType(),
         codeGenInfo.createAppStateDestructor(),
+        codeGenInfo.createConverterProcs(),
         codeGenInfo.createMarshalProcs(),
         codeGenInfo.createSendProcs(),
         codeGenInfo.generateForHook(GenerateHook.Outside),
@@ -106,6 +107,7 @@ macro runSystemOnce*(systemDef: typed): untyped =
         codeGenInfo.archetypeEnum.codeGen,
         codeGenInfo.createAppStateType(),
         codeGenInfo.createAppStateDestructor(),
+        codeGenInfo.createConverterProcs(),
         codeGenInfo.generateForHook(GenerateHook.Outside),
         defineConf,
         codeGenInfo.createAppStateInit(),

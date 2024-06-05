@@ -73,7 +73,7 @@ proc appStateInit*(genInfo: CodeGenInfo): NimNode =
     ## The name of the object that contains the state of the app
     ident("init" & genInfo.app.name.capitalizeAscii)
 
-proc newGenerateContext(codeGen: CodeGenInfo, hook: GenerateHook): GenerateContext =
+proc newGenerateContext*(codeGen: CodeGenInfo, hook: GenerateHook): GenerateContext =
     ## Create a GenerateContext for a hook
     return GenerateContext(
         hook: hook,
@@ -118,3 +118,11 @@ proc worldFields*(codeGen: CodeGenInfo): seq[WorldField] =
 proc systemArg*(genInfo: CodeGenInfo, arg: SystemArg): NimNode =
     ## Returns the value to pass to a system when executin the given argument
     systemArg(genInfo.directives, arg)
+
+iterator allArgs*(genInfo: CodeGenInfo): SystemArg =
+    ## Produces all system arguments within an app
+    for system in genInfo.systems:
+        for arg in system.allArgs:
+            yield arg
+    for arg in genInfo.app.runnerArgs:
+        yield arg

@@ -1,4 +1,4 @@
-import macros, options, tables, sequtils
+import std/[macros, options, tables, sequtils, sets]
 import tools, codeGenInfo, archetype, common, systemGen
 import worldEnum, tickGen, parse, eventGen, directiveSet, monoDirective
 import ../runtime/[world, archetypeStore, necsusConf, directives], ../util/profile

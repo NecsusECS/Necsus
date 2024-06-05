@@ -9,7 +9,6 @@ iterator selectArchetypes(details: GenerateContext, query: TupleDirective): Arch
             yield archetype
 
 let slot {.compileTime.} = ident("slot")
-let entry {.compileTime.} = ident("entry")
 let iter {.compileTime.} = ident("iter")
 let eid {.compileTime.} = ident("eid")
 
@@ -26,15 +25,14 @@ proc walkArchetypes(
     var index = 0
     for archetype in details.selectArchetypes(query):
         let archetypeIdent = archetype.ident
-        let tupleCopy = entry.copyTuple(slot, archetype, query)
+
+        let copier = details.converterName((archetype, query))
 
         lenCalculation.add quote do:
             addLen(`appStateIdent`.`archetypeIdent`, result)
 
         let nextBody = quote do:
-            let `entry` = `appStateIdent`.`archetypeIdent`.next(`iter`, `eid`, result)
-            if `entry` != nil:
-                `tupleCopy`
+            `copier`(`appStateIdent`.`archetypeIdent`.next(`iter`, `eid`, result), `slot`)
 
         nextEntityBody.add nnkOfBranch.newTree(newLit(index), nextBody)
         index += 1
@@ -57,6 +55,10 @@ proc systemArg(queryType: NimNode, name: string, dir: TupleDirective): NimNode =
 proc querySystemArg(name: string, dir: TupleDirective): NimNode = systemArg(bindSym("Query"), name, dir)
 
 proc fullQuerySystemArg(name: string, dir: TupleDirective): NimNode = systemArg(bindSym("FullQuery"), name, dir)
+
+proc converters(ctx: GenerateContext, dir: TupleDirective): seq[ConverterDef] =
+    for archetype in ctx.selectArchetypes(dir):
+        result.add((input: archetype, output: dir))
 
 let appStatePtr {.compileTime, used.} = ident("appStatePtr")
 
@@ -110,6 +112,7 @@ let queryGenerator* {.compileTime.} = newGenerator(
     generate = generate,
     worldFields = worldFields,
     systemArg = querySystemArg,
+    converters = converters,
 )
 
 let fullQueryGenerator* {.compileTime.} = newGenerator(
@@ -118,5 +121,6 @@ let fullQueryGenerator* {.compileTime.} = newGenerator(
     generate = generate,
     worldFields = worldFields,
     systemArg = fullQuerySystemArg,
+    converters = converters,
 )
 

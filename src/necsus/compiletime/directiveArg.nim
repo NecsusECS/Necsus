@@ -1,4 +1,4 @@
-import componentDef, hashes, macros, sequtils
+import componentDef, hashes, macros, sequtils, strutils
 
 type
     DirectiveArgKind* = enum
@@ -38,9 +38,13 @@ proc type*(def: DirectiveArg): NimNode =
     ## The type of this component
     if def.isPointer: nnkPtrTy.newTree(def.component.node) else: def.component.node
 
+proc name(arg: DirectiveArg): string =
+    ## Creates a name to describe an arg
+    return if arg.isPointer: "ptr_" & arg.component.name else: arg.component.name
+
 proc generateName*(args: openarray[DirectiveArg]): string =
     ## Creates a name to describe the given components
-    args.toSeq.mapIt(it.component).generateName
+    args.toSeq.mapIt(it.name).join("_")
 
 proc comps*(args: openarray[DirectiveArg]): seq[ComponentDef] =
     ## Returns all the components from a set of args
