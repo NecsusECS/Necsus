@@ -6,7 +6,7 @@
 ## * https://necsusecs.github.io/Necsus/
 ##
 
-import necsus / runtime / [ entityId, query, systemVar, mailbox, directives, necsusConf, spawn, pragmas, tuples ]
+import necsus / runtime / [ entityId, query, systemVar, inbox, directives, necsusConf, spawn, pragmas, tuples ]
 import necsus / compiletime / [ parse, systemGen, codeGenInfo, worldGen, archetype ]
 import necsus / compiletime / [ worldEnum, tickGen, commonVars, marshalGen ]
 import sequtils, macros, options
@@ -14,7 +14,7 @@ import sequtils, macros, options
 when defined(dump):
     import necsus/util/dump
 
-export entityId, query, query.items, necsusConf, systemVar, mailbox, directives, spawn, pragmas, tuples
+export entityId, query, query.items, necsusConf, systemVar, inbox, directives, spawn, pragmas, tuples
 
 type
     SystemFlag* = object

@@ -72,7 +72,7 @@ proc invokeSystem*(
         return quote:
             for `eachEvent` in `appStateIdent`.`mailboxName`:
                 `invoke`
-            `appStateIdent`.`mailboxName`.clear()
+            `appStateIdent`.`mailboxName`.setLen(0)
 
     else:
         return codeGenInfo.singleInvokeSystem(system, prefixArgs)

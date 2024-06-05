@@ -1,7 +1,7 @@
 import macros, options, tables, sequtils
 import tools, codeGenInfo, archetype, commonVars, systemGen
 import worldEnum, tickGen, parse, eventGen, directiveSet, monoDirective
-import ../runtime/[world, archetypeStore, necsusConf, directives, mailbox], ../util/profile
+import ../runtime/[world, archetypeStore, necsusConf, directives], ../util/profile
 
 proc fields(genInfo: CodeGenInfo): seq[(NimNode, NimNode)] =
     ## Produces a list of all fields to attach to the state object
@@ -14,7 +14,7 @@ proc fields(genInfo: CodeGenInfo): seq[(NimNode, NimNode)] =
 
     for system in genInfo.systems:
         if system.phase == IndirectEventCallback:
-            let typ = nnkBracketExpr.newTree(bindSym("Mailbox"), system.callbackSysType)
+            let typ = nnkBracketExpr.newTree(bindSym("seq"), system.callbackSysType)
             result.add (system.callbackSysMailboxName, typ)
 
     for archetype in genInfo.archetypes:
@@ -187,7 +187,7 @@ proc createSendProcs*(details: CodeGenInfo): NimNode =
 
         for inboxIdent in inboxes:
             body.add quote do:
-                send[`eventType`](`appStateIdent`.`inboxIdent`, `event`)
+                add[`eventType`](`appStateIdent`.`inboxIdent`, `event`)
 
         for system in details.systems:
             case system.phase
@@ -198,7 +198,7 @@ proc createSendProcs*(details: CodeGenInfo): NimNode =
                 if eventType == system.callbackSysType:
                     let inboxIdent = system.callbackSysMailboxName
                     body.add quote do:
-                        send[`eventType`](`appStateIdent`.`inboxIdent`, `event`)
+                        add[`eventType`](`appStateIdent`.`inboxIdent`, `event`)
             else:
                 discard
 

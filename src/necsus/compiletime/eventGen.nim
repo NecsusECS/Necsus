@@ -1,6 +1,6 @@
 import macros, strutils, tables, sequtils
 import monoDirective, commonVars, systemGen
-import ../runtime/[mailbox, directives], ../util/nimNode
+import ../runtime/[inbox, directives], ../util/nimNode
 
 proc eventStorageIdent(event: MonoDirective | NimNode): NimNode =
     ## Returns the name of the identifier that holds the storage for an event
@@ -18,7 +18,7 @@ proc chooseInboxName(context, argName: NimNode, local: MonoDirective): string =
     return signature & argName.strVal
 
 proc inboxFields(name: string, dir: MonoDirective): seq[WorldField] = @[
-    (name, nnkBracketExpr.newTree(bindSym("Mailbox"), dir.argType))
+    (name, nnkBracketExpr.newTree(bindSym("seq"), dir.argType))
 ]
 
 proc inboxSystemArg(name: string, dir: MonoDirective): NimNode =
@@ -32,7 +32,7 @@ proc generateInbox(details: GenerateContext, arg: SystemArg, name: string, inbox
     of AfterActiveCheck:
         let eventStore = name.ident
         return quote:
-            clear(`appStateIdent`.`eventStore`)
+            setLen(`appStateIdent`.`eventStore`, 0)
     else:
         return newEmptyNode()
 
