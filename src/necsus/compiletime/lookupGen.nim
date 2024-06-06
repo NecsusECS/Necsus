@@ -17,14 +17,14 @@ proc buildArchetypeLookup(
     let archetypeType = archetype.asStorageTuple
     let archetypeIdent = archetype.ident
     let archetypeEnum = details.archetypeEnum.ident
-    let createTuple = compsIdent.copyTuple(archetype, lookup)
+    let createTuple = compsIdent.copyTuple(output, archetype, lookup)
 
     return quote do:
         let `compsIdent` = getComps[`archetypeEnum`, `archetypeType`](
             `appStateIdent`.`archetypeIdent`,
             `entityIndex`.archetypeIndex
         )
-        `output` = `createTuple`
+        `createTuple`
 
 proc worldFields(name: string, dir: TupleDirective): seq[WorldField] =
     @[ (name, nnkBracketExpr.newTree(bindSym("Lookup"), dir.asTupleType)) ]

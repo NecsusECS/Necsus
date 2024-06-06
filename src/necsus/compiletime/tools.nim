@@ -2,25 +2,28 @@ import macros, options, sequtils
 import tupleDirective, componentDef, archetype, worldEnum, systemGen, directiveArg, commonVars
 import ../runtime/query
 
+
 proc read(fromVar: NimNode, fromArch: Archetype[ComponentDef], arg: DirectiveArg): NimNode =
     let readExpr = nnkBracketExpr.newTree(fromVar, newLit(fromArch.indexOf(arg.component)))
     return if arg.isPointer: nnkAddr.newTree(readExpr) else: readExpr
 
-proc copyTuple*(fromVar: NimNode, fromArch: Archetype[ComponentDef], directive: TupleDirective): NimNode =
+proc copyTuple*(fromVar, toVar: NimNode, fromArch: Archetype[ComponentDef], directive: TupleDirective): NimNode =
     ## Generates code for copying from one tuple to another
-    result = nnkTupleConstr.newTree()
+    result = newStmtList()
 
-    for arg in directive.args:
-        case arg.kind
-        of DirectiveArgKind.Exclude:
-            result.add(newCall(nnkBracketExpr.newTree(bindSym("Not"), arg.type), newLit(0'i8)))
-        of DirectiveArgKind.Include:
-            result.add(fromVar.read(fromArch, arg))
-        of DirectiveArgKind.Optional:
-            if arg.component in fromArch:
-                result.add(newCall(bindSym("some"), fromVar.read(fromArch, arg)))
-            else:
-                result.add(newCall(nnkBracketExpr.newTree(bindSym("none"), arg.type)))
+    for i, arg in directive.args:
+        let value = case arg.kind
+            of DirectiveArgKind.Exclude:
+                newCall(nnkBracketExpr.newTree(bindSym("Not"), arg.type), newLit(0'i8))
+            of DirectiveArgKind.Include:
+                fromVar.read(fromArch, arg)
+            of DirectiveArgKind.Optional:
+                if arg.component in fromArch:
+                    newCall(bindSym("some"), fromVar.read(fromArch, arg))
+                else:
+                    newCall(nnkBracketExpr.newTree(bindSym("none"), arg.type))
+        result.add quote do:
+            `toVar`[`i`] = `value`
 
 proc asTupleType*(components: openarray[ComponentDef]): NimNode =
     ## Creates a tuple type from a list of components

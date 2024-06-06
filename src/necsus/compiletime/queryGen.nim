@@ -26,7 +26,7 @@ proc walkArchetypes(
     var index = 0
     for archetype in details.selectArchetypes(query):
         let archetypeIdent = archetype.ident
-        let tupleCopy = entry.copyTuple(archetype, query)
+        let tupleCopy = entry.copyTuple(slot, archetype, query)
 
         lenCalculation.add quote do:
             addLen(`appStateIdent`.`archetypeIdent`, result)
@@ -34,7 +34,7 @@ proc walkArchetypes(
         let nextBody = quote do:
             let `entry` = `appStateIdent`.`archetypeIdent`.next(`iter`, `eid`, result)
             if `entry` != nil:
-                `slot` = `tupleCopy`
+                `tupleCopy`
 
         nextEntityBody.add nnkOfBranch.newTree(newLit(index), nextBody)
         index += 1
