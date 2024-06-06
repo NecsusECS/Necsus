@@ -1,4 +1,4 @@
-copyTuple	necsus/compiletime/tools.html#copyTuple,NimNode,Archetype[ComponentDef],TupleDirective	tools: copyTuple(fromVar: NimNode; fromArch: Archetype[ComponentDef];\n          directive: TupleDirective): NimNode	
+copyTuple	necsus/compiletime/tools.html#copyTuple,NimNode,NimNode,Archetype[ComponentDef],TupleDirective	tools: copyTuple(fromVar, toVar: NimNode; fromArch: Archetype[ComponentDef];\n          directive: TupleDirective): NimNode	
 asTupleType	necsus/compiletime/tools.html#asTupleType,openArray[ComponentDef]	tools: asTupleType(components: openArray[ComponentDef]): NimNode	
 asTupleType	necsus/compiletime/tools.html#asTupleType,openArray[DirectiveArg]	tools: asTupleType(args: openArray[DirectiveArg]): NimNode	
 asTupleType	necsus/compiletime/tools.html#asTupleType,TupleDirective	tools: asTupleType(tupleDir: TupleDirective): NimNode	

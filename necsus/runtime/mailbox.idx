@@ -1,8 +1,0 @@
-Mailbox	necsus/runtime/mailbox.html#Mailbox	mailbox: Mailbox	
-Inbox	necsus/runtime/mailbox.html#Inbox	mailbox: Inbox	
-send	necsus/runtime/mailbox.html#send,Mailbox[T],sinkT	mailbox: send[T](mailbox: var Mailbox[T]; message: sink T)	
-items	necsus/runtime/mailbox.html#items.i,Mailbox[T]	mailbox: items[T](mailbox: var Mailbox[T]): lent T	
-clear	necsus/runtime/mailbox.html#clear,Mailbox[T]	mailbox: clear[T](mailbox: var Mailbox[T])	
-len	necsus/runtime/mailbox.html#len,Mailbox[T]	mailbox: len[T](mailbox: var Mailbox[T]): uint	
-items	necsus/runtime/mailbox.html#items.i,Inbox[T]	mailbox: items[T](inbox: Inbox[T]): lent T	
-len	necsus/runtime/mailbox.html#len,Inbox[T]	mailbox: len[T](inbox: Inbox[T]): uint	
