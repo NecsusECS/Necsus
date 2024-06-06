@@ -13,7 +13,7 @@ proc createArchUpdate(
     title: string,
     attachComps: seq[ComponentDef],
     archetype: Archetype[ComponentDef]
-): NimNode =
+): NimNode {.used.} =
     ## Creates code for updating archetype information in place
     result = newStmtList(emitEntityTrace(title, " ", entityId, " for ", archetype.name))
 
@@ -56,7 +56,7 @@ proc createTupleConvertProc(
     fromArch: Archetype[ComponentDef],
     newCompValues: seq[ComponentDef],
     toArch: Archetype[ComponentDef]
-): NimNode =
+): NimNode {.used.} =
     ## Creates a tuple that is able to convert from one tuple to another
     let fromArchTuple = fromArch.asStorageTuple
     let newCompsType = newCompValues.newCompsTupleType()
@@ -88,7 +88,7 @@ proc createArchMove(
     fromArch: Archetype[ComponentDef],
     newCompValues: seq[ComponentDef],
     toArch: Archetype[ComponentDef]
-): NimNode =
+): NimNode {.used.} =
     ## Creates code for copying from one archetype to another
     let fromArchIdent = fromArch.ident
     let fromArchTuple = fromArch.asStorageTuple
@@ -126,29 +126,31 @@ proc attachDetachProcBody(
 
     # Generate a cases statement to do the work for each kind of archetype
     var cases: NimNode = newEmptyNode()
-    if details.archetypes.len > 0:
-        var needsElse = false
-        cases = nnkCaseStmt.newTree(newDotExpr(entityIndex, ident("archetype")))
-        for (ofBranch, fromArch) in archetypeCases(details):
-            if detachComps.len == 0 or fromArch.containsAllOf(detachComps):
-                let toArch = fromArch + attachComps - detachComps - optDetachComps
-                if fromArch == toArch:
-                    if attachComps.len > 0:
+
+    when not defined(nimsuggest):
+        if details.archetypes.len > 0:
+            var needsElse = false
+            cases = nnkCaseStmt.newTree(newDotExpr(entityIndex, ident("archetype")))
+            for (ofBranch, fromArch) in archetypeCases(details):
+                if detachComps.len == 0 or fromArch.containsAllOf(detachComps):
+                    let toArch = fromArch + attachComps - detachComps - optDetachComps
+                    if fromArch == toArch:
+                        if attachComps.len > 0:
+                            result.convertProcs.add(details.createTupleConvertProc(fromArch, attachComps, toArch))
+                            cases.add(
+                                nnkOfBranch.newTree(ofBranch, details.createArchUpdate(title, attachComps, toArch)))
+                        else:
+                            needsElse = true
+                    elif toArch in details.archetypes:
                         result.convertProcs.add(details.createTupleConvertProc(fromArch, attachComps, toArch))
                         cases.add(
-                            nnkOfBranch.newTree(ofBranch, details.createArchUpdate(title, attachComps, toArch)))
+                            nnkOfBranch.newTree(ofBranch, details.createArchMove(title, fromArch, attachComps, toArch)))
                     else:
                         needsElse = true
-                elif toArch in details.archetypes:
-                    result.convertProcs.add(details.createTupleConvertProc(fromArch, attachComps, toArch))
-                    cases.add(
-                        nnkOfBranch.newTree(ofBranch, details.createArchMove(title, fromArch, attachComps, toArch)))
                 else:
                     needsElse = true
-            else:
-                needsElse = true
-        if needsElse:
-            cases.add(nnkElse.newTree(nnkDiscardStmt.newTree(newEmptyNode())))
+            if needsElse:
+                cases.add(nnkElse.newTree(nnkDiscardStmt.newTree(newEmptyNode())))
 
     result.procBody = quote do:
         var `entityIndex` {.used.} = `appStateIdent`.`worldIdent`[`entityId`]
@@ -173,7 +175,12 @@ proc generateAttach(details: GenerateContext, arg: SystemArg, name: string, atta
 
     case details.hook
     of Outside:
-        let (body, convertProcs) = details.attachDetachProcBody("Attaching", attach.comps, @[], @[])
+        when defined(nimsuggest):
+            let body = newStmtList()
+            let convertProcs = newStmtList()
+        else:
+            let (body, convertProcs) = details.attachDetachProcBody("Attaching", attach.comps, @[], @[])
+
         let appStateTypeName = details.appStateTypeName
         return quote do:
             `convertProcs`

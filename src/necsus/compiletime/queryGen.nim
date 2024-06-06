@@ -18,7 +18,7 @@ proc walkArchetypes(
     name: string,
     query: TupleDirective,
     queryTupleType: NimNode,
-): (NimNode, NimNode) =
+): (NimNode, NimNode) {.used.} =
     ## Creates the views that bind an archetype to a query
     var lenCalculation = newStmtList()
     var nextEntityBody = nnkCaseStmt.newTree(newDotExpr(iter, "continuationIdx".ident))
@@ -58,49 +58,51 @@ proc querySystemArg(name: string, dir: TupleDirective): NimNode = systemArg(bind
 
 proc fullQuerySystemArg(name: string, dir: TupleDirective): NimNode = systemArg(bindSym("FullQuery"), name, dir)
 
-let appStatePtr {.compileTime.} = ident("appStatePtr")
+let appStatePtr {.compileTime, used.} = ident("appStatePtr")
 
 proc generate(details: GenerateContext, arg: SystemArg, name: string, dir: TupleDirective): NimNode =
     ## Generates the code for instantiating queries
-
-    let queryTuple = dir.args.asTupleType
-    let getLen = details.globalName(name & "_getLen")
-    let nextEntity = details.globalName(name & "_nextEntity")
-
-    case details.hook
-    of GenerateHook.Outside:
-        let appStateTypeName = details.appStateTypeName
-
-        let (lenCalculation, nextEntityBody) = details.walkArchetypes(name, dir, queryTuple)
-
-        let trace = emitQueryTrace("Query for ", dir.name, " returned ", newCall(getLen, appStatePtr), " result(s)")
-        let log = if trace.kind != nnkEmpty:
-            quote:
-                if `iter`.isFirst:
-                    `trace`
-        else:
-            newEmptyNode()
-
-        return quote do:
-
-            func `getLen`(`appStatePtr`: pointer): uint {.fastcall.} =
-                let `appStateIdent` {.used.} = cast[ptr `appStateTypeName`](`appStatePtr`)
-                result = 0
-                `lenCalculation`
-
-            proc `nextEntity`(
-                `iter`: var QueryIterator, `appStatePtr`: pointer, `eid`: var EntityId, `slot`: var `queryTuple`
-            ): NextIterState {.gcsafe, raises: [], fastcall.} =
-                let `appStateIdent` {.used.} = cast[ptr `appStateTypeName`](`appStatePtr`)
-                `log`
-                `nextEntityBody`
-
-    of GenerateHook.Standard:
-        let ident = name.ident
-        return quote do:
-            `appStateIdent`.`ident` = newQuery[`queryTuple`](addr `appStateIdent`, `getLen`, `nextEntity`)
-    else:
+    when defined(nimsuggest):
         return newEmptyNode()
+    else:
+        let queryTuple = dir.args.asTupleType
+        let getLen = details.globalName(name & "_getLen")
+        let nextEntity = details.globalName(name & "_nextEntity")
+
+        case details.hook
+        of GenerateHook.Outside:
+            let appStateTypeName = details.appStateTypeName
+
+            let (lenCalculation, nextEntityBody) = details.walkArchetypes(name, dir, queryTuple)
+
+            let trace = emitQueryTrace("Query for ", dir.name, " returned ", newCall(getLen, appStatePtr), " result(s)")
+            let log = if trace.kind != nnkEmpty:
+                quote:
+                    if `iter`.isFirst:
+                        `trace`
+            else:
+                newEmptyNode()
+
+            return quote do:
+
+                func `getLen`(`appStatePtr`: pointer): uint {.fastcall.} =
+                    let `appStateIdent` {.used.} = cast[ptr `appStateTypeName`](`appStatePtr`)
+                    result = 0
+                    `lenCalculation`
+
+                proc `nextEntity`(
+                    `iter`: var QueryIterator, `appStatePtr`: pointer, `eid`: var EntityId, `slot`: var `queryTuple`
+                ): NextIterState {.gcsafe, raises: [], fastcall.} =
+                    let `appStateIdent` {.used.} = cast[ptr `appStateTypeName`](`appStatePtr`)
+                    `log`
+                    `nextEntityBody`
+
+        of GenerateHook.Standard:
+            let ident = name.ident
+            return quote do:
+                `appStateIdent`.`ident` = newQuery[`queryTuple`](addr `appStateIdent`, `getLen`, `nextEntity`)
+        else:
+            return newEmptyNode()
 
 let queryGenerator* {.compileTime.} = newGenerator(
     ident = "Query",

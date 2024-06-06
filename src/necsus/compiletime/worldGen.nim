@@ -149,13 +149,14 @@ proc createAppStateDestructor*(genInfo: CodeGenInfo): NimNode =
 
     let destroys = newStmtList(genInfo.destroySystems())
 
-    for (name, _) in items(genInfo.fields):
-        destroys.add quote do:
-            `destroy`(`appStateIdent`.`name`)
+    when not defined(nimsuggest):
+        for (name, _) in items(genInfo.fields):
+            destroys.add quote do:
+                `destroy`(`appStateIdent`.`name`)
 
     return quote:
         {.warning[Deprecated]:off.}
-        proc `destroy`*(`appStateIdent`: var `appStateType`) {.raises: [Exception].} =
+        proc `destroy`*(`appStateIdent`: var `appStateType`) {.raises: [Exception], used.} =
             `beforeTeardown`
             `teardowns`
             `destroys`

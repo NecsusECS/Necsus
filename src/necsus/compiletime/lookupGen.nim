@@ -11,7 +11,7 @@ proc buildArchetypeLookup(
     details: GenerateContext,
     lookup: TupleDirective,
     archetype: Archetype[ComponentDef]
-): NimNode =
+): NimNode {.used.} =
     ## Builds the block of code for pulling a lookup out of a specific archetype
 
     let archetypeType = archetype.asStorageTuple
@@ -40,20 +40,21 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, lookup: Tu
         let appStateTypeName = details.appStateTypeName
 
         var cases: NimNode = newEmptyNode()
-        if details.archetypes.len > 0:
-            cases = nnkCaseStmt.newTree(newDotExpr(entityIndex, ident("archetype")))
+        when not defined(nimsuggest):
+            if details.archetypes.len > 0:
+                cases = nnkCaseStmt.newTree(newDotExpr(entityIndex, ident("archetype")))
 
-            # Create a case statement where each branch is one of the archetypes
-            var needsElse = false
-            for (ofBranch, archetype) in archetypeCases(details):
-                if archetype.bitset.matches(lookup.filter):
-                    cases.add(nnkOfBranch.newTree(ofBranch, details.buildArchetypeLookup(lookup, archetype)))
-                else:
-                    needsElse = true
+                # Create a case statement where each branch is one of the archetypes
+                var needsElse = false
+                for (ofBranch, archetype) in archetypeCases(details):
+                    if archetype.bitset.matches(lookup.filter):
+                        cases.add(nnkOfBranch.newTree(ofBranch, details.buildArchetypeLookup(lookup, archetype)))
+                    else:
+                        needsElse = true
 
-            # Add a fall through 'else' branch for any archetypes that don't fit this lookup
-            if needsElse:
-                cases.add(nnkElse.newTree(nnkReturnStmt.newTree(newLit(false))))
+                # Add a fall through 'else' branch for any archetypes that don't fit this lookup
+                if needsElse:
+                    cases.add(nnkElse.newTree(nnkReturnStmt.newTree(newLit(false))))
 
         return quote:
             proc `lookupProc`(
@@ -61,7 +62,7 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, lookup: Tu
                 `entityId`: EntityId,
                 `output`: var `tupleType`,
             ): bool {.fastcall, gcsafe, raises: [].} =
-                let `entityIndex` = `appStateIdent`.`worldIdent`[`entityId`]
+                let `entityIndex` {.used.} = `appStateIdent`.`worldIdent`[`entityId`]
                 `cases`
                 return true
 
