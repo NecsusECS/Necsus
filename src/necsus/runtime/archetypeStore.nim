@@ -48,9 +48,10 @@ iterator items*[Archs: enum, Comps: tuple](store: ArchetypeStore[Archs, Comps]):
             break
         yield value[]
 
-proc len*[Archs: enum, Comps: tuple](store: ArchetypeStore[Archs, Comps]): uint =
+func addLen*[Archs: enum, Comps: tuple](store: ArchetypeStore[Archs, Comps], len: var uint) =
     ## Accessor for the archetype of a store
-    return if store.compStore == nil: 0 else: store.compStore.len
+    if store.compStore != nil:
+        len += store.compStore.len
 
 proc newSlot*[Archs: enum, Comps: tuple](
     store: var ArchetypeStore[Archs, Comps],

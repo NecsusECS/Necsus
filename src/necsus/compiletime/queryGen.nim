@@ -20,7 +20,7 @@ proc walkArchetypes(
     queryTupleType: NimNode,
 ): (NimNode, NimNode) =
     ## Creates the views that bind an archetype to a query
-    var lenCalculation = newLit(0'u)
+    var lenCalculation = newStmtList()
     var nextEntityBody = nnkCaseStmt.newTree(newDotExpr(iter, "continuationIdx".ident))
 
     var index = 0
@@ -28,8 +28,8 @@ proc walkArchetypes(
         let archetypeIdent = archetype.ident
         let tupleCopy = entry.copyTuple(archetype, query)
 
-        lenCalculation = quote do:
-            `lenCalculation` + len(`appStateIdent`.`archetypeIdent`)
+        lenCalculation.add quote do:
+            addLen(`appStateIdent`.`archetypeIdent`, result)
 
         let nextBody = quote do:
             let `entry` = `appStateIdent`.`archetypeIdent`.next(`iter`, `eid`, result)
@@ -85,7 +85,8 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, dir: Tuple
 
             func `getLen`(`appStatePtr`: pointer): uint {.fastcall.} =
                 let `appStateIdent` {.used.} = cast[ptr `appStateTypeName`](`appStatePtr`)
-                return `lenCalculation`
+                result = 0
+                `lenCalculation`
 
             proc `nextEntity`(
                 `iter`: var QueryIterator, `appStatePtr`: pointer, `eid`: var EntityId, `slot`: var `queryTuple`

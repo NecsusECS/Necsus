@@ -25,7 +25,7 @@ proc newBlockStore*[V](size: SomeInteger): BlockStore[V] =
 
 proc isFirst*(iter: BlockIter): bool = iter.index == 0
 
-proc len*[V](blockstore: var BlockStore[V]): uint = blockstore.len.load
+func len*[V](blockstore: var BlockStore[V]): uint = blockstore.len.load
     ## Returns the length of this blockstore
 
 proc reserve*[V](blockstore: var BlockStore[V]): Entry[V] =
