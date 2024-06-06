@@ -6,6 +6,7 @@ import ../runtime/[world, archetypeStore, directives], ../util/bits
 let entityIndex {.compileTime.} = ident("entityIndex")
 let newComps {.compileTime.} = ident("newComps")
 let entityId {.compileTime.} = ident("entityId")
+let output {.compileTime.} = ident("output")
 
 proc createArchUpdate(
     details: GenerateContext,
@@ -61,19 +62,24 @@ proc createTupleConvertProc(
     let newCompsType = newCompValues.newCompsTupleType()
     let toArchTuple = toArch.asStorageTuple
 
-    let createNewTuple = nnkTupleConstr.newTree()
+    let createNewTuple = newStmtList()
+    var i = 0
     for comp in toArch.items:
-        if comp in newCompValues:
-            createNewTuple.add(nnkBracketExpr.newTree(newComps, newLit(newCompValues.find(comp))))
-        else:
-            createNewTuple.add(nnkBracketExpr.newTree(existing, newLit(fromArch.indexOf(comp))))
+        let value = if comp in newCompValues:
+                nnkBracketExpr.newTree(newComps, newLit(newCompValues.find(comp)))
+            else:
+                nnkBracketExpr.newTree(existing, newLit(fromArch.indexOf(comp)))
+        createNewTuple.add quote do:
+            `output`[`i`] = `value`
+        i += 1
 
     let procName = details.tupleConvertProcName(fromArch, newCompValues, toArch)
     return quote:
         proc `procName`(
             `existing`: sink `fromArchTuple`,
-            `newComps`: sink `newCompsType`
-        ): `toArchTuple` {.gcsafe, raises: [], fastcall, used.} =
+            `newComps`: sink `newCompsType`,
+            `output`: var `toArchTuple`
+        ) {.gcsafe, raises: [], fastcall, used.} =
             `createNewTuple`
 
 proc createArchMove(
