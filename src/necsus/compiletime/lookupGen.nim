@@ -3,10 +3,9 @@ import tupleDirective, tools, commonVars, archetype, componentDef, worldEnum, sy
 import ../runtime/[world, archetypeStore, directives], ../util/bits
 
 let entityId {.compileTime.} = ident("entityId")
-
 let entityIndex {.compileTime.} = ident("entityIndex")
-
 let compsIdent {.compileTime.} = ident("comps")
+let output {.compileTime.} = ident("output")
 
 proc buildArchetypeLookup(
     details: GenerateContext,
@@ -25,7 +24,7 @@ proc buildArchetypeLookup(
             `appStateIdent`.`archetypeIdent`,
             `entityIndex`.archetypeIndex
         )
-        result = some(`createTuple`)
+        `output` = `createTuple`
 
 proc worldFields(name: string, dir: TupleDirective): seq[WorldField] =
     @[ (name, nnkBracketExpr.newTree(bindSym("Lookup"), dir.asTupleType)) ]
@@ -54,20 +53,25 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, lookup: Tu
 
             # Add a fall through 'else' branch for any archetypes that don't fit this lookup
             if needsElse:
-                cases.add(nnkElse.newTree(nnkDiscardStmt.newTree(newEmptyNode())))
+                cases.add(nnkElse.newTree(nnkReturnStmt.newTree(newLit(false))))
 
         return quote:
             proc `lookupProc`(
-                `appStateIdent`: var `appStateTypeName`, `entityId`: EntityId
-            ): Option[`tupleType`] {.fastcall, gcsafe, raises: [].} =
+                `appStateIdent`: var `appStateTypeName`,
+                `entityId`: EntityId,
+                `output`: var `tupleType`,
+            ): bool {.fastcall, gcsafe, raises: [].} =
                 let `entityIndex` = `appStateIdent`.`worldIdent`[`entityId`]
                 `cases`
+                return true
 
     of GenerateHook.Standard:
         let procName = ident(name)
         return quote:
             `appStateIdent`.`procName` = proc(`entityId`: EntityId): Option[`tupleType`] =
-                `lookupProc`(`appStateIdent`, `entityId`)
+                var `output`: `tupleType`
+                if `lookupProc`(`appStateIdent`, `entityId`, `output`):
+                    return some(`output`)
     else:
         return newEmptyNode()
 
