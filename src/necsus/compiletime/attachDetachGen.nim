@@ -127,7 +127,7 @@ proc attachDetachProcBody(
     # Generate a cases statement to do the work for each kind of archetype
     var cases: NimNode = newEmptyNode()
 
-    when not defined(nimsuggest):
+    when not isFastCompileMode():
         if details.archetypes.len > 0:
             var needsElse = false
             cases = nnkCaseStmt.newTree(newDotExpr(entityIndex, ident("archetype")))
@@ -175,7 +175,7 @@ proc generateAttach(details: GenerateContext, arg: SystemArg, name: string, atta
 
     case details.hook
     of Outside:
-        when defined(nimsuggest):
+        when isFastCompileMode():
             let body = newStmtList()
             let convertProcs = newStmtList()
         else:

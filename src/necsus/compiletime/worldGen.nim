@@ -149,7 +149,7 @@ proc createAppStateDestructor*(genInfo: CodeGenInfo): NimNode =
 
     let destroys = newStmtList(genInfo.destroySystems())
 
-    when not defined(nimsuggest):
+    when not isFastCompileMode():
         for (name, _) in items(genInfo.fields):
             destroys.add quote do:
                 `destroy`(`appStateIdent`.`name`)

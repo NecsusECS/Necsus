@@ -62,7 +62,7 @@ let appStatePtr {.compileTime, used.} = ident("appStatePtr")
 
 proc generate(details: GenerateContext, arg: SystemArg, name: string, dir: TupleDirective): NimNode =
     ## Generates the code for instantiating queries
-    when defined(nimsuggest):
+    when isFastCompileMode():
         return newEmptyNode()
     else:
         let queryTuple = dir.args.asTupleType
