@@ -1,4 +1,4 @@
-import macros
+import std/[macros, compilesettings]
 
 ## The variable used to reference the initial size of any structs
 let confIdent* {.compileTime.} = ident("config")
@@ -22,4 +22,4 @@ proc isFastCompileMode*(): bool {.compileTime.} =
     ## Returns whether the compiler should elide complicated function content
     ## that tends to slow down compilation. This is useful, for example, to speed
     ## up IDE integration
-    return defined(nimsuggest)
+    return defined(nimsuggest) or (querySetting(SingleValueSetting.command) == "check")

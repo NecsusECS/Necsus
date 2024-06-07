@@ -95,9 +95,8 @@ jobs:
     - name: Test
       run: nimble -d:${{ matrix.flag }} test
 
-  nimsuggest:
-    ## Confirm all the tests compile when running via nimsuggest. There are some optimizations in place
-    ## to improve compile times in this case.
+  fast-compile:
+    ## Confirm all the tests compile when running in a 'fast compile' mode
     runs-on: ubuntu-latest
     container: nimlang/choosenim
     strategy:
@@ -109,5 +108,7 @@ jobs:
       run: choosenim update -y ${{ matrix.nim }}
     - name: Safe git directory
       run: git config --global --add safe.directory "$(pwd)"
-    - name: Test
+    - name: Nim suggest
       run: find tests -name "t_*.nim" | xargs -n1 sh -c 'nim c -d:nimsuggest $0 || exit 255'
+    - name: Nim check
+      run: find tests -name "t_*.nim" | xargs -n1 sh -c 'nim check $0 || exit 255'
