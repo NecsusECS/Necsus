@@ -1,5 +1,5 @@
 import options, hashes, tables, macros, archetype, strformat, strutils, sequtils, dualDirective
-import monoDirective, tupleDirective, archetypeBuilder, componentDef, worldEnum, directiveSet, commonVars
+import monoDirective, tupleDirective, archetypeBuilder, componentDef, worldEnum, directiveSet, common
 
 type
     GenerateHook* = enum

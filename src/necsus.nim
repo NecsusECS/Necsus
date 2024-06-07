@@ -8,7 +8,7 @@
 
 import necsus / runtime / [ entityId, query, systemVar, inbox, directives, necsusConf, spawn, pragmas, tuples ]
 import necsus / compiletime / [ parse, systemGen, codeGenInfo, worldGen, archetype ]
-import necsus / compiletime / [ worldEnum, tickGen, commonVars, marshalGen ]
+import necsus / compiletime / [ worldEnum, tickGen, common, marshalGen ]
 import sequtils, macros, options
 
 when defined(dump):

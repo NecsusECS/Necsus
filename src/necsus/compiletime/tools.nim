@@ -1,5 +1,5 @@
 import macros, options, sequtils
-import tupleDirective, componentDef, archetype, worldEnum, systemGen, directiveArg, commonVars
+import tupleDirective, componentDef, archetype, worldEnum, systemGen, directiveArg, common
 import ../runtime/query
 
 

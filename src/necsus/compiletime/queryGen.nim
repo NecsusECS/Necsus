@@ -1,5 +1,5 @@
 import tables, macros
-import tupleDirective, archetype, componentDef, tools, systemGen, archetypeBuilder, commonVars
+import tupleDirective, archetype, componentDef, tools, systemGen, archetypeBuilder, common
 import ../runtime/[archetypeStore, query], ../util/bits
 
 iterator selectArchetypes(details: GenerateContext, query: TupleDirective): Archetype[ComponentDef] =

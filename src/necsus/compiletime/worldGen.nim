@@ -1,5 +1,5 @@
 import macros, options, tables, sequtils
-import tools, codeGenInfo, archetype, commonVars, systemGen
+import tools, codeGenInfo, archetype, common, systemGen
 import worldEnum, tickGen, parse, eventGen, directiveSet, monoDirective
 import ../runtime/[world, archetypeStore, necsusConf, directives], ../util/profile
 

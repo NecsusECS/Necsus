@@ -1,4 +1,4 @@
-import macros, monoDirective, systemGen, std/[importutils, options], commonVars, ../util/typeReader
+import macros, monoDirective, systemGen, std/[importutils, options], common, ../util/typeReader
 
 proc worldFields(name: string, dir: MonoDirective): seq[WorldField] = @[ (name, dir.argType) ]
 

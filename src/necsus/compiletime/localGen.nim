@@ -1,4 +1,4 @@
-import macros, systemGen, monoDirective, commonVars
+import macros, systemGen, monoDirective, common
 import ../runtime/systemVar
 
 proc chooseLocalName(context, argName: NimNode, local: MonoDirective): string = argName.signatureHash

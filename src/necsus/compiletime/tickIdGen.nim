@@ -1,5 +1,5 @@
 import macros
-import commonVars, systemGen, ../runtime/directives
+import common, systemGen, ../runtime/directives
 
 let tickId {.compileTime.} = ident("tickId")
 let getTickId {.compileTime.} = ident("getTickId")

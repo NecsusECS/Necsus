@@ -1,5 +1,5 @@
 import macros, sequtils, sets
-import tools, tupleDirective, archetype, archetypeBuilder, componentDef, commonVars, systemGen
+import tools, tupleDirective, archetype, archetypeBuilder, componentDef, common, systemGen
 import ../runtime/[spawn, archetypeStore]
 
 proc archetypes(builder: var ArchetypeBuilder[ComponentDef], systemArgs: seq[SystemArg], dir: TupleDirective) =

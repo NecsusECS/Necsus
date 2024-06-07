@@ -1,4 +1,4 @@
-import macros, directiveSet, systemGen, monoDirective, options, commonVars
+import macros, directiveSet, systemGen, monoDirective, options, common
 import ../runtime/systemVar
 
 proc worldFields(name: string, dir: MonoDirective): seq[WorldField] =

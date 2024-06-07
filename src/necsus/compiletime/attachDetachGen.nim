@@ -1,5 +1,5 @@
 import macros, sequtils
-import tools, tupleDirective, dualDirective, commonVars, queryGen, lookupGen, spawnGen, directiveArg
+import tools, tupleDirective, dualDirective, common, queryGen, lookupGen, spawnGen, directiveArg
 import archetype, componentDef, worldEnum, systemGen, archetypeBuilder
 import ../runtime/[world, archetypeStore, directives], ../util/bits
 

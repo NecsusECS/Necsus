@@ -1,5 +1,5 @@
 import macros, sequtils, systemGen, options
-import codeGenInfo, parse, commonVars, ../runtime/[systemVar, directives], ../util/profile
+import codeGenInfo, parse, common, ../runtime/[systemVar, directives], ../util/profile
 
 proc renderSystemArgs(codeGenInfo: CodeGenInfo, args: openarray[SystemArg]): seq[NimNode] =
     ## Renders system arguments down to nim code

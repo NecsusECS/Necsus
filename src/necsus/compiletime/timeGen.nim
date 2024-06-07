@@ -1,6 +1,6 @@
 
 import macros, sets
-import archetype, archetypeBuilder, commonVars, systemGen, ../runtime/directives
+import archetype, archetypeBuilder, common, systemGen, ../runtime/directives
 
 let lastTime {.compileTime.} = ident("lastTime")
 

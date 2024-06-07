@@ -1,5 +1,5 @@
 import tables, macros
-import archetype, tools, systemGen, archetypeBuilder, worldEnum, commonVars
+import archetype, tools, systemGen, archetypeBuilder, worldEnum, common
 import ../runtime/[archetypeStore, world, directives]
 
 proc worldFields(name: string): seq[WorldField] = @[ (name, bindSym("Delete")) ]

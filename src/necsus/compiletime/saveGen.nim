@@ -1,4 +1,4 @@
-import macros, systemGen, commonVars, ../runtime/directives
+import macros, systemGen, common, ../runtime/directives
 
 proc worldFields(name: string): seq[WorldField] = @[ (name, bindSym("Save")) ]
 

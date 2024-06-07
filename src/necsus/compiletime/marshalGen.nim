@@ -1,4 +1,4 @@
-import macros, codeGenInfo, commonVars, parse, tickGen, tools, std/[sequtils, tables, json, jsonutils, sets]
+import macros, codeGenInfo, common, parse, tickGen, tools, std/[sequtils, tables, json, jsonutils, sets]
 
 proc saveTypeName(genInfo: CodeGenInfo): NimNode = ident(genInfo.app.name & "Marshal")
 

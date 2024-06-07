@@ -1,5 +1,5 @@
 import macros, strutils, tables, sequtils
-import monoDirective, commonVars, systemGen
+import monoDirective, common, systemGen
 import ../runtime/[inbox, directives], ../util/nimNode
 
 proc eventStorageIdent(event: MonoDirective | NimNode): NimNode =
