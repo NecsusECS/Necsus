@@ -1,0 +1,7 @@
+confIdent	necsus/compiletime/common.html#confIdent	common: confIdent	
+appStateIdent	necsus/compiletime/common.html#appStateIdent	common: appStateIdent	
+lifecycle	necsus/compiletime/common.html#lifecycle	common: lifecycle	
+worldIdent	necsus/compiletime/common.html#worldIdent	common: worldIdent	
+thisTime	necsus/compiletime/common.html#thisTime	common: thisTime	
+startTime	necsus/compiletime/common.html#startTime	common: startTime	
+isFastCompileMode	necsus/compiletime/common.html#isFastCompileMode	common: isFastCompileMode(): bool	
