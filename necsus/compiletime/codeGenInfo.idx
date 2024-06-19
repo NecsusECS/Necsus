@@ -5,8 +5,10 @@ newCodeGenInfo	necsus/compiletime/codeGenInfo.html#newCodeGenInfo,NimNode,Parsed
 appStateStruct	necsus/compiletime/codeGenInfo.html#appStateStruct,CodeGenInfo	codeGenInfo: appStateStruct(genInfo: CodeGenInfo): NimNode	
 appStateTypeName	necsus/compiletime/codeGenInfo.html#appStateTypeName,CodeGenInfo	codeGenInfo: appStateTypeName(genInfo: CodeGenInfo): NimNode	
 appStateInit	necsus/compiletime/codeGenInfo.html#appStateInit,CodeGenInfo	codeGenInfo: appStateInit(genInfo: CodeGenInfo): NimNode	
+newGenerateContext	necsus/compiletime/codeGenInfo.html#newGenerateContext,CodeGenInfo,GenerateHook	codeGenInfo: newGenerateContext(codeGen: CodeGenInfo; hook: GenerateHook): GenerateContext	
 nameOf	necsus/compiletime/codeGenInfo.html#nameOf,CodeGenInfo,SystemArg	codeGenInfo: nameOf(genInfo: CodeGenInfo; arg: SystemArg): string	
 generateForHook	necsus/compiletime/codeGenInfo.html#generateForHook,CodeGenInfo,ParsedSystem,GenerateHook	codeGenInfo: generateForHook(codeGen: CodeGenInfo; system: ParsedSystem; hook: GenerateHook): NimNode	
 generateForHook	necsus/compiletime/codeGenInfo.html#generateForHook,CodeGenInfo,GenerateHook	codeGenInfo: generateForHook(codeGen: CodeGenInfo; hook: GenerateHook): NimNode	
 worldFields	necsus/compiletime/codeGenInfo.html#worldFields,CodeGenInfo	codeGenInfo: worldFields(codeGen: CodeGenInfo): seq[WorldField]	
 systemArg	necsus/compiletime/codeGenInfo.html#systemArg,CodeGenInfo,SystemArg	codeGenInfo: systemArg(genInfo: CodeGenInfo; arg: SystemArg): NimNode	
+allArgs	necsus/compiletime/codeGenInfo.html#allArgs.i,CodeGenInfo	codeGenInfo: allArgs(genInfo: CodeGenInfo): SystemArg	

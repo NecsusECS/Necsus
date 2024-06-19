@@ -160,6 +160,11 @@ window.addEventListener('DOMContentLoaded', main);
     title="newEmptyCodeGenInfo(config: NimNode; app: ParsedApp): CodeGenInfo">newEmptyCodeGenInfo(config: NimNode; app: ParsedApp): CodeGenInfo</a></li>
 
   </ul>
+  <ul class="simple nested-toc-section">newGenerateContext
+      <li><a class="reference" href="#newGenerateContext%2CCodeGenInfo%2CGenerateHook"
+    title="newGenerateContext(codeGen: CodeGenInfo; hook: GenerateHook): GenerateContext">newGenerateContext(codeGen: CodeGenInfo; hook: GenerateHook): GenerateContext</a></li>
+
+  </ul>
   <ul class="simple nested-toc-section">profilingEnabled
       <li><a class="reference" href="#profilingEnabled"
     title="profilingEnabled(): bool">profilingEnabled(): bool</a></li>
@@ -173,6 +178,17 @@ window.addEventListener('DOMContentLoaded', main);
   <ul class="simple nested-toc-section">worldFields
       <li><a class="reference" href="#worldFields%2CCodeGenInfo"
     title="worldFields(codeGen: CodeGenInfo): seq[WorldField]">worldFields(codeGen: CodeGenInfo): seq[WorldField]</a></li>
+
+  </ul>
+
+  </ul>
+</li>
+<li>
+  <a class="reference reference-toplevel" href="#15" id="65">Iterators</a>
+  <ul class="simple simple-toc-section">
+      <ul class="simple nested-toc-section">allArgs
+      <li><a class="reference" href="#allArgs.i%2CCodeGenInfo"
+    title="allArgs(genInfo: CodeGenInfo): SystemArg">allArgs(genInfo: CodeGenInfo): SystemArg</a></li>
 
   </ul>
 
@@ -286,6 +302,15 @@ Collects data needed for code gen from all the parsed systems
 
 </dd>
 </div>
+<div id="newGenerateContext,CodeGenInfo,GenerateHook">
+<dt><pre><span class="Keyword">proc</span> <a href="#newGenerateContext%2CCodeGenInfo%2CGenerateHook"><span class="Identifier">newGenerateContext</span></a><span class="Other">(</span><span class="Identifier">codeGen</span><span class="Other">:</span> <a href="codeGenInfo.html#CodeGenInfo"><span class="Identifier">CodeGenInfo</span></a><span class="Other">;</span> <span class="Identifier">hook</span><span class="Other">:</span> <a href="systemGen.html#GenerateHook"><span class="Identifier">GenerateHook</span></a><span class="Other">)</span><span class="Other">:</span> <a href="systemGen.html#GenerateContext"><span class="Identifier">GenerateContext</span></a> {.
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+Create a GenerateContext for a hook
+
+</dd>
+</div>
 <div id="profilingEnabled">
 <dt><pre><span class="Keyword">proc</span> <a href="#profilingEnabled"><span class="Identifier">profilingEnabled</span></a><span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
@@ -314,6 +339,19 @@ Generates the code for a specific code-gen hook
 </div>
 
 </dl></div>
+<div class="section" id="15">
+<h1><a class="toc-backref" href="#15">Iterators</a></h1>
+<dl class="item">
+<div id="allArgs.i,CodeGenInfo">
+<dt><pre><span class="Keyword">iterator</span> <a href="#allArgs.i%2CCodeGenInfo"><span class="Identifier">allArgs</span></a><span class="Other">(</span><span class="Identifier">genInfo</span><span class="Other">:</span> <a href="codeGenInfo.html#CodeGenInfo"><span class="Identifier">CodeGenInfo</span></a><span class="Other">)</span><span class="Other">:</span> <a href="systemGen.html#SystemArg"><span class="Identifier">SystemArg</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+Produces all system arguments within an app
+
+</dd>
+</div>
+
+</dl></div>
 
   </div>
 </div>
@@ -322,7 +360,7 @@ Generates the code for a specific code-gen hook
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-06-07 15:56:27 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-06-19 02:06:22 UTC</small>
       </div>
     </div>
   </div>
