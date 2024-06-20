@@ -14,27 +14,33 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string): NimNode =
 
     case details.hook
     of Outside:
-        let archetypeEnum = details.archetypeEnum.ident
         let appStateTypeName = details.appStateTypeName
 
-        var cases: NimNode
-        if details.archetypes.len > 0:
-            cases = nnkCaseStmt.newTree(newDotExpr(entityIndex, ident("archetype")))
-            for (ofBranch, archetype) in archetypeCases(details):
-                let archIdent = archetype.ident
-                let deleteCall = quote:
-                    del(`appStateIdent`.`archIdent`, `entityIndex`.archetypeIndex)
-                cases.add(nnkOfBranch.newTree(ofBranch, deleteCall))
+        let body = when isFastCompileMode():
+            newStmtList()
         else:
-            cases = newEmptyNode()
+            let archetypeEnum = details.archetypeEnum.ident
+            var cases: NimNode
+            if details.archetypes.len > 0:
+                cases = nnkCaseStmt.newTree(newDotExpr(entityIndex, ident("archetype")))
+                for (ofBranch, archetype) in archetypeCases(details):
+                    let archIdent = archetype.ident
+                    let deleteCall = quote:
+                        del(`appStateIdent`.`archIdent`, `entityIndex`.archetypeIndex)
+                    cases.add(nnkOfBranch.newTree(ofBranch, deleteCall))
+            else:
+                cases = newEmptyNode()
 
-        let log = emitEntityTrace("Deleting ", entity)
+            let log = emitEntityTrace("Deleting ", entity)
 
-        return quote do:
-            proc `deleteProcName`(`appStateIdent`: var `appStateTypeName`, `entity`: EntityId) {.gcsafe, raises: [].} =
+            quote:
                 let `entityIndex` = del[`archetypeEnum`](`appStateIdent`.`worldIdent`, `entity`)
                 `log`
                 `cases`
+
+        return quote do:
+            proc `deleteProcName`(`appStateIdent`: var `appStateTypeName`, `entity`: EntityId) {.gcsafe, raises: [].} =
+                `body`
     of Standard:
         let deleteProc = name.ident
         return quote do:
