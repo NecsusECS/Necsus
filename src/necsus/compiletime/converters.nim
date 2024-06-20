@@ -5,11 +5,11 @@ import ../runtime/query
 let input {.compileTime.} = ident("input")
 let output {.compileTime.} = ident("output")
 
-proc read(fromVar: NimNode, fromArch: Archetype[ComponentDef], arg: DirectiveArg): NimNode {.used.} =
-    let readExpr = nnkBracketExpr.newTree(fromVar, newLit(fromArch.indexOf(arg.component)))
+proc read(fromArch: Archetype[ComponentDef], arg: DirectiveArg): NimNode {.used.} =
+    let readExpr = nnkBracketExpr.newTree(input, newLit(fromArch.indexOf(arg.component)))
     return if arg.isPointer: nnkAddr.newTree(readExpr) else: readExpr
 
-proc copyTuple(fromVar: NimNode, fromArch: Archetype[ComponentDef], directive: TupleDirective): NimNode =
+proc copyTuple(fromArch: Archetype[ComponentDef], directive: TupleDirective): NimNode =
     ## Generates code for copying from one tuple to another
     when isFastCompileMode():
         return newStmtList()
@@ -20,10 +20,10 @@ proc copyTuple(fromVar: NimNode, fromArch: Archetype[ComponentDef], directive: T
                 of DirectiveArgKind.Exclude:
                     newCall(nnkBracketExpr.newTree(bindSym("Not"), arg.type), newLit(0'i8))
                 of DirectiveArgKind.Include:
-                    fromVar.read(fromArch, arg)
+                    read(fromArch, arg)
                 of DirectiveArgKind.Optional:
                     if arg.component in fromArch:
-                        newCall(bindSym("some"), fromVar.read(fromArch, arg))
+                        newCall(bindSym("some"), read(fromArch, arg))
                     else:
                         newCall(nnkBracketExpr.newTree(bindSym("none"), arg.type))
             result.add quote do:
@@ -34,7 +34,7 @@ proc buildConverterProc(ctx: GenerateContext, convert: ConverterDef): NimNode {.
     let name = ctx.converterName(convert)
     let inputTuple = convert.input.asStorageTuple
     let outputTuple = convert.output.asTupleType
-    let body = copyTuple(input, convert.input, convert.output)
+    let body = copyTuple(convert.input, convert.output)
     return quote do:
         proc `name`(`input`: ptr `inputTuple`, `output`: var `outputTuple`) {.gcsafe, raises: [], fastcall, used.} =
             if not `input`.isNil:
