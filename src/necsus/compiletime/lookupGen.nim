@@ -17,7 +17,7 @@ proc buildArchetypeLookup(
     let archetypeType = archetype.asStorageTuple
     let archetypeIdent = archetype.ident
     let archetypeEnum = details.archetypeEnum.ident
-    let convert = details.converterName((archetype, lookup))
+    let convert = details.converterName(ConverterDef(input: archetype, output: lookup))
 
     return quote do:
         let `compsIdent` = getComps[`archetypeEnum`, `archetypeType`](
@@ -32,7 +32,7 @@ proc worldFields(name: string, dir: TupleDirective): seq[WorldField] =
 proc converters(ctx: GenerateContext, dir: TupleDirective): seq[ConverterDef] =
     for archetype in ctx.archetypes:
         if archetype.bitset.matches(dir.filter):
-            result.add((input: archetype, output: dir))
+            result.add(ConverterDef(input: archetype, output: dir))
 
 proc generate(details: GenerateContext, arg: SystemArg, name: string, lookup: TupleDirective): NimNode =
     ## Generates the code for instantiating queries

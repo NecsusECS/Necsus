@@ -39,8 +39,10 @@ type
     SystemArgExtractor*[T] = proc(name: string, dir: T): NimNode
         ## The callback used for determining the value to pass when calling the system
 
-    ConverterDef* = tuple[input: Archetype[ComponentDef], output: TupleDirective]
+    ConverterDef* = object
         ## Defines a function for converting from one tuple shape to another
+        input*: Archetype[ComponentDef]
+        output*: TupleDirective
 
     ConvertExtractor*[T] = proc(context: GenerateContext, dir: T): seq[ConverterDef]
         ## The callback for determining what converters to execute
