@@ -186,22 +186,23 @@ proc createSendProcs*(details: CodeGenInfo): NimNode =
             emitEventTrace("Event ", directive.name, ": ", `event`)
         )
 
-        for inboxIdent in inboxes:
-            body.add quote do:
-                add[`eventType`](`appStateIdent`.`inboxIdent`, `event`)
+        when not isFastCompileMode():
+            for inboxIdent in inboxes:
+                body.add quote do:
+                    add[`eventType`](`appStateIdent`.`inboxIdent`, `event`)
 
-        for system in details.systems:
-            case system.phase
-            of EventCallback:
-                if eventType == system.callbackSysType:
-                    body.add(details.invokeSystem(system, {EventCallback}, [ event ]))
-            of IndirectEventCallback:
-                if eventType == system.callbackSysType:
-                    let inboxIdent = system.callbackSysMailboxName
-                    body.add quote do:
-                        add[`eventType`](`appStateIdent`.`inboxIdent`, `event`)
-            else:
-                discard
+            for system in details.systems:
+                case system.phase
+                of EventCallback:
+                    if eventType == system.callbackSysType:
+                        body.add(details.invokeSystem(system, {EventCallback}, [ event ]))
+                of IndirectEventCallback:
+                    if eventType == system.callbackSysType:
+                        let inboxIdent = system.callbackSysMailboxName
+                        body.add quote do:
+                            add[`eventType`](`appStateIdent`.`inboxIdent`, `event`)
+                else:
+                    discard
 
         if body.len == 0:
             body.add(nnkDiscardStmt.newTree(newEmptyNode()))
