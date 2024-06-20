@@ -11,23 +11,20 @@ proc read(fromArch: Archetype[ComponentDef], arg: DirectiveArg): NimNode {.used.
 
 proc copyTuple(fromArch: Archetype[ComponentDef], directive: TupleDirective): NimNode =
     ## Generates code for copying from one tuple to another
-    when isFastCompileMode():
-        return newStmtList()
-    else:
-        result = newStmtList()
-        for i, arg in directive.args:
-            let value = case arg.kind
-                of DirectiveArgKind.Exclude:
-                    newCall(nnkBracketExpr.newTree(bindSym("Not"), arg.type), newLit(0'i8))
-                of DirectiveArgKind.Include:
-                    read(fromArch, arg)
-                of DirectiveArgKind.Optional:
-                    if arg.component in fromArch:
-                        newCall(bindSym("some"), read(fromArch, arg))
-                    else:
-                        newCall(nnkBracketExpr.newTree(bindSym("none"), arg.type))
-            result.add quote do:
-                `output`[`i`] = `value`
+    result = newStmtList()
+    for i, arg in directive.args:
+        let value = case arg.kind
+            of DirectiveArgKind.Exclude:
+                newCall(nnkBracketExpr.newTree(bindSym("Not"), arg.type), newLit(0'i8))
+            of DirectiveArgKind.Include:
+                read(fromArch, arg)
+            of DirectiveArgKind.Optional:
+                if arg.component in fromArch:
+                    newCall(bindSym("some"), read(fromArch, arg))
+                else:
+                    newCall(nnkBracketExpr.newTree(bindSym("none"), arg.type))
+        result.add quote do:
+            `output`[`i`] = `value`
 
 proc buildConverterProc(ctx: GenerateContext, convert: ConverterDef): NimNode {.used.} =
     ## Builds a single converter proc
