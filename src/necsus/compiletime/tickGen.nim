@@ -103,25 +103,31 @@ proc createTickProc*(genInfo: CodeGenInfo): NimNode =
     ## Creates a function that executes the next tick
     let appStateType = genInfo.appStateTypeName
 
-    let loopSystems = genInfo.callSystems({LoopPhase, IndirectEventCallback})
-
-    let loopStart = genInfo.generateForHook(GenerateHook.LoopStart)
-    let loopEnd = genInfo.generateForHook(GenerateHook.LoopEnd)
-
-    let profiler = if profilingEnabled():
-        quote:
-            summarize(`appStateIdent`.profile, `appStateIdent`.`confIdent`)
+    let body = when isFastCompileMode():
+        newStmtList()
     else:
-        newEmptyNode()
+        let loopSystems = genInfo.callSystems({LoopPhase, IndirectEventCallback})
 
-    return quote:
-        proc tick(`appStateIdent`: var `appStateType`) =
+        let loopStart = genInfo.generateForHook(GenerateHook.LoopStart)
+        let loopEnd = genInfo.generateForHook(GenerateHook.LoopEnd)
+
+        let profiler = if profilingEnabled():
+            quote:
+                summarize(`appStateIdent`.profile, `appStateIdent`.`confIdent`)
+        else:
+            newEmptyNode()
+
+        quote:
             `appStateIdent`.`thisTime` = `appStateIdent`.`confIdent`.getTime()
             `loopStart`
             block:
                 `loopSystems`
             `loopEnd`
             `profiler`
+
+    return quote:
+        proc tick(`appStateIdent`: var `appStateType`) =
+            `body`
 
 proc createTickRunner*(genInfo: CodeGenInfo, runner: NimNode): NimNode =
     ## Creates the code required to execute a single tick within the world
