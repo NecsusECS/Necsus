@@ -309,12 +309,20 @@ proc getSystemType(ident: NimNode, impl: NimNode): NimNode =
     else:
         return ident.getTypeImpl
 
-proc getPrefixArgs(phase: SystemPhase, args: var seq[NimNode], instancing: Option[NimNode]): seq[NimNode] =
+proc getPrefixArgs(
+    system: NimNode,
+    phase: SystemPhase,
+    args: var seq[NimNode],
+    instancing: Option[NimNode]
+): seq[NimNode] =
     case phase
     of RestoreCallback, EventCallback, IndirectEventCallback:
         if instancing.isNone:
-            result = @[ args[0] ]
-            args = args[1..^1]
+            if args.len <= 0:
+                error("Expecting at least one parameter for system", system)
+            else:
+                result = @[ args[0] ]
+                args = args[1..^1]
         else:
             instancing.get.expectKind(nnkProcTy)
             result = @[ instancing.get.params[1] ]
@@ -350,7 +358,7 @@ proc parseSystemDef*(ident: NimNode, impl: NimNode): ParsedSystem =
     var args = argSource.toSeq.filterIt(it.kind == nnkIdentDefs)
     let phase = impl.choosePhase()
     let instancing = determineInstancing(impl, typeImpl)
-    let prefixArgs = getPrefixArgs(phase, args, instancing)
+    let prefixArgs = impl.getPrefixArgs(phase, args, instancing)
 
     result = ParsedSystem(
         phase: phase,
