@@ -10,6 +10,7 @@ jobs:
     container: nimlang/nim
     steps:
     - uses: actions/checkout@v3
+    - run: git config --global --add safe.directory "$(pwd)"
     - run: nimble install -y markdown
     - run: nimble documentation
     - name: Deploy documents
