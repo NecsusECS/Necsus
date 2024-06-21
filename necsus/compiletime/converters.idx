@@ -1,1 +1,2 @@
-createConverterProcs	necsus/compiletime/converters.html#createConverterProcs,CodeGenInfo	converters: createConverterProcs(details: CodeGenInfo): NimNode	
+nimTitle	converters	necsus/compiletime/converters.html	module src/necsus/compiletime/converters		0
+nim	createConverterProcs	necsus/compiletime/converters.html#createConverterProcs,CodeGenInfo	proc createConverterProcs(details: CodeGenInfo): NimNode		40

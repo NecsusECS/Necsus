@@ -1,1 +1,2 @@
-createMarshalProcs	necsus/compiletime/marshalGen.html#createMarshalProcs,CodeGenInfo	marshalGen: createMarshalProcs(genInfo: CodeGenInfo): NimNode	
+nimTitle	marshalGen	necsus/compiletime/marshalGen.html	module src/necsus/compiletime/marshalGen		0
+nim	createMarshalProcs	necsus/compiletime/marshalGen.html#createMarshalProcs,CodeGenInfo	proc createMarshalProcs(genInfo: CodeGenInfo): NimNode		104

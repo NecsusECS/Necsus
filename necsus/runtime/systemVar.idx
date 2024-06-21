@@ -1,21 +1,25 @@
-SystemVarData	necsus/runtime/systemVar.html#SystemVarData	systemVar: SystemVarData	
-Shared	necsus/runtime/systemVar.html#Shared	systemVar: Shared	
-SharedOrT	necsus/runtime/systemVar.html#SharedOrT	systemVar: SharedOrT	
-Local	necsus/runtime/systemVar.html#Local	systemVar: Local	
-LocalOrT	necsus/runtime/systemVar.html#LocalOrT	systemVar: LocalOrT	
-SystemVar	necsus/runtime/systemVar.html#SystemVar	systemVar: SystemVar	
-isEmpty	necsus/runtime/systemVar.html#isEmpty,SystemVar[T]	systemVar: isEmpty[T](sysvar: SystemVar[T]): bool	
-isSome	necsus/runtime/systemVar.html#isSome,SystemVar[T]	systemVar: isSome[T](sysvar: SystemVar[T]): bool	
-set	necsus/runtime/systemVar.html#set,SystemVar[T],sinkT	systemVar: set[T](sysvar: SystemVar[T]; value: sink T)	
-`:=`	necsus/runtime/systemVar.html#:=,SystemVar[T],sinkT	systemVar: `:=`[T](sysvar: SystemVar[T]; value: sink T)	
-getOrRaise	necsus/runtime/systemVar.html#getOrRaise,SystemVar[T]	systemVar: getOrRaise[T](sysvar: SystemVar[T]): var T	
-getOrPut	necsus/runtime/systemVar.html#getOrPut.t,SystemVar[T],typed	systemVar: getOrPut[T](sysvar: SystemVar[T]; build: typed): var T	
-getOrPut	necsus/runtime/systemVar.html#getOrPut,SystemVar[T]	systemVar: getOrPut[T](sysvar: SystemVar[T]): var T	
-get	necsus/runtime/systemVar.html#get,SystemVar[T],T	systemVar: get[T](sysvar: SystemVar[T]; default: T): T	
-get	necsus/runtime/systemVar.html#get,SystemVar[T]	systemVar: get[T](sysvar: SystemVar[T]): T	
-`==`	necsus/runtime/systemVar.html#==,SystemVar[T],T	systemVar: `==`[T](sysvar: SystemVar[T]; value: T): bool	
-unwrap	necsus/runtime/systemVar.html#unwrap	systemVar: unwrap[T](sysvar: SharedOrT[T] | LocalOrT[T]): T	
-unwrap	necsus/runtime/systemVar.html#unwrap,,T	systemVar: unwrap[T](sysvar: SharedOrT[T] | LocalOrT[T]; otherwise: T): T	
-`$`	necsus/runtime/systemVar.html#$,SystemVar[T]	systemVar: `$`[T](sysvar: SystemVar[T]): string	
-items	necsus/runtime/systemVar.html#items.i,SystemVar[T]	systemVar: items[T](sysvar: var SystemVar[T]): var T	
-items	necsus/runtime/systemVar.html#items.i,SystemVar[T]_2	systemVar: items[T](sysvar: SystemVar[T]): lent T	
+nimTitle	systemVar	necsus/runtime/systemVar.html	module src/necsus/runtime/systemVar		0
+nim	SystemVarData	necsus/runtime/systemVar.html#SystemVarData	object SystemVarData		4
+nim	Shared	necsus/runtime/systemVar.html#Shared	type Shared		8
+nim	SharedOrT	necsus/runtime/systemVar.html#SharedOrT	type SharedOrT		11
+nim	Local	necsus/runtime/systemVar.html#Local	type Local		14
+nim	LocalOrT	necsus/runtime/systemVar.html#LocalOrT	type LocalOrT		17
+nim	SystemVar	necsus/runtime/systemVar.html#SystemVar	type SystemVar		20
+nim	isEmpty	necsus/runtime/systemVar.html#isEmpty,SystemVar[T]	proc isEmpty[T](sysvar: SystemVar[T]): bool		24
+nim	isSome	necsus/runtime/systemVar.html#isSome,SystemVar[T]	proc isSome[T](sysvar: SystemVar[T]): bool		28
+nim	set	necsus/runtime/systemVar.html#set,SystemVar[T],sinkT	proc set[T](sysvar: SystemVar[T]; value: sink T)		32
+nim	`:=`	necsus/runtime/systemVar.html#:=,SystemVar[T],sinkT	proc `:=`[T](sysvar: SystemVar[T]; value: sink T)		36
+nim	getOrRaise	necsus/runtime/systemVar.html#getOrRaise,SystemVar[T]	proc getOrRaise[T](sysvar: SystemVar[T]): var T		40
+nim	getOrPut	necsus/runtime/systemVar.html#getOrPut.t,SystemVar[T],typed	template getOrPut[T](sysvar: SystemVar[T]; build: typed): var T		44
+nim	getOrPut	necsus/runtime/systemVar.html#getOrPut,SystemVar[T]	proc getOrPut[T](sysvar: SystemVar[T]): var T		50
+nim	get	necsus/runtime/systemVar.html#get,SystemVar[T],T	proc get[T](sysvar: SystemVar[T]; default: T): T		54
+nim	get	necsus/runtime/systemVar.html#get,SystemVar[T]	proc get[T](sysvar: SystemVar[T]): T		58
+nim	`==`	necsus/runtime/systemVar.html#==,SystemVar[T],T	proc `==`[T](sysvar: SystemVar[T]; value: T): bool		68
+nim	unwrap	necsus/runtime/systemVar.html#unwrap	proc unwrap[T](sysvar: SharedOrT[T] | LocalOrT[T]): T		72
+nim	unwrap	necsus/runtime/systemVar.html#unwrap,,T	proc unwrap[T](sysvar: SharedOrT[T] | LocalOrT[T]; otherwise: T): T		76
+nim	`$`	necsus/runtime/systemVar.html#$,SystemVar[T]	proc `$`[T](sysvar: SystemVar[T]): string		80
+nim	items	necsus/runtime/systemVar.html#items.i,SystemVar[T]	iterator items[T](sysvar: var SystemVar[T]): var T		82
+nim	items	necsus/runtime/systemVar.html#items.i,SystemVar[T]_2	iterator items[T](sysvar: SystemVar[T]): lent T		86
+nimgrp	get	necsus/runtime/systemVar.html#get-procs-all	proc		54
+nimgrp	unwrap	necsus/runtime/systemVar.html#unwrap-procs-all	proc		72
+nimgrp	items	necsus/runtime/systemVar.html#items-iterators-all	iterator		82

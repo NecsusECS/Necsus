@@ -1,1 +1,2 @@
-deleteGenerator	necsus/compiletime/deleteGen.html#deleteGenerator	deleteGen: deleteGenerator	
+nimTitle	deleteGen	necsus/compiletime/deleteGen.html	module src/necsus/compiletime/deleteGen		0
+nim	deleteGenerator	necsus/compiletime/deleteGen.html#deleteGenerator	let deleteGenerator		51

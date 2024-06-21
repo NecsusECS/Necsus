@@ -1,9 +1,10 @@
-depends	necsus/runtime/pragmas.html#depends.t,varargs[typed]	pragmas: depends(dependencies: varargs[typed])	
-startupSys	necsus/runtime/pragmas.html#startupSys.t	pragmas: startupSys()	
-teardownSys	necsus/runtime/pragmas.html#teardownSys.t	pragmas: teardownSys()	
-loopSys	necsus/runtime/pragmas.html#loopSys.t	pragmas: loopSys()	
-saveSys	necsus/runtime/pragmas.html#saveSys.t	pragmas: saveSys()	
-restoreSys	necsus/runtime/pragmas.html#restoreSys.t	pragmas: restoreSys()	
-eventSys	necsus/runtime/pragmas.html#eventSys.t	pragmas: eventSys()	
-instanced	necsus/runtime/pragmas.html#instanced.t	pragmas: instanced()	
-active	necsus/runtime/pragmas.html#active.t,varargs[typed]	pragmas: active(states: varargs[typed])	
+nimTitle	pragmas	necsus/runtime/pragmas.html	module src/necsus/runtime/pragmas		0
+nim	depends	necsus/runtime/pragmas.html#depends.t,varargs[typed]	template depends(dependencies: varargs[typed])		2
+nim	startupSys	necsus/runtime/pragmas.html#startupSys.t	template startupSys()		5
+nim	teardownSys	necsus/runtime/pragmas.html#teardownSys.t	template teardownSys()		8
+nim	loopSys	necsus/runtime/pragmas.html#loopSys.t	template loopSys()		11
+nim	saveSys	necsus/runtime/pragmas.html#saveSys.t	template saveSys()		14
+nim	restoreSys	necsus/runtime/pragmas.html#restoreSys.t	template restoreSys()		17
+nim	eventSys	necsus/runtime/pragmas.html#eventSys.t	template eventSys()		20
+nim	instanced	necsus/runtime/pragmas.html#instanced.t	template instanced()		23
+nim	active	necsus/runtime/pragmas.html#active.t,varargs[typed]	template active(states: varargs[typed])		28

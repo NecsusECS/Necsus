@@ -1,2 +1,3 @@
-queryGenerator	necsus/compiletime/queryGen.html#queryGenerator	queryGen: queryGenerator	
-fullQueryGenerator	necsus/compiletime/queryGen.html#fullQueryGenerator	queryGen: fullQueryGenerator	
+nimTitle	queryGen	necsus/compiletime/queryGen.html	module src/necsus/compiletime/queryGen		0
+nim	queryGenerator	necsus/compiletime/queryGen.html#queryGenerator	let queryGenerator		109
+nim	fullQueryGenerator	necsus/compiletime/queryGen.html#fullQueryGenerator	let fullQueryGenerator		118

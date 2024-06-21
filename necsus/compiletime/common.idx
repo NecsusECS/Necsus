@@ -1,7 +1,8 @@
-confIdent	necsus/compiletime/common.html#confIdent	common: confIdent	
-appStateIdent	necsus/compiletime/common.html#appStateIdent	common: appStateIdent	
-lifecycle	necsus/compiletime/common.html#lifecycle	common: lifecycle	
-worldIdent	necsus/compiletime/common.html#worldIdent	common: worldIdent	
-thisTime	necsus/compiletime/common.html#thisTime	common: thisTime	
-startTime	necsus/compiletime/common.html#startTime	common: startTime	
-isFastCompileMode	necsus/compiletime/common.html#isFastCompileMode	common: isFastCompileMode(): bool	
+nimTitle	common	necsus/compiletime/common.html	module src/necsus/compiletime/common		0
+nim	confIdent	necsus/compiletime/common.html#confIdent	let confIdent		4
+nim	appStateIdent	necsus/compiletime/common.html#appStateIdent	let appStateIdent		7
+nim	lifecycle	necsus/compiletime/common.html#lifecycle	let lifecycle		10
+nim	worldIdent	necsus/compiletime/common.html#worldIdent	let worldIdent		13
+nim	thisTime	necsus/compiletime/common.html#thisTime	let thisTime		16
+nim	startTime	necsus/compiletime/common.html#startTime	let startTime		19
+nim	isFastCompileMode	necsus/compiletime/common.html#isFastCompileMode	proc isFastCompileMode(): bool		21

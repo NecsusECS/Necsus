@@ -1,1 +1,2 @@
-restoreGenerator	necsus/compiletime/restoreGen.html#restoreGenerator	restoreGen: restoreGenerator	
+nimTitle	restoreGen	necsus/compiletime/restoreGen.html	module src/necsus/compiletime/restoreGen		0
+nim	restoreGenerator	necsus/compiletime/restoreGen.html#restoreGenerator	let restoreGenerator		16

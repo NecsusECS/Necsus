@@ -1,1 +1,2 @@
-localGenerator	necsus/compiletime/localGen.html#localGenerator	localGen: localGenerator	
+nimTitle	localGen	necsus/compiletime/localGen.html	module src/necsus/compiletime/localGen		0
+nim	localGenerator	necsus/compiletime/localGen.html#localGenerator	let localGenerator		17

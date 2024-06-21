@@ -1,3 +1,4 @@
-symbols	necsus/util/nimNode.html#symbols,NimNode	nimNode: symbols(node: NimNode): seq[string]	
-hash	necsus/util/nimNode.html#hash,NimNode	nimNode: hash(node: NimNode): Hash	
-cmp	necsus/util/nimNode.html#cmp,NimNode,NimNode	nimNode: cmp(a: NimNode; b: NimNode): int	
+nimTitle	nimNode	necsus/util/nimNode.html	module src/necsus/util/nimNode		0
+nim	symbols	necsus/util/nimNode.html#symbols,NimNode	proc symbols(node: NimNode): seq[string]		3
+nim	hash	necsus/util/nimNode.html#hash,NimNode	proc hash(node: NimNode): Hash		15
+nim	cmp	necsus/util/nimNode.html#cmp,NimNode,NimNode	proc cmp(a: NimNode; b: NimNode): int		27

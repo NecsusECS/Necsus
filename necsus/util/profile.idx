@@ -1,3 +1,4 @@
-Profiler	necsus/util/profile.html#Profiler	profile: Profiler	
-record	necsus/util/profile.html#record,Profiler,Nfloat	profile: record(profiler: var Profiler; time: Nfloat)	
-summarize	necsus/util/profile.html#summarize,openArray[Profiler],NecsusConf	profile: summarize(profilers: var openArray[Profiler]; conf: NecsusConf)	
+nimTitle	profile	necsus/util/profile.html	module src/necsus/util/profile		0
+nim	Profiler	necsus/util/profile.html#Profiler	object Profiler		6
+nim	record	necsus/util/profile.html#record,Profiler,Nfloat	proc record(profiler: var Profiler; time: Nfloat)		11
+nim	summarize	necsus/util/profile.html#summarize,openArray[Profiler],NecsusConf	proc summarize(profilers: var openArray[Profiler]; conf: NecsusConf)		19

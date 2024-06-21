@@ -1,15 +1,16 @@
-Nfloat	necsus/runtime/directives.html#Nfloat	directives: Nfloat	
-Delete	necsus/runtime/directives.html#Delete	directives: Delete	
-Attach	necsus/runtime/directives.html#Attach	directives: Attach	
-Detach	necsus/runtime/directives.html#Detach	directives: Detach	
-Swap	necsus/runtime/directives.html#Swap	directives: Swap	
-Lookup	necsus/runtime/directives.html#Lookup	directives: Lookup	
-Outbox	necsus/runtime/directives.html#Outbox	directives: Outbox	
-TimeDelta	necsus/runtime/directives.html#TimeDelta	directives: TimeDelta	
-TimeElapsed	necsus/runtime/directives.html#TimeElapsed	directives: TimeElapsed	
-TickId	necsus/runtime/directives.html#TickId	directives: TickId	
-EntityDebug	necsus/runtime/directives.html#EntityDebug	directives: EntityDebug	
-Bundle	necsus/runtime/directives.html#Bundle	directives: Bundle	
-Save	necsus/runtime/directives.html#Save	directives: Save	
-Restore	necsus/runtime/directives.html#Restore	directives: Restore	
-SystemInstance	necsus/runtime/directives.html#SystemInstance	directives: SystemInstance	
+nimTitle	directives	necsus/runtime/directives.html	module src/necsus/runtime/directives		0
+nim	Nfloat	necsus/runtime/directives.html#Nfloat	type Nfloat		6
+nim	Delete	necsus/runtime/directives.html#Delete	type Delete		10
+nim	Attach	necsus/runtime/directives.html#Attach	type Attach		13
+nim	Detach	necsus/runtime/directives.html#Detach	type Detach		17
+nim	Swap	necsus/runtime/directives.html#Swap	type Swap		21
+nim	Lookup	necsus/runtime/directives.html#Lookup	type Lookup		24
+nim	Outbox	necsus/runtime/directives.html#Outbox	type Outbox		28
+nim	TimeDelta	necsus/runtime/directives.html#TimeDelta	type TimeDelta		31
+nim	TimeElapsed	necsus/runtime/directives.html#TimeElapsed	type TimeElapsed		34
+nim	TickId	necsus/runtime/directives.html#TickId	type TickId		37
+nim	EntityDebug	necsus/runtime/directives.html#EntityDebug	type EntityDebug		40
+nim	Bundle	necsus/runtime/directives.html#Bundle	type Bundle		43
+nim	Save	necsus/runtime/directives.html#Save	type Save		46
+nim	Restore	necsus/runtime/directives.html#Restore	type Restore		49
+nim	SystemInstance	necsus/runtime/directives.html#SystemInstance	type SystemInstance		52

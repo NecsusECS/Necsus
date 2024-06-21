@@ -1,5 +1,6 @@
-DualDirective	necsus/compiletime/dualDirective.html#DualDirective	dualDirective: DualDirective	
-newDualDir	necsus/compiletime/dualDirective.html#newDualDir,seq[DirectiveArg],seq[DirectiveArg]	dualDirective: newDualDir(first: seq[DirectiveArg]; second: seq[DirectiveArg]): DualDirective	
-hash	necsus/compiletime/dualDirective.html#hash,DualDirective	dualDirective: hash(directive: DualDirective): Hash	
-`$`	necsus/compiletime/dualDirective.html#$,DualDirective	dualDirective: `$`(dir: DualDirective): string	
-items	necsus/compiletime/dualDirective.html#items.i,DualDirective	dualDirective: items(directive: DualDirective): ComponentDef	
+nimTitle	dualDirective	necsus/compiletime/dualDirective.html	module src/necsus/compiletime/dualDirective		0
+nim	DualDirective	necsus/compiletime/dualDirective.html#DualDirective	type DualDirective		4
+nim	newDualDir	necsus/compiletime/dualDirective.html#newDualDir,seq[DirectiveArg],seq[DirectiveArg]	proc newDualDir(first: seq[DirectiveArg]; second: seq[DirectiveArg]): DualDirective		10
+nim	hash	necsus/compiletime/dualDirective.html#hash,DualDirective	proc hash(directive: DualDirective): Hash		14
+nim	`$`	necsus/compiletime/dualDirective.html#$,DualDirective	proc `$`(dir: DualDirective): string		16
+nim	items	necsus/compiletime/dualDirective.html#items.i,DualDirective	iterator items(directive: DualDirective): ComponentDef		19

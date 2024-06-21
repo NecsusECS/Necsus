@@ -1,7 +1,9 @@
-WorldEnum	necsus/compiletime/worldEnum.html#WorldEnum	worldEnum: WorldEnum	
-ArchetypeEnum	necsus/compiletime/worldEnum.html#ArchetypeEnum	worldEnum: ArchetypeEnum	
-ident	necsus/compiletime/worldEnum.html#ident,WorldEnum[T]	worldEnum: ident[T](worldEnum: WorldEnum[T]): auto	
-ident	necsus/compiletime/worldEnum.html#ident,WorldEnum[T],T	worldEnum: ident[T](worldEnum: WorldEnum[T]; value: T): NimNode	
-archetypeEnum	necsus/compiletime/worldEnum.html#archetypeEnum,string,ArchetypeSet[ComponentDef]	worldEnum: archetypeEnum(prefix: string; archetypes: ArchetypeSet[ComponentDef]): ArchetypeEnum	
-items	necsus/compiletime/worldEnum.html#items.i,WorldEnum[T]	worldEnum: items[T](worldEnum: WorldEnum[T]): T	
-codeGen	necsus/compiletime/worldEnum.html#codeGen,WorldEnum[T]	worldEnum: codeGen[T](worldEnum: WorldEnum[T]): NimNode	
+nimTitle	worldEnum	necsus/compiletime/worldEnum.html	module src/necsus/compiletime/worldEnum		0
+nim	WorldEnum	necsus/compiletime/worldEnum.html#WorldEnum	type WorldEnum		4
+nim	ArchetypeEnum	necsus/compiletime/worldEnum.html#ArchetypeEnum	type ArchetypeEnum		9
+nim	ident	necsus/compiletime/worldEnum.html#ident,WorldEnum[T]	proc ident[T](worldEnum: WorldEnum[T]): auto		12
+nim	ident	necsus/compiletime/worldEnum.html#ident,WorldEnum[T],T	proc ident[T](worldEnum: WorldEnum[T]; value: T): NimNode		15
+nim	archetypeEnum	necsus/compiletime/worldEnum.html#archetypeEnum,string,ArchetypeSet[ComponentDef]	proc archetypeEnum(prefix: string; archetypes: ArchetypeSet[ComponentDef]): ArchetypeEnum		19
+nim	items	necsus/compiletime/worldEnum.html#items.i,WorldEnum[T]	iterator items[T](worldEnum: WorldEnum[T]): T		25
+nim	codeGen	necsus/compiletime/worldEnum.html#codeGen,WorldEnum[T]	proc codeGen[T](worldEnum: WorldEnum[T]): NimNode		30
+nimgrp	ident	necsus/compiletime/worldEnum.html#ident-procs-all	proc		12

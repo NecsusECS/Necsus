@@ -1,1 +1,2 @@
-tickIdGenerator	necsus/compiletime/tickIdGen.html#tickIdGenerator	tickIdGen: tickIdGenerator	
+nimTitle	tickIdGen	necsus/compiletime/tickIdGen.html	module src/necsus/compiletime/tickIdGen		0
+nim	tickIdGenerator	necsus/compiletime/tickIdGen.html#tickIdGenerator	let tickIdGenerator		25

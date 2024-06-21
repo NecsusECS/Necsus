@@ -1,6 +1,7 @@
-invokeSystem	necsus/compiletime/tickGen.html#invokeSystem,CodeGenInfo,ParsedSystem,set[SystemPhase],openArray[NimNode]	tickGen: invokeSystem(codeGenInfo: CodeGenInfo; system: ParsedSystem;\n             phases: set[SystemPhase]; prefixArgs: openArray[NimNode] = []): NimNode	
-callSystems	necsus/compiletime/tickGen.html#callSystems,CodeGenInfo,set[SystemPhase]	tickGen: callSystems(codeGenInfo: CodeGenInfo; phases: set[SystemPhase]): NimNode	
-createTickProc	necsus/compiletime/tickGen.html#createTickProc,CodeGenInfo	tickGen: createTickProc(genInfo: CodeGenInfo): NimNode	
-createTickRunner	necsus/compiletime/tickGen.html#createTickRunner,CodeGenInfo,NimNode	tickGen: createTickRunner(genInfo: CodeGenInfo; runner: NimNode): NimNode	
-initializeSystems	necsus/compiletime/tickGen.html#initializeSystems,CodeGenInfo	tickGen: initializeSystems(codeGenInfo: CodeGenInfo): NimNode	
-destroySystems	necsus/compiletime/tickGen.html#destroySystems,CodeGenInfo	tickGen: destroySystems(codeGenInfo: CodeGenInfo): NimNode	
+nimTitle	tickGen	necsus/compiletime/tickGen.html	module src/necsus/compiletime/tickGen		0
+nim	invokeSystem	necsus/compiletime/tickGen.html#invokeSystem,CodeGenInfo,ParsedSystem,set[SystemPhase],openArray[NimNode]	proc invokeSystem(codeGenInfo: CodeGenInfo; system: ParsedSystem;\n             phases: set[SystemPhase]; prefixArgs: openArray[NimNode] = []): NimNode		58
+nim	callSystems	necsus/compiletime/tickGen.html#callSystems,CodeGenInfo,set[SystemPhase]	proc callSystems(codeGenInfo: CodeGenInfo; phases: set[SystemPhase]): NimNode		80
+nim	createTickProc	necsus/compiletime/tickGen.html#createTickProc,CodeGenInfo	proc createTickProc(genInfo: CodeGenInfo): NimNode		102
+nim	createTickRunner	necsus/compiletime/tickGen.html#createTickRunner,CodeGenInfo,NimNode	proc createTickRunner(genInfo: CodeGenInfo; runner: NimNode): NimNode		132
+nim	initializeSystems	necsus/compiletime/tickGen.html#initializeSystems,CodeGenInfo	proc initializeSystems(codeGenInfo: CodeGenInfo): NimNode		156
+nim	destroySystems	necsus/compiletime/tickGen.html#destroySystems,CodeGenInfo	proc destroySystems(codeGenInfo: CodeGenInfo): NimNode		164

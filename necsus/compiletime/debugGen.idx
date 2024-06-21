@@ -1,1 +1,2 @@
-entityDebugGenerator	necsus/compiletime/debugGen.html#entityDebugGenerator	debugGen: entityDebugGenerator	
+nimTitle	debugGen	necsus/compiletime/debugGen.html	module src/necsus/compiletime/debugGen		0
+nim	entityDebugGenerator	necsus/compiletime/debugGen.html#entityDebugGenerator	let entityDebugGenerator		53

@@ -1,2 +1,3 @@
-inboxGenerator	necsus/compiletime/eventGen.html#inboxGenerator	eventGen: inboxGenerator	
-outboxGenerator	necsus/compiletime/eventGen.html#outboxGenerator	eventGen: outboxGenerator	
+nimTitle	eventGen	necsus/compiletime/eventGen.html	module src/necsus/compiletime/eventGen		0
+nim	inboxGenerator	necsus/compiletime/eventGen.html#inboxGenerator	let inboxGenerator		39
+nim	outboxGenerator	necsus/compiletime/eventGen.html#outboxGenerator	let outboxGenerator		64

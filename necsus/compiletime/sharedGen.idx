@@ -1,1 +1,2 @@
-sharedGenerator	necsus/compiletime/sharedGen.html#sharedGenerator	sharedGen: sharedGenerator	
+nimTitle	sharedGen	necsus/compiletime/sharedGen.html	module src/necsus/compiletime/sharedGen		0
+nim	sharedGenerator	necsus/compiletime/sharedGen.html#sharedGenerator	let sharedGenerator		36

@@ -1,1 +1,2 @@
-saveGenerator	necsus/compiletime/saveGen.html#saveGenerator	saveGen: saveGenerator	
+nimTitle	saveGen	necsus/compiletime/saveGen.html	module src/necsus/compiletime/saveGen		0
+nim	saveGenerator	necsus/compiletime/saveGen.html#saveGenerator	let saveGenerator		14

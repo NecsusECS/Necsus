@@ -1,13 +1,14 @@
-Include	necsus/compiletime/directiveArg.html#Include	DirectiveArgKind.Include	
-Exclude	necsus/compiletime/directiveArg.html#Exclude	DirectiveArgKind.Exclude	
-Optional	necsus/compiletime/directiveArg.html#Optional	DirectiveArgKind.Optional	
-DirectiveArgKind	necsus/compiletime/directiveArg.html#DirectiveArgKind	directiveArg: DirectiveArgKind	
-DirectiveArg	necsus/compiletime/directiveArg.html#DirectiveArg	directiveArg: DirectiveArg	
-newDirectiveArg	necsus/compiletime/directiveArg.html#newDirectiveArg,ComponentDef,bool,DirectiveArgKind	directiveArg: newDirectiveArg(component: ComponentDef; isPointer: bool; kind: DirectiveArgKind): DirectiveArg	
-`$`	necsus/compiletime/directiveArg.html#$,DirectiveArg	directiveArg: `$`(arg: DirectiveArg): string	
-`==`	necsus/compiletime/directiveArg.html#==,DirectiveArg,DirectiveArg	directiveArg: `==`(a, b: DirectiveArg): auto	
-`&lt;`	necsus/compiletime/directiveArg.html#<,DirectiveArg,DirectiveArg	directiveArg: `&lt;`(a, b: DirectiveArg): auto	
-hash	necsus/compiletime/directiveArg.html#hash,DirectiveArg	directiveArg: hash(arg: DirectiveArg): Hash	
-`type`	necsus/compiletime/directiveArg.html#type,DirectiveArg	directiveArg: `type`(def: DirectiveArg): NimNode	
-generateName	necsus/compiletime/directiveArg.html#generateName,openArray[DirectiveArg]	directiveArg: generateName(args: openArray[DirectiveArg]): string	
-comps	necsus/compiletime/directiveArg.html#comps,openArray[DirectiveArg]	directiveArg: comps(args: openArray[DirectiveArg]): seq[ComponentDef]	
+nimTitle	directiveArg	necsus/compiletime/directiveArg.html	module src/necsus/compiletime/directiveArg		0
+nim	Include	necsus/compiletime/directiveArg.html#Include	DirectiveArgKind.Include		4
+nim	Exclude	necsus/compiletime/directiveArg.html#Exclude	DirectiveArgKind.Exclude		4
+nim	Optional	necsus/compiletime/directiveArg.html#Optional	DirectiveArgKind.Optional		4
+nim	DirectiveArgKind	necsus/compiletime/directiveArg.html#DirectiveArgKind	enum DirectiveArgKind		4
+nim	DirectiveArg	necsus/compiletime/directiveArg.html#DirectiveArg	type DirectiveArg		8
+nim	newDirectiveArg	necsus/compiletime/directiveArg.html#newDirectiveArg,ComponentDef,bool,DirectiveArgKind	proc newDirectiveArg(component: ComponentDef; isPointer: bool; kind: DirectiveArgKind): DirectiveArg		16
+nim	`$`	necsus/compiletime/directiveArg.html#$,DirectiveArg	proc `$`(arg: DirectiveArg): string		20
+nim	`==`	necsus/compiletime/directiveArg.html#==,DirectiveArg,DirectiveArg	proc `==`(a, b: DirectiveArg): auto		26
+nim	`<`	necsus/compiletime/directiveArg.html#<,DirectiveArg,DirectiveArg	proc `<`(a, b: DirectiveArg): auto		30
+nim	hash	necsus/compiletime/directiveArg.html#hash,DirectiveArg	proc hash(arg: DirectiveArg): Hash		34
+nim	`type`	necsus/compiletime/directiveArg.html#type,DirectiveArg	proc `type`(def: DirectiveArg): NimNode		37
+nim	generateName	necsus/compiletime/directiveArg.html#generateName,openArray[DirectiveArg]	proc generateName(args: openArray[DirectiveArg]): string		45
+nim	comps	necsus/compiletime/directiveArg.html#comps,openArray[DirectiveArg]	proc comps(args: openArray[DirectiveArg]): seq[ComponentDef]		49

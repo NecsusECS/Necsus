@@ -1,8 +1,9 @@
-ComponentDef	necsus/compiletime/componentDef.html#ComponentDef	componentDef: ComponentDef	
-newComponentDef	necsus/compiletime/componentDef.html#newComponentDef,NimNode	componentDef: newComponentDef(node: NimNode): ComponentDef	
-`==`	necsus/compiletime/componentDef.html#==,ComponentDef,ComponentDef	componentDef: `==`(a, b: ComponentDef): bool	
-`&lt;`	necsus/compiletime/componentDef.html#<,ComponentDef,ComponentDef	componentDef: `&lt;`(a, b: ComponentDef): auto	
-`$`	necsus/compiletime/componentDef.html#$,ComponentDef	componentDef: `$`(def: ComponentDef): string	
-generateName	necsus/compiletime/componentDef.html#generateName,openArray[ComponentDef]	componentDef: generateName(components: openArray[ComponentDef]): string	
-ident	necsus/compiletime/componentDef.html#ident,ComponentDef	componentDef: ident(def: ComponentDef): NimNode	
-hash	necsus/compiletime/componentDef.html#hash,ComponentDef	componentDef: hash(def: ComponentDef): Hash	
+nimTitle	componentDef	necsus/compiletime/componentDef.html	module src/necsus/compiletime/componentDef		0
+nim	ComponentDef	necsus/compiletime/componentDef.html#ComponentDef	type ComponentDef		4
+nim	newComponentDef	necsus/compiletime/componentDef.html#newComponentDef,NimNode	proc newComponentDef(node: NimNode): ComponentDef		20
+nim	`==`	necsus/compiletime/componentDef.html#==,ComponentDef,ComponentDef	proc `==`(a, b: ComponentDef): bool		24
+nim	`<`	necsus/compiletime/componentDef.html#<,ComponentDef,ComponentDef	proc `<`(a, b: ComponentDef): auto		28
+nim	`$`	necsus/compiletime/componentDef.html#$,ComponentDef	proc `$`(def: ComponentDef): string		30
+nim	generateName	necsus/compiletime/componentDef.html#generateName,openArray[ComponentDef]	proc generateName(components: openArray[ComponentDef]): string		34
+nim	ident	necsus/compiletime/componentDef.html#ident,ComponentDef	proc ident(def: ComponentDef): NimNode		38
+nim	hash	necsus/compiletime/componentDef.html#hash,ComponentDef	proc hash(def: ComponentDef): Hash		43

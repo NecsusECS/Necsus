@@ -1,9 +1,10 @@
-DirectiveSet	necsus/compiletime/directiveSet.html#DirectiveSet	directiveSet: DirectiveSet	
-newDirectiveSet	necsus/compiletime/directiveSet.html#newDirectiveSet,string,openArray[T]	directiveSet: newDirectiveSet[T](prefix: string; values: openArray[T]): DirectiveSet[T]	
-directives	necsus/compiletime/directiveSet.html#directives,DirectiveSet[T]	directiveSet: directives[T](directives: DirectiveSet[T]): seq[T]	
-pairs	necsus/compiletime/directiveSet.html#pairs.i,DirectiveSet[T]	directiveSet: pairs[T](directives: DirectiveSet[T]): tuple[name: string, value: T]	
-symbol	necsus/compiletime/directiveSet.html#symbol,DirectiveSet[T]	directiveSet: symbol[T](directives: DirectiveSet[T]): string	
-`$`	necsus/compiletime/directiveSet.html#$,DirectiveSet[T]	directiveSet: `$`[T](directives: DirectiveSet[T]): string	
-containing	necsus/compiletime/directiveSet.html#containing,DirectiveSet[TupleDirective],openArray[ComponentDef]	directiveSet: containing(queries: DirectiveSet[TupleDirective];\n           components: openArray[ComponentDef]): seq[TupleDirective]	
-mentioning	necsus/compiletime/directiveSet.html#mentioning,DirectiveSet[TupleDirective],openArray[ComponentDef]	directiveSet: mentioning(queries: DirectiveSet[TupleDirective];\n           components: openArray[ComponentDef]): seq[TupleDirective]	
-nameOf	necsus/compiletime/directiveSet.html#nameOf,DirectiveSet[T],T	directiveSet: nameOf[T](directives: DirectiveSet[T]; value: T): string	
+nimTitle	directiveSet	necsus/compiletime/directiveSet.html	module src/necsus/compiletime/directiveSet		0
+nim	DirectiveSet	necsus/compiletime/directiveSet.html#DirectiveSet	type DirectiveSet		4
+nim	newDirectiveSet	necsus/compiletime/directiveSet.html#newDirectiveSet,string,openArray[T]	proc newDirectiveSet[T](prefix: string; values: openArray[T]): DirectiveSet[T]		9
+nim	directives	necsus/compiletime/directiveSet.html#directives,DirectiveSet[T]	proc directives[T](directives: DirectiveSet[T]): seq[T]		23
+nim	pairs	necsus/compiletime/directiveSet.html#pairs.i,DirectiveSet[T]	iterator pairs[T](directives: DirectiveSet[T]): tuple[name: string, value: T]		27
+nim	symbol	necsus/compiletime/directiveSet.html#symbol,DirectiveSet[T]	proc symbol[T](directives: DirectiveSet[T]): string		31
+nim	`$`	necsus/compiletime/directiveSet.html#$,DirectiveSet[T]	proc `$`[T](directives: DirectiveSet[T]): string		35
+nim	containing	necsus/compiletime/directiveSet.html#containing,DirectiveSet[TupleDirective],openArray[ComponentDef]	proc containing(queries: DirectiveSet[TupleDirective];\n           components: openArray[ComponentDef]): seq[TupleDirective]		51
+nim	mentioning	necsus/compiletime/directiveSet.html#mentioning,DirectiveSet[TupleDirective],openArray[ComponentDef]	proc mentioning(queries: DirectiveSet[TupleDirective];\n           components: openArray[ComponentDef]): seq[TupleDirective]		58
+nim	nameOf	necsus/compiletime/directiveSet.html#nameOf,DirectiveSet[T],T	proc nameOf[T](directives: DirectiveSet[T]; value: T): string		65
