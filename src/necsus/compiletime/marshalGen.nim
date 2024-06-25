@@ -1,12 +1,12 @@
 import macros, codeGenInfo, common, parse, tickGen, tools, std/[sequtils, tables, json, jsonutils, sets]
 
-proc saveTypeName(genInfo: CodeGenInfo): NimNode {.used.} = ident(genInfo.app.name & "Marshal")
+proc saveTypeName(genInfo: CodeGenInfo): NimNode = ident(genInfo.app.name & "Marshal")
 
-proc restoreSysType(sys: ParsedSystem): NimNode {.used.} =
+proc restoreSysType(sys: ParsedSystem): NimNode =
     ## Returns the type that a restoreSys accepts for restoration
     sys.prefixArgs[0][1]
 
-proc collectMarshalTypes(topics: openArray[NimNode], dedupe: var HashSet[string], records: var NimNode) {.used.} =
+proc collectMarshalTypes(topics: openArray[NimNode], dedupe: var HashSet[string], records: var NimNode) =
     var seen = initTable[string, NimNode]()
     for topicType in topics:
         let topicName = topicType.strVal
@@ -24,31 +24,31 @@ proc collectMarshalTypes(topics: openArray[NimNode], dedupe: var HashSet[string]
 
 proc createSaveType(genInfo: CodeGenInfo): NimNode =
     ## Generates the type definition needed to serialize an app
-    when isFastCompileMode():
+    if isFastCompileMode():
         return newEmptyNode()
-    else:
-        var records = nnkRecList.newTree()
-        var dedupe = initHashSet[string]()
 
-        genInfo.systems.filterIt(it.phase == SaveCallback).mapIt(it.returns).collectMarshalTypes(dedupe, records)
-        genInfo.systems.filterIt(it.phase == RestoreCallback).mapIt(it.restoreSysType).collectMarshalTypes(dedupe, records)
+    var records = nnkRecList.newTree()
+    var dedupe = initHashSet[string]()
 
-        return nnkTypeSection.newTree(
-            nnkTypeDef.newTree(
-                genInfo.saveTypeName,
-                newEmptyNode(),
-                nnkObjectTy.newTree(newEmptyNode(), newEmptyNode(), records)
-            )
+    genInfo.systems.filterIt(it.phase == SaveCallback).mapIt(it.returns).collectMarshalTypes(dedupe, records)
+    genInfo.systems.filterIt(it.phase == RestoreCallback).mapIt(it.restoreSysType).collectMarshalTypes(dedupe, records)
+
+    return nnkTypeSection.newTree(
+        nnkTypeDef.newTree(
+            genInfo.saveTypeName,
+            newEmptyNode(),
+            nnkObjectTy.newTree(newEmptyNode(), newEmptyNode(), records)
         )
+    )
 
 let streamIdent {.compileTime.} = "stream".ident
-let decoded {.compileTime, used.} = "decoded".ident
+let decoded {.compileTime.} = "decoded".ident
 
 proc createRestoreProc(genInfo: CodeGenInfo): NimNode =
     ## Generates a proc that is able to restore all procs
     let appStateType = genInfo.appStateTypeName
 
-    let body = when isFastCompileMode():
+    let body = if isFastCompileMode():
         newStmtList()
     else:
         let saveTypeName = genInfo.saveTypeName
@@ -76,7 +76,7 @@ proc createSaveProc(genInfo: CodeGenInfo): NimNode =
     ## Generates a proc that calls all the 'save' systems and aggregates them into a single value
     let appStateType = genInfo.appStateTypeName
 
-    let body = when isFastCompileMode():
+    let body = if isFastCompileMode():
         newStmtList()
     else:
         var construct = nnkObjConstr.newTree(genInfo.saveTypeName)

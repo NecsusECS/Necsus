@@ -11,7 +11,7 @@ proc buildArchetypeLookup(
     details: GenerateContext,
     lookup: TupleDirective,
     archetype: Archetype[ComponentDef]
-): NimNode {.used.} =
+): NimNode =
     ## Builds the block of code for pulling a lookup out of a specific archetype
 
     let archetypeType = archetype.asStorageTuple
@@ -45,7 +45,7 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, lookup: Tu
         let appStateTypeName = details.appStateTypeName
 
         var cases: NimNode = newEmptyNode()
-        when not isFastCompileMode():
+        if not isFastCompileMode():
             if details.archetypes.len > 0:
                 cases = nnkCaseStmt.newTree(newDotExpr(entityIndex, ident("archetype")))
 

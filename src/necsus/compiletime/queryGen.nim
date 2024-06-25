@@ -64,47 +64,47 @@ let appStatePtr {.compileTime, used.} = ident("appStatePtr")
 
 proc generate(details: GenerateContext, arg: SystemArg, name: string, dir: TupleDirective): NimNode =
     ## Generates the code for instantiating queries
-    when isFastCompileMode():
+    if isFastCompileMode():
         return newEmptyNode()
-    else:
-        let queryTuple = dir.args.asTupleType
-        let getLen = details.globalName(name & "_getLen")
-        let nextEntity = details.globalName(name & "_nextEntity")
 
-        case details.hook
-        of GenerateHook.Outside:
-            let appStateTypeName = details.appStateTypeName
+    let queryTuple = dir.args.asTupleType
+    let getLen = details.globalName(name & "_getLen")
+    let nextEntity = details.globalName(name & "_nextEntity")
 
-            let (lenCalculation, nextEntityBody) = details.walkArchetypes(name, dir, queryTuple)
+    case details.hook
+    of GenerateHook.Outside:
+        let appStateTypeName = details.appStateTypeName
 
-            let trace = emitQueryTrace("Query for ", dir.name, " returned ", newCall(getLen, appStatePtr), " result(s)")
-            let log = if trace.kind != nnkEmpty:
-                quote:
-                    if `iter`.isFirst:
-                        `trace`
-            else:
-                newEmptyNode()
+        let (lenCalculation, nextEntityBody) = details.walkArchetypes(name, dir, queryTuple)
 
-            return quote do:
-
-                func `getLen`(`appStatePtr`: pointer): uint {.fastcall.} =
-                    let `appStateIdent` {.used.} = cast[ptr `appStateTypeName`](`appStatePtr`)
-                    result = 0
-                    `lenCalculation`
-
-                proc `nextEntity`(
-                    `iter`: var QueryIterator, `appStatePtr`: pointer, `eid`: var EntityId, `slot`: var `queryTuple`
-                ): NextIterState {.gcsafe, raises: [], fastcall.} =
-                    let `appStateIdent` {.used.} = cast[ptr `appStateTypeName`](`appStatePtr`)
-                    `log`
-                    `nextEntityBody`
-
-        of GenerateHook.Standard:
-            let ident = name.ident
-            return quote do:
-                `appStateIdent`.`ident` = newQuery[`queryTuple`](addr `appStateIdent`, `getLen`, `nextEntity`)
+        let trace = emitQueryTrace("Query for ", dir.name, " returned ", newCall(getLen, appStatePtr), " result(s)")
+        let log = if trace.kind != nnkEmpty:
+            quote:
+                if `iter`.isFirst:
+                    `trace`
         else:
-            return newEmptyNode()
+            newEmptyNode()
+
+        return quote do:
+
+            func `getLen`(`appStatePtr`: pointer): uint {.fastcall.} =
+                let `appStateIdent` {.used.} = cast[ptr `appStateTypeName`](`appStatePtr`)
+                result = 0
+                `lenCalculation`
+
+            proc `nextEntity`(
+                `iter`: var QueryIterator, `appStatePtr`: pointer, `eid`: var EntityId, `slot`: var `queryTuple`
+            ): NextIterState {.gcsafe, raises: [], fastcall.} =
+                let `appStateIdent` {.used.} = cast[ptr `appStateTypeName`](`appStatePtr`)
+                `log`
+                `nextEntityBody`
+
+    of GenerateHook.Standard:
+        let ident = name.ident
+        return quote do:
+            `appStateIdent`.`ident` = newQuery[`queryTuple`](addr `appStateIdent`, `getLen`, `nextEntity`)
+    else:
+        return newEmptyNode()
 
 let queryGenerator* {.compileTime.} = newGenerator(
     ident = "Query",

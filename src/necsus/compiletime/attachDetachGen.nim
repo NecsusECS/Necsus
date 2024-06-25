@@ -13,7 +13,7 @@ proc createArchUpdate(
     title: string,
     attachComps: seq[ComponentDef],
     archetype: Archetype[ComponentDef]
-): NimNode {.used.} =
+): NimNode =
     ## Creates code for updating archetype information in place
     result = newStmtList(emitEntityTrace(title, " ", entityId, " for ", archetype.name))
 
@@ -56,7 +56,7 @@ proc createTupleConvertProc(
     fromArch: Archetype[ComponentDef],
     newCompValues: seq[ComponentDef],
     toArch: Archetype[ComponentDef]
-): NimNode {.used.} =
+): NimNode =
     ## Creates a tuple that is able to convert from one tuple to another
     let fromArchTuple = fromArch.asStorageTuple
     let newCompsType = newCompValues.newCompsTupleType()
@@ -88,7 +88,7 @@ proc createArchMove(
     fromArch: Archetype[ComponentDef],
     newCompValues: seq[ComponentDef],
     toArch: Archetype[ComponentDef]
-): NimNode {.used.} =
+): NimNode =
     ## Creates code for copying from one archetype to another
     let fromArchIdent = fromArch.ident
     let fromArchTuple = fromArch.asStorageTuple
@@ -127,7 +127,7 @@ proc attachDetachProcBody(
     # Generate a cases statement to do the work for each kind of archetype
     var cases: NimNode = newEmptyNode()
 
-    when not isFastCompileMode():
+    if not isFastCompileMode():
         if details.archetypes.len > 0:
             var needsElse = false
             cases = nnkCaseStmt.newTree(newDotExpr(entityIndex, ident("archetype")))
@@ -175,11 +175,10 @@ proc generateAttach(details: GenerateContext, arg: SystemArg, name: string, atta
 
     case details.hook
     of Outside:
-        when isFastCompileMode():
-            let body = newStmtList()
-            let convertProcs = newStmtList()
+        let (body, convertProcs) = if isFastCompileMode():
+            (newStmtList(), newStmtList())
         else:
-            let (body, convertProcs) = details.attachDetachProcBody("Attaching", attach.comps, @[], @[])
+            details.attachDetachProcBody("Attaching", attach.comps, @[], @[])
 
         let appStateTypeName = details.appStateTypeName
         return quote do:

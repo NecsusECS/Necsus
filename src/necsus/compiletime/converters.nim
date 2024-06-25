@@ -5,7 +5,7 @@ import ../runtime/query
 let input {.compileTime.} = ident("input")
 let output {.compileTime.} = ident("output")
 
-proc read(fromArch: Archetype[ComponentDef], arg: DirectiveArg): NimNode {.used.} =
+proc read(fromArch: Archetype[ComponentDef], arg: DirectiveArg): NimNode =
     let readExpr = nnkBracketExpr.newTree(input, newLit(fromArch.indexOf(arg.component)))
     return if arg.isPointer: nnkAddr.newTree(readExpr) else: readExpr
 
@@ -26,7 +26,7 @@ proc copyTuple(fromArch: Archetype[ComponentDef], directive: TupleDirective): Ni
         result.add quote do:
             `output`[`i`] = `value`
 
-proc buildConverterProc(ctx: GenerateContext, convert: ConverterDef): NimNode {.used.} =
+proc buildConverterProc(ctx: GenerateContext, convert: ConverterDef): NimNode =
     ## Builds a single converter proc
     let name = ctx.converterName(convert)
     let inputTuple = convert.input.asStorageTuple
@@ -41,7 +41,7 @@ proc createConverterProcs*(details: CodeGenInfo): NimNode =
     ## Creates a list of procs for converting from one tuple type to another
     result = newStmtList()
 
-    when not isFastCompileMode():
+    if not isFastCompileMode():
         var built = initHashSet[ConverterDef]()
         let ctx = details.newGenerateContext(Outside)
         for arg in details.allArgs:
