@@ -149,7 +149,7 @@ proc createAppStateDestructor*(genInfo: CodeGenInfo): NimNode =
 
     let destroys = newStmtList(genInfo.destroySystems())
 
-    if not isFastCompileMode():
+    if not isFastCompileMode(fastDestroy):
         for (name, _) in items(genInfo.fields):
             destroys.add quote do:
                 `destroy`(`appStateIdent`.`name`)
@@ -186,7 +186,7 @@ proc createSendProcs*(details: CodeGenInfo): NimNode =
             emitEventTrace("Event ", directive.name, ": ", `event`)
         )
 
-        if not isFastCompileMode():
+        if not isFastCompileMode(fastEvents):
             for inboxIdent in inboxes:
                 body.add quote do:
                     add[`eventType`](`appStateIdent`.`inboxIdent`, `event`)

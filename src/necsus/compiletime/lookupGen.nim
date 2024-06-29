@@ -45,7 +45,7 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, lookup: Tu
         let appStateTypeName = details.appStateTypeName
 
         var cases: NimNode = newEmptyNode()
-        if not isFastCompileMode():
+        if not isFastCompileMode(fastLookup):
             if details.archetypes.len > 0:
                 cases = nnkCaseStmt.newTree(newDotExpr(entityIndex, ident("archetype")))
 

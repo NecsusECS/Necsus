@@ -31,7 +31,9 @@ proc buildConverterProc(ctx: GenerateContext, convert: ConverterDef): NimNode =
     let name = ctx.converterName(convert)
     let inputTuple = convert.input.asStorageTuple
     let outputTuple = convert.output.asTupleType
-    let body = copyTuple(convert.input, convert.output)
+
+    let body = if isFastCompileMode(fastConverters): newStmtList() else: copyTuple(convert.input, convert.output)
+
     return quote do:
         proc `name`(`input`: ptr `inputTuple`, `output`: var `outputTuple`) {.gcsafe, raises: [], fastcall, used.} =
             if not `input`.isNil:
@@ -41,11 +43,10 @@ proc createConverterProcs*(details: CodeGenInfo): NimNode =
     ## Creates a list of procs for converting from one tuple type to another
     result = newStmtList()
 
-    if not isFastCompileMode():
-        var built = initHashSet[ConverterDef]()
-        let ctx = details.newGenerateContext(Outside)
-        for arg in details.allArgs:
-            for convert in converters(ctx, arg):
-                if convert notin built:
-                    built.incl(convert)
-                    result.add(ctx.buildConverterProc(convert))
+    var built = initHashSet[ConverterDef]()
+    let ctx = details.newGenerateContext(Outside)
+    for arg in details.allArgs:
+        for convert in converters(ctx, arg):
+            if convert notin built:
+                built.incl(convert)
+                result.add(ctx.buildConverterProc(convert))

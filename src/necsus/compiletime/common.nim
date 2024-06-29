@@ -18,8 +18,8 @@ let thisTime* {.compileTime.} = ident("thisTime")
 ## A variable that represents the time that execution started
 let startTime* {.compileTime.} = ident("startTime")
 
-proc isFastCompileMode*(): bool {.compileTime.} =
+template isFastCompileMode*(title: untyped): bool =
     ## Returns whether the compiler should elide complicated function content
     ## that tends to slow down compilation. This is useful, for example, to speed
     ## up IDE integration
-    return defined(nimsuggest) or defined(nimcheck)
+    (defined(nimsuggest) or defined(nimcheck)) and not defined(title)

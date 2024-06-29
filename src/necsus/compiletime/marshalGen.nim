@@ -24,7 +24,7 @@ proc collectMarshalTypes(topics: openArray[NimNode], dedupe: var HashSet[string]
 
 proc createSaveType(genInfo: CodeGenInfo): NimNode =
     ## Generates the type definition needed to serialize an app
-    if isFastCompileMode():
+    if isFastCompileMode(fastMarshal):
         return newEmptyNode()
 
     var records = nnkRecList.newTree()
@@ -48,7 +48,7 @@ proc createRestoreProc(genInfo: CodeGenInfo): NimNode =
     ## Generates a proc that is able to restore all procs
     let appStateType = genInfo.appStateTypeName
 
-    let body = if isFastCompileMode():
+    let body = if isFastCompileMode(fastMarshal):
         newStmtList()
     else:
         let saveTypeName = genInfo.saveTypeName
@@ -76,7 +76,7 @@ proc createSaveProc(genInfo: CodeGenInfo): NimNode =
     ## Generates a proc that calls all the 'save' systems and aggregates them into a single value
     let appStateType = genInfo.appStateTypeName
 
-    let body = if isFastCompileMode():
+    let body = if isFastCompileMode(fastMarshal):
         newStmtList()
     else:
         var construct = nnkObjConstr.newTree(genInfo.saveTypeName)

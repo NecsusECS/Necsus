@@ -16,7 +16,7 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string): NimNode =
     of Outside:
         let appStateTypeName = details.appStateTypeName
 
-        let body = if isFastCompileMode():
+        let body = if isFastCompileMode(fastDelete):
             newStmtList()
         else:
             let archetypeEnum = details.archetypeEnum.ident

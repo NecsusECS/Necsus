@@ -103,7 +103,7 @@ proc createTickProc*(genInfo: CodeGenInfo): NimNode =
     ## Creates a function that executes the next tick
     let appStateType = genInfo.appStateTypeName
 
-    let body = if isFastCompileMode():
+    let body = if isFastCompileMode(fastTick):
         newStmtList()
     else:
         let loopSystems = genInfo.callSystems({LoopPhase, IndirectEventCallback})
