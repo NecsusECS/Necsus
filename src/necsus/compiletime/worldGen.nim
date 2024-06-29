@@ -144,12 +144,14 @@ proc createAppStateDestructor*(genInfo: CodeGenInfo): NimNode =
     ## Creates the instance of the app state object
     let appStateType = genInfo.appStateStruct
     let destroy = "=destroy".ident
-    let beforeTeardown = genInfo.generateForHook(GenerateHook.BeforeTeardown)
-    let teardowns = genInfo.callSystems({TeardownPhase})
 
-    let destroys = newStmtList(genInfo.destroySystems())
+    let destroys = newStmtList()
 
     if not isFastCompileMode(fastDestroy):
+        destroys.add(genInfo.generateForHook(GenerateHook.BeforeTeardown))
+        destroys.add(genInfo.callSystems({TeardownPhase}))
+        destroys.add(genInfo.destroySystems())
+
         for (name, _) in items(genInfo.fields):
             destroys.add quote do:
                 `destroy`(`appStateIdent`.`name`)
@@ -157,8 +159,6 @@ proc createAppStateDestructor*(genInfo: CodeGenInfo): NimNode =
     return quote:
         {.warning[Deprecated]:off.}
         proc `destroy`*(`appStateIdent`: var `appStateType`) {.raises: [Exception], used.} =
-            `beforeTeardown`
-            `teardowns`
             `destroys`
 
 proc mailboxIndex(details: CodeGenInfo): Table[MonoDirective, seq[NimNode]] =
