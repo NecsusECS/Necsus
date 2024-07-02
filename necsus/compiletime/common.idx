@@ -5,4 +5,4 @@ nim	lifecycle	necsus/compiletime/common.html#lifecycle	let lifecycle		10
 nim	worldIdent	necsus/compiletime/common.html#worldIdent	let worldIdent		13
 nim	thisTime	necsus/compiletime/common.html#thisTime	let thisTime		16
 nim	startTime	necsus/compiletime/common.html#startTime	let startTime		19
-nim	isFastCompileMode	necsus/compiletime/common.html#isFastCompileMode	proc isFastCompileMode(): bool		21
+nim	isFastCompileMode	necsus/compiletime/common.html#isFastCompileMode.t,untyped	template isFastCompileMode(title: untyped): bool		21
