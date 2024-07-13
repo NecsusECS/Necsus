@@ -43,6 +43,7 @@ type
     ConverterDef* = object
         ## Defines a function for converting from one tuple shape to another
         input*: seq[ComponentDef]
+        existing*: seq[ComponentDef]
         output*: TupleDirective
 
     ConvertExtractor*[T] = proc(context: GenerateContext, dir: T): seq[ConverterDef]
@@ -103,6 +104,9 @@ type
         of DirectiveKind.Dual:
             dualDir*: DualDirective
         nestedArgs*: seq[SystemArg]
+
+proc newConverter*(input: Archetype[ComponentDef], existing: seq[ComponentDef], output: TupleDirective): ConverterDef =
+    ConverterDef(input: input.values, existing: existing, output: output)
 
 proc newConverter*(input: Archetype[ComponentDef], output: TupleDirective): ConverterDef =
     ConverterDef(input: input.values, output: output)
