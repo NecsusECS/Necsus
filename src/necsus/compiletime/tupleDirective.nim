@@ -69,3 +69,14 @@ proc filter*(dir: TupleDirective): BitsFilter =
             of DirectiveArgKind.Optional: discard
         dir.filter = newFilter(required, excluded)
     return dir.filter
+
+proc bits*(dir: TupleDirective): Bits =
+    ## Presents this tuple as a set of bits
+    result = Bits()
+    for arg in dir.args:
+        result.incl(arg.component.uniqueId)
+
+proc signature*(dir: TupleDirective): string =
+    ## Generates a unique ID for a tuple
+    for arg in dir.args:
+        result.addSignature(arg)

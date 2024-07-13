@@ -26,7 +26,7 @@ proc walkArchetypes(
     for archetype in details.selectArchetypes(query):
         let archetypeIdent = archetype.ident
 
-        let copier = details.converterName(ConverterDef(input: archetype, output: query))
+        let copier = newConverter(archetype, query).name
 
         lenCalculation.add quote do:
             addLen(`appStateIdent`.`archetypeIdent`, result)
@@ -58,7 +58,7 @@ proc fullQuerySystemArg(name: string, dir: TupleDirective): NimNode = systemArg(
 
 proc converters(ctx: GenerateContext, dir: TupleDirective): seq[ConverterDef] =
     for archetype in ctx.selectArchetypes(dir):
-        result.add(ConverterDef(input: archetype, output: dir))
+        result.add(newConverter(archetype, dir))
 
 let appStatePtr {.compileTime, used.} = ident("appStatePtr")
 

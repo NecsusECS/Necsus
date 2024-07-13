@@ -41,3 +41,6 @@ proc ident*(def: ComponentDef): NimNode =
     result.copyLineInfo(def.node)
 
 proc hash*(def: ComponentDef): Hash = def.cachedHash
+
+proc addSignature*(onto: var string, comp: ComponentDef) = onto.addSignature(comp.node)
+    ## Generate a unique ID for a component

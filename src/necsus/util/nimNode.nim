@@ -49,3 +49,16 @@ proc cmp*(a: NimNode, b: NimNode): int =
             if compared != 0:
                 return compared
         return 0
+
+proc addSignature*(onto: var string, comp: NimNode) =
+    ## Generate a unique ID for a component
+    case comp.kind
+    of nnkSym:
+        onto &= comp.signatureHash
+    of nnkBracketExpr, nnkTupleConstr, nnkTupleTy:
+        for child in comp.children:
+            onto.addSignature(child)
+    of nnkIdentDefs:
+        onto.addSignature(comp[1])
+    else:
+        comp.expectKind({ nnkSym })

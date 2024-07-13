@@ -1,5 +1,6 @@
-import options, hashes, tables, macros, archetype, strformat, strutils, sequtils, dualDirective
-import monoDirective, tupleDirective, archetypeBuilder, componentDef, worldEnum, directiveSet, common
+import std/[options, hashes, tables, macros, strformat, strutils, sequtils, macrocache]
+import archetype, dualDirective, monoDirective, tupleDirective, archetypeBuilder
+import componentDef, worldEnum, directiveSet, common, directiveArg
 
 type
     GenerateHook* = enum
@@ -41,7 +42,7 @@ type
 
     ConverterDef* = object
         ## Defines a function for converting from one tuple shape to another
-        input*: Archetype[ComponentDef]
+        input*: seq[ComponentDef]
         output*: TupleDirective
 
     ConvertExtractor*[T] = proc(context: GenerateContext, dir: T): seq[ConverterDef]
@@ -102,6 +103,9 @@ type
         of DirectiveKind.Dual:
             dualDir*: DualDirective
         nestedArgs*: seq[SystemArg]
+
+proc newConverter*(input: Archetype[ComponentDef], output: TupleDirective): ConverterDef =
+    ConverterDef(input: input.values, output: output)
 
 proc noArchetype[T](builder: var ArchetypeBuilder[ComponentDef], systemArgs: seq[SystemArg], dir: T) = discard
 
@@ -365,6 +369,19 @@ iterator nodes*(arg: SystemArg): NimNode =
     of DirectiveKind.None:
         discard
 
-proc converterName*(ctx: GenerateContext, convert: ConverterDef): NimNode =
+const converterNames = CacheTable("NecsusConverterName")
+
+proc signature*(conv: ConverterDef): string =
+    ## Produces a globally unique signature for a converter
+    for comp in conv.input:
+        result.addSignature(comp)
+    result &= "_TO_"
+    for arg in conv.output.args:
+        result.addSignature(arg)
+
+proc name*(convert: ConverterDef): NimNode =
     ## Returns the name for referencing a `ConverterDef`
-    ctx.globalName("conv_" & convert.input.name & "_to_" & convert.output.name)
+    let signature = convert.signature
+    if signature notin converterNames:
+        converterNames[signature] = genSym(nskProc, "conv")
+    return converterNames[signature]

@@ -1,15 +1,17 @@
-import std/[macros, options, sets]
-import tools, codeGenInfo, archetype, systemGen, componentDef, directiveArg, tupleDirective, common
+import std/[macros, options, algorithm, macrocache, sets]
+import tools, codeGenInfo, systemGen, componentDef, directiveArg, tupleDirective, common
 import ../runtime/query
 
 let input {.compileTime.} = ident("input")
 let output {.compileTime.} = ident("output")
 
-proc read(fromArch: Archetype[ComponentDef], arg: DirectiveArg): NimNode =
-    let readExpr = nnkBracketExpr.newTree(input, newLit(fromArch.indexOf(arg.component)))
+proc read(fromArch: openarray[ComponentDef], arg: DirectiveArg): NimNode =
+    let index = fromArch.binarySearch(arg.component)
+    assert(index != -1, "Component is not present: " & $arg)
+    let readExpr = nnkBracketExpr.newTree(input, newLit(index))
     return if arg.isPointer: nnkAddr.newTree(readExpr) else: readExpr
 
-proc copyTuple(fromArch: Archetype[ComponentDef], directive: TupleDirective): NimNode =
+proc copyTuple(fromArch: openarray[ComponentDef], directive: TupleDirective): NimNode =
     ## Generates code for copying from one tuple to another
     result = newStmtList()
     for i, arg in directive.args:
@@ -26,13 +28,16 @@ proc copyTuple(fromArch: Archetype[ComponentDef], directive: TupleDirective): Ni
         result.add quote do:
             `output`[`i`] = `value`
 
-proc buildConverterProc(ctx: GenerateContext, convert: ConverterDef): NimNode =
+proc buildConverter*(convert: ConverterDef): NimNode =
     ## Builds a single converter proc
-    let name = ctx.converterName(convert)
-    let inputTuple = convert.input.asStorageTuple
+    let name = convert.name
+    let inputTuple = convert.input.asTupleType
     let outputTuple = convert.output.asTupleType
 
-    let body = if isFastCompileMode(fastConverters): newStmtList() else: copyTuple(convert.input, convert.output)
+    let body = if isFastCompileMode(fastConverters):
+        newStmtList()
+    else:
+        copyTuple(convert.input, convert.output)
 
     return quote do:
         proc `name`(`input`: ptr `inputTuple`, `output`: var `outputTuple`) {.gcsafe, raises: [], fastcall, used.} =
@@ -49,4 +54,4 @@ proc createConverterProcs*(details: CodeGenInfo): NimNode =
         for convert in converters(ctx, arg):
             if convert notin built:
                 built.incl(convert)
-                result.add(ctx.buildConverterProc(convert))
+                result.add(buildConverter(convert))

@@ -49,3 +49,10 @@ proc generateName*(args: openarray[DirectiveArg]): string =
 proc comps*(args: openarray[DirectiveArg]): seq[ComponentDef] =
     ## Returns all the components from a set of args
     for arg in args: result.add(arg.component)
+
+proc addSignature*(onto: var string, arg: DirectiveArg) =
+    ## Generate a unique ID for a component
+    onto &= $arg.kind
+    if arg.isPointer:
+        onto &= "p"
+    onto.addSignature(arg.component)
