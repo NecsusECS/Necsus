@@ -40,12 +40,13 @@ type
     SystemArgExtractor*[T] = proc(name: string, dir: T): NimNode
         ## The callback used for determining the value to pass when calling the system
 
-    ConverterDef* = object
+    ConverterDef* = ref object
         ## Defines a function for converting from one tuple shape to another
         input*: seq[ComponentDef]
         adding*: seq[ComponentDef]
         output*: TupleDirective
         sinkParams*: bool
+        signatureCache: string
 
     ConvertExtractor*[T] = proc(context: GenerateContext, dir: T): seq[ConverterDef]
         ## The callback for determining what converters to execute
@@ -388,16 +389,24 @@ else:
 
 proc signature*(conv: ConverterDef): string =
     ## Produces a globally unique signature for a converter
-    if conv.sinkParams:
-        result = "SINK_"
-    for comp in conv.input:
-        result.addSignature(comp)
-    result &= "_WITH_"
-    for comp in conv.adding:
-        result.addSignature(comp)
-    result &= "_TO_"
-    for arg in conv.output.args:
-        result.addSignature(arg)
+    if conv.signatureCache == "":
+        if conv.sinkParams:
+            result = "SINK_"
+
+        for comp in conv.input:
+            result.addSignature(comp)
+
+        result &= "_WITH_"
+        for comp in conv.adding:
+            result.addSignature(comp)
+
+        result &= "_TO_"
+        for arg in conv.output.args:
+            result.addSignature(arg)
+
+        conv.signatureCache = result
+    else:
+        return conv.signatureCache
 
 proc name*(convert: ConverterDef): NimNode =
     ## Returns the name for referencing a `ConverterDef`

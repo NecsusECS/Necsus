@@ -12,6 +12,7 @@ type
         component*: ComponentDef
         isPointer*: bool
         kind*: DirectiveArgKind
+        signatureCache: string
 
 proc newDirectiveArg*(component: ComponentDef, isPointer: bool, kind: DirectiveArgKind): DirectiveArg =
     ## Creates a DirectiveArg
@@ -52,7 +53,9 @@ proc comps*(args: openarray[DirectiveArg]): seq[ComponentDef] =
 
 proc addSignature*(onto: var string, arg: DirectiveArg) =
     ## Generate a unique ID for a component
-    onto &= $arg.kind
-    if arg.isPointer:
-        onto &= "p"
-    onto.addSignature(arg.component)
+    if arg.signatureCache == "":
+        arg.signatureCache = $arg.kind
+        if arg.isPointer:
+            arg.signatureCache &= "p"
+        arg.signatureCache.addSignature(arg.component)
+    onto &= arg.signatureCache
