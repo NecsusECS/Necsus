@@ -12,10 +12,10 @@
 <link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA3XAAAN1wFCKJt4AAAAB3RJTUUH4QQQEwksSS9ZWwAAAk1JREFUWMPtll2ITVEUx39nn/O7Y5qR8f05wtCUUr6ZIS++8pEnkZInPImneaCQ5METNdOkeFBKUhMPRIkHKfEuUZSUlGlKPN2TrgfncpvmnntnmlEyq1Z7t89/rf9a6+y99oZxGZf/XeIq61EdtgKXgdXA0xrYAvBjOIF1AI9zvjcC74BSpndrJPkBWDScTF8Aa4E3wDlgHbASaANmVqlcCnwHvgDvgVfAJ+AikAAvgfVZwLnSVZHZaOuKoQi3ZOMi4NkYkpe1p4J7A8BpYAD49hfIy/oqG0+hLomiKP2L5L+1ubn5115S+3OAn4EnwBlgMzCjyt6ZAnQCJ4A7wOs88iRJHvw50HoujuPBoCKwHWiosy8MdfZnAdcHk8dxXFJ3VQbQlCTJvRBCGdRbD4M6uc5glpY3eAihpN5S5w12diSEcCCEcKUO4ljdr15T76ur1FDDLIQQ3qv71EdDOe3Kxj3leRXyk+pxdWnFWod6Wt2bY3de3aSuUHcPBVimHs7mK9WrmeOF6lR1o9qnzskh2ar2qm1qizpfXaPeVGdlmGN5pb09qMxz1Xb1kLqgzn1RyH7JUXW52lr5e/Kqi9qpto7V1atuUzfnARrV7jEib1T76gG2qxdGmXyiekkt1GswPTtek0aBfJp6YySGBfWg2tPQ0FAYgf1stUfdmdcjarbYJEniKIq6gY/Aw+zWHAC+p2labGpqiorFYgGYCEzN7oQdQClN07O1/EfDyGgC0ALMBdYAi4FyK+4H3gLPsxfR1zRNi+NP7nH5J+QntnXe5B5mpfQAAAAASUVORK5CYII=">
 
 <!-- CSS -->
-<link rel="stylesheet" type="text/css" href="../../nimdoc.out.css?v=2.0.6">
+<link rel="stylesheet" type="text/css" href="../../nimdoc.out.css?v=2.0.8">
 
 <!-- JS -->
-<script type="text/javascript" src="../../dochack.js?v=2.0.6"></script>
+<script type="text/javascript" src="../../dochack.js?v=2.0.8"></script>
 </head>
 <body>
   <div class="document" id="documentId">
@@ -55,19 +55,19 @@
     <summary><a class="reference reference-toplevel" href="#7" id="57">Types</a></summary>
     <ul class="simple simple-toc-section">
       <li><a class="reference" href="#AnyQuery" title="AnyQuery[Comps] = Query[Comps] | FullQuery[Comps]">AnyQuery</a></li>
-<li><a class="reference" href="#FullQuery" title="FullQuery[Comps] = distinct RawQueryPtr[Comps]">FullQuery</a></li>
+<li><a class="reference" href="#FullQuery" title="FullQuery[Comps] = distinct RawQueryPtr">FullQuery</a></li>
 <li><a class="reference" href="#NextEntityProc" title="NextEntityProc[Comps] = proc (iter: var QueryIterator; appStatePtr: pointer;
                               eid: var EntityId; slot: var Comps): NextIterState {.
     gcsafe, raises: [], fastcall.}">NextEntityProc</a></li>
 <li><a class="reference" href="#NextIterState" title="NextIterState = enum
   DoneIter, ActiveIter, IncrementIter">NextIterState</a></li>
 <li><a class="reference" href="#Not" title="Not[Comps] = distinct int8">Not</a></li>
-<li><a class="reference" href="#Query" title="Query[Comps] = distinct RawQueryPtr[Comps]">Query</a></li>
+<li><a class="reference" href="#Query" title="Query[Comps] = distinct RawQueryPtr">Query</a></li>
 <li><a class="reference" href="#QueryItem" title="QueryItem[Comps] = tuple[entityId: EntityId, components: Comps]">QueryItem</a></li>
 <li><a class="reference" href="#QueryIterator" title="QueryIterator = object
-  continuationIdx*: uint16
+  continuationIdx*: BiggestInt
   iter*: ArchetypeIter">QueryIterator</a></li>
-<li><a class="reference" href="#RawQuery" title="RawQuery[Comps] = object">RawQuery</a></li>
+<li><a class="reference" href="#RawQuery" title="RawQuery = object">RawQuery</a></li>
 
     </ul>
   </details>
@@ -86,10 +86,8 @@
 </ul>
 <ul class="simple nested-toc-section">newQuery
   <li><a class="reference" href="#newQuery%2Cpointer%2Cproc%28pointer%29%2CNextEntityProc%5BComps%3A%20tuple%5D" title="newQuery[Comps: tuple](appState: pointer; getLen: proc (appState: pointer): uint {.
-    gcsafe, raises: [], fastcall.}; nextEntity: NextEntityProc[Comps]): RawQuery[
-    Comps]">newQuery[Comps: tuple](appState: pointer; getLen: proc (appState: pointer): uint {.
-    gcsafe, raises: [], fastcall.}; nextEntity: NextEntityProc[Comps]): RawQuery[
-    Comps]</a></li>
+    gcsafe, raises: [], fastcall.}; nextEntity: NextEntityProc[Comps]): RawQuery">newQuery[Comps: tuple](appState: pointer; getLen: proc (appState: pointer): uint {.
+    gcsafe, raises: [], fastcall.}; nextEntity: NextEntityProc[Comps]): RawQuery</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">next
@@ -151,7 +149,7 @@
   </dd>
 </div>
 <div id="FullQuery">
-  <dt><pre><a href="query.html#FullQuery"><span class="Identifier">FullQuery</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">distinct</span> <span class="Identifier">RawQueryPtr</span><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span></pre></dt>
+  <dt><pre><a href="query.html#FullQuery"><span class="Identifier">FullQuery</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">distinct</span> <span class="Identifier">RawQueryPtr</span></pre></dt>
   <dd>
     
     Allows systems to query for entities with specific components. Where <tt class="docutils literal"><span class="pre"><span class="Identifier">Comps</span></span></tt> is a tuple of the components to fetch in this query. Provides access to the EntityId
@@ -186,7 +184,7 @@
   </dd>
 </div>
 <div id="Query">
-  <dt><pre><a href="query.html#Query"><span class="Identifier">Query</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">distinct</span> <span class="Identifier">RawQueryPtr</span><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span></pre></dt>
+  <dt><pre><a href="query.html#Query"><span class="Identifier">Query</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">distinct</span> <span class="Identifier">RawQueryPtr</span></pre></dt>
   <dd>
     
     Allows systems to query for entities with specific components. Where <tt class="docutils literal"><span class="pre"><span class="Identifier">Comps</span></span></tt> is a tuple of the components to fetch in this query. Does not provide access to the entity ID
@@ -203,7 +201,7 @@
 </div>
 <div id="QueryIterator">
   <dt><pre><a href="query.html#QueryIterator"><span class="Identifier">QueryIterator</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
-  <span class="Identifier">continuationIdx</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">uint16</span>
+  <span class="Identifier">continuationIdx</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">BiggestInt</span>
   <span class="Identifier">iter</span><span class="Operator">*</span><span class="Other">:</span> <a href="archetypeStore.html#ArchetypeIter"><span class="Identifier">ArchetypeIter</span></a></pre></dt>
   <dd>
     
@@ -212,7 +210,7 @@
   </dd>
 </div>
 <div id="RawQuery">
-  <dt><pre><a href="query.html#RawQuery"><span class="Identifier">RawQuery</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">object</span></pre></dt>
+  <dt><pre><a href="query.html#RawQuery"><span class="Identifier">RawQuery</span></a> <span class="Other">=</span> <span class="Keyword">object</span></pre></dt>
   <dd>
     
     Allows systems to query for entities with specific components. Where <tt class="docutils literal"><span class="pre"><span class="Identifier">Comps</span></span></tt> is a tuple of the components to fetch in this query.
@@ -250,8 +248,8 @@
 <div id="newQuery-procs-all">
   <div id="newQuery,pointer,proc(pointer),NextEntityProc[Comps: tuple]">
   <dt><pre><span class="Keyword">proc</span> <a href="#newQuery%2Cpointer%2Cproc%28pointer%29%2CNextEntityProc%5BComps%3A%20tuple%5D"><span class="Identifier">newQuery</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">appState</span><span class="Other">:</span> <span class="Identifier">pointer</span><span class="Other">;</span> <span class="Identifier">getLen</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">appState</span><span class="Other">:</span> <span class="Identifier">pointer</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">uint</span> {.
-    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> </span><span class="Identifier">fastcall</span>.}<span class="Other">;</span> <span class="Identifier">nextEntity</span><span class="Other">:</span> <a href="query.html#NextEntityProc"><span class="Identifier">NextEntityProc</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="query.html#RawQuery"><span class="Identifier">RawQuery</span></a><span class="Other">[</span>
-    <span class="Identifier">Comps</span><span class="Other">]</span> {.<span class="Identifier">inline</span>.}</pre></dt>
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> </span><span class="Identifier">fastcall</span>.}<span class="Other">;</span> <span class="Identifier">nextEntity</span><span class="Other">:</span> <a href="query.html#NextEntityProc"><span class="Identifier">NextEntityProc</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="query.html#RawQuery"><span class="Identifier">RawQuery</span></a> {.
+    <span class="Identifier">inline</span>.}</pre></dt>
   <dd>
     
     
@@ -322,7 +320,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-07-02 23:12:41 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-07-14 19:39:10 UTC</small>
       </div>
     </div>
   </div>

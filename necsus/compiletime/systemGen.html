@@ -12,10 +12,10 @@
 <link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA3XAAAN1wFCKJt4AAAAB3RJTUUH4QQQEwksSS9ZWwAAAk1JREFUWMPtll2ITVEUx39nn/O7Y5qR8f05wtCUUr6ZIS++8pEnkZInPImneaCQ5METNdOkeFBKUhMPRIkHKfEuUZSUlGlKPN2TrgfncpvmnntnmlEyq1Z7t89/rf9a6+y99oZxGZf/XeIq61EdtgKXgdXA0xrYAvBjOIF1AI9zvjcC74BSpndrJPkBWDScTF8Aa4E3wDlgHbASaANmVqlcCnwHvgDvgVfAJ+AikAAvgfVZwLnSVZHZaOuKoQi3ZOMi4NkYkpe1p4J7A8BpYAD49hfIy/oqG0+hLomiKP2L5L+1ubn5115S+3OAn4EnwBlgMzCjyt6ZAnQCJ4A7wOs88iRJHvw50HoujuPBoCKwHWiosy8MdfZnAdcHk8dxXFJ3VQbQlCTJvRBCGdRbD4M6uc5glpY3eAihpN5S5w12diSEcCCEcKUO4ljdr15T76ur1FDDLIQQ3qv71EdDOe3Kxj3leRXyk+pxdWnFWod6Wt2bY3de3aSuUHcPBVimHs7mK9WrmeOF6lR1o9qnzskh2ar2qm1qizpfXaPeVGdlmGN5pb09qMxz1Xb1kLqgzn1RyH7JUXW52lr5e/Kqi9qpto7V1atuUzfnARrV7jEib1T76gG2qxdGmXyiekkt1GswPTtek0aBfJp6YySGBfWg2tPQ0FAYgf1stUfdmdcjarbYJEniKIq6gY/Aw+zWHAC+p2labGpqiorFYgGYCEzN7oQdQClN07O1/EfDyGgC0ALMBdYAi4FyK+4H3gLPsxfR1zRNi+NP7nH5J+QntnXe5B5mpfQAAAAASUVORK5CYII=">
 
 <!-- CSS -->
-<link rel="stylesheet" type="text/css" href="../../nimdoc.out.css?v=2.0.6">
+<link rel="stylesheet" type="text/css" href="../../nimdoc.out.css?v=2.0.8">
 
 <!-- JS -->
-<script type="text/javascript" src="../../dochack.js?v=2.0.6"></script>
+<script type="text/javascript" src="../../dochack.js?v=2.0.8"></script>
 </head>
 <body>
   <div class="document" id="documentId">
@@ -58,8 +58,10 @@
 <li><a class="reference" href="#BuildArchetype" title="BuildArchetype[T] = proc (builder: var ArchetypeBuilder[ComponentDef];
                           systemArgs: seq[SystemArg]; dir: T)">BuildArchetype</a></li>
 <li><a class="reference" href="#ConverterDef" title="ConverterDef = object
-  input*: Archetype[ComponentDef]
-  output*: TupleDirective">ConverterDef</a></li>
+  input*: seq[ComponentDef]
+  adding*: seq[ComponentDef]
+  output*: TupleDirective
+  sinkParams*: bool">ConverterDef</a></li>
 <li><a class="reference" href="#ConvertExtractor" title="ConvertExtractor[T] = proc (context: GenerateContext; dir: T): seq[ConverterDef]">ConvertExtractor</a></li>
 <li><a class="reference" href="#DirectiveGen" title="DirectiveGen = ref object
   ident*: string
@@ -153,10 +155,6 @@
                systemArgs: seq[SystemArg]; arg: SystemArg)</a></li>
 
 </ul>
-<ul class="simple nested-toc-section">converterName
-  <li><a class="reference" href="#converterName%2CGenerateContext%2CConverterDef" title="converterName(ctx: GenerateContext; convert: ConverterDef): NimNode">converterName(ctx: GenerateContext; convert: ConverterDef): NimNode</a></li>
-
-</ul>
 <ul class="simple nested-toc-section">converters
   <li><a class="reference" href="#converters%2CGenerateContext%2CSystemArg" title="converters(ctx: GenerateContext; arg: SystemArg): seq[ConverterDef]">converters(ctx: GenerateContext; arg: SystemArg): seq[ConverterDef]</a></li>
 
@@ -178,8 +176,19 @@
 <li><a class="reference" href="#hash%2CDirectiveGen" title="hash(gen: DirectiveGen): Hash">hash(gen: DirectiveGen): Hash</a></li>
 
 </ul>
+<ul class="simple nested-toc-section">name
+  <li><a class="reference" href="#name%2CConverterDef" title="name(convert: ConverterDef): NimNode">name(convert: ConverterDef): NimNode</a></li>
+
+</ul>
 <ul class="simple nested-toc-section">nameOf
   <li><a class="reference" href="#nameOf%2CGenerateContext%2CSystemArg" title="nameOf(ctx: GenerateContext; arg: SystemArg): string">nameOf(ctx: GenerateContext; arg: SystemArg): string</a></li>
+
+</ul>
+<ul class="simple nested-toc-section">newConverter
+  <li><a class="reference" href="#newConverter%2CArchetype%5BComponentDef%5D%2Cseq%5BComponentDef%5D%2CArchetype%5BComponentDef%5D%2Cbool" title="newConverter(input: Archetype[ComponentDef]; adding: seq[ComponentDef];
+             output: Archetype[ComponentDef]; sinkParams: bool): ConverterDef">newConverter(input: Archetype[ComponentDef]; adding: seq[ComponentDef];
+             output: Archetype[ComponentDef]; sinkParams: bool): ConverterDef</a></li>
+<li><a class="reference" href="#newConverter%2CArchetype%5BComponentDef%5D%2CTupleDirective" title="newConverter(input: Archetype[ComponentDef]; output: TupleDirective): ConverterDef">newConverter(input: Archetype[ComponentDef]; output: TupleDirective): ConverterDef</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">newGenerator
@@ -249,6 +258,10 @@
   <li><a class="reference" href="#sendEventProcName%2CMonoDirective" title="sendEventProcName(directive: MonoDirective): NimNode">sendEventProcName(directive: MonoDirective): NimNode</a></li>
 
 </ul>
+<ul class="simple nested-toc-section">signature
+  <li><a class="reference" href="#signature%2CConverterDef" title="signature(conv: ConverterDef): string">signature(conv: ConverterDef): string</a></li>
+
+</ul>
 <ul class="simple nested-toc-section">systemArg
   <li><a class="reference" href="#systemArg%2CGenerateContext%2CSystemArg" title="systemArg(ctx: GenerateContext; arg: SystemArg): NimNode">systemArg(ctx: GenerateContext; arg: SystemArg): NimNode</a></li>
 <li><a class="reference" href="#systemArg%2CTable%5BDirectiveGen%2CDirectiveSet%5BSystemArg%5D%5D%2CSystemArg" title="systemArg(directives: Table[DirectiveGen, DirectiveSet[SystemArg]];
@@ -292,7 +305,7 @@
     <div class="section" id="6">
   <h1><a class="toc-backref" href="#6">Imports</a></h1>
   <dl class="item">
-    <a class="reference external" href="archetype.html">archetype</a>, <a class="reference external" href="dualDirective.html">dualDirective</a>, <a class="reference external" href="monoDirective.html">monoDirective</a>, <a class="reference external" href="tupleDirective.html">tupleDirective</a>, <a class="reference external" href="archetypeBuilder.html">archetypeBuilder</a>, <a class="reference external" href="componentDef.html">componentDef</a>, <a class="reference external" href="worldEnum.html">worldEnum</a>, <a class="reference external" href="directiveSet.html">directiveSet</a>, <a class="reference external" href="common.html">common</a>
+    <a class="reference external" href="archetype.html">archetype</a>, <a class="reference external" href="dualDirective.html">dualDirective</a>, <a class="reference external" href="monoDirective.html">monoDirective</a>, <a class="reference external" href="tupleDirective.html">tupleDirective</a>, <a class="reference external" href="archetypeBuilder.html">archetypeBuilder</a>, <a class="reference external" href="componentDef.html">componentDef</a>, <a class="reference external" href="worldEnum.html">worldEnum</a>, <a class="reference external" href="directiveSet.html">directiveSet</a>, <a class="reference external" href="common.html">common</a>, <a class="reference external" href="directiveArg.html">directiveArg</a>
   </dl>
 </div>
 <div class="section" id="7">
@@ -317,8 +330,10 @@
 </div>
 <div id="ConverterDef">
   <dt><pre><a href="systemGen.html#ConverterDef"><span class="Identifier">ConverterDef</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
-  <span class="Identifier">input</span><span class="Operator">*</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span>
-  <span class="Identifier">output</span><span class="Operator">*</span><span class="Other">:</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a></pre></dt>
+  <span class="Identifier">input</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span>
+  <span class="Identifier">adding</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span>
+  <span class="Identifier">output</span><span class="Operator">*</span><span class="Other">:</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a>
+  <span class="Identifier">sinkParams</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">bool</span></pre></dt>
   <dd>
     
     Defines a function for converting from one tuple shape to another
@@ -528,18 +543,6 @@
 </div>
 
 </div>
-<div id="converterName-procs-all">
-  <div id="converterName,GenerateContext,ConverterDef">
-  <dt><pre><span class="Keyword">proc</span> <a href="#converterName%2CGenerateContext%2CConverterDef"><span class="Identifier">converterName</span></a><span class="Other">(</span><span class="Identifier">ctx</span><span class="Other">:</span> <a href="systemGen.html#GenerateContext"><span class="Identifier">GenerateContext</span></a><span class="Other">;</span> <span class="Identifier">convert</span><span class="Other">:</span> <a href="systemGen.html#ConverterDef"><span class="Identifier">ConverterDef</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span> {.
-    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
-  <dd>
-    
-    Returns the name for referencing a <tt class="docutils literal"><span class="pre"><span class="Identifier">ConverterDef</span></span></tt>
-    
-  </dd>
-</div>
-
-</div>
 <div id="converters-procs-all">
   <div id="converters,GenerateContext,SystemArg">
   <dt><pre><span class="Keyword">proc</span> <a href="#converters%2CGenerateContext%2CSystemArg"><span class="Identifier">converters</span></a><span class="Other">(</span><span class="Identifier">ctx</span><span class="Other">:</span> <a href="systemGen.html#GenerateContext"><span class="Identifier">GenerateContext</span></a><span class="Other">;</span> <span class="Identifier">arg</span><span class="Other">:</span> <a href="systemGen.html#SystemArg"><span class="Identifier">SystemArg</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="systemGen.html#ConverterDef"><span class="Identifier">ConverterDef</span></a><span class="Other">]</span> {.
@@ -606,6 +609,17 @@
 </div>
 
 </div>
+<div id="name-procs-all">
+  <div id="name,ConverterDef">
+  <dt><pre><span class="Keyword">proc</span> <a href="#name%2CConverterDef"><span class="Identifier">name</span></a><span class="Other">(</span><span class="Identifier">convert</span><span class="Other">:</span> <a href="systemGen.html#ConverterDef"><span class="Identifier">ConverterDef</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Returns the name for referencing a <tt class="docutils literal"><span class="pre"><span class="Identifier">ConverterDef</span></span></tt>
+    
+  </dd>
+</div>
+
+</div>
 <div id="nameOf-procs-all">
   <div id="nameOf,GenerateContext,SystemArg">
   <dt><pre><span class="Keyword">proc</span> <a href="#nameOf%2CGenerateContext%2CSystemArg"><span class="Identifier">nameOf</span></a><span class="Other">(</span><span class="Identifier">ctx</span><span class="Other">:</span> <a href="systemGen.html#GenerateContext"><span class="Identifier">GenerateContext</span></a><span class="Other">;</span> <span class="Identifier">arg</span><span class="Other">:</span> <a href="systemGen.html#SystemArg"><span class="Identifier">SystemArg</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span>
@@ -613,6 +627,28 @@
   <dd>
     
     Returns the name used for a system arg
+    
+  </dd>
+</div>
+
+</div>
+<div id="newConverter-procs-all">
+  <div id="newConverter,Archetype[ComponentDef],seq[ComponentDef],Archetype[ComponentDef],bool">
+  <dt><pre><span class="Keyword">proc</span> <a href="#newConverter%2CArchetype%5BComponentDef%5D%2Cseq%5BComponentDef%5D%2CArchetype%5BComponentDef%5D%2Cbool"><span class="Identifier">newConverter</span></a><span class="Other">(</span><span class="Identifier">input</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">adding</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span><span class="Other">;</span>
+                  <span class="Identifier">output</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">sinkParams</span><span class="Other">:</span> <span class="Identifier">bool</span><span class="Other">)</span><span class="Other">:</span> <a href="systemGen.html#ConverterDef"><span class="Identifier">ConverterDef</span></a> {.
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    
+    
+  </dd>
+</div>
+<div id="newConverter,Archetype[ComponentDef],TupleDirective">
+  <dt><pre><span class="Keyword">proc</span> <a href="#newConverter%2CArchetype%5BComponentDef%5D%2CTupleDirective"><span class="Identifier">newConverter</span></a><span class="Other">(</span><span class="Identifier">input</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">output</span><span class="Other">:</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a><span class="Other">)</span><span class="Other">:</span> <a href="systemGen.html#ConverterDef"><span class="Identifier">ConverterDef</span></a> {.
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    
     
   </dd>
 </div>
@@ -707,6 +743,17 @@
 </div>
 
 </div>
+<div id="signature-procs-all">
+  <div id="signature,ConverterDef">
+  <dt><pre><span class="Keyword">proc</span> <a href="#signature%2CConverterDef"><span class="Identifier">signature</span></a><span class="Other">(</span><span class="Identifier">conv</span><span class="Other">:</span> <a href="systemGen.html#ConverterDef"><span class="Identifier">ConverterDef</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Produces a globally unique signature for a converter
+    
+  </dd>
+</div>
+
+</div>
 <div id="systemArg-procs-all">
   <div id="systemArg,GenerateContext,SystemArg">
   <dt><pre><span class="Keyword">proc</span> <a href="#systemArg%2CGenerateContext%2CSystemArg"><span class="Identifier">systemArg</span></a><span class="Other">(</span><span class="Identifier">ctx</span><span class="Other">:</span> <a href="systemGen.html#GenerateContext"><span class="Identifier">GenerateContext</span></a><span class="Other">;</span> <span class="Identifier">arg</span><span class="Other">:</span> <a href="systemGen.html#SystemArg"><span class="Identifier">SystemArg</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span> {.
@@ -780,7 +827,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-07-02 23:12:41 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-07-14 19:39:11 UTC</small>
       </div>
     </div>
   </div>

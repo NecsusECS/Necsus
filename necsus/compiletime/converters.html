@@ -12,10 +12,10 @@
 <link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA3XAAAN1wFCKJt4AAAAB3RJTUUH4QQQEwksSS9ZWwAAAk1JREFUWMPtll2ITVEUx39nn/O7Y5qR8f05wtCUUr6ZIS++8pEnkZInPImneaCQ5METNdOkeFBKUhMPRIkHKfEuUZSUlGlKPN2TrgfncpvmnntnmlEyq1Z7t89/rf9a6+y99oZxGZf/XeIq61EdtgKXgdXA0xrYAvBjOIF1AI9zvjcC74BSpndrJPkBWDScTF8Aa4E3wDlgHbASaANmVqlcCnwHvgDvgVfAJ+AikAAvgfVZwLnSVZHZaOuKoQi3ZOMi4NkYkpe1p4J7A8BpYAD49hfIy/oqG0+hLomiKP2L5L+1ubn5115S+3OAn4EnwBlgMzCjyt6ZAnQCJ4A7wOs88iRJHvw50HoujuPBoCKwHWiosy8MdfZnAdcHk8dxXFJ3VQbQlCTJvRBCGdRbD4M6uc5glpY3eAihpN5S5w12diSEcCCEcKUO4ljdr15T76ur1FDDLIQQ3qv71EdDOe3Kxj3leRXyk+pxdWnFWod6Wt2bY3de3aSuUHcPBVimHs7mK9WrmeOF6lR1o9qnzskh2ar2qm1qizpfXaPeVGdlmGN5pb09qMxz1Xb1kLqgzn1RyH7JUXW52lr5e/Kqi9qpto7V1atuUzfnARrV7jEib1T76gG2qxdGmXyiekkt1GswPTtek0aBfJp6YySGBfWg2tPQ0FAYgf1stUfdmdcjarbYJEniKIq6gY/Aw+zWHAC+p2labGpqiorFYgGYCEzN7oQdQClN07O1/EfDyGgC0ALMBdYAi4FyK+4H3gLPsxfR1zRNi+NP7nH5J+QntnXe5B5mpfQAAAAASUVORK5CYII=">
 
 <!-- CSS -->
-<link rel="stylesheet" type="text/css" href="../../nimdoc.out.css?v=2.0.6">
+<link rel="stylesheet" type="text/css" href="../../nimdoc.out.css?v=2.0.8">
 
 <!-- JS -->
-<script type="text/javascript" src="../../dochack.js?v=2.0.6"></script>
+<script type="text/javascript" src="../../dochack.js?v=2.0.8"></script>
 </head>
 <body>
   <div class="document" id="documentId">
@@ -54,8 +54,8 @@
   <details open>
     <summary><a class="reference reference-toplevel" href="#12" id="62">Procs</a></summary>
     <ul class="simple simple-toc-section">
-      <ul class="simple nested-toc-section">createConverterProcs
-  <li><a class="reference" href="#createConverterProcs%2CCodeGenInfo" title="createConverterProcs(details: CodeGenInfo): NimNode">createConverterProcs(details: CodeGenInfo): NimNode</a></li>
+      <ul class="simple nested-toc-section">buildConverter
+  <li><a class="reference" href="#buildConverter%2CConverterDef" title="buildConverter(convert: ConverterDef): NimNode">buildConverter(convert: ConverterDef): NimNode</a></li>
 
 </ul>
 
@@ -74,19 +74,19 @@
     <div class="section" id="6">
   <h1><a class="toc-backref" href="#6">Imports</a></h1>
   <dl class="item">
-    <a class="reference external" href="tools.html">tools</a>, <a class="reference external" href="codeGenInfo.html">codeGenInfo</a>, <a class="reference external" href="archetype.html">archetype</a>, <a class="reference external" href="systemGen.html">systemGen</a>, <a class="reference external" href="componentDef.html">componentDef</a>, <a class="reference external" href="directiveArg.html">directiveArg</a>, <a class="reference external" href="tupleDirective.html">tupleDirective</a>, <a class="reference external" href="common.html">common</a>, <a class="reference external" href="../runtime/query.html">../runtime/query</a>
+    <a class="reference external" href="tools.html">tools</a>, <a class="reference external" href="systemGen.html">systemGen</a>, <a class="reference external" href="componentDef.html">componentDef</a>, <a class="reference external" href="directiveArg.html">directiveArg</a>, <a class="reference external" href="tupleDirective.html">tupleDirective</a>, <a class="reference external" href="common.html">common</a>, <a class="reference external" href="../runtime/query.html">../runtime/query</a>
   </dl>
 </div>
 <div class="section" id="12">
   <h1><a class="toc-backref" href="#12">Procs</a></h1>
   <dl class="item">
-    <div id="createConverterProcs-procs-all">
-  <div id="createConverterProcs,CodeGenInfo">
-  <dt><pre><span class="Keyword">proc</span> <a href="#createConverterProcs%2CCodeGenInfo"><span class="Identifier">createConverterProcs</span></a><span class="Other">(</span><span class="Identifier">details</span><span class="Other">:</span> <a href="codeGenInfo.html#CodeGenInfo"><span class="Identifier">CodeGenInfo</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+    <div id="buildConverter-procs-all">
+  <div id="buildConverter,ConverterDef">
+  <dt><pre><span class="Keyword">proc</span> <a href="#buildConverter%2CConverterDef"><span class="Identifier">buildConverter</span></a><span class="Other">(</span><span class="Identifier">convert</span><span class="Other">:</span> <a href="systemGen.html#ConverterDef"><span class="Identifier">ConverterDef</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
-    Creates a list of procs for converting from one tuple type to another
+    Builds a single converter proc
     
   </dd>
 </div>
@@ -102,7 +102,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-07-02 23:12:41 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-07-14 19:39:11 UTC</small>
       </div>
     </div>
   </div>

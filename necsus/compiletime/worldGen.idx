@@ -5,3 +5,4 @@ nim	createAppStateInit	necsus/compiletime/worldGen.html#createAppStateInit,CodeG
 nim	createAppStateInstance	necsus/compiletime/worldGen.html#createAppStateInstance,CodeGenInfo	proc createAppStateInstance(genInfo: CodeGenInfo): NimNode		137
 nim	createAppStateDestructor	necsus/compiletime/worldGen.html#createAppStateDestructor,CodeGenInfo	proc createAppStateDestructor(genInfo: CodeGenInfo): NimNode		143
 nim	createSendProcs	necsus/compiletime/worldGen.html#createSendProcs,CodeGenInfo	proc createSendProcs(details: CodeGenInfo): NimNode		175
+nim	createConverterProcs	necsus/compiletime/worldGen.html#createConverterProcs,CodeGenInfo	proc createConverterProcs(details: CodeGenInfo): NimNode		213

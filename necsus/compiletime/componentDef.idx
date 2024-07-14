@@ -7,3 +7,4 @@ nim	`$`	necsus/compiletime/componentDef.html#$,ComponentDef	proc `$`(def: Compon
 nim	generateName	necsus/compiletime/componentDef.html#generateName,openArray[ComponentDef]	proc generateName(components: openArray[ComponentDef]): string		34
 nim	ident	necsus/compiletime/componentDef.html#ident,ComponentDef	proc ident(def: ComponentDef): NimNode		38
 nim	hash	necsus/compiletime/componentDef.html#hash,ComponentDef	proc hash(def: ComponentDef): Hash		43
+nim	addSignature	necsus/compiletime/componentDef.html#addSignature,string,ComponentDef	proc addSignature(onto: var string; comp: ComponentDef)		45

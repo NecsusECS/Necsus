@@ -12,3 +12,4 @@ nim	hash	necsus/compiletime/directiveArg.html#hash,DirectiveArg	proc hash(arg: D
 nim	`type`	necsus/compiletime/directiveArg.html#type,DirectiveArg	proc `type`(def: DirectiveArg): NimNode		37
 nim	generateName	necsus/compiletime/directiveArg.html#generateName,openArray[DirectiveArg]	proc generateName(args: openArray[DirectiveArg]): string		45
 nim	comps	necsus/compiletime/directiveArg.html#comps,openArray[DirectiveArg]	proc comps(args: openArray[DirectiveArg]): seq[ComponentDef]		49
+nim	addSignature	necsus/compiletime/directiveArg.html#addSignature,string,DirectiveArg	proc addSignature(onto: var string; arg: DirectiveArg)		53

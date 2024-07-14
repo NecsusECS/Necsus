@@ -12,10 +12,10 @@
 <link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA3XAAAN1wFCKJt4AAAAB3RJTUUH4QQQEwksSS9ZWwAAAk1JREFUWMPtll2ITVEUx39nn/O7Y5qR8f05wtCUUr6ZIS++8pEnkZInPImneaCQ5METNdOkeFBKUhMPRIkHKfEuUZSUlGlKPN2TrgfncpvmnntnmlEyq1Z7t89/rf9a6+y99oZxGZf/XeIq61EdtgKXgdXA0xrYAvBjOIF1AI9zvjcC74BSpndrJPkBWDScTF8Aa4E3wDlgHbASaANmVqlcCnwHvgDvgVfAJ+AikAAvgfVZwLnSVZHZaOuKoQi3ZOMi4NkYkpe1p4J7A8BpYAD49hfIy/oqG0+hLomiKP2L5L+1ubn5115S+3OAn4EnwBlgMzCjyt6ZAnQCJ4A7wOs88iRJHvw50HoujuPBoCKwHWiosy8MdfZnAdcHk8dxXFJ3VQbQlCTJvRBCGdRbD4M6uc5glpY3eAihpN5S5w12diSEcCCEcKUO4ljdr15T76ur1FDDLIQQ3qv71EdDOe3Kxj3leRXyk+pxdWnFWod6Wt2bY3de3aSuUHcPBVimHs7mK9WrmeOF6lR1o9qnzskh2ar2qm1qizpfXaPeVGdlmGN5pb09qMxz1Xb1kLqgzn1RyH7JUXW52lr5e/Kqi9qpto7V1atuUzfnARrV7jEib1T76gG2qxdGmXyiekkt1GswPTtek0aBfJp6YySGBfWg2tPQ0FAYgf1stUfdmdcjarbYJEniKIq6gY/Aw+zWHAC+p2labGpqiorFYgGYCEzN7oQdQClN07O1/EfDyGgC0ALMBdYAi4FyK+4H3gLPsxfR1zRNi+NP7nH5J+QntnXe5B5mpfQAAAAASUVORK5CYII=">
 
 <!-- CSS -->
-<link rel="stylesheet" type="text/css" href="../../nimdoc.out.css?v=2.0.6">
+<link rel="stylesheet" type="text/css" href="../../nimdoc.out.css?v=2.0.8">
 
 <!-- JS -->
-<script type="text/javascript" src="../../dochack.js?v=2.0.6"></script>
+<script type="text/javascript" src="../../dochack.js?v=2.0.8"></script>
 </head>
 <body>
   <div class="document" id="documentId">
@@ -77,6 +77,10 @@
   <li><a class="reference" href="#%3D%3D%2CTupleDirective%2CTupleDirective" title="`==`(a, b: TupleDirective): auto">`==`(a, b: TupleDirective): auto</a></li>
 
 </ul>
+<ul class="simple nested-toc-section">bits
+  <li><a class="reference" href="#bits%2CTupleDirective" title="bits(dir: TupleDirective): Bits">bits(dir: TupleDirective): Bits</a></li>
+
+</ul>
 <ul class="simple nested-toc-section">comps
   <li><a class="reference" href="#comps%2CTupleDirective" title="comps(directive: TupleDirective): seq[ComponentDef]">comps(directive: TupleDirective): seq[ComponentDef]</a></li>
 
@@ -99,6 +103,11 @@
 </ul>
 <ul class="simple nested-toc-section">newTupleDir
   <li><a class="reference" href="#newTupleDir%2CopenArray%5BDirectiveArg%5D" title="newTupleDir(args: openArray[DirectiveArg]): TupleDirective">newTupleDir(args: openArray[DirectiveArg]): TupleDirective</a></li>
+<li><a class="reference" href="#newTupleDir%2CopenArray%5BComponentDef%5D" title="newTupleDir(comps: openArray[ComponentDef]): TupleDirective">newTupleDir(comps: openArray[ComponentDef]): TupleDirective</a></li>
+
+</ul>
+<ul class="simple nested-toc-section">signature
+  <li><a class="reference" href="#signature%2CTupleDirective" title="signature(dir: TupleDirective): string">signature(dir: TupleDirective): string</a></li>
 
 </ul>
 
@@ -188,6 +197,17 @@
 </div>
 
 </div>
+<div id="bits-procs-all">
+  <div id="bits,TupleDirective">
+  <dt><pre><span class="Keyword">proc</span> <a href="#bits%2CTupleDirective"><span class="Identifier">bits</span></a><span class="Other">(</span><span class="Identifier">dir</span><span class="Other">:</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a><span class="Other">)</span><span class="Other">:</span> <a href="../util/bits.html#Bits"><span class="Identifier">Bits</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Presents this tuple as a set of bits
+    
+  </dd>
+</div>
+
+</div>
 <div id="comps-procs-all">
   <div id="comps,TupleDirective">
   <dt><pre><span class="Keyword">proc</span> <a href="#comps%2CTupleDirective"><span class="Identifier">comps</span></a><span class="Other">(</span><span class="Identifier">directive</span><span class="Other">:</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
@@ -256,6 +276,26 @@
     
   </dd>
 </div>
+<div id="newTupleDir,openArray[ComponentDef]">
+  <dt><pre><span class="Keyword">proc</span> <a href="#newTupleDir%2CopenArray%5BComponentDef%5D"><span class="Identifier">newTupleDir</span></a><span class="Other">(</span><span class="Identifier">comps</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Create a TupleDirective
+    
+  </dd>
+</div>
+
+</div>
+<div id="signature-procs-all">
+  <div id="signature,TupleDirective">
+  <dt><pre><span class="Keyword">proc</span> <a href="#signature%2CTupleDirective"><span class="Identifier">signature</span></a><span class="Other">(</span><span class="Identifier">dir</span><span class="Other">:</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Generates a unique ID for a tuple
+    
+  </dd>
+</div>
 
 </div>
 
@@ -298,7 +338,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-07-02 23:12:41 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-07-14 19:39:11 UTC</small>
       </div>
     </div>
   </div>
