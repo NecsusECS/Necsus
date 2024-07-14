@@ -1,4 +1,5 @@
-import macros, hashes, sequtils, strutils, ../util/nimNode, tables
+import std/[macros, hashes, sequtils, strutils, macrocache]
+import ../util/nimNode
 
 type
     ComponentDef* = ref object
@@ -8,14 +9,23 @@ type
         cachedHash: Hash
         uniqueId*: uint16
 
-var ids {.compileTime.}: uint16
-var lookup {.compileTime.} = initTable[NimNode, uint16]()
+const ids = CacheCounter("NecsusComponentIds")
+
+when NimMajor >= 2:
+    const lookup = CacheTable("NecsusComponentIdCache")
+else:
+    import std/tables
+    var lookup {.compileTime.} = initTable[string, NimNode]()
 
 proc getArchetypeValueId(value: NimNode): uint16 =
-    if not lookup.hasKey(value):
-        lookup[value] = ids
-        ids += 1
-    return lookup[value]
+    var sig: string
+    sig.addSignature(value)
+
+    if sig notin lookup:
+        lookup[sig] = ids.value.newLit
+        ids.inc
+
+    return lookup[sig].intVal.uint16
 
 proc newComponentDef*(node: NimNode): ComponentDef =
     ## Instantiate a ComponentDef
