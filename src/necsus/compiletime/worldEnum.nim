@@ -1,4 +1,5 @@
-import componentDef, sequtils, macros, tupleDirective, archetypeBuilder
+import std/[macros, sequtils, sets]
+import componentDef, tupleDirective, archetypeBuilder
 
 type
     WorldEnum*[T] = ref object
@@ -27,9 +28,16 @@ iterator items*[T](worldEnum: WorldEnum[T]): T =
     for component in worldEnum.values:
         yield component
 
+iterator enumIdents*[T](worldEnum: WorldEnum[T]): NimNode =
+    ## Returns all the idents present in a world enum
+    if worldEnum.values.len == 0:
+        yield ident("Dummy")
+    else:
+        var seen = initHashSet[T](worldEnum.values.len)
+        for entry in worldEnum.values:
+            if entry notin seen:
+                yield entry.name.ident
+
 proc codeGen*[T](worldEnum: WorldEnum[T]): NimNode =
     ## Creates code for representing this enum
-    var entryList = worldEnum.values.mapIt(it.name.ident).deduplicate
-    if entryList.len == 0:
-        entryList.add ident("Dummy")
-    result = newEnum(worldEnum.ident, entryList, public = false, pure = true)
+    result = newEnum(worldEnum.ident, worldEnum.enumIdents.toSeq, public = false, pure = true)

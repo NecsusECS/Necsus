@@ -29,7 +29,11 @@ proc getArchetypeValueId(value: NimNode): uint16 =
 
 proc newComponentDef*(node: NimNode): ComponentDef =
     ## Instantiate a ComponentDef
-    ComponentDef(node: node, name: node.symbols.join("_"), cachedHash: hash(node), uniqueId: getArchetypeValueId(node))
+    let id = getArchetypeValueId(node)
+    ComponentDef(node: node, name: "comp" & $id, cachedHash: hash(node), uniqueId: id)
+
+proc readableName*(comp: ComponentDef): string = comp.node.symbols.join("_")
+    ## Returns a human readable name for a node
 
 proc `==`*(a, b: ComponentDef): bool =
     ## Compare two ComponentDef instances
@@ -52,5 +56,5 @@ proc ident*(def: ComponentDef): NimNode =
 
 proc hash*(def: ComponentDef): Hash = def.cachedHash
 
-proc addSignature*(onto: var string, comp: ComponentDef) = onto.addSignature(comp.node)
+proc addSignature*(onto: var string, comp: ComponentDef) = onto &= $comp.uniqueId
     ## Generate a unique ID for a component

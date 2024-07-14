@@ -43,6 +43,9 @@ proc newArchetype*[T](values: openarray[T]): Archetype[T] =
         bitset: bits,
     )
 
+proc readableName*(arch: Archetype[ComponentDef]): string = arch.values.mapIt(it.readableName).join("_")
+    ## Returns a readable name that describes an archetype
+
 proc hash*[T](archetype: Archetype[T]): Hash = archetype.cachedHash
     ## Create a hash describing a archetype
 

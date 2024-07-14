@@ -10,6 +10,8 @@ let compsIdent {.compileTime.} = ident("comps")
 
 let entityArchetype {.compileTime.} = newDotExpr(entityIndex, ident("archetype"))
 
+let nameMapper {.compileTime.} = genSym(nskProc, "readableName")
+
 proc worldFields(name: string): seq[WorldField] = @[ (name, bindSym("EntityDebug")) ]
 
 proc buildArchetypeLookup(
@@ -27,11 +29,36 @@ proc buildArchetypeLookup(
             `appStateIdent`.`archetypeIdent`,
             `entityIndex`.archetypeIndex
         )
-        return $`entityId` & " = " & $`entityArchetype` & $`compsIdent`[]
+        return $`entityId` & " = " & `nameMapper`(`entityArchetype`) & $`compsIdent`[]
+
+proc buildNameMapper(details: GenerateContext): NimNode =
+    ## Defines a function that returns a human readable name for the archetype enum
+    let archetypeEnum = details.archetypeEnum.ident
+    let arg = ident("arch")
+    var cases = nnkCaseStmt.newTree(arg)
+    for archetype in details.archetypeEnum:
+        cases.add(
+            nnkOfBranch.newTree(
+                nnkDotExpr.newTree(archetypeEnum, archetype.name.ident),
+                newLit(archetype.readableName)
+            )
+        )
+
+    # If there are no archetypes, we still need to emit at least one branch
+    if cases.len <= 1:
+        for name in details.archetypeEnum.enumIdents:
+            cases.add(nnkOfBranch.newTree(nnkDotExpr.newTree(archetypeEnum, name), newLit(name.strVal)))
+
+    return quote:
+        proc `nameMapper`(`arg`: `archetypeEnum`): string =
+            return `cases`
 
 proc generateEntityDebug(details: GenerateContext, arg: SystemArg, name: string): NimNode =
     ## Generates the code for debugging the state of an entity
     case details.hook
+    of GenerateHook.Outside:
+        return buildNameMapper(details)
+
     of GenerateHook.Standard:
 
         let procName = ident(name)
@@ -52,7 +79,7 @@ proc generateEntityDebug(details: GenerateContext, arg: SystemArg, name: string)
 
 let entityDebugGenerator* {.compileTime.} = newGenerator(
     ident = "EntityDebug",
-    interest = { Standard },
+    interest = { Standard, Outside },
     generate = generateEntityDebug,
     worldFields = worldFields,
 )
