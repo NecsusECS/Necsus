@@ -21,6 +21,7 @@ proc read(fromArch: openarray[ComponentDef], newVals: openarray[ComponentDef], a
 proc copyTuple(fromArch: openarray[ComponentDef], newVals: openarray[ComponentDef], directive: TupleDirective): NimNode =
     ## Generates code for copying from one tuple to another
     result = newStmtList()
+    var tupleConstr = nnkTupleConstr.newTree()
     for i, arg in directive.args:
         let value = case arg.kind
             of DirectiveArgKind.Exclude:
@@ -32,8 +33,9 @@ proc copyTuple(fromArch: openarray[ComponentDef], newVals: openarray[ComponentDe
                     newCall(bindSym("some"), read(fromArch, newVals, arg))
                 else:
                     newCall(nnkBracketExpr.newTree(bindSym("none"), arg.type))
-        result.add quote do:
-            `output`[`i`] = `value`
+        tupleConstr.add(value)
+    return quote:
+        `output` = `tupleConstr`
 
 when NimMajor >= 2:
     const built = CacheTable("NecsusConverters")
