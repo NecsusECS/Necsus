@@ -11,6 +11,13 @@ proc newTupleDir*(args: openarray[DirectiveArg]): TupleDirective =
     ## Create a TupleDirective
     return TupleDirective(args: args.toSeq, name: args.generateName)
 
+proc newTupleDir*(comps: openarray[ComponentDef]): TupleDirective =
+    ## Create a TupleDirective
+    var args: seq[DirectiveArg]
+    for comp in comps:
+        args.add(newDirectiveArg(comp, false, DirectiveArgKind.Include))
+    return newTupleDir(args)
+
 proc `$`*(dir: TupleDirective): string =
     dir.name & "(" & join(dir.args, ", ") & ")"
 

@@ -1,9 +1,9 @@
-import std/[macros, options, algorithm, macrocache, sets]
-import tools, codeGenInfo, systemGen, componentDef, directiveArg, tupleDirective, common
+import std/[macros, options, algorithm, macrocache]
+import tools, systemGen, componentDef, directiveArg, tupleDirective, common
 import ../runtime/query
 
 let input {.compileTime.} = ident("input")
-let existing {.compileTime.} = ident("existing")
+let adding {.compileTime.} = ident("adding")
 let output {.compileTime.} = ident("output")
 
 proc read(arg: DirectiveArg, source: NimNode, index: int): NimNode =
@@ -14,7 +14,7 @@ proc read(arg: DirectiveArg, source: NimNode, index: int): NimNode =
 proc read(fromArch: openarray[ComponentDef], newVals: openarray[ComponentDef], arg: DirectiveArg): NimNode =
     let newValIdx = newVals.binarySearch(arg.component)
     if newValIdx >= 0:
-        return read(arg, existing, newValIdx)
+        return read(arg, adding, newValIdx)
     else:
         return read(arg, input, fromArch.binarySearch(arg.component))
 
@@ -35,38 +35,45 @@ proc copyTuple(fromArch: openarray[ComponentDef], newVals: openarray[ComponentDe
         result.add quote do:
             `output`[`i`] = `value`
 
+when NimMajor >= 2:
+    const built = CacheTable("NecsusConverters")
+else:
+    import std/tables
+    var built {.compileTime.} = initTable[string, NimNode]()
+
 proc buildConverter*(convert: ConverterDef): NimNode =
     ## Builds a single converter proc
+    let sig = convert.signature
+    if sig in built:
+        return newStmtList()
+
     let name = convert.name
     let inputTuple = convert.input.asTupleType
-    let existingTuple = if convert.existing.len == 0:
-            ident("pointer")
+    let existingTuple = if convert.adding.len == 0:
+            quote: (int, )
         else:
-            nnkPtrTy.newTree(convert.existing.asTupleType)
+            convert.adding.asTupleType
     let outputTuple = convert.output.asTupleType
 
     let body = if isFastCompileMode(fastConverters):
         newStmtList()
     else:
-        copyTuple(convert.input, convert.existing, convert.output)
+        let copier = copyTuple(convert.input, convert.adding, convert.output)
+        if convert.sinkParams:
+            copier
+        else:
+            quote:
+                if not `input`.isNil:
+                    `copier`
 
-    return quote do:
+    let paramKeyword = if convert.sinkParams: ident("sink") else: ident("ptr")
+
+    result = quote do:
         proc `name`(
-            `input`: ptr `inputTuple`,
-            `existing`: `existingTuple`,
+            `input`: `paramKeyword` `inputTuple`,
+            `adding`: `paramKeyword` `existingTuple`,
             `output`: var `outputTuple`
         ) {.gcsafe, raises: [], fastcall, used.} =
-            if not `input`.isNil:
-                `body`
+            `body`
 
-proc createConverterProcs*(details: CodeGenInfo): NimNode =
-    ## Creates a list of procs for converting from one tuple type to another
-    result = newStmtList()
-
-    var built = initHashSet[ConverterDef]()
-    let ctx = details.newGenerateContext(Outside)
-    for arg in details.allArgs:
-        for convert in converters(ctx, arg):
-            if convert notin built:
-                built.incl(convert)
-                result.add(buildConverter(convert))
+    built[sig] = result

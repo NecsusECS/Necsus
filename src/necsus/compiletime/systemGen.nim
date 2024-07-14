@@ -43,8 +43,9 @@ type
     ConverterDef* = object
         ## Defines a function for converting from one tuple shape to another
         input*: seq[ComponentDef]
-        existing*: seq[ComponentDef]
+        adding*: seq[ComponentDef]
         output*: TupleDirective
+        sinkParams*: bool
 
     ConvertExtractor*[T] = proc(context: GenerateContext, dir: T): seq[ConverterDef]
         ## The callback for determining what converters to execute
@@ -105,8 +106,13 @@ type
             dualDir*: DualDirective
         nestedArgs*: seq[SystemArg]
 
-proc newConverter*(input: Archetype[ComponentDef], existing: seq[ComponentDef], output: TupleDirective): ConverterDef =
-    ConverterDef(input: input.values, existing: existing, output: output)
+proc newConverter*(
+    input: Archetype[ComponentDef],
+    adding: seq[ComponentDef],
+    output: Archetype[ComponentDef],
+    sinkParams: bool
+): ConverterDef =
+    ConverterDef(input: input.values, adding: adding, output: newTupleDir(output.values), sinkParams: sinkParams)
 
 proc newConverter*(input: Archetype[ComponentDef], output: TupleDirective): ConverterDef =
     ConverterDef(input: input.values, output: output)
@@ -373,11 +379,21 @@ iterator nodes*(arg: SystemArg): NimNode =
     of DirectiveKind.None:
         discard
 
-const converterNames = CacheTable("NecsusConverterName")
+
+when NimMajor >= 2:
+    const converterNames = CacheTable("NecsusConverterName")
+else:
+    import std/tables
+    var converterNames {.compileTime.} = initTable[string, NimNode]()
 
 proc signature*(conv: ConverterDef): string =
     ## Produces a globally unique signature for a converter
+    if conv.sinkParams:
+        result = "SINK_"
     for comp in conv.input:
+        result.addSignature(comp)
+    result &= "_WITH_"
+    for comp in conv.adding:
         result.addSignature(comp)
     result &= "_TO_"
     for arg in conv.output.args:

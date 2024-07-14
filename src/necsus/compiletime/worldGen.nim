@@ -1,5 +1,5 @@
-import std/[macros, options, tables, sequtils, sets]
-import tools, codeGenInfo, archetype, common, systemGen
+import std/[macros, options, tables, sequtils]
+import tools, codeGenInfo, archetype, common, systemGen, converters
 import worldEnum, tickGen, parse, eventGen, directiveSet, monoDirective
 import ../runtime/[world, archetypeStore, necsusConf, directives], ../util/profile
 
@@ -209,3 +209,12 @@ proc createSendProcs*(details: CodeGenInfo): NimNode =
 
         result.add quote do:
             proc `name`(`appStateIdent`: var `appStateType`, `event`: sink `eventType`) {.used.} = `body`
+
+proc createConverterProcs*(details: CodeGenInfo): NimNode =
+    ## Creates a list of procs for converting from one tuple type to another
+    result = newStmtList()
+
+    let ctx = details.newGenerateContext(Outside)
+    for arg in details.allArgs:
+        for convert in converters(ctx, arg):
+            result.add(buildConverter(convert))

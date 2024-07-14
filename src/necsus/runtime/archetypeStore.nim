@@ -86,7 +86,7 @@ proc del*(store: var ArchetypeStore, index: uint) =
     ## Return the components for an archetype
     discard store.compStore.del(index)
 
-proc moveEntity*[Archs: enum, FromArch: tuple, NewComps : tuple, ToArch: tuple](
+proc moveEntity*[Archs: enum, FromArch: tuple, NewComps: tuple, ToArch: tuple](
     world: var World[Archs],
     entityIndex: ptr EntityIndex[Archs],
     fromArch: var ArchetypeStore[Archs, FromArch],

@@ -1,12 +1,11 @@
 import macros, sequtils
 import tools, tupleDirective, dualDirective, common, queryGen, lookupGen, spawnGen, directiveArg
-import archetype, componentDef, worldEnum, systemGen, archetypeBuilder
+import archetype, componentDef, worldEnum, systemGen, archetypeBuilder, converters
 import ../runtime/[world, archetypeStore, directives], ../util/bits
 
 let entityIndex {.compileTime.} = ident("entityIndex")
 let newComps {.compileTime.} = ident("newComps")
 let entityId {.compileTime.} = ident("entityId")
-let output {.compileTime.} = ident("output")
 
 proc createArchUpdate(
     details: GenerateContext,
@@ -33,54 +32,12 @@ proc createArchUpdate(
         result.add quote do:
             `existing`[`storageIndex`] = `newComps`[`i`]
 
-proc tupleConvertProcName(
-    details: GenerateContext,
-    fromArch: Archetype[ComponentDef],
-    newCompValues: seq[ComponentDef],
-    toArch: Archetype[ComponentDef]
-): auto =
-    ## Returns the name of a proc for converting to the given archetype
-    details.globalName("convert_" & fromArch.name & "_with_" & newCompValues.generateName & "_to_" & toArch.name)
-
-let existing {.compileTime.} = ident("existing")
-
 proc newCompsTupleType(newCompValues: seq[ComponentDef]): NimNode =
     ## Creates the type definition to use for a tuple that represents new values passed into a convert proc
     if newCompValues.len > 0:
         return newCompValues.asTupleType
     else:
         return quote: (int, )
-
-proc createTupleConvertProc(
-    details: GenerateContext,
-    fromArch: Archetype[ComponentDef],
-    newCompValues: seq[ComponentDef],
-    toArch: Archetype[ComponentDef]
-): NimNode =
-    ## Creates a tuple that is able to convert from one tuple to another
-    let fromArchTuple = fromArch.asStorageTuple
-    let newCompsType = newCompValues.newCompsTupleType()
-    let toArchTuple = toArch.asStorageTuple
-
-    let createNewTuple = newStmtList()
-    var i = 0
-    for comp in toArch.items:
-        let value = if comp in newCompValues:
-                nnkBracketExpr.newTree(newComps, newLit(newCompValues.find(comp)))
-            else:
-                nnkBracketExpr.newTree(existing, newLit(fromArch.indexOf(comp)))
-        createNewTuple.add quote do:
-            `output`[`i`] = `value`
-        i += 1
-
-    let procName = details.tupleConvertProcName(fromArch, newCompValues, toArch)
-    return quote:
-        proc `procName`(
-            `existing`: sink `fromArchTuple`,
-            `newComps`: sink `newCompsType`,
-            `output`: var `toArchTuple`
-        ) {.gcsafe, raises: [], fastcall, used.} =
-            `createNewTuple`
 
 proc createArchMove(
     details: GenerateContext,
@@ -95,7 +52,7 @@ proc createArchMove(
     let toArchTuple = toArch.asStorageTuple
     let toArchIdent = toArch.ident
     let archetypeEnum = details.archetypeEnum.ident
-    let convertProc = details.tupleConvertProcName(fromArch, newCompValues, toArch)
+    let convertProc = newConverter(fromArch, newCompValues, toArch, true).name
     let newCompsType = newCompValues.newCompsTupleType()
 
     let newCompsArg = if newCompValues.len > 0: newComps else: quote: (0, )
@@ -135,13 +92,13 @@ proc attachDetachProcBody(
                 let toArch = fromArch + attachComps - detachComps - optDetachComps
                 if fromArch == toArch:
                     if attachComps.len > 0:
-                        result.convertProcs.add(details.createTupleConvertProc(fromArch, attachComps, toArch))
+                        result.convertProcs.add(newConverter(fromArch, attachComps, toArch, true).buildConverter)
                         cases.add(
                             nnkOfBranch.newTree(ofBranch, details.createArchUpdate(title, attachComps, toArch)))
                     else:
                         needsElse = true
                 elif toArch in details.archetypes:
-                    result.convertProcs.add(details.createTupleConvertProc(fromArch, attachComps, toArch))
+                    result.convertProcs.add(newConverter(fromArch, attachComps, toArch, true).buildConverter)
                     cases.add(
                         nnkOfBranch.newTree(ofBranch, details.createArchMove(title, fromArch, attachComps, toArch)))
                 else:
