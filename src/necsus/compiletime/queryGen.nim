@@ -43,7 +43,7 @@ proc walkArchetypes(
     return (lenCalculation, nextEntityBody)
 
 proc worldFields(name: string, dir: TupleDirective): seq[WorldField] =
-    @[ (name, nnkBracketExpr.newTree(bindSym("RawQuery"), dir.asTupleType)) ]
+    @[ (name, bindSym("RawQuery")) ]
 
 
 proc systemArg(queryType: NimNode, name: string, dir: TupleDirective): NimNode =
