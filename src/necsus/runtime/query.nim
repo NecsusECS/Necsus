@@ -7,7 +7,7 @@ type
 
     QueryIterator* = object
         ## An iterator over a query
-        continuationIdx*: uint16
+        continuationIdx*: BiggestInt
         iter*: ArchetypeIter
 
     NextIterState* = enum DoneIter, ActiveIter, IncrementIter
