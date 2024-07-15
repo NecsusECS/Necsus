@@ -85,11 +85,11 @@ proc `-`*[T](archetype: Archetype[T], other: Archetype[T]): Archetype[T] =
 
 proc `-`*[T](archetype: Archetype[T], other: openarray[T]): Archetype[T] =
     ## Adds values to an archetype
-    archetype.values.filterIt(it notin other).sorted().newArchetype
+    return if other.len == 0: archetype else: archetype.values.filterIt(it notin other).sorted().newArchetype
 
 proc `+`*[T](archetype: Archetype[T], other: openarray[T]): Archetype[T] =
     ## Adds values to an archetype
-    concat(archetype.values, other.toSeq).sorted().newArchetype
+    return if other.len == 0: archetype else: concat(archetype.values, other.toSeq).sorted().newArchetype
 
 proc `+`*[T](archetype: Archetype[T], other: Archetype[T]): Archetype[T] =
     ## Joins together two archetypes
