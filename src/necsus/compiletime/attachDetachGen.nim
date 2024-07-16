@@ -1,4 +1,4 @@
-import macros, sequtils
+import std/macros
 import tools, tupleDirective, dualDirective, common, queryGen, lookupGen, spawnGen, directiveArg
 import archetype, componentDef, worldEnum, systemGen, archetypeBuilder, converters
 import ../runtime/[world, archetypeStore, directives], ../util/bits
@@ -70,6 +70,12 @@ proc createArchMove(
             `convertProc`
         )
 
+proc asBits(comps: varargs[seq[ComponentDef]]): Bits =
+    result = Bits()
+    for compSeq in comps:
+        for comp in compSeq:
+            result.incl(comp.uniqueId)
+
 proc attachDetachProcBody(
     details: GenerateContext,
     title: string,
@@ -81,6 +87,8 @@ proc attachDetachProcBody(
 
     result.convertProcs = newStmtList()
 
+    let toRemove = asBits(detachComps, optDetachComps)
+
     # Generate a cases statement to do the work for each kind of archetype
     var cases: NimNode = newEmptyNode()
 
@@ -89,7 +97,7 @@ proc attachDetachProcBody(
         cases = nnkCaseStmt.newTree(newDotExpr(entityIndex, ident("archetype")))
         for (ofBranch, fromArch) in archetypeCases(details):
             if detachComps.len == 0 or fromArch.containsAllOf(detachComps):
-                let toArch = fromArch + attachComps - detachComps - optDetachComps
+                let toArch = fromArch.removeAndAdd(toRemove, attachComps)
                 if fromArch == toArch:
                     if attachComps.len > 0:
                         result.convertProcs.add(newConverter(fromArch, attachComps, toArch, true).buildConverter)

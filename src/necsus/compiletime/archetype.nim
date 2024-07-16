@@ -79,6 +79,18 @@ proc containsAllOf*[T](archetype: Archetype[T], other: Archetype[T]): bool =
     ## Whether an archetype contains all the given values
     containsAllOf(archetype, other.values)
 
+proc removeAndAdd*[T](archetype: Archetype[T], remove: Bits, add: openarray[T]): Archetype[T] =
+    var accum: seq[T]
+    for value in archetype:
+        if value.uniqueId notin remove:
+            accum.add(value)
+    if add.len > 0:
+        for value in add:
+            if value notin archetype:
+                accum.add(value)
+        accum.sort()
+    return newArchetype(accum)
+
 proc `-`*[T](archetype: Archetype[T], other: Archetype[T]): Archetype[T] =
     ## Removes components in an archetype
     archetype.values.filterIt(it notin other).newArchetype
