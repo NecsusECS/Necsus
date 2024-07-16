@@ -396,7 +396,10 @@ proc parseSystems(systems: NimNode, into: var seq[ParsedSystem]) =
     case systems.kind
     of nnkSym:
         let parsed = parseSystem(systems)
-        if into.allIt(it.symbol != parsed.symbol):
+        var alreadyParsed: bool
+        for sys in into:
+            alreadyParsed = alreadyParsed or (sys.symbol == parsed.symbol)
+        if not alreadyParsed:
             for depends in parsed.depends:
                 parseSystems(depends, into)
             into.add(parsed)
