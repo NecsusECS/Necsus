@@ -1,4 +1,4 @@
-import std/[macros, options, algorithm, macrocache]
+import std/[macros, options, macrocache]
 import tools, systemGen, componentDef, directiveArg, tupleDirective, common
 import ../runtime/query
 
@@ -12,11 +12,11 @@ proc read(arg: DirectiveArg, source: NimNode, index: int): NimNode =
     return if arg.isPointer: nnkAddr.newTree(readExpr) else: readExpr
 
 proc read(fromArch: openarray[ComponentDef], newVals: openarray[ComponentDef], arg: DirectiveArg): NimNode =
-    let newValIdx = newVals.binarySearch(arg.component)
+    let newValIdx = newVals.find(arg.component)
     if newValIdx >= 0:
         return read(arg, adding, newValIdx)
     else:
-        return read(arg, input, fromArch.binarySearch(arg.component))
+        return read(arg, input, fromArch.find(arg.component))
 
 proc copyTuple(fromArch: openarray[ComponentDef], newVals: openarray[ComponentDef], directive: TupleDirective): NimNode =
     ## Generates code for copying from one tuple to another
