@@ -1,9 +1,10 @@
 nimTitle	worldEnum	necsus/compiletime/worldEnum.html	module src/necsus/compiletime/worldEnum		0
-nim	WorldEnum	necsus/compiletime/worldEnum.html#WorldEnum	type WorldEnum		4
-nim	ArchetypeEnum	necsus/compiletime/worldEnum.html#ArchetypeEnum	type ArchetypeEnum		9
-nim	ident	necsus/compiletime/worldEnum.html#ident,WorldEnum[T]	proc ident[T](worldEnum: WorldEnum[T]): auto		12
-nim	ident	necsus/compiletime/worldEnum.html#ident,WorldEnum[T],T	proc ident[T](worldEnum: WorldEnum[T]; value: T): NimNode		15
-nim	archetypeEnum	necsus/compiletime/worldEnum.html#archetypeEnum,string,ArchetypeSet[ComponentDef]	proc archetypeEnum(prefix: string; archetypes: ArchetypeSet[ComponentDef]): ArchetypeEnum		19
-nim	items	necsus/compiletime/worldEnum.html#items.i,WorldEnum[T]	iterator items[T](worldEnum: WorldEnum[T]): T		25
-nim	codeGen	necsus/compiletime/worldEnum.html#codeGen,WorldEnum[T]	proc codeGen[T](worldEnum: WorldEnum[T]): NimNode		30
-nimgrp	ident	necsus/compiletime/worldEnum.html#ident-procs-all	proc		12
+nim	WorldEnum	necsus/compiletime/worldEnum.html#WorldEnum	type WorldEnum		5
+nim	ArchetypeEnum	necsus/compiletime/worldEnum.html#ArchetypeEnum	type ArchetypeEnum		10
+nim	ident	necsus/compiletime/worldEnum.html#ident,WorldEnum[T]	proc ident[T](worldEnum: WorldEnum[T]): auto		13
+nim	ident	necsus/compiletime/worldEnum.html#ident,WorldEnum[T],T	proc ident[T](worldEnum: WorldEnum[T]; value: T): NimNode		16
+nim	archetypeEnum	necsus/compiletime/worldEnum.html#archetypeEnum,string,ArchetypeSet[ComponentDef]	proc archetypeEnum(prefix: string; archetypes: ArchetypeSet[ComponentDef]): ArchetypeEnum		20
+nim	items	necsus/compiletime/worldEnum.html#items.i,WorldEnum[T]	iterator items[T](worldEnum: WorldEnum[T]): T		26
+nim	enumIdents	necsus/compiletime/worldEnum.html#enumIdents.i,WorldEnum[T]	iterator enumIdents[T](worldEnum: WorldEnum[T]): NimNode		31
+nim	codeGen	necsus/compiletime/worldEnum.html#codeGen,WorldEnum[T]	proc codeGen[T](worldEnum: WorldEnum[T]): NimNode		41
+nimgrp	ident	necsus/compiletime/worldEnum.html#ident-procs-all	proc		13

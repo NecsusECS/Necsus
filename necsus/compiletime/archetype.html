@@ -128,6 +128,16 @@
   <li><a class="reference" href="#newArchetypeSet%2CopenArray%5BArchetype%5BT%5D%5D" title="newArchetypeSet[T](values: openArray[Archetype[T]]): ArchetypeSet[T]">newArchetypeSet[T](values: openArray[Archetype[T]]): ArchetypeSet[T]</a></li>
 
 </ul>
+<ul class="simple nested-toc-section">readableName
+  <li><a class="reference" href="#readableName%2CArchetype%5BComponentDef%5D" title="readableName(arch: Archetype[ComponentDef]): string">readableName(arch: Archetype[ComponentDef]): string</a></li>
+
+</ul>
+<ul class="simple nested-toc-section">removeAndAdd
+  <li><a class="reference" href="#removeAndAdd%2CArchetype%5BT%5D%2CBits%2CopenArray%5BT%5D" title="removeAndAdd[T](archetype: Archetype[T]; remove: Bits; add: openArray[T]): Archetype[
+    T]">removeAndAdd[T](archetype: Archetype[T]; remove: Bits; add: openArray[T]): Archetype[
+    T]</a></li>
+
+</ul>
 <ul class="simple nested-toc-section">values
   <li><a class="reference" href="#values%2CArchetype%5BT%5D" title="values[T](archetype: Archetype[T]): seq[T]">values[T](archetype: Archetype[T]): seq[T]</a></li>
 
@@ -395,6 +405,30 @@
 </div>
 
 </div>
+<div id="readableName-procs-all">
+  <div id="readableName,Archetype[ComponentDef]">
+  <dt><pre><span class="Keyword">proc</span> <a href="#readableName%2CArchetype%5BComponentDef%5D"><span class="Identifier">readableName</span></a><span class="Other">(</span><span class="Identifier">arch</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Returns a readable name that describes an archetype
+    
+  </dd>
+</div>
+
+</div>
+<div id="removeAndAdd-procs-all">
+  <div id="removeAndAdd,Archetype[T],Bits,openArray[T]">
+  <dt><pre><span class="Keyword">proc</span> <a href="#removeAndAdd%2CArchetype%5BT%5D%2CBits%2CopenArray%5BT%5D"><span class="Identifier">removeAndAdd</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">remove</span><span class="Other">:</span> <a href="../util/bits.html#Bits"><span class="Identifier">Bits</span></a><span class="Other">;</span> <span class="Identifier">add</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span>
+    <span class="Identifier">T</span><span class="Other">]</span></pre></dt>
+  <dd>
+    
+    
+    
+  </dd>
+</div>
+
+</div>
 <div id="values-procs-all">
   <div id="values,Archetype[T]">
   <dt><pre><span class="Keyword">proc</span> <a href="#values%2CArchetype%5BT%5D"><span class="Identifier">values</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span></pre></dt>
@@ -441,7 +475,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-07-14 19:39:11 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-07-16 16:12:07 UTC</small>
       </div>
     </div>
   </div>

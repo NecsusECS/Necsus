@@ -1,10 +1,11 @@
 nimTitle	componentDef	necsus/compiletime/componentDef.html	module src/necsus/compiletime/componentDef		0
-nim	ComponentDef	necsus/compiletime/componentDef.html#ComponentDef	type ComponentDef		4
-nim	newComponentDef	necsus/compiletime/componentDef.html#newComponentDef,NimNode	proc newComponentDef(node: NimNode): ComponentDef		20
-nim	`==`	necsus/compiletime/componentDef.html#==,ComponentDef,ComponentDef	proc `==`(a, b: ComponentDef): bool		24
-nim	`<`	necsus/compiletime/componentDef.html#<,ComponentDef,ComponentDef	proc `<`(a, b: ComponentDef): auto		28
-nim	`$`	necsus/compiletime/componentDef.html#$,ComponentDef	proc `$`(def: ComponentDef): string		30
-nim	generateName	necsus/compiletime/componentDef.html#generateName,openArray[ComponentDef]	proc generateName(components: openArray[ComponentDef]): string		34
-nim	ident	necsus/compiletime/componentDef.html#ident,ComponentDef	proc ident(def: ComponentDef): NimNode		38
-nim	hash	necsus/compiletime/componentDef.html#hash,ComponentDef	proc hash(def: ComponentDef): Hash		43
-nim	addSignature	necsus/compiletime/componentDef.html#addSignature,string,ComponentDef	proc addSignature(onto: var string; comp: ComponentDef)		45
+nim	ComponentDef	necsus/compiletime/componentDef.html#ComponentDef	type ComponentDef		5
+nim	newComponentDef	necsus/compiletime/componentDef.html#newComponentDef,NimNode	proc newComponentDef(node: NimNode): ComponentDef		30
+nim	readableName	necsus/compiletime/componentDef.html#readableName,ComponentDef	proc readableName(comp: ComponentDef): string		35
+nim	`==`	necsus/compiletime/componentDef.html#==,ComponentDef,ComponentDef	proc `==`(a, b: ComponentDef): bool		38
+nim	`<`	necsus/compiletime/componentDef.html#<,ComponentDef,ComponentDef	proc `<`(a, b: ComponentDef): auto		42
+nim	`$`	necsus/compiletime/componentDef.html#$,ComponentDef	proc `$`(def: ComponentDef): string		44
+nim	generateName	necsus/compiletime/componentDef.html#generateName,openArray[ComponentDef]	proc generateName(components: openArray[ComponentDef]): string		48
+nim	ident	necsus/compiletime/componentDef.html#ident,ComponentDef	proc ident(def: ComponentDef): NimNode		52
+nim	hash	necsus/compiletime/componentDef.html#hash,ComponentDef	proc hash(def: ComponentDef): Hash		57
+nim	addSignature	necsus/compiletime/componentDef.html#addSignature,string,ComponentDef	proc addSignature(onto: var string; comp: ComponentDef)		59

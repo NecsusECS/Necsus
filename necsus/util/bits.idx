@@ -16,5 +16,5 @@ nim	`<`	necsus/util/bits.html#<,Bits,Bits	proc `<`(a, b: Bits): bool		128
 nim	anyIntersect	necsus/util/bits.html#anyIntersect,Bits,Bits	proc anyIntersect(a, b: Bits): bool		137
 nim	newFilter	necsus/util/bits.html#newFilter,Bits,Bits	proc newFilter(mustContain, mustExclude: Bits): BitsFilter		144
 nim	matches	necsus/util/bits.html#matches,Bits,BitsFilter	proc matches(target: Bits; filter: BitsFilter): bool		148
-nim	hash	necsus/util/bits.html#hash,BitsFilter	proc hash(filter: BitsFilter): Hash		152
+nim	hash	necsus/util/bits.html#hash,BitsFilter	proc hash(filter: BitsFilter): Hash		168
 nimgrp	hash	necsus/util/bits.html#hash-procs-all	proc		62

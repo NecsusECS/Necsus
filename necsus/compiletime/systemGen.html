@@ -57,7 +57,7 @@
       <li><a class="reference" href="#AppInputs" title="AppInputs = seq[tuple[argName: string, directive: MonoDirective]]">AppInputs</a></li>
 <li><a class="reference" href="#BuildArchetype" title="BuildArchetype[T] = proc (builder: var ArchetypeBuilder[ComponentDef];
                           systemArgs: seq[SystemArg]; dir: T)">BuildArchetype</a></li>
-<li><a class="reference" href="#ConverterDef" title="ConverterDef = object
+<li><a class="reference" href="#ConverterDef" title="ConverterDef = ref object
   input*: seq[ComponentDef]
   adding*: seq[ComponentDef]
   output*: TupleDirective
@@ -329,7 +329,7 @@
   </dd>
 </div>
 <div id="ConverterDef">
-  <dt><pre><a href="systemGen.html#ConverterDef"><span class="Identifier">ConverterDef</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
+  <dt><pre><a href="systemGen.html#ConverterDef"><span class="Identifier">ConverterDef</span></a> <span class="Other">=</span> <span class="Keyword">ref</span> <span class="Keyword">object</span>
   <span class="Identifier">input</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span>
   <span class="Identifier">adding</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span>
   <span class="Identifier">output</span><span class="Operator">*</span><span class="Other">:</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a>
@@ -827,7 +827,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-07-14 19:39:11 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-07-16 16:12:07 UTC</small>
       </div>
     </div>
   </div>

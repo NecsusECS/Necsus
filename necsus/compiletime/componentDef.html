@@ -98,6 +98,10 @@
   <li><a class="reference" href="#newComponentDef%2CNimNode" title="newComponentDef(node: NimNode): ComponentDef">newComponentDef(node: NimNode): ComponentDef</a></li>
 
 </ul>
+<ul class="simple nested-toc-section">readableName
+  <li><a class="reference" href="#readableName%2CComponentDef" title="readableName(comp: ComponentDef): string">readableName(comp: ComponentDef): string</a></li>
+
+</ul>
 
     </ul>
   </details>
@@ -218,11 +222,23 @@
 </div>
 <div id="newComponentDef-procs-all">
   <div id="newComponentDef,NimNode">
-  <dt><pre><span class="Keyword">proc</span> <a href="#newComponentDef%2CNimNode"><span class="Identifier">newComponentDef</span></a><span class="Other">(</span><span class="Identifier">node</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">)</span><span class="Other">:</span> <a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#newComponentDef%2CNimNode"><span class="Identifier">newComponentDef</span></a><span class="Other">(</span><span class="Identifier">node</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">)</span><span class="Other">:</span> <a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
     Instantiate a ComponentDef
+    
+  </dd>
+</div>
+
+</div>
+<div id="readableName-procs-all">
+  <div id="readableName,ComponentDef">
+  <dt><pre><span class="Keyword">proc</span> <a href="#readableName%2CComponentDef"><span class="Identifier">readableName</span></a><span class="Other">(</span><span class="Identifier">comp</span><span class="Other">:</span> <a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Returns a human readable name for a node
     
   </dd>
 </div>
@@ -238,7 +254,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-07-14 19:39:11 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-07-16 16:12:07 UTC</small>
       </div>
     </div>
   </div>
