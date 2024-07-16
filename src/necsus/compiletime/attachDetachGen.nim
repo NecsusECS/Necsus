@@ -100,9 +100,7 @@ proc attachDetachProcBody(
                 let toArch = fromArch.removeAndAdd(toRemove, attachComps)
                 if fromArch == toArch:
                     if attachComps.len > 0:
-                        result.convertProcs.add(newConverter(fromArch, attachComps, toArch, true).buildConverter)
-                        cases.add(
-                            nnkOfBranch.newTree(ofBranch, details.createArchUpdate(title, attachComps, toArch)))
+                        cases.add(nnkOfBranch.newTree(ofBranch, details.createArchUpdate(title, attachComps, toArch)))
                     else:
                         needsElse = true
                 elif toArch in details.archetypes:
