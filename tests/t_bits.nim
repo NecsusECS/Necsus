@@ -117,3 +117,14 @@ suite "Bits":
         storage.incl(newBits(1, 2, 3))
         check(newBits(1, 2, 3) in storage)
         check(storage.len == 1)
+
+    test "Filters":
+        let filter = newFilter(mustContain = newBits(1, 5, 40), mustExclude = newBits(4))
+
+        check(newBits(1, 5, 40).matches(filter))
+        check(newBits(1, 5, 40, 80, 100).matches(filter))
+        check(not newBits(1, 100, 400).matches(filter))
+        check(not newBits(1, 5).matches(filter))
+        check(not newBits(1, 4, 5, 40, 50).matches(filter))
+
+        check(newBits(1, 2, 3).matches(newFilter(mustContain = newBits(), mustExclude = newBits(40))))

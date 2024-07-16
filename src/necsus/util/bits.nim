@@ -146,7 +146,23 @@ proc newFilter*(mustContain, mustExclude: Bits): BitsFilter =
     BitsFilter(mustContain: mustContain, mustExclude: mustExclude)
 
 proc matches*(target: Bits, filter: BitsFilter): bool =
-    ## Wheter a target matches a filter
-    (filter.mustContain <= target) and not (filter.mustExclude.anyIntersect(target))
+    ## Whether a target matches a filter
+    let targetLen = target.buckets.len
+    let mustContainLen = filter.mustContain.buckets.len
+    if targetLen < mustContainLen:
+        return false
+    let mustExcludeLen = filter.mustExclude.buckets.len
+    for i in 0..<targetLen:
+        let found = target.buckets[i]
+
+        if i < mustContainLen:
+            let mustContain = filter.mustContain.buckets[i]
+            if (mustContain and found) != mustContain:
+                return false
+
+        if i < mustExcludeLen and (found and filter.mustExclude.buckets[i]) > 0:
+            return false
+
+    return true
 
 proc hash*(filter: BitsFilter): Hash = filter.mustContain.hash !& filter.mustExclude.hash
