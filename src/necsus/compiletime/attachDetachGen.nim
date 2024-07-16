@@ -44,7 +44,8 @@ proc createArchMove(
     title: string,
     fromArch: Archetype[ComponentDef],
     newCompValues: seq[ComponentDef],
-    toArch: Archetype[ComponentDef]
+    toArch: Archetype[ComponentDef],
+    convert: ConverterDef,
 ): NimNode =
     ## Creates code for copying from one archetype to another
     let fromArchIdent = fromArch.ident
@@ -52,7 +53,7 @@ proc createArchMove(
     let toArchTuple = toArch.asStorageTuple
     let toArchIdent = toArch.ident
     let archetypeEnum = details.archetypeEnum.ident
-    let convertProc = newConverter(fromArch, newCompValues, toArch, true).name
+    let convertProc = convert.name
     let newCompsType = newCompValues.newCompsTupleType()
 
     let newCompsArg = if newCompValues.len > 0: newComps else: quote: (0, )
@@ -104,9 +105,11 @@ proc attachDetachProcBody(
                     else:
                         needsElse = true
                 elif toArch in details.archetypes:
-                    result.convertProcs.add(newConverter(fromArch, attachComps, toArch, true).buildConverter)
+                    let convert = newConverter(fromArch, attachComps, toArch, true)
+                    result.convertProcs.add(convert.buildConverter)
                     cases.add(
-                        nnkOfBranch.newTree(ofBranch, details.createArchMove(title, fromArch, attachComps, toArch)))
+                        nnkOfBranch.newTree(ofBranch,
+                        details.createArchMove(title, fromArch, attachComps, toArch, convert)))
                 else:
                     needsElse = true
             else:
