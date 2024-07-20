@@ -49,8 +49,9 @@ proc replaceGenerics(typeDecl: NimNode, symLookup: Table[string, NimNode]): NimN
     for child in typeDecl.children:
         result.add(child.replaceGenerics(symLookup))
 
-proc resolveBracketGeneric(typeDef: NimNode): NimNode =
+proc resolveBracketGeneric*(typeDef: NimNode): NimNode =
     ## Replaces a generic alias with the underlying type it represents
+    typeDef.expectKind({ nnkBracketExpr })
     let declaration = typeDef[0].getImpl
     declaration.expectKind(nnkTypeDef)
     let genericTable = declaration[1].asGenericTable(typeDef[1..^1])
@@ -82,3 +83,10 @@ proc resolveAlias*(typeDef: NimNode): Option[NimNode] =
         return some(typeDef.resolveBracketGeneric())
     else:
         discard
+
+proc findSym*(node: NimNode): NimNode =
+    ## Unwraps the symbol from a node
+    case node.kind
+    of nnkSym: return node
+    of nnkIdentDefs, nnkPragmaExpr: return node[0].findSym
+    else: error("Could not extract a symbol from " & node.lispRepr, node)

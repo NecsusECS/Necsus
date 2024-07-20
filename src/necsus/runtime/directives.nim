@@ -51,3 +51,6 @@ type
 
     SystemInstance* = proc(): void {.closure.}
         ## A callback used to invoke a specific system
+
+    EventSystemInstance*[T] = proc(event: T): void {.closure.}
+        ## Marks the return type for an instanced event system

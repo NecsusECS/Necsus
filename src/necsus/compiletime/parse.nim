@@ -290,10 +290,21 @@ proc choosePhase(typeNode: NimNode): SystemPhase =
                 return EventCallback
     return LoopPhase
 
+proc hasInstancedReturnType(node: NimNode): bool =
+    ## Returns whether the return type of a type definition declare itself as instanced
+    case node.kind
+    of nnkSym: return node == bindSym("SystemInstance") or node == bindSym("EventSystemInstance")
+    of nnkBracketExpr: return node[0].hasInstancedReturnType
+    of nnkProcTy: return node.params[0].hasInstancedReturnType
+    of nnkProcDef: return node[0].getTypeImpl.hasInstancedReturnType
+    of nnkIdentDefs, nnkPragmaExpr: return node[0].findSym.getTypeImpl.hasInstancedReturnType
+    else: return false
+
 proc determineInstancing(nodeImpl: NimNode, nodeTypeImpl: NimNode): Option[NimNode] =
     ## Determines whether a system is instanced, and returns the type to use for instancing
-    if nodeTypeImpl.kind == nnkProcTy and nodeTypeImpl.params[0] == bindSym("SystemInstance"):
-        return some(nodeTypeImpl.params[0])
+    if nodeImpl.hasInstancedReturnType():
+        let tupleTy = nodeTypeImpl.params[0].resolveTo({ nnkProcTy }).get(nodeTypeImpl.params[0])
+        return some(tupleTy)
 
     let instanced = bindSym("instanced")
     for child in nodeImpl.findPragma:
@@ -332,6 +343,8 @@ proc getPrefixArgs(
 
 proc determineReturnType(sysTyp: NimNode, isInstanced: bool): NimNode =
     case sysTyp.kind
+    of nnkBracketExpr:
+        return sysTyp.resolveBracketGeneric().determineReturnType(isInstanced)
     of nnkSym:
         let impl = sysTyp.getTypeImpl
 
@@ -346,7 +359,7 @@ proc determineReturnType(sysTyp: NimNode, isInstanced: bool): NimNode =
         let typ = sysTyp.params[0]
         return if isInstanced: determineReturnType(typ, false) else: typ
     else:
-        sysTyp.expectKind({ nnkProcTy, nnkSym, nnkObjectTy })
+        sysTyp.expectKind({ nnkProcTy, nnkSym, nnkObjectTy, nnkBracketExpr })
 
 proc parseSystemDef*(ident: NimNode, impl: NimNode): ParsedSystem =
     ## Parses a single system proc

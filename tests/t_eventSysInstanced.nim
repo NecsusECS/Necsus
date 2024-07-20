@@ -5,18 +5,15 @@ proc publish(sender: Outbox[string]) =
     sender("bar")
     sender("baz")
 
-proc receive(accum: Shared[string]): auto {.eventSys, instanced.} =
+proc receive(accum: Shared[string]): EventSystemInstance[string] {.eventSys.} =
     accum := "setup"
     return proc(event: string) =
-        accum := accum.get & " blah"
-
-        # The following should work, but breaks with an internal Nim compiler error:
-        # accum := accum.get & event
+        accum := accum.get & " " & event
 
 proc runner(accum: Shared[string], tick: proc(): void) =
     tick()
     tick()
-    check(accum.get == "setup blah blah blah blah blah blah")
+    check(accum.get == "setup foo bar baz foo bar baz")
 
 proc testEvents() {.necsus(runner, [~publish, ~receive], newNecsusConf()).}
 
