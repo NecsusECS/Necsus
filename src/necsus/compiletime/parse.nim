@@ -334,6 +334,10 @@ proc determineReturnType(sysTyp: NimNode, isInstanced: bool): NimNode =
     case sysTyp.kind
     of nnkSym:
         let impl = sysTyp.getTypeImpl
+
+        if impl.kind == nnkSym and impl.signatureHash == sysTyp.signatureHash:
+            error("Self referencing type detected: " & sysTyp.lispRepr, sysTyp)
+
         if impl.kind == nnkObjectTy:
             return if isInstanced: newEmptyNode() else: sysTyp
         else:
