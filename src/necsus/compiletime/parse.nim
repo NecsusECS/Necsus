@@ -293,7 +293,10 @@ proc choosePhase(typeNode: NimNode): SystemPhase =
 proc hasInstancedReturnType(node: NimNode): bool =
     ## Returns whether the return type of a type definition declare itself as instanced
     case node.kind
-    of nnkSym: return node == bindSym("SystemInstance") or node == bindSym("EventSystemInstance")
+    of nnkSym: return
+        node == bindSym("SystemInstance") or
+            node == bindSym("EventSystemInstance") or
+            node == bindSym("SaveSystemInstance")
     of nnkBracketExpr: return node[0].hasInstancedReturnType
     of nnkProcTy: return node.params[0].hasInstancedReturnType
     of nnkProcDef: return node[0].getTypeImpl.hasInstancedReturnType

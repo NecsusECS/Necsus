@@ -3,7 +3,7 @@ import unittest, necsus
 type
     SaveMe = seq[string]
 
-proc save(): auto {.saveSys, instanced.} =
+proc save(): SaveSystemInstance[SaveMe] {.saveSys.} =
     return proc(): SaveMe =
         return @[ "a", "b", "c" ]
 

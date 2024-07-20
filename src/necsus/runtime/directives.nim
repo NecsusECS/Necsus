@@ -54,3 +54,6 @@ type
 
     EventSystemInstance*[T] = proc(event: T): void {.closure.}
         ## Marks the return type for an instanced event system
+
+    SaveSystemInstance*[T] = proc(): T {.closure.}
+        ## Marks the return type for an instanced save system
