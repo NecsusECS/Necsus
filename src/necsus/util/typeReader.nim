@@ -1,17 +1,24 @@
 import macros, options, tables
 
+proc isPragma*(found, expect: NimNode): bool =
+    ## Determines whether a NimNode represents the given pragma
+    expect.expectKind({ nnkSym })
+    case found.kind
+    of nnkSym: return found == expect
+    of nnkCall: return found[0].isPragma(expect)
+    of nnkIdent: return false
+    else: error("Unable to extract pragma from " & found.lispRepr, found)
+
 proc findPragma*(node: NimNode): NimNode =
     ## Finds the pragma node attached to a nim node
-    if node.kind in RoutineNodes:
-        return node.pragma
-    else:
-        case node.kind
-        of nnkIdentDefs:
-            if node[0].kind == nnkPragmaExpr:
-                node[0][1]
-            else:
-                newEmptyNode()
-        else: newEmptyNode()
+    case node.kind
+    of RoutineNodes: return node.pragma
+    of nnkIdentDefs:
+        if node[0].kind == nnkPragmaExpr:
+            return node[0][1]
+        else:
+            return newEmptyNode()
+    else: return newEmptyNode()
 
 proc findChildSyms*(node: NimNode, output: var seq[NimNode]) =
     ## Finds all symbols in the children of a node and returns them

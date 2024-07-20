@@ -217,7 +217,7 @@ proc readDependencies(typeNode: NimNode): seq[NimNode] =
     ## Reads the systems referenced by a pragma attached to another system
     let depends = bindSym("depends")
     for child in typeNode.findPragma:
-        if child.kind == nnkCall and depends == child[0]:
+        if child.isPragma(depends):
             findChildSyms(child[1], result)
 
 proc newActiveCheck(context, value, typename: NimNode): ActiveCheck =
@@ -260,7 +260,7 @@ proc parseActiveChecks(context, typeNode: NimNode): seq[ActiveCheck] =
     let activePragma = bindSym("active")
 
     for child in typeNode.findPragma:
-        if child.kind == nnkCall and activePragma == child[0]:
+        if child.isPragma(activePragma):
             for activeState in parseActiveCheck(context, child[1]):
                 result.add(activeState)
 
@@ -276,17 +276,17 @@ proc choosePhase(typeNode: NimNode): SystemPhase =
 
     for child in typeNode.findPragma:
         if child.kind == nnkSym:
-            if startupPragma == child:
+            if child.isPragma(startupPragma):
                 return StartupPhase
-            elif loopSysPragma == child:
+            elif child.isPragma(loopSysPragma):
                 return LoopPhase
-            elif teardownSysPragma == child:
+            elif child.isPragma(teardownSysPragma):
                 return TeardownPhase
-            elif saveSysPragma == child:
+            elif child.isPragma(saveSysPragma):
                 return SaveCallback
-            elif restoreSysPragma == child:
+            elif child.isPragma(restoreSysPragma):
                 return RestoreCallback
-            elif eventSysPragma == child:
+            elif child.isPragma(eventSysPragma):
                 return EventCallback
     return LoopPhase
 
@@ -295,8 +295,9 @@ proc determineInstancing(nodeImpl: NimNode, nodeTypeImpl: NimNode): Option[NimNo
     if nodeTypeImpl.kind == nnkProcTy and nodeTypeImpl.params[0] == bindSym("SystemInstance"):
         return some(nodeTypeImpl.params[0])
 
+    let instanced = bindSym("instanced")
     for child in nodeImpl.findPragma:
-        if child == bindSym("instanced"):
+        if child.isPragma(instanced):
             return some(nodeTypeImpl[0][0])
 
 proc getSystemType(ident: NimNode, impl: NimNode): NimNode =
