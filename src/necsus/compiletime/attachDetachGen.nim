@@ -86,6 +86,9 @@ proc attachDetachProcBody(
 ): tuple[procBody: NimNode, convertProcs: NimNode] =
     ## Generates the logic needed to attach and detach components from an existing entity
 
+    if isFastCompileMode(fastAttachDetach):
+        return (newStmtList(), newStmtList())
+
     result.convertProcs = newStmtList()
 
     let toRemove = asBits(detachComps, optDetachComps)
@@ -140,10 +143,7 @@ proc generateAttach(details: GenerateContext, arg: SystemArg, name: string, atta
 
     case details.hook
     of Outside:
-        let (body, convertProcs) = if isFastCompileMode(fastAttachDetach):
-            (newStmtList(), newStmtList())
-        else:
-            details.attachDetachProcBody("Attaching", attach.comps, @[], @[])
+        let (body, convertProcs) = details.attachDetachProcBody("Attaching", attach.comps, @[], @[])
 
         let appStateTypeName = details.appStateTypeName
         return quote do:
