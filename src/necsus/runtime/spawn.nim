@@ -12,9 +12,9 @@ type
         ## Describes a type that is able to create new entities. Where `C` is a tuple
         ## with all the components to initially attach to this entity. Returns the new EntityId
 
-proc beginSpawn*[Archs: enum, Comps: tuple](
-    world: var World[Archs],
-    store: var ArchetypeStore[Archs, Comps]
+proc beginSpawn*[Comps: tuple](
+    world: var World,
+    store: var ArchetypeStore[Comps]
 ): NewArchSlot[Comps] {.inline, gcsafe, raises: [].} =
     ## Spawns an entity in this archetype
     var newEntity = world.newEntity

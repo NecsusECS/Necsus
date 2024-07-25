@@ -1,6 +1,6 @@
 import std/[options, hashes, tables, macros, strformat, strutils, sequtils, macrocache]
 import archetype, dualDirective, monoDirective, tupleDirective, archetypeBuilder
-import componentDef, worldEnum, directiveSet, common, directiveArg
+import componentDef, directiveSet, common, directiveArg
 
 type
     GenerateHook* = enum
@@ -16,7 +16,6 @@ type
         directives*: Table[DirectiveGen, DirectiveSet[SystemArg]]
         inputs*: AppInputs
         archetypes*: ArchetypeSet[ComponentDef]
-        archetypeEnum*: ArchetypeEnum
         appStateTypeName*: NimNode
 
     DirectiveKind* {.pure.} = enum

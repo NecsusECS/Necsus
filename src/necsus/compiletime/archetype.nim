@@ -1,4 +1,5 @@
-import tables, sets, hashes, strutils, sequtils, componentDef, macros, algorithm, ../util/bits
+import std/[tables, sets, hashes, strutils, sequtils, macros, algorithm, macrocache]
+import componentDef, ../util/bits, ../runtime/world
 
 type
     Archetype*[T] = ref object
@@ -8,6 +9,7 @@ type
         identName: string
         cachedHash: Hash
         bitset*: Bits
+        id: ArchetypeId
 
     ArchetypeSet*[T] = ref object
         ## A set of all known archetypes
@@ -17,6 +19,25 @@ type
         ## Thrown when an archetype is out of sorted order
 
 proc generateName(values: openarray[string]): string = values.join("_")
+
+when NimMajor >= 2:
+    const nextId = CacheCounter("NextArchetypeId")
+    const ids = CacheTable("ArchetypeIds")
+else:
+    import std/tables
+    var nextId {.compileTime.} = 0
+    var ids {.compileTime.} = initTable[string, NimNode]()
+    proc value(num: int): int {.inline.} = num
+
+proc getId(name: string): ArchetypeId =
+    ## Returns a unique ID for an archetype
+    if name in ids:
+        return ArchetypeId(ids[name].intVal)
+    else:
+        let newId = nextId.value
+        nextId.inc
+        ids[name] = newId.newLit
+        return ArchetypeId(newId)
 
 proc newArchetype*[T](values: openarray[T]): Archetype[T] =
     ## Create an archetype
@@ -35,12 +56,14 @@ proc newArchetype*[T](values: openarray[T]): Archetype[T] =
         previous = value
 
     let name = generateName(verified)
+
     return Archetype[T](
         values: verified,
         name: name,
         identName: "archetype_" & name,
         cachedHash: hash(verified),
         bitset: bits,
+        id: name.getId,
     )
 
 proc readableName*(arch: Archetype[ComponentDef]): string = arch.values.mapIt(it.readableName).join("_")
@@ -125,6 +148,32 @@ iterator items*[T](archetype: Archetype[T]): T =
 proc values*[T](archetype: Archetype[T]): seq[T] = archetype.values
     ## Produces all the archetype values
 
+when NimMajor >= 2:
+    const archetypeSymbols = CacheTable("NecsusArchetypeIdSymbols")
+else:
+    var archetypeSymbols {.compileTime.} = initTable[string, NimNode]()
+
+proc idSymbol*[T](archetype: Archetype[T]): NimNode =
+    ## Returns a unique symbol containing an ID for this archetype
+    if archetype.name notin archetypeSymbols:
+        archetypeSymbols[archetype.name] = genSym(nskConst, "archetypeId")
+    return archetypeSymbols[archetype.name]
+
+when NimMajor >= 2:
+    const archetypeSymbolsDefined = CacheTable("NecsusArchetypeIdSymbolsDefined")
+else:
+    var archetypeSymbolsDefined {.compileTime.} = initTable[string, NimNode]()
+
+proc archArchSymbolDef*[T](archetype: Archetype[T]): NimNode =
+    ## Builds the code for defining an archetype symbol
+    if archetype.name in archetypeSymbolsDefined:
+        return newStmtList()
+
+    archetypeSymbolsDefined[archetype.name] = true.newLit
+    let symbol = archetype.idSymbol
+    let num = archetype.id
+    return quote:
+        const `symbol` = ArchetypeId(`num`)
 
 proc newArchetypeSet*[T](values: openarray[Archetype[T]]): ArchetypeSet[T] =
     ## Creates a set of archetypes

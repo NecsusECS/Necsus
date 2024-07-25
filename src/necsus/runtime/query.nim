@@ -49,8 +49,8 @@ proc newQuery*[Comps: tuple](
 
 proc isFirst*(iter: QueryIterator): bool = iter.continuationIdx == 0 and iter.iter.isFirst
 
-proc next*[Archs: enum, Comps: tuple](
-    store: ArchetypeStore[Archs, Comps],
+proc next*[Comps: tuple](
+    store: ArchetypeStore[Comps],
     iter: var QueryIterator,
     eid: var EntityId,
     state: var NextIterState

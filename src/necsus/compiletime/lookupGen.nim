@@ -1,5 +1,5 @@
 import macros, sequtils, options, tables
-import tupleDirective, tools, common, archetype, componentDef, worldEnum, systemGen
+import tupleDirective, tools, common, archetype, componentDef, systemGen
 import ../runtime/[world, archetypeStore, directives], ../util/bits
 
 let entityId {.compileTime.} = ident("entityId")
@@ -16,11 +16,10 @@ proc buildArchetypeLookup(
 
     let archetypeType = archetype.asStorageTuple
     let archetypeIdent = archetype.ident
-    let archetypeEnum = details.archetypeEnum.ident
     let convert = newConverter(archetype, lookup).name
 
     return quote do:
-        let `compsIdent` = getComps[`archetypeEnum`, `archetypeType`](
+        let `compsIdent` = getComps[`archetypeType`](
             `appStateIdent`.`archetypeIdent`,
             `entityIndex`.archetypeIndex
         )
@@ -50,16 +49,12 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, lookup: Tu
                 cases = nnkCaseStmt.newTree(newDotExpr(entityIndex, ident("archetype")))
 
                 # Create a case statement where each branch is one of the archetypes
-                var needsElse = false
                 for (ofBranch, archetype) in archetypeCases(details):
                     if archetype.bitset.matches(lookup.filter):
                         cases.add(nnkOfBranch.newTree(ofBranch, details.buildArchetypeLookup(lookup, archetype)))
-                    else:
-                        needsElse = true
 
                 # Add a fall through 'else' branch for any archetypes that don't fit this lookup
-                if needsElse:
-                    cases.add(nnkElse.newTree(nnkReturnStmt.newTree(newLit(false))))
+                cases.add(nnkElse.newTree(nnkReturnStmt.newTree(newLit(false))))
 
         return quote:
             proc `lookupProc`(

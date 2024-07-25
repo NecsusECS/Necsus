@@ -1,5 +1,5 @@
 import macros, options, tables
-import tools, common, archetype, componentDef, worldEnum, systemGen
+import tools, common, archetype, componentDef, systemGen
 import ../runtime/[world, archetypeStore, directives]
 
 let entityId {.compileTime.} = ident("entityId")
@@ -22,10 +22,9 @@ proc buildArchetypeLookup(
 
     let archetypeType = archetype.asStorageTuple
     let archetypeIdent = archetype.ident
-    let archetypeEnum = details.archetypeEnum.ident
 
     return quote do:
-        let `compsIdent` = getComps[`archetypeEnum`, `archetypeType`](
+        let `compsIdent` = getComps[`archetypeType`](
             `appStateIdent`.`archetypeIdent`,
             `entityIndex`.archetypeIndex
         )
@@ -33,24 +32,19 @@ proc buildArchetypeLookup(
 
 proc buildNameMapper(details: GenerateContext): NimNode =
     ## Defines a function that returns a human readable name for the archetype enum
-    let archetypeEnum = details.archetypeEnum.ident
     let arg = ident("arch")
     var cases = nnkCaseStmt.newTree(arg)
-    for archetype in details.archetypeEnum:
-        cases.add(
-            nnkOfBranch.newTree(
-                nnkDotExpr.newTree(archetypeEnum, archetype.name.ident),
-                newLit(archetype.readableName)
-            )
-        )
+    for archetype in details.archetypes:
+        cases.add(nnkOfBranch.newTree(archetype.idSymbol, newLit(archetype.readableName)))
 
-    # If there are no archetypes, we still need to emit at least one branch
+    # If there are no archetypes, we still need to return something
     if cases.len <= 1:
-        for name in details.archetypeEnum.enumIdents:
-            cases.add(nnkOfBranch.newTree(nnkDotExpr.newTree(archetypeEnum, name), newLit(name.strVal)))
+        cases = newLit("Dummy")
+    else:
+        cases.add(nnkElse.newTree(newLit("Dummy")))
 
     return quote:
-        proc `nameMapper`(`arg`: `archetypeEnum`): string =
+        proc `nameMapper`(`arg`: ArchetypeId): string =
             return `cases`
 
 proc generateEntityDebug(details: GenerateContext, arg: SystemArg, name: string): NimNode =
@@ -69,6 +63,7 @@ proc generateEntityDebug(details: GenerateContext, arg: SystemArg, name: string)
             cases = nnkCaseStmt.newTree(entityArchetype)
             for (ofBranch, archetype) in archetypeCases(details):
                 cases.add(nnkOfBranch.newTree(ofBranch, details.buildArchetypeLookup(archetype)))
+            cases.add(nnkElse.newTree(nnkDiscardStmt.newTree(newEmptyNode())))
 
         return quote:
             `appStateIdent`.`procName` = proc(`entityId`: EntityId): string =

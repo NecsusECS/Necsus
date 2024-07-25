@@ -1,45 +1,47 @@
 import entityId, ../util/blockstore
 
 type
-    EntityIndex*[Archs: enum] = object
+    ArchetypeId* = distinct BiggestInt
+
+    EntityIndex* = object
         entityId*: EntityId
-        archetype*: Archs
+        archetype*: ArchetypeId
         archetypeIndex*: uint
 
-    NewEntity*[Archs: enum] = distinct Entry[EntityIndex[Archs]]
+    NewEntity* = distinct Entry[EntityIndex]
 
-    World*[Archs: enum] = object
+    World* = object
         ## Contains the data describing the entire world
-        entityIndex: BlockStore[EntityIndex[Archs]]
+        entityIndex: BlockStore[EntityIndex]
 
-proc newWorld*[Archs: enum](initialSize: SomeInteger): World[Archs] =
+proc newWorld*(initialSize: SomeInteger): World =
     ## Creates a new world
-    result.entityIndex = newBlockStore[EntityIndex[Archs]](initialSize)
+    result.entityIndex = newBlockStore[EntityIndex](initialSize)
 
-proc `=copy`*[Archs](target: var World[Archs], source: World[Archs]) {.error.}
+proc `=copy`*(target: var World, source: World) {.error.}
 
-proc newEntity*[Archs](world: var World[Archs]): NewEntity[Archs] {.inline.} =
+proc newEntity*(world: var World): NewEntity {.inline.} =
     ## Constructs a new entity and invokes
     let entity = world.entityIndex.reserve
     entity.value.entityId = EntityId(entity.index)
     return NewEntity(entity)
 
-proc entityId*[Archs](newEntity: NewEntity[Archs]): EntityId {.inline.} =
+proc entityId*(newEntity: NewEntity): EntityId {.inline.} =
     ## Returns the entity ID of a newly created entity
-    EntityId(Entry[EntityIndex[Archs]](newEntity).index)
+    EntityId(Entry[EntityIndex](newEntity).index)
 
-proc setArchetypeDetails*[Archs](newEntity: NewEntity[Archs], archetype: Archs, index: uint) {.inline.} =
+proc setArchetypeDetails*(newEntity: NewEntity, archetype: ArchetypeId, index: uint) {.inline.} =
     ## Stores the archetype details about an entity
-    let entry = Entry[EntityIndex[Archs]](newEntity)
+    let entry = Entry[EntityIndex](newEntity)
     entry.value.archetype = archetype
     entry.value.archetypeIndex = index
     entry.commit
 
-proc `[]`*[Archs: enum](world: World[Archs], entityId: EntityId): ptr EntityIndex[Archs] =
+proc `[]`*(world: World, entityId: EntityId): ptr EntityIndex =
     ## Look up entity information based on an entity ID
     addr world.entityIndex[entityId.uint]
 
-proc del*[Archs: enum](world: var World[Archs], entityId: EntityId): EntityIndex[Archs] =
+proc del*(world: var World, entityId: EntityId): EntityIndex =
     ## Deletes an entity and returns the archetype and index that also needs to be deleted
     result = world.entityIndex[entityId.uint]
     discard world.entityIndex.del(entityId.uint)

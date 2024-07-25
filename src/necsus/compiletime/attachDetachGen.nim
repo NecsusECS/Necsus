@@ -1,6 +1,6 @@
 import std/macros
 import tools, tupleDirective, dualDirective, common, queryGen, lookupGen, spawnGen, directiveArg
-import archetype, componentDef, worldEnum, systemGen, archetypeBuilder, converters
+import archetype, componentDef, systemGen, archetypeBuilder, converters
 import ../runtime/[world, archetypeStore, directives], ../util/bits
 
 let entityIndex {.compileTime.} = ident("entityIndex")
@@ -18,11 +18,10 @@ proc createArchUpdate(
 
     let archIdent = archetype.ident
     let archTuple = archetype.asStorageTuple
-    let archetypeEnum = details.archetypeEnum.ident
 
     let existing = ident("existing")
     result.add quote do:
-        let `existing` = getComps[`archetypeEnum`, `archTuple`](
+        let `existing` = getComps[`archTuple`](
             `appStateIdent`.`archIdent`,
             `entityIndex`.archetypeIndex
         )
@@ -52,7 +51,6 @@ proc createArchMove(
     let fromArchTuple = fromArch.asStorageTuple
     let toArchTuple = toArch.asStorageTuple
     let toArchIdent = toArch.ident
-    let archetypeEnum = details.archetypeEnum.ident
     let convertProc = convert.name
     let newCompsType = newCompValues.newCompsTupleType()
 
@@ -62,7 +60,7 @@ proc createArchMove(
 
     return quote:
         `log`
-        moveEntity[`archetypeEnum`, `fromArchTuple`,  `newCompsType`, `toArchTuple`](
+        moveEntity[`fromArchTuple`,  `newCompsType`, `toArchTuple`](
             `appStateIdent`.`worldIdent`,
             `entityIndex`,
             `appStateIdent`.`fromArchIdent`,
@@ -97,7 +95,6 @@ proc attachDetachProcBody(
     var cases: NimNode = newEmptyNode()
 
     if details.archetypes.len > 0:
-        var needsElse = false
         cases = nnkCaseStmt.newTree(newDotExpr(entityIndex, ident("archetype")))
         for (ofBranch, fromArch) in archetypeCases(details):
             if detachComps.len == 0 or fromArch.containsAllOf(detachComps):
@@ -105,20 +102,13 @@ proc attachDetachProcBody(
                 if fromArch == toArch:
                     if attachComps.len > 0:
                         cases.add(nnkOfBranch.newTree(ofBranch, details.createArchUpdate(title, attachComps, toArch)))
-                    else:
-                        needsElse = true
                 elif toArch in details.archetypes:
                     let convert = newConverter(fromArch, attachComps, toArch, true)
                     result.convertProcs.add(convert.buildConverter)
                     cases.add(
                         nnkOfBranch.newTree(ofBranch,
                         details.createArchMove(title, fromArch, attachComps, toArch, convert)))
-                else:
-                    needsElse = true
-            else:
-                needsElse = true
-        if needsElse:
-            cases.add(nnkElse.newTree(nnkDiscardStmt.newTree(newEmptyNode())))
+        cases.add(nnkElse.newTree(nnkDiscardStmt.newTree(newEmptyNode())))
 
     result.procBody = quote do:
         var `entityIndex` {.used.} = `appStateIdent`.`worldIdent`[`entityId`]

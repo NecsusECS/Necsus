@@ -1,7 +1,7 @@
 import unittest, necsus/compiletime/archetypeBuilder, sequtils, sets, tables
 
-var ids: uint16 = 0
-var lookup = initTable[string, uint16]()
+var ids {.compileTime.}: uint16 = 0
+var lookup {.compileTime.} = initTable[string, uint16]()
 proc uniqueId(value: string): uint16 =
     if not lookup.hasKey(value):
         lookup[value] = ids
@@ -11,111 +11,113 @@ proc uniqueId(value: string): uint16 =
 suite "Creating archetypes":
     test "Creating archetypes of values":
 
-        var builder = newArchetypeBuilder[string]()
-        builder.define([ "A" ])
-        builder.define([ "A", "B" ])
-        builder.define([ "A", "B" ])
-        builder.define([ "A", "B", "C" ])
-        let archetypes = builder.build()
+        const archetypes = block:
+            var builder = newArchetypeBuilder[string]()
+            builder.define([ "A" ])
+            builder.define([ "A", "B" ])
+            builder.define([ "A", "B" ])
+            builder.define([ "A", "B", "C" ])
+            builder.build().toSeq.mapIt($it)
 
-        check(archetypes.toSeq.mapIt($it).toHashSet == [ "{A}", "{A, B}", "{A, B, C}" ].toHashSet)
+        check(archetypes.toHashSet == [ "{A}", "{A, B}", "{A, B, C}" ].toHashSet)
 
     test "Allowing for attaching new components to existing archetypes":
-        var builder = newArchetypeBuilder[string]()
-        builder.define([ "A" ])
-        builder.define([ "A", "B" ])
+        const archetypes = block:
+            var builder = newArchetypeBuilder[string]()
+            builder.define([ "A" ])
+            builder.define([ "A", "B" ])
 
-        builder.attachable([ "B", "C" ], builder.filter([], []))
-        builder.attachable([ "C", "D" ], builder.filter([], []))
-        let archetypes = builder.build()
+            builder.attachable([ "B", "C" ], builder.filter([], []))
+            builder.attachable([ "C", "D" ], builder.filter([], []))
+            builder.build().toSeq.mapIt($it)
 
-        check(archetypes.toSeq.mapIt($it).toHashSet == toHashSet([
+        check(archetypes.toHashSet == toHashSet([
             "{A}", "{A, B, C}", "{A, C, D}", "{A, B, C, D}", "{A, B}"
         ]))
 
     test "Allowing for attaching new components with a matching filter":
-        var builder = newArchetypeBuilder[string]()
-        builder.define([ "A" ])
-        builder.define([ "A", "B" ])
-        builder.define([ "A", "B", "C"])
+        const archetypes = block:
+            var builder = newArchetypeBuilder[string]()
+            builder.define([ "A" ])
+            builder.define([ "A", "B" ])
+            builder.define([ "A", "B", "C"])
 
-        builder.attachable([ "D" ], builder.filter([ "B", "C" ], []))
-        let archetypes = builder.build()
+            builder.attachable([ "D" ], builder.filter([ "B", "C" ], []))
+            builder.build().toSeq.mapIt($it)
 
-        check(archetypes.toSeq.mapIt($it).toHashSet == toHashSet([
-            "{A}", "{A, B}", "{A, B, C}", "{A, B, C, D}"
-        ]))
+        check(archetypes.toHashSet == toHashSet([ "{A}", "{A, B}", "{A, B, C}", "{A, B, C, D}" ]))
 
     test "Allowing for attaching new components with an excluding filter":
-        var builder = newArchetypeBuilder[string]()
-        builder.define([ "A" ])
-        builder.define([ "A", "B" ])
-        builder.define([ "A", "C"])
+        const archetypes = block:
+            var builder = newArchetypeBuilder[string]()
+            builder.define([ "A" ])
+            builder.define([ "A", "B" ])
+            builder.define([ "A", "C"])
 
-        builder.attachable([ "D" ], builder.filter([], [ "B", "C" ]))
-        let archetypes = builder.build()
+            builder.attachable([ "D" ], builder.filter([], [ "B", "C" ]))
+            builder.build().toSeq.mapIt($it)
 
-        check(archetypes.toSeq.mapIt($it).toHashSet == toHashSet([
-            "{A}", "{A, B}", "{A, C}", "{A, D}"
-        ]))
+        check(archetypes.toHashSet == toHashSet([ "{A}", "{A, B}", "{A, C}", "{A, D}" ]))
 
     test "Allowing for detaching new components to existing archetypes":
-        var builder = newArchetypeBuilder[string]()
-        builder.define([ "A" ])
-        builder.define([ "A", "B" ])
-        builder.define([ "A", "B", "C" ])
-        builder.define([ "A", "B", "C", "D" ])
+        const archetypes = block:
+            var builder = newArchetypeBuilder[string]()
+            builder.define([ "A" ])
+            builder.define([ "A", "B" ])
+            builder.define([ "A", "B", "C" ])
+            builder.define([ "A", "B", "C", "D" ])
 
-        builder.detachable([ "A" ])
-        builder.detachable([ "B", "C" ])
-        builder.detachable([ "C", "D" ])
-        let archetypes = builder.build()
+            builder.detachable([ "A" ])
+            builder.detachable([ "B", "C" ])
+            builder.detachable([ "C", "D" ])
+            builder.build().toSeq.mapIt($it)
 
-        check(archetypes.toSeq.mapIt($it).toHashSet == toHashSet([
+        check(archetypes.toHashSet == toHashSet([
             "{A}", "{A, D}", "{A, B, C}", "{B}", "{D}", "{B, C, D}", "{B, C}", "{A, B, C, D}", "{A, B}"
         ]))
 
     test "Attaching and detaching in a single action":
-        var builder = newArchetypeBuilder[string]()
-        builder.define([ "A", "B" ])
-        builder.define([ "A", "B", "C" ])
-        builder.define([ "B", "C" ])
+        const archetypes = block:
+            var builder = newArchetypeBuilder[string]()
+            builder.define([ "A", "B" ])
+            builder.define([ "A", "B", "C" ])
+            builder.define([ "B", "C" ])
 
-        builder.attachDetach([ "D", "E" ], [ "A" ])
-        let archetypes = builder.build()
+            builder.attachDetach([ "D", "E" ], [ "A" ])
+            builder.build().toSeq.mapIt($it)
 
-        check(archetypes.toSeq.mapIt($it).toHashSet == toHashSet([
+        check(archetypes.toHashSet == toHashSet([
             "{A, B}", "{A, B, C}", "{B, C}", "{B, D, E}", "{B, C, D, E}"
         ]))
 
     test "Detaching should require presence of all bits":
-        var builder = newArchetypeBuilder[string]()
-        builder.define([ "A", "B", "C" ])
-        builder.define([ "B", "C", "D" ])
+        const archetypes = block:
+            var builder = newArchetypeBuilder[string]()
+            builder.define([ "A", "B", "C" ])
+            builder.define([ "B", "C", "D" ])
 
-        builder.detachable([ "C", "D" ])
-        let archetypes = builder.build()
+            builder.detachable([ "C", "D" ])
+            builder.build().toSeq.mapIt($it)
 
-        check(archetypes.toSeq.mapIt($it).toHashSet == toHashSet([
-            "{A, B, C}", "{B, C, D}", "{B}"
-        ]))
+        check(archetypes.toHashSet == toHashSet([ "{A, B, C}", "{B, C, D}", "{B}" ]))
 
     test "Optional detaching":
-        var builder = newArchetypeBuilder[string]()
-        builder.define([ "A", "B", "C", "D" ])
-        builder.define([ "A", "C", "D", "E" ])
+        const archetypes = block:
+            var builder = newArchetypeBuilder[string]()
+            builder.define([ "A", "B", "C", "D" ])
+            builder.define([ "A", "C", "D", "E" ])
 
-        builder.detachable([ "C", "D" ], [ "E" ])
-        let archetypes = builder.build()
+            builder.detachable([ "C", "D" ], [ "E" ])
+            builder.build().toSeq.mapIt($it)
 
-        check(archetypes.toSeq.mapIt($it).toHashSet == toHashSet([
-            "{A, B, C, D}", "{A, C, D, E}", "{A, B}", "{A}"
-        ]))
+        check(archetypes.toHashSet == toHashSet([ "{A, B, C, D}", "{A, C, D, E}", "{A, B}", "{A}" ]))
 
     test "Require that the same archetype be added with elements in the same order":
-        var builder = newArchetypeBuilder[string]()
-        builder.define([ "A", "B", "C" ])
-        builder.define([ "A", "B", "C" ])
-        builder.define([ "C", "A", "B" ])
+        const archetypes = block:
+            var builder = newArchetypeBuilder[string]()
+            builder.define([ "A", "B", "C" ])
+            builder.define([ "A", "B", "C" ])
+            builder.define([ "C", "A", "B" ])
+            builder.build().toSeq.mapIt($it)
 
-        check(builder.build().toSeq.mapIt($it).toHashSet == [ "{A, B, C}" ].toHashSet)
+        check(archetypes.toHashSet == [ "{A, B, C}" ].toHashSet)

@@ -1,5 +1,5 @@
 import macros, options, sequtils
-import tupleDirective, componentDef, archetype, worldEnum, systemGen, directiveArg, common
+import tupleDirective, componentDef, archetype, systemGen, directiveArg, common
 import ../runtime/query
 
 proc asTupleType*(components: openarray[ComponentDef]): NimNode =
@@ -22,7 +22,7 @@ proc asTupleType*(tupleDir: TupleDirective): NimNode = tupleDir.args.toSeq.asTup
 
 iterator archetypeCases*(details: GenerateContext): tuple[ofBranch: NimNode, archetype: Archetype[ComponentDef]] =
     for archetype in details.archetypes:
-        yield (details.archetypeEnum.ident(archetype), archetype)
+        yield (archetype.idSymbol, archetype)
 
 proc joinStrs*(args: varargs[NimNode]): NimNode =
     ## Joins a set of stringable nim nodes into a string

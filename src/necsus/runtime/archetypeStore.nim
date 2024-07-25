@@ -6,9 +6,9 @@ type
         entityId*: EntityId
         components*: Comps
 
-    ArchetypeStore*[Archs: enum, Comps: tuple] = ref object
+    ArchetypeStore*[Comps: tuple] = ref object
         ## Stores a specific archetype shape
-        archetype: Archs
+        archetype: ArchetypeId
         initialSize: int
         compStore: BlockStore[ArchRow[Comps]]
 
@@ -19,26 +19,26 @@ type
 
 proc `=copy`*[Comps: tuple](target: var ArchRow[Comps], source: ArchRow[Comps]) {.error.}
 
-proc newArchetypeStore*[Archs: enum, Comps: tuple](
-    archetype: Archs,
+proc newArchetypeStore*[Comps: tuple](
+    archetype: ArchetypeId,
     initialSize: SomeInteger
-): ArchetypeStore[Archs, Comps] =
+): ArchetypeStore[Comps] =
     ## Creates a new storage block for an archetype
-    ArchetypeStore[Archs, Comps](initialSize: initialSize.int, archetype: archetype)
+    ArchetypeStore[Comps](initialSize: initialSize.int, archetype: archetype)
 
 proc isFirst*(iter: ArchetypeIter): bool = BlockIter(iter).isFirst
 
-proc archetype*[Archs: enum, Comps: tuple](store: ArchetypeStore[Archs, Comps]): Archs = store.archetype
+proc archetype*[Comps: tuple](store: ArchetypeStore[Comps]): ArchetypeId = store.archetype
     ## Accessor for the archetype of a store
 
-proc next*[Archs: enum, Comps: tuple](
-    store: ArchetypeStore[Archs, Comps],
+proc next*[Comps: tuple](
+    store: ArchetypeStore[Comps],
     iter: var ArchetypeIter
 ): ptr ArchRow[Comps] =
     ## Returns the next value for an interator
     return if store.compStore == nil: nil else: store.compStore.next(BlockIter(iter))
 
-iterator items*[Archs: enum, Comps: tuple](store: ArchetypeStore[Archs, Comps]): ptr ArchRow[Comps] =
+iterator items*[Comps: tuple](store: ArchetypeStore[Comps]): ptr ArchRow[Comps] =
     ## Iterates over the components in a view
     var iter: ArchetypeIter
     var value: ptr ArchRow[Comps]
@@ -48,13 +48,13 @@ iterator items*[Archs: enum, Comps: tuple](store: ArchetypeStore[Archs, Comps]):
             break
         yield value[]
 
-func addLen*[Archs: enum, Comps: tuple](store: ArchetypeStore[Archs, Comps], len: var uint) =
+func addLen*[Comps: tuple](store: ArchetypeStore[Comps], len: var uint) =
     ## Accessor for the archetype of a store
     if store.compStore != nil:
         len += store.compStore.len
 
-proc newSlot*[Archs: enum, Comps: tuple](
-    store: var ArchetypeStore[Archs, Comps],
+proc newSlot*[Comps: tuple](
+    store: var ArchetypeStore[Comps],
     entityId: EntityId
 ): NewArchSlot[Comps] =
     ## Reserves a slot for storing a new component
@@ -78,7 +78,7 @@ proc setComp*[Comps: tuple](slot: NewArchSlot[Comps], comps: sink Comps): Entity
     commit(entry)
     return value(entry).entityId
 
-proc getComps*[Archs: enum, Comps: tuple](store: var ArchetypeStore[Archs, Comps], index: uint): ptr Comps =
+proc getComps*[Comps: tuple](store: var ArchetypeStore[Comps], index: uint): ptr Comps =
     ## Return the components for an archetype
     addr store.compStore[index].components
 
@@ -86,18 +86,18 @@ proc del*(store: var ArchetypeStore, index: uint) =
     ## Return the components for an archetype
     discard store.compStore.del(index)
 
-proc moveEntity*[Archs: enum, FromArch: tuple, NewComps: tuple, ToArch: tuple](
-    world: var World[Archs],
-    entityIndex: ptr EntityIndex[Archs],
-    fromArch: var ArchetypeStore[Archs, FromArch],
-    toArch: var ArchetypeStore[Archs, ToArch],
+proc moveEntity*[FromArch: tuple, NewComps: tuple, ToArch: tuple](
+    world: var World,
+    entityIndex: ptr EntityIndex,
+    fromArch: var ArchetypeStore[FromArch],
+    toArch: var ArchetypeStore[ToArch],
     newValues: sink NewComps,
     combine: proc (existing: sink FromArch, newValues: sink NewComps, output: var ToArch) {.gcsafe, raises: [], fastcall.}
 ) {.gcsafe, raises: [].} =
     ## Moves the components for an entity from one archetype to another
     let deleted = fromArch.compStore.del(entityIndex.archetypeIndex)
     let existing = deleted.components
-    let newSlot = newSlot[Archs, ToArch](toArch, entityIndex.entityId)
+    let newSlot = newSlot[ToArch](toArch, entityIndex.entityId)
     var output: ToArch
     combine(existing, newValues, output)
     discard setComp(newSlot, output)

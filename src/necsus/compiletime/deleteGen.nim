@@ -1,5 +1,5 @@
 import tables, macros
-import archetype, tools, systemGen, archetypeBuilder, worldEnum, common
+import archetype, tools, systemGen, archetypeBuilder, common
 import ../runtime/[archetypeStore, world, directives]
 
 proc worldFields(name: string): seq[WorldField] = @[ (name, bindSym("Delete")) ]
@@ -19,7 +19,6 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string): NimNode =
         let body = if isFastCompileMode(fastDelete):
             newStmtList()
         else:
-            let archetypeEnum = details.archetypeEnum.ident
             var cases: NimNode
             if details.archetypes.len > 0:
                 cases = nnkCaseStmt.newTree(newDotExpr(entityIndex, ident("archetype")))
@@ -28,13 +27,15 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string): NimNode =
                     let deleteCall = quote:
                         del(`appStateIdent`.`archIdent`, `entityIndex`.archetypeIndex)
                     cases.add(nnkOfBranch.newTree(ofBranch, deleteCall))
+
+                cases.add(nnkElse.newTree(nnkDiscardStmt.newTree(newEmptyNode())))
             else:
                 cases = newEmptyNode()
 
             let log = emitEntityTrace("Deleting ", entity)
 
             quote:
-                let `entityIndex` = del[`archetypeEnum`](`appStateIdent`.`worldIdent`, `entity`)
+                let `entityIndex` = del(`appStateIdent`.`worldIdent`, `entity`)
                 `log`
                 `cases`
 

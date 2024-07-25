@@ -8,7 +8,7 @@
 
 import necsus / runtime / [ entityId, query, systemVar, inbox, directives, necsusConf, spawn, pragmas, tuples ]
 import necsus / compiletime / [ parse, systemGen, codeGenInfo, worldGen, archetype ]
-import necsus / compiletime / [ worldEnum, tickGen, common, marshalGen ]
+import necsus / compiletime / [ tickGen, common, marshalGen ]
 import necsus/util/dump
 import sequtils, macros, options
 
@@ -44,7 +44,7 @@ proc buildApp(
     let codeGenInfo = newCodeGenInfo(conf, parsedApp, parsedSystems)
 
     result = newStmtList(
-        codeGenInfo.archetypeEnum.codeGen,
+        codeGenInfo.createArchetypeIdSyms(),
         codeGenInfo.createAppStateType(),
         codeGenInfo.createAppStateDestructor(),
         codeGenInfo.createConverterProcs(),
@@ -102,7 +102,7 @@ macro runSystemOnce*(systemDef: typed): untyped =
     let call = newCall(systemIdent, system.args.mapIt(systemArg(codeGenInfo, it)))
 
     return newStmtList(
-        codeGenInfo.archetypeEnum.codeGen,
+        codeGenInfo.createArchetypeIdSyms(),
         codeGenInfo.createAppStateType(),
         codeGenInfo.createAppStateDestructor(),
         codeGenInfo.createConverterProcs(),

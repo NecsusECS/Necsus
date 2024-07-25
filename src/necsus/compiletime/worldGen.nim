@@ -1,14 +1,12 @@
 import std/[macros, options, tables, sequtils]
 import tools, codeGenInfo, archetype, common, systemGen, converters
-import worldEnum, tickGen, parse, eventGen, directiveSet, monoDirective
+import tickGen, parse, eventGen, directiveSet, monoDirective
 import ../runtime/[world, archetypeStore, necsusConf, directives], ../util/profile
 
 proc fields(genInfo: CodeGenInfo): seq[(NimNode, NimNode)] =
     ## Produces a list of all fields to attach to the state object
-    let archetypeEnum = genInfo.archetypeEnum.ident
-
     result.add (confIdent, bindSym("NecsusConf"))
-    result.add (worldIdent, nnkBracketExpr.newTree(bindSym("World"), archetypeEnum))
+    result.add (worldIdent, bindSym("World"))
     result.add (thisTime, bindSym("Nfloat"))
     result.add (startTime, bindSym("Nfloat"))
 
@@ -19,7 +17,7 @@ proc fields(genInfo: CodeGenInfo): seq[(NimNode, NimNode)] =
 
     for archetype in genInfo.archetypes:
         let storageType = archetype.asStorageTuple
-        let typ = nnkBracketExpr.newTree(bindSym("ArchetypeStore"), archetypeEnum, storageType)
+        let typ = nnkBracketExpr.newTree(bindSym("ArchetypeStore"), storageType)
         result.add (archetype.ident, typ)
 
     for (name, typ) in genInfo.worldFields:
@@ -74,17 +72,15 @@ proc createAppReturn*(genInfo: CodeGenInfo, errorLocation: NimNode): NimNode =
 proc createArchetypeState(genInfo: CodeGenInfo): NimNode =
     ## Creates variables for storing archetypes
     result = newStmtList()
-    let archetypeEnum = genInfo.archetypeEnum.ident
     for archetype in genInfo.archetypes:
         let ident = archetype.ident
         let storageType = archetype.asStorageTuple
-        let archetypeRef = genInfo.archetypeEnum.ident(archetype)
+        let archetypeRef = archetype.idSymbol
         result.add quote do:
-            `appStateIdent`.`ident` =
-                newArchetypeStore[`archetypeEnum`, `storageType`](
-                    `archetypeRef`,
-                    `appStateIdent`.`confIdent`.componentSize
-                )
+            `appStateIdent`.`ident` = newArchetypeStore[`storageType`](
+                `archetypeRef`,
+                `appStateIdent`.config.componentSize
+            )
 
 proc initProfilers(genInfo: CodeGenInfo): NimNode =
     result = newStmtList()
@@ -102,19 +98,19 @@ proc createAppStateInit*(genInfo: CodeGenInfo): NimNode =
         newStmtList()
     else:
         let createConfig = genInfo.config
-        let archetypeEnum = genInfo.archetypeEnum.ident
-        let archetypeDefs = genInfo.createArchetypeState
         let stdInit = genInfo.generateForHook(GenerateHook.Standard)
         let lateInit = genInfo.generateForHook(GenerateHook.Late)
         let initializers = genInfo.initializeSystems()
         let startups = genInfo.callSystems({StartupPhase})
         let beforeLoop = genInfo.generateForHook(GenerateHook.BeforeLoop)
         let profilers = genInfo.initProfilers()
+        let archetypeDefs = genInfo.createArchetypeState()
+
         quote:
             var `appStateIdent` = new(`appStateType`)
             `appStateIdent`.`confIdent` =  `createConfig`
             `appStateIdent`.`confIdent`.log("Beginning app initialization")
-            `appStateIdent`.`worldIdent` = newWorld[`archetypeEnum`](`appStateIdent`.`confIdent`.entitySize)
+            `appStateIdent`.`worldIdent` = newWorld(`appStateIdent`.`confIdent`.entitySize)
             `appStateIdent`.`startTime` = `appStateIdent`.`confIdent`.getTime()
             `appStateIdent`.`confIdent`.log("Initializing archetypes")
             `archetypeDefs`
@@ -220,3 +216,8 @@ proc createConverterProcs*(details: CodeGenInfo): NimNode =
     for arg in details.allArgs:
         for convert in converters(ctx, arg):
             result.add(buildConverter(convert))
+
+proc createArchetypeIdSyms*(details: CodeGenInfo): NimNode =
+    result = newStmtList()
+    for archetype in details.archetypes:
+        result.add(archetype.archArchSymbolDef)

@@ -1,4 +1,4 @@
-import worldEnum, parse, componentDef, archetypeBuilder, systemGen, directiveSet
+import parse, componentDef, archetypeBuilder, systemGen, directiveSet
 import macros, sequtils, sets, tables, strutils
 
 type CodeGenInfo* = ref object
@@ -8,7 +8,6 @@ type CodeGenInfo* = ref object
     systems*: seq[ParsedSystem]
     directives*: Table[DirectiveGen, DirectiveSet[SystemArg]]
     archetypes*: ArchetypeSet[ComponentDef]
-    archetypeEnum*: ArchetypeEnum
 
 proc calculateArchetypes(allSystems: openarray[ParsedSystem], runnerArgs: seq[SystemArg]): ArchetypeSet[ComponentDef] =
     ## Given all the directives, creates a set of required archetypes
@@ -43,7 +42,6 @@ proc newEmptyCodeGenInfo*(config: NimNode, app: ParsedApp): CodeGenInfo =
         app: app,
         systems: @[],
         archetypes: archetypes,
-        archetypeEnum: archetypeEnum(app.name, archetypes),
         directives: initTable[DirectiveGen, DirectiveSet[SystemArg]]()
     )
 
@@ -58,7 +56,6 @@ proc newCodeGenInfo*(
     let allArgs = app.runnerArgs.concat(allSystems.args.toSeq)
 
     result.archetypes = allSystems.calculateArchetypes(app.runnerArgs)
-    result.archetypeEnum = archetypeEnum(app.name, result.archetypes)
     result.directives = allArgs.calculateDirectives()
 
 proc appStateStruct*(genInfo: CodeGenInfo): NimNode =
@@ -80,7 +77,6 @@ proc newGenerateContext*(codeGen: CodeGenInfo, hook: GenerateHook): GenerateCont
         inputs: codeGen.app.inputs,
         directives: codeGen.directives,
         archetypes: codeGen.archetypes,
-        archetypeEnum: codeGen.archetypeEnum,
         appStateTypeName: codeGen.appStateTypeName
     )
 
