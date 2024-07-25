@@ -158,7 +158,9 @@ proc createAppStateDestructor*(genInfo: CodeGenInfo): NimNode =
 
     return quote:
         {.warning[Deprecated]:off.}
-        proc `destroy`*(`appStateIdent`: var `appStateType`) {.raises: [Exception], used.} =
+        proc `destroy`*(
+            `appStateIdent`: var `appStateType`
+        ) {.raises: [Exception], used.} =
             `destroys`
 
 proc mailboxIndex(details: CodeGenInfo): Table[MonoDirective, seq[NimNode]] =

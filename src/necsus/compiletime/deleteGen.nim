@@ -39,7 +39,10 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string): NimNode =
                 `cases`
 
         return quote do:
-            proc `deleteProcName`(`appStateIdent`: var `appStateTypeName`, `entity`: EntityId) {.gcsafe, raises: [].} =
+            proc `deleteProcName`(
+                `appStateIdent`: var `appStateTypeName`,
+                `entity`: EntityId
+            ) {.gcsafe, raises: [], fastcall, used.} =
                 `body`
     of Standard:
         let deleteProc = name.ident

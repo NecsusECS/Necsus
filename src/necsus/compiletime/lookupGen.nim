@@ -66,7 +66,7 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, lookup: Tu
                 `appStateIdent`: var `appStateTypeName`,
                 `entityId`: EntityId,
                 `output`: var `tupleType`,
-            ): bool {.fastcall, gcsafe, raises: [].} =
+            ): bool {.fastcall, gcsafe, raises: [], used.} =
                 let `entityIndex` {.used.} = `appStateIdent`.`worldIdent`[`entityId`]
                 `cases`
                 return true

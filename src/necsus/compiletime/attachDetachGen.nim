@@ -152,7 +152,7 @@ proc generateAttach(details: GenerateContext, arg: SystemArg, name: string, atta
                 `appStateIdent`: var `appStateTypeName`,
                 `entityId`: EntityId,
                 `newComps`: sink `componentTuple`
-            ) {.gcsafe, raises: [].} =
+            ) {.gcsafe, raises: [], fastcall, used.} =
                 `body`
     of Standard:
         let procName = ident(name)
@@ -196,7 +196,10 @@ proc generateDetach(details: GenerateContext, arg: SystemArg, name: string, deta
         let (body, convertProcs) = details.attachDetachProcBody("Detaching", @[], detachComps, optDetachComps)
         return quote:
             `convertProcs`
-            proc `detachProc`(`appStateIdent`: var `appStateTypeName`, `entityId`: EntityId) =
+            proc `detachProc`(
+                `appStateIdent`: var `appStateTypeName`,
+                `entityId`: EntityId
+            ) {.used, fastcall, raises: [].} =
                 `body`
 
     of GenerateHook.Standard:
@@ -231,7 +234,7 @@ proc generateSwap(details: GenerateContext, arg: SystemArg, name: string, dir: D
                 `appStateIdent`: var `appStateTypeName`,
                 `entityId`: EntityId,
                 `newComps`: sink `componentTuple`
-            ) {.gcsafe, raises: [].} =
+            ) {.gcsafe, raises: [], used.} =
                 `body`
     of Standard:
         let procName = ident(name)
