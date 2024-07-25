@@ -9,10 +9,8 @@
 import necsus / runtime / [ entityId, query, systemVar, inbox, directives, necsusConf, spawn, pragmas, tuples ]
 import necsus / compiletime / [ parse, systemGen, codeGenInfo, worldGen, archetype ]
 import necsus / compiletime / [ worldEnum, tickGen, common, marshalGen ]
+import necsus/util/dump
 import sequtils, macros, options
-
-when defined(dump):
-    import necsus/util/dump
 
 export entityId, query, query.items, necsusConf, systemVar, inbox, directives, spawn, pragmas, tuples
 
@@ -64,10 +62,10 @@ proc buildApp(
         codeGenInfo.createAppReturn(pragmaProc),
     )
 
-    when defined(archetypes):
+    if defined(archetypes):
         codeGenInfo.archetypes.dumpAnalysis
 
-    when defined(dump):
+    if defined(dump):
         result.dumpGeneratedCode(parsedApp, parsedSystems)
 
 macro necsus*(
