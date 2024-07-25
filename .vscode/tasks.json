@@ -6,7 +6,7 @@
         {
             "label": "Compile Test",
             "type": "shell",
-            "command": "nimble c ${file}",
+            "command": "nimble c --debugger:native ${file}",
             "group": {
                 "kind": "build",
                 "isDefault": true
