@@ -96,33 +96,36 @@ proc initProfilers(genInfo: CodeGenInfo): NimNode =
 
 proc createAppStateInit*(genInfo: CodeGenInfo): NimNode =
     ## Creates a proc for initializing the app state object
-    let createConfig = genInfo.config
     let appStateType = genInfo.appStateTypeName
-    let archetypeEnum = genInfo.archetypeEnum.ident
-    let archetypeDefs = genInfo.createArchetypeState
-    let stdInit = genInfo.generateForHook(GenerateHook.Standard)
-    let lateInit = genInfo.generateForHook(GenerateHook.Late)
-    let initializers = genInfo.initializeSystems()
-    let startups = genInfo.callSystems({StartupPhase})
-    let beforeLoop = genInfo.generateForHook(GenerateHook.BeforeLoop)
-    let profilers = genInfo.initProfilers()
 
-    let initBody = quote:
-        var `appStateIdent` = new(`appStateType`)
-        `appStateIdent`.`confIdent` =  `createConfig`
-        `appStateIdent`.`confIdent`.log("Beginning app initialization")
-        `appStateIdent`.`worldIdent` = newWorld[`archetypeEnum`](`appStateIdent`.`confIdent`.entitySize)
-        `appStateIdent`.`startTime` = `appStateIdent`.`confIdent`.getTime()
-        `appStateIdent`.`confIdent`.log("Initializing archetypes")
-        `archetypeDefs`
-        `profilers`
-        `appStateIdent`.`confIdent`.log("Beginning startup sys execution")
-        `stdInit`
-        `lateInit`
-        `initializers`
-        `startups`
-        `beforeLoop`
-        return `appStateIdent`
+    let initBody = if isFastCompileMode(fastInit):
+        newStmtList()
+    else:
+        let createConfig = genInfo.config
+        let archetypeEnum = genInfo.archetypeEnum.ident
+        let archetypeDefs = genInfo.createArchetypeState
+        let stdInit = genInfo.generateForHook(GenerateHook.Standard)
+        let lateInit = genInfo.generateForHook(GenerateHook.Late)
+        let initializers = genInfo.initializeSystems()
+        let startups = genInfo.callSystems({StartupPhase})
+        let beforeLoop = genInfo.generateForHook(GenerateHook.BeforeLoop)
+        let profilers = genInfo.initProfilers()
+        quote:
+            var `appStateIdent` = new(`appStateType`)
+            `appStateIdent`.`confIdent` =  `createConfig`
+            `appStateIdent`.`confIdent`.log("Beginning app initialization")
+            `appStateIdent`.`worldIdent` = newWorld[`archetypeEnum`](`appStateIdent`.`confIdent`.entitySize)
+            `appStateIdent`.`startTime` = `appStateIdent`.`confIdent`.getTime()
+            `appStateIdent`.`confIdent`.log("Initializing archetypes")
+            `archetypeDefs`
+            `profilers`
+            `appStateIdent`.`confIdent`.log("Beginning startup sys execution")
+            `stdInit`
+            `lateInit`
+            `initializers`
+            `startups`
+            `beforeLoop`
+            return `appStateIdent`
 
     let args = genInfo.app.inputs.mapIt(newIdentDefs(it.argName.ident, it.directive.argType))
 
