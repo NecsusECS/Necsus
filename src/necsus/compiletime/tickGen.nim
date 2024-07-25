@@ -88,7 +88,6 @@ proc callSystems*(codeGenInfo: CodeGenInfo, phases: set[SystemPhase]): NimNode =
             invokeSystem = newStmtList(
                 system.logSystemCall("Starting system"),
                 invokeSystem,
-                codeGenInfo.generateForHook(system, AfterSystem),
                 system.logSystemCall("System done"),
             )
 

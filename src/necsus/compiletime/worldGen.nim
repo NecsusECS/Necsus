@@ -100,7 +100,6 @@ proc createAppStateInit*(genInfo: CodeGenInfo): NimNode =
     let appStateType = genInfo.appStateTypeName
     let archetypeEnum = genInfo.archetypeEnum.ident
     let archetypeDefs = genInfo.createArchetypeState
-    let earlyInit = genInfo.generateForHook(GenerateHook.Early)
     let stdInit = genInfo.generateForHook(GenerateHook.Standard)
     let lateInit = genInfo.generateForHook(GenerateHook.Late)
     let initializers = genInfo.initializeSystems()
@@ -118,7 +117,6 @@ proc createAppStateInit*(genInfo: CodeGenInfo): NimNode =
         `archetypeDefs`
         `profilers`
         `appStateIdent`.`confIdent`.log("Beginning startup sys execution")
-        `earlyInit`
         `stdInit`
         `lateInit`
         `initializers`
@@ -148,7 +146,6 @@ proc createAppStateDestructor*(genInfo: CodeGenInfo): NimNode =
     let destroys = newStmtList()
 
     if not isFastCompileMode(fastDestroy):
-        destroys.add(genInfo.generateForHook(GenerateHook.BeforeTeardown))
         destroys.add(genInfo.callSystems({TeardownPhase}))
         destroys.add(genInfo.destroySystems())
 
