@@ -6,6 +6,13 @@ else:
     type Nfloat* = float
 
 type
+    CallbackDir[T] = ref object
+        ## A directive that uses a callback for interacting with a system
+        appState: pointer
+        callback: T
+
+    Arity0Proc[T] = proc(app: pointer): T {.gcsafe, raises: [], fastcall.}
+        ## A directive callback that just returns a value to our customers
 
     Delete* = proc(entityId: EntityId) {.gcsafe, raises: [].}
         ## Deletes an entity and all associated components
@@ -23,22 +30,17 @@ type
 
     LookupProc[C: tuple] = proc(app: pointer, entityId: EntityId, components: var C): bool {.fastcall, gcsafe, raises: [].}
 
-    Lookup*[C: tuple] = ref object
+    Lookup*[C: tuple] = CallbackDir[LookupProc[C]]
         ## Looks up entity details based on its entity ID. Where `C` is a tuple with all the
         ## components to fetch
-        appState: pointer
-        lookup: LookupProc[C]
 
-    Outbox*[T] = proc(message: T): void
-        ## Sends an event. Where `T` is the message being sent
-
-    TimeDelta* = proc(): Nfloat {.gcsafe, raises: [].}
+    TimeDelta* = CallbackDir[Arity0Proc[Nfloat]]
         ## Tracks the amount of time since the last execution of a system
 
-    TimeElapsed* = proc(): Nfloat {.gcsafe, raises: [].}
+    TimeElapsed* = CallbackDir[Arity0Proc[Nfloat]]
         ## The total amount of time spent in an app
 
-    TickId* = proc(): uint32 {.gcsafe, raises: [].}
+    TickId* = CallbackDir[Arity0Proc[uint32]]
         ## An auto-incrementing ID for each tick
 
     EntityDebug* = proc(entityId: EntityId): string {.gcsafe, raises: [].}
@@ -62,14 +64,14 @@ type
     SaveSystemInstance*[T] = proc(): T {.closure.}
         ## Marks the return type for an instanced save system
 
-proc newLookup*[C](appState: pointer, lookup: LookupProc[C]): Lookup[C] =
-    ## Creates a lookup instance
-    return Lookup[C](appState: appState, lookup: lookup)
+proc newCallbackDir*[T : proc](appState: pointer, callback: T): CallbackDir[T] =
+    ## Instantiates a directive that uses a callback
+    return CallbackDir[T](appState: appState, callback: callback)
 
 proc get*[C](lookup: Lookup[C], entityId: EntityId): Option[C] =
     ## Executes a lookup
     var output: C
-    if lookup.lookup(lookup.appState, entityId, output):
+    if lookup.callback(lookup.appState, entityId, output):
         return some(output)
 
 {.experimental: "callOperator".}
@@ -81,3 +83,17 @@ proc `()`*[C](lookup: Lookup[C], entityId: EntityId): Option[C] =
 proc `.()`*[C](obj: auto, lookup: Lookup[C], entityId: EntityId): Option[C] =
     ## Executes a lookup
     lookup.get(entityId)
+
+proc get*[T](comp: CallbackDir[Arity0Proc[T]]): T =
+    ## Fetch a value out of a single directive
+    comp.callback(comp.appState)
+
+{.experimental: "callOperator".}
+proc `()`*[T](comp: CallbackDir[Arity0Proc[T]]): T =
+    ## Fetch a value out of a single directive
+    comp.get()
+
+{.experimental: "dotOperators".}
+proc `.()`*[T](parent: auto, comp: CallbackDir[Arity0Proc[T]]): T =
+    ## Fetch a value out of a single directive
+    comp.get()

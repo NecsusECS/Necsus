@@ -12,10 +12,17 @@ proc sysArg(name: string): NimNode =
         `appStateIdent`.`getTickId`
 
 proc generate(details: GenerateContext, arg: SystemArg, name: string): NimNode =
+    let tickGenProc = details.globalName(name)
     case details.hook
+    of Outside:
+        let appType = details.appStateTypeName
+        return quote:
+            proc `tickGenProc`(`appStateIdent`: pointer): uint32 {.gcsafe, raises: [], fastcall.} =
+                let `appStatePtr` = cast[ptr `appType`](`appStateIdent`)
+                return `appStatePtr`.`tickId`
     of Standard:
         return quote:
-            `appStateIdent`.`getTickId` = proc(): auto = `appStatePtr`.`tickId`
+            `appStateIdent`.`getTickId` = newCallbackDir(`appStatePtr`, `tickGenProc`)
     of LoopStart:
         return quote:
             `appStateIdent`.`tickId` += 1
@@ -24,7 +31,7 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string): NimNode =
 
 let tickIdGenerator* {.compileTime.} = newGenerator(
     ident = "TickId",
-    interest = { LoopStart, Standard },
+    interest = { LoopStart, Standard, Outside },
     generate = generate,
     worldFields = fields,
     systemArg = sysArg,

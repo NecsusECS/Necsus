@@ -980,7 +980,7 @@ type
 proc change*(manager: Bundle[StateManager], newState: GameState) =
     ## Central entry point when then game state needs to be changed
     manager.state := newState
-    manager.stateChange(newState)
+    manager.stateChange.send(newState)
 
 ##
 ## customSystem.nim

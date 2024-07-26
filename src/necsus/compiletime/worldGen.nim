@@ -216,9 +216,11 @@ proc createSendProcs*(details: CodeGenInfo): NimNode =
             body.add(nnkDiscardStmt.newTree(newEmptyNode()))
 
         result.add quote do:
-            proc `name`(`appStateIdent`: ptr `appStateType`, `event`: sink `eventType`) {.used.} = `body`
+            proc `name`(`appStateIdent`: pointer, `event`: `eventType`) {.used, fastcall.} =
+                let `appStateIdent` = cast[ptr `appStateType`](`appStateIdent`)
+                `body`
 
-            proc `name`(`appStateIdent`: var `appStateType`, `event`: sink `eventType`) {.used.} =
+            proc `name`(`appStateIdent`: var `appStateType`, `event`: `eventType`) {.used, fastcall.} =
                 `name`(addr `appStateIdent`, `event`)
 
 proc createConverterProcs*(details: CodeGenInfo): NimNode =

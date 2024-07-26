@@ -70,7 +70,7 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, lookup: Tu
     of GenerateHook.Standard:
         let procName = ident(name)
         return quote:
-            `appStateIdent`.`procName` = newLookup(`appStatePtr`, `lookupProc`)
+            `appStateIdent`.`procName` = newCallbackDir(`appStatePtr`, `lookupProc`)
     else:
         return newEmptyNode()
 
