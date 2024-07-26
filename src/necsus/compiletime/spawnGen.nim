@@ -28,10 +28,7 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, dir: Tuple
             let archetypeIdent = archetype.ident
             let log = emitEntityTrace("Spawned ", newCall(bindSym("entityId"), ident("result")), " of kind ", archetype.name)
             let assignment = quote do:
-                `appStateIdent`.`ident` =
-                    proc(): auto =
-                        result = beginSpawn(`appStatePtr`.`worldIdent`, `appStatePtr`.`archetypeIdent`)
-                        `log`
+                `appStateIdent`.`ident` = newSpawn(`appStateIdent`.`worldIdent`, addr `appStateIdent`.`archetypeIdent`)
             discard result.add(assignment)
         except UnsortedArchetype as e:
             error(e.msg, arg.source)
