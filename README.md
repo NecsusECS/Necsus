@@ -949,7 +949,7 @@ proc createEnemy*(control: Bundle[EnemyControl], hitPoints: int) =
     control.createEnemy.with(EnemyData(state: Alive, hitPoints: hitPoints))
 
 proc damage*(control: Bundle[EnemyControl], enemy: EntityId, damage: int) =
-    control.findEnemy(enemy).map do (data: auto) -> void:
+    control.findEnemy.get(enemy).map do (data: auto) -> void:
         data[0].hitPoints -= damage
         if data[0].hitPoints <= 0:
             data[0].state = Dead

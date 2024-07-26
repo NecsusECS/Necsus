@@ -1,4 +1,4 @@
-import macros, sequtils, options, tables
+import macros, sequtils, tables
 import tupleDirective, tools, common, archetype, componentDef, systemGen
 import ../runtime/[world, archetypeStore, directives], ../util/bits
 
@@ -58,10 +58,11 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, lookup: Tu
 
         return quote:
             proc `lookupProc`(
-                `appStateIdent`: ptr `appStateTypeName`,
+                `appStateIdent`: pointer,
                 `entityId`: EntityId,
                 `output`: var `tupleType`,
             ): bool {.fastcall, gcsafe, raises: [], used.} =
+                var `appStateIdent` = cast[ptr `appStateTypeName`](`appStateIdent`)
                 let `entityIndex` {.used.} = `appStateIdent`.`worldIdent`[`entityId`]
                 `cases`
                 return true
@@ -69,10 +70,7 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, lookup: Tu
     of GenerateHook.Standard:
         let procName = ident(name)
         return quote:
-            `appStateIdent`.`procName` = proc(`entityId`: EntityId): Option[`tupleType`] =
-                var `output`: `tupleType`
-                if `lookupProc`(`appStatePtr`, `entityId`, `output`):
-                    return some(`output`)
+            `appStateIdent`.`procName` = newLookup(`appStatePtr`, `lookupProc`)
     else:
         return newEmptyNode()
 

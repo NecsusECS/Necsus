@@ -31,7 +31,7 @@ proc runner(
     for eid, comp in query:
         eid.attach((C(), ))
         eid.detachD()
-        check(eid.lookup().get()[0].value == 789)
+        check(lookup.get(eid).get()[0].value == 789)
 
     tick()
 

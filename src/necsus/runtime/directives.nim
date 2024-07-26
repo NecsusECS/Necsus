@@ -21,9 +21,13 @@ type
     Swap*[A: tuple, B: tuple] = proc(entityId: EntityId, components: A) {.gcsafe, raises: [].}
         ## A directive that adds components in `A` and removes components in `B`
 
-    Lookup*[C: tuple] = proc(entityId: EntityId): Option[C] {.gcsafe, raises: [].}
+    LookupProc[C: tuple] = proc(app: pointer, entityId: EntityId, components: var C): bool {.fastcall, gcsafe, raises: [].}
+
+    Lookup*[C: tuple] = ref object
         ## Looks up entity details based on its entity ID. Where `C` is a tuple with all the
         ## components to fetch
+        appState: pointer
+        lookup: LookupProc[C]
 
     Outbox*[T] = proc(message: T): void
         ## Sends an event. Where `T` is the message being sent
@@ -57,3 +61,23 @@ type
 
     SaveSystemInstance*[T] = proc(): T {.closure.}
         ## Marks the return type for an instanced save system
+
+proc newLookup*[C](appState: pointer, lookup: LookupProc[C]): Lookup[C] =
+    ## Creates a lookup instance
+    return Lookup[C](appState: appState, lookup: lookup)
+
+proc get*[C](lookup: Lookup[C], entityId: EntityId): Option[C] =
+    ## Executes a lookup
+    var output: C
+    if lookup.lookup(lookup.appState, entityId, output):
+        return some(output)
+
+{.experimental: "callOperator".}
+proc `()`*[C](lookup: Lookup[C], entityId: EntityId): Option[C] =
+    ## Executes a lookup
+    lookup.get(entityId)
+
+{.experimental: "dotOperators".}
+proc `.()`*[C](obj: auto, lookup: Lookup[C], entityId: EntityId): Option[C] =
+    ## Executes a lookup
+    lookup.get(entityId)
