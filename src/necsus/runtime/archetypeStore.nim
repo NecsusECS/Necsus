@@ -6,7 +6,7 @@ type
         entityId*: EntityId
         components*: Comps
 
-    ArchetypeStore*[Comps: tuple] = ref object
+    ArchetypeStore*[Comps: tuple] = object
         ## Stores a specific archetype shape
         archetype: ArchetypeId
         initialSize: int
@@ -18,6 +18,8 @@ type
         ## A manual iterator instance
 
 proc `=copy`*[Comps: tuple](target: var ArchRow[Comps], source: ArchRow[Comps]) {.error.}
+
+proc `=copy`*[Comps: tuple](target: var ArchetypeStore[Comps], source: ArchetypeStore[Comps]) {.error.}
 
 proc newArchetypeStore*[Comps: tuple](
     archetype: ArchetypeId,
@@ -32,13 +34,13 @@ proc archetype*[Comps: tuple](store: ArchetypeStore[Comps]): ArchetypeId = store
     ## Accessor for the archetype of a store
 
 proc next*[Comps: tuple](
-    store: ArchetypeStore[Comps],
+    store: var ArchetypeStore[Comps],
     iter: var ArchetypeIter
 ): ptr ArchRow[Comps] =
     ## Returns the next value for an interator
     return if store.compStore == nil: nil else: store.compStore.next(BlockIter(iter))
 
-iterator items*[Comps: tuple](store: ArchetypeStore[Comps]): ptr ArchRow[Comps] =
+iterator items*[Comps: tuple](store: var ArchetypeStore[Comps]): ptr ArchRow[Comps] =
     ## Iterates over the components in a view
     var iter: ArchetypeIter
     var value: ptr ArchRow[Comps]
@@ -48,7 +50,7 @@ iterator items*[Comps: tuple](store: ArchetypeStore[Comps]): ptr ArchRow[Comps] 
             break
         yield value[]
 
-func addLen*[Comps: tuple](store: ArchetypeStore[Comps], len: var uint) =
+func addLen*[Comps: tuple](store: var ArchetypeStore[Comps], len: var uint) =
     ## Accessor for the archetype of a store
     if store.compStore != nil:
         len += store.compStore.len

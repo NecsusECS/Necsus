@@ -139,7 +139,7 @@ proc generateAttach(details: GenerateContext, arg: SystemArg, name: string, atta
         return quote do:
             `convertProcs`
             proc `attachProc`(
-                `appStateIdent`: var `appStateTypeName`,
+                `appStateIdent`: ptr `appStateTypeName`,
                 `entityId`: EntityId,
                 `newComps`: sink `componentTuple`
             ) {.gcsafe, raises: [], fastcall, used.} =
@@ -148,7 +148,7 @@ proc generateAttach(details: GenerateContext, arg: SystemArg, name: string, atta
         let procName = ident(name)
         return quote:
             `appStateIdent`.`procName` = proc(`entityId`: EntityId, `newComps`: `componentTuple`) {.gcsafe, raises: [].} =
-                `attachProc`(`appStateIdent`, `entityId`, `newComps`)
+                `attachProc`(`appStatePtr`, `entityId`, `newComps`)
     else:
         return newEmptyNode()
 
@@ -187,7 +187,7 @@ proc generateDetach(details: GenerateContext, arg: SystemArg, name: string, deta
         return quote:
             `convertProcs`
             proc `detachProc`(
-                `appStateIdent`: var `appStateTypeName`,
+                `appStateIdent`: ptr `appStateTypeName`,
                 `entityId`: EntityId
             ) {.used, fastcall, raises: [].} =
                 `body`
@@ -196,7 +196,7 @@ proc generateDetach(details: GenerateContext, arg: SystemArg, name: string, deta
         let procName = ident(name)
         return quote:
             `appStateIdent`.`procName` = proc(`entityId`: EntityId) =
-                `detachProc`(`appStateIdent`, `entityId`)
+                `detachProc`(`appStatePtr`, `entityId`)
     else:
         return newEmptyNode()
 
@@ -221,7 +221,7 @@ proc generateSwap(details: GenerateContext, arg: SystemArg, name: string, dir: D
         return quote do:
             `convertProcs`
             proc `swapProc`(
-                `appStateIdent`: var `appStateTypeName`,
+                `appStateIdent`: ptr `appStateTypeName`,
                 `entityId`: EntityId,
                 `newComps`: sink `componentTuple`
             ) {.gcsafe, raises: [], used.} =
@@ -230,7 +230,7 @@ proc generateSwap(details: GenerateContext, arg: SystemArg, name: string, dir: D
         let procName = ident(name)
         return quote:
             `appStateIdent`.`procName` = proc(`entityId`: EntityId, `newComps`: `componentTuple`) {.gcsafe, raises: [].} =
-                `swapProc`(`appStateIdent`, `entityId`, `newComps`)
+                `swapProc`(`appStatePtr`, `entityId`, `newComps`)
     else:
         return newEmptyNode()
 

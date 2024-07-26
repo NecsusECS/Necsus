@@ -7,7 +7,7 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string): NimNode =
     of Late:
         let nameIdent = name.ident
         return quote:
-            `appStateIdent`.`nameIdent` = proc(): string = save(`appStateIdent`)
+            `appStateIdent`.`nameIdent` = proc(): string = save(`appStatePtr`)
     else:
         return newEmptyNode()
 

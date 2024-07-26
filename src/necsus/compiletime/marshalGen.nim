@@ -67,10 +67,16 @@ proc createRestoreProc(genInfo: CodeGenInfo): NimNode =
 
     return quote:
         proc restore*(
-            `appStateIdent`: var `appStateType`,
+            `appStateIdent`: ptr `appStateType`,
             `streamIdent`: string
         ) {.gcsafe, raises: [IOError, OSError, JsonParsingError, ValueError, Exception].} =
             `body`
+
+        proc restore*(
+            `appStateIdent`: var `appStateType`,
+            `streamIdent`: string
+        ) {.gcsafe, raises: [IOError, OSError, JsonParsingError, ValueError, Exception].} =
+            restore(addr `appStateIdent`, `streamIdent`)
 
 proc createSaveProc(genInfo: CodeGenInfo): NimNode =
     ## Generates a proc that calls all the 'save' systems and aggregates them into a single value
@@ -97,9 +103,14 @@ proc createSaveProc(genInfo: CodeGenInfo): NimNode =
     return quote:
         {.hint[XCannotRaiseY]:off.}
         proc save*(
-            `appStateIdent`: var `appStateType`,
+            `appStateIdent`: ptr `appStateType`,
         ): string {.raises: [IOError, OSError, ValueError, Exception].} =
             `body`
+
+        proc save*(
+            `appStateIdent`: var `appStateType`,
+        ): string {.raises: [IOError, OSError, ValueError, Exception].} =
+            save(addr `appStateIdent`)
 
 proc createMarshalProcs*(genInfo: CodeGenInfo): NimNode =
     ## Generates procs needed for saving and restoring game state

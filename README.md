@@ -849,7 +849,8 @@ proc myExampleSystem() =
 proc myApp() {.necsus([~myExampleSystem], newNecsusConf()).}
 
 # Initialize the app and execute the main loop 3 times
-var app = initMyApp()
+var app: myAppState
+app.initMyApp()
 app.tick()
 app.tick()
 app.tick()
@@ -877,7 +878,8 @@ proc printEvent(events: Inbox[MyEvent]) =
 
 proc myApp(data: MyData) {.necsus([~printData, ~printEvent], newNecsusConf()).}
 
-var app = initMyApp(MyData(value: "some data"))
+var app: myAppState
+app.initMyApp(MyData(value: "some data"))
 
 app.sendMyEvent(MyEvent(value: "some event"))
 app.sendMyEvent(MyEvent(value: "another event"))

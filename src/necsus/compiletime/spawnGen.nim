@@ -30,7 +30,7 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, dir: Tuple
             let assignment = quote do:
                 `appStateIdent`.`ident` =
                     proc(): auto =
-                        result = beginSpawn(`appStateIdent`.`worldIdent`, `appStateIdent`.`archetypeIdent`)
+                        result = beginSpawn(`appStatePtr`.`worldIdent`, `appStatePtr`.`archetypeIdent`)
                         `log`
             discard result.add(assignment)
         except UnsortedArchetype as e:

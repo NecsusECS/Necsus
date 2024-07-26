@@ -15,7 +15,7 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string): NimNode =
     case details.hook
     of Standard:
         return quote:
-            `appStateIdent`.`getTickId` = proc(): auto = `appStateIdent`.`tickId`
+            `appStateIdent`.`getTickId` = proc(): auto = `appStatePtr`.`tickId`
     of LoopStart:
         return quote:
             `appStateIdent`.`tickId` += 1

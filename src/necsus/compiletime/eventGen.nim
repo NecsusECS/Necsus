@@ -57,7 +57,7 @@ proc generateOutbox(details: GenerateContext, arg: SystemArg, name: string, outb
         let sendProc = outbox.sendEventProcName
         return quote:
             `appStateIdent`.`procName` = proc(`event`: `eventType`) =
-                `sendProc`(`appStateIdent`, `event`)
+                `sendProc`(`appStatePtr`, `event`)
     else:
         return newEmptyNode()
 

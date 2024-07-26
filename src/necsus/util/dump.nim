@@ -73,8 +73,8 @@ proc dumpGeneratedCode*(output: NimNode, app: ParsedApp, systems: openarray[Pars
 
     echo "const DEFAULT_ENTITY_COUNT = 1_000"
     var line: string
-    for rawLine in output.repr.replace("proc =destroy", "proc `=destroy`").splitLines():
-        line &= rawLine
+    for rawLine in output.repr.splitLines():
+        line &= rawLine.replace("proc =destroy", "proc `=destroy`").replace("proc =copy", "proc `=copy`")
         while "__" in line:
             line = line.replace("__", "_")
 

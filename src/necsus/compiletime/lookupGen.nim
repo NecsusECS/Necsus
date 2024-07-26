@@ -58,7 +58,7 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, lookup: Tu
 
         return quote:
             proc `lookupProc`(
-                `appStateIdent`: var `appStateTypeName`,
+                `appStateIdent`: ptr `appStateTypeName`,
                 `entityId`: EntityId,
                 `output`: var `tupleType`,
             ): bool {.fastcall, gcsafe, raises: [], used.} =
@@ -71,7 +71,7 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, lookup: Tu
         return quote:
             `appStateIdent`.`procName` = proc(`entityId`: EntityId): Option[`tupleType`] =
                 var `output`: `tupleType`
-                if `lookupProc`(`appStateIdent`, `entityId`, `output`):
+                if `lookupProc`(`appStatePtr`, `entityId`, `output`):
                     return some(`output`)
     else:
         return newEmptyNode()

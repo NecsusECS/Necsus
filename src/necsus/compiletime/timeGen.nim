@@ -12,7 +12,7 @@ proc generateDelta(details: GenerateContext, arg: SystemArg, name: string): NimN
     case details.hook
     of Late:
         return quote:
-            `appStateIdent`.`timeDelta` = proc(): auto = `appStateIdent`.`thisTime` - `appStateIdent`.`lastTime`
+            `appStateIdent`.`timeDelta` = proc(): auto = `appStatePtr`.`thisTime` - `appStatePtr`.`lastTime`
     of BeforeLoop:
         return quote:
             `appStateIdent`.`lastTime` = `appStateIdent`.`startTime`
@@ -37,7 +37,7 @@ proc generateElapsed(details: GenerateContext, arg: SystemArg, name: string): Ni
     of Late:
         return quote:
             `appStateIdent`.`thisTime` = `appStateIdent`.`startTime`
-            `appStateIdent`.`timeElapsed` = proc(): auto = `appStateIdent`.`thisTime` - `appStateIdent`.`startTime`
+            `appStateIdent`.`timeElapsed` = proc(): auto = `appStatePtr`.`thisTime` - `appStatePtr`.`startTime`
     else:
         return newEmptyNode()
 

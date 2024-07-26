@@ -41,14 +41,14 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string): NimNode =
 
         return quote do:
             proc `deleteProcName`(
-                `appStateIdent`: var `appStateTypeName`,
+                `appStateIdent`: ptr `appStateTypeName`,
                 `entity`: EntityId
             ) {.gcsafe, raises: [], fastcall, used.} =
                 `body`
     of Standard:
         let deleteProc = name.ident
         return quote do:
-            `appStateIdent`.`deleteProc` = proc(`entity`: EntityId) = `deleteProcName`(`appStateIdent`, `entity`)
+            `appStateIdent`.`deleteProc` = proc(`entity`: EntityId) = `deleteProcName`(`appStatePtr`, `entity`)
     else:
         return newEmptyNode()
 

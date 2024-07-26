@@ -25,7 +25,7 @@ proc buildArchetypeLookup(
 
     return quote do:
         let `compsIdent` = getComps[`archetypeType`](
-            `appStateIdent`.`archetypeIdent`,
+            `appStatePtr`.`archetypeIdent`,
             `entityIndex`.archetypeIndex
         )
         return $`entityId` & " = " & `nameMapper`(`entityArchetype`) & $`compsIdent`[]
@@ -67,7 +67,7 @@ proc generateEntityDebug(details: GenerateContext, arg: SystemArg, name: string)
 
         return quote:
             `appStateIdent`.`procName` = proc(`entityId`: EntityId): string =
-                let `entityIndex` {.used.} = `appStateIdent`.`worldIdent`[`entityId`]
+                let `entityIndex` {.used.} = `appStatePtr`.`worldIdent`[`entityId`]
                 `cases`
     else:
         return newEmptyNode()

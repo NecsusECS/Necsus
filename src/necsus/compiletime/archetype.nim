@@ -173,6 +173,7 @@ proc archArchSymbolDef*[T](archetype: Archetype[T]): NimNode =
     let symbol = archetype.idSymbol
     let num = archetype.id
     return quote:
+        {.hint[ConvFromXtoItselfNotNeeded]:off.}
         const `symbol` = ArchetypeId(`num`)
 
 proc newArchetypeSet*[T](values: openarray[Archetype[T]]): ArchetypeSet[T] =

@@ -101,6 +101,8 @@ macro runSystemOnce*(systemDef: typed): untyped =
 
     let call = newCall(systemIdent, system.args.mapIt(systemArg(codeGenInfo, it)))
 
+    let appStateType = codeGenInfo.appStateTypeName
+
     return newStmtList(
         codeGenInfo.createArchetypeIdSyms(),
         codeGenInfo.createAppStateType(),
@@ -111,7 +113,8 @@ macro runSystemOnce*(systemDef: typed): untyped =
         codeGenInfo.createAppStateInit(),
         quote do:
             block:
-                let `appStateIdent` = `initIdent`()
+                var `appStateIdent`: `appStateType`
+                `initIdent`(`appStateIdent`)
                 let `systemIdent` = `systemDef`
                 `call`
     )
