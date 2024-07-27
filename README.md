@@ -957,6 +957,28 @@ proc damage*(control: Bundle[EnemyControl], enemy: EntityId, damage: int) =
             data[0].state = KnockedBack
 ```
 
+#### Dealing with functors
+
+Sometimes when using bundles, you may get an error complaining about an `undeclared identifier`. This is a quirk of
+Nim's [call operator overloading](https://nim-lang.org/docs/manual_experimental.html#special-operators-call-operator).
+Under the covers, the directives aren't actually procs -- they're objects with a call operator declared. This
+functionality in Nim is still experimental, though, so it isn't always perfect.
+
+In those cases, you can use the `get` proc for when you are fetching a value, or the `exec` proc for when you are
+just discarding the result. For example:
+
+```nim
+import necsus
+
+type MyBundle = object
+    outbox: Outbox[string]
+    time: TimeDelta
+
+proc mySystem*(control: Bundle[MyBundle]) =
+    control.outbox.exec("foo")
+    echo control.time.get()
+```
+
 ### Listening to state changes
 
 When you have an action that needs to be executed once when a state changes, you can encapsulate your state changes
