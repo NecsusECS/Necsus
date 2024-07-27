@@ -14,7 +14,10 @@ type
     Arity0Proc[T] = proc(app: pointer): T {.gcsafe, raises: [], fastcall.}
         ## A directive callback that just returns a value to our customers
 
-    Delete* = proc(entityId: EntityId) {.gcsafe, raises: [].}
+    Arity1Proc[A, T] = proc(app: pointer, arg: A): T {.gcsafe, raises: [], fastcall.}
+        ## A directive callback that accepts 1 parameter and returns
+
+    Delete* = CallbackDir[Arity1Proc[EntityId, void]]
         ## Deletes an entity and all associated components
 
     Attach*[C: tuple] = proc(entityId: EntityId, components: C) {.gcsafe, raises: [].}
@@ -97,3 +100,21 @@ proc `()`*[T](comp: CallbackDir[Arity0Proc[T]]): T =
 proc `.()`*[T](parent: auto, comp: CallbackDir[Arity0Proc[T]]): T =
     ## Fetch a value out of a single directive
     comp.get()
+
+proc get*[A, T](comp: CallbackDir[Arity1Proc[A, T]], a: A): T =
+    ## Fetch a value out of a single directive
+    comp.callback(comp.appState, a)
+
+proc exec*[A](comp: CallbackDir[Arity1Proc[A, void]], a: A) =
+    ## Fetch a value out of a single directive
+    comp.callback(comp.appState, a)
+
+{.experimental: "callOperator".}
+proc `()`*[A, T](comp: CallbackDir[Arity1Proc[A, T]], a: A): T =
+    ## Fetch a value out of a single directive
+    comp.get(a)
+
+{.experimental: "dotOperators".}
+proc `.()`*[A, T](parent: auto, comp: CallbackDir[Arity1Proc[A, T]], a: A): T =
+    ## Fetch a value out of a single directive
+    comp.get(a)

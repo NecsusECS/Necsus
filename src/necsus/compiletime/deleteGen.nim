@@ -40,15 +40,13 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string): NimNode =
                 `cases`
 
         return quote do:
-            proc `deleteProcName`(
-                `appStateIdent`: ptr `appStateTypeName`,
-                `entity`: EntityId
-            ) {.gcsafe, raises: [], fastcall, used.} =
+            proc `deleteProcName`(`appStateIdent`: pointer, `entity`: EntityId) {.gcsafe, raises: [], fastcall, used.} =
+                let `appStateIdent` = cast[ptr `appStateTypeName`](`appStateIdent`)
                 `body`
     of Standard:
         let deleteProc = name.ident
         return quote do:
-            `appStateIdent`.`deleteProc` = proc(`entity`: EntityId) = `deleteProcName`(`appStatePtr`, `entity`)
+            `appStateIdent`.`deleteProc` = newCallbackDir(`appStatePtr`, `deleteProcName`)
     else:
         return newEmptyNode()
 
