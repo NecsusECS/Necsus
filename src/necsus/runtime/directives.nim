@@ -24,7 +24,7 @@ type
         ## Describes a type that is able to update existing entities new entities. Where `C` is
         ## a tuple with all the components to attach.
 
-    Detach*[C: tuple] = proc(entityId: EntityId) {.gcsafe, raises: [].}
+    Detach*[C: tuple] = CallbackDir[Arity1Proc[EntityId, void]]
         ## Detaches a set of components from an entity. Where `C` is a tuple describing all
         ## the components to detach
 

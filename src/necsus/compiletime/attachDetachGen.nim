@@ -186,17 +186,14 @@ proc generateDetach(details: GenerateContext, arg: SystemArg, name: string, deta
         let (body, convertProcs) = details.attachDetachProcBody("Detaching", @[], detachComps, optDetachComps)
         return quote:
             `convertProcs`
-            proc `detachProc`(
-                `appStateIdent`: ptr `appStateTypeName`,
-                `entityId`: EntityId
-            ) {.used, fastcall, raises: [].} =
+            proc `detachProc`(`appStateIdent`: pointer, `entityId`: EntityId) {.used, fastcall, raises: [].} =
+                let `appStateIdent` = cast[ptr `appStateTypeName`](`appStateIdent`)
                 `body`
 
     of GenerateHook.Standard:
         let procName = ident(name)
         return quote:
-            `appStateIdent`.`procName` = proc(`entityId`: EntityId) =
-                `detachProc`(`appStatePtr`, `entityId`)
+            `appStateIdent`.`procName` = newCallbackDir(`appStatePtr`, `detachProc`)
     else:
         return newEmptyNode()
 
