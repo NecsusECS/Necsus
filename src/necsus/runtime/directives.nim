@@ -17,10 +17,13 @@ type
     Arity1Proc[A, T] = proc(app: pointer, arg: A): T {.gcsafe, raises: [], fastcall.}
         ## A directive callback that accepts 1 parameter and returns
 
+    Arity2Proc[A, B, T] = proc(app: pointer, a: A, b: B): T {.gcsafe, raises: [], fastcall.}
+        ## A directive callback that accepts 2 parameters and returns
+
     Delete* = CallbackDir[Arity1Proc[EntityId, void]]
         ## Deletes an entity and all associated components
 
-    Attach*[C: tuple] = proc(entityId: EntityId, components: C) {.gcsafe, raises: [].}
+    Attach*[C: tuple] = CallbackDir[Arity2Proc[EntityId, C, void]]
         ## Describes a type that is able to update existing entities new entities. Where `C` is
         ## a tuple with all the components to attach.
 
@@ -118,3 +121,21 @@ proc `()`*[A, T](comp: CallbackDir[Arity1Proc[A, T]], a: A): T =
 proc `.()`*[A, T](parent: auto, comp: CallbackDir[Arity1Proc[A, T]], a: A): T =
     ## Fetch a value out of a single directive
     comp.get(a)
+
+proc get*[A, B, T](comp: CallbackDir[Arity2Proc[A, B, T]], a: A, b: B): T =
+    ## Fetch a value out of a single directive
+    comp.callback(comp.appState, a, b)
+
+proc exec*[A, B](comp: CallbackDir[Arity2Proc[A, B, void]], a: A, b: B) =
+    ## Fetch a value out of a single directive
+    comp.callback(comp.appState, a, b)
+
+{.experimental: "callOperator".}
+proc `()`*[A, B, T](comp: CallbackDir[Arity2Proc[A, B, T]], a: A, b: B): T =
+    ## Fetch a value out of a single directive
+    comp.get(a, b)
+
+{.experimental: "dotOperators".}
+proc `.()`*[A, B, T](parent: auto, comp: CallbackDir[Arity2Proc[A, B, T]], a: A, b: B): T =
+    ## Fetch a value out of a single directive
+    comp.get(a, b)

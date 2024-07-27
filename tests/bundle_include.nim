@@ -11,7 +11,7 @@ type
 
 proc setup*(bundle: Bundle[Grouping]) =
     let eid = bundle.create.with(A(), B())
-    bundle.attach(eid, (C(), ))
+    bundle.attach.exec(eid, (C(), ))
 
 proc loop*(bundle: Bundle[Grouping], query: Query[(A, B, C)]) =
     setup(bundle)

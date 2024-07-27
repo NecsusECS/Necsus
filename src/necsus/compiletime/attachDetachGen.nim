@@ -139,16 +139,16 @@ proc generateAttach(details: GenerateContext, arg: SystemArg, name: string, atta
         return quote do:
             `convertProcs`
             proc `attachProc`(
-                `appStateIdent`: ptr `appStateTypeName`,
+                `appStatePtr`: pointer,
                 `entityId`: EntityId,
-                `newComps`: sink `componentTuple`
+                `newComps`: `componentTuple`
             ) {.gcsafe, raises: [], fastcall, used.} =
+                let `appStateIdent` = cast[ptr `appStateTypeName`](`appStatePtr`)
                 `body`
     of Standard:
         let procName = ident(name)
         return quote:
-            `appStateIdent`.`procName` = proc(`entityId`: EntityId, `newComps`: `componentTuple`) {.gcsafe, raises: [].} =
-                `attachProc`(`appStatePtr`, `entityId`, `newComps`)
+            `appStateIdent`.`procName` = newCallbackDir(`appStatePtr`, `attachProc`)
     else:
         return newEmptyNode()
 
