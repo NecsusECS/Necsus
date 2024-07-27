@@ -110,7 +110,7 @@ proc createAppStateInit*(genInfo: CodeGenInfo): NimNode =
         let archetypeDefs = genInfo.createArchetypeState()
 
         quote:
-            let `appStatePtr` = addr `appStateIdent`
+            let `appStatePtr` {.used.} = addr `appStateIdent`
             `appStateIdent`.`confIdent` =  `createConfig`
             `appStateIdent`.`confIdent`.log("Beginning app initialization")
             `appStateIdent`.`worldIdent` = newWorld(`appStateIdent`.`confIdent`.entitySize)

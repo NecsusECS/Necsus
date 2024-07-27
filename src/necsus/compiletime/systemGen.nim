@@ -1,4 +1,4 @@
-import std/[options, hashes, tables, macros, strformat, strutils, sequtils, macrocache]
+import std/[options, hashes, tables, macros, strformat, strutils, sequtils]
 import archetype, dualDirective, monoDirective, tupleDirective, archetypeBuilder
 import componentDef, directiveSet, common, directiveArg
 
@@ -364,6 +364,7 @@ iterator allArgs*(args: openArray[SystemArg]): SystemArg =
         yield arg
 
 when NimMajor >= 2:
+    import std/macrocache
     const sendNames = CacheTable("SendProcNames")
 else:
     var sendNames {.compileTime.} = initTable[string, NimNode]()

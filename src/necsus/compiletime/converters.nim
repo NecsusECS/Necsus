@@ -1,4 +1,4 @@
-import std/[macros, options, macrocache]
+import std/[macros, options]
 import tools, systemGen, componentDef, directiveArg, tupleDirective, common
 import ../runtime/query
 
@@ -38,6 +38,7 @@ proc copyTuple(fromArch: openarray[ComponentDef], newVals: openarray[ComponentDe
         `output` = `tupleConstr`
 
 when NimMajor >= 2:
+    import std/macrocache
     const built = CacheTable("NecsusConverters")
 else:
     import std/tables
