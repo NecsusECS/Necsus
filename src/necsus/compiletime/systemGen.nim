@@ -363,9 +363,18 @@ iterator allArgs*(args: openArray[SystemArg]): SystemArg =
 
         yield arg
 
-proc sendEventProcName*(directive: MonoDirective): NimNode =
+when NimMajor >= 2:
+    const sendNames = CacheTable("SendProcNames")
+else:
+    var sendNames {.compileTime.} = initTable[string, NimNode]()
+
+proc sendEventProcName*(directive: MonoDirective): tuple[internal, external: NimNode] =
     ## Generates the proc name for sending an event to all listening inboxes
-    ident("send" & directive.name.capitalizeAscii)
+    let sig = directive.signature
+    if sig notin sendNames:
+        sendNames[sig] = genSym(nskProc, "send" & directive.name.capitalizeAscii)
+    let name = sendNames[sig]
+    return (name, name.strVal.ident)
 
 iterator nodes*(arg: SystemArg): NimNode =
     ## Pulls all nodes out of an arg

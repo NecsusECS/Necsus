@@ -187,7 +187,7 @@ proc createSendProcs*(details: CodeGenInfo): NimNode =
     let event = ident("event")
 
     for directive, inboxes in details.mailboxIndex:
-        let name = directive.sendEventProcName
+        let (internalName, externalName) = directive.sendEventProcName
         let eventType = directive.argType
 
         var body = newStmtList(
@@ -216,12 +216,12 @@ proc createSendProcs*(details: CodeGenInfo): NimNode =
             body.add(nnkDiscardStmt.newTree(newEmptyNode()))
 
         result.add quote do:
-            proc `name`(`appStateIdent`: pointer, `event`: `eventType`) {.used, fastcall.} =
+            proc `internalName`(`appStateIdent`: pointer, `event`: `eventType`) {.used, fastcall.} =
                 let `appStateIdent` = cast[ptr `appStateType`](`appStateIdent`)
                 `body`
 
-            proc `name`(`appStateIdent`: var `appStateType`, `event`: `eventType`) {.used, fastcall.} =
-                `name`(addr `appStateIdent`, `event`)
+            proc `externalName`(`appStateIdent`: var `appStateType`, `event`: `eventType`) {.used, fastcall.} =
+                `internalName`(addr `appStateIdent`, `event`)
 
 proc createConverterProcs*(details: CodeGenInfo): NimNode =
     ## Creates a list of procs for converting from one tuple type to another

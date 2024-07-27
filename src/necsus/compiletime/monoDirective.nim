@@ -17,3 +17,7 @@ proc hash*(directive: MonoDirective): Hash = hash(directive.argType)
 proc `==`*(a, b: MonoDirective): bool = cmp(a.argType, b.argType) == 0
 
 proc `$`*(dir: MonoDirective): string = dir.argType.lispRepr
+
+proc signature*(dir: MonoDirective): string =
+    ## Returns a stable signature representing this directive
+    result.addSignature(dir.argType)

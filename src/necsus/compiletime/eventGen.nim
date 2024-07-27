@@ -1,6 +1,6 @@
-import macros, strutils, tables, sequtils
+import std/[macros, strutils, tables, sequtils]
 import monoDirective, common, systemGen
-import ../runtime/inbox, ../util/nimNode
+import ../runtime/[inbox, directives], ../util/nimNode
 
 proc eventStorageIdent(event: MonoDirective | NimNode): NimNode =
     ## Returns the name of the identifier that holds the storage for an event
@@ -52,10 +52,9 @@ proc generateOutbox(details: GenerateContext, arg: SystemArg, name: string, outb
     case details.hook
     of Standard:
         let procName = name.ident
-        let sendProc = outbox.sendEventProcName
-        let eventType = outbox.argType
+        let sendProc = outbox.sendEventProcName.internal
         return quote:
-            `appStateIdent`.`procName` = newOutbox[`eventType`](`appStatePtr`, `sendProc`)
+            `appStateIdent`.`procName` = newCallbackDir(`appStatePtr`, `sendProc`)
     else:
         return newEmptyNode()
 
