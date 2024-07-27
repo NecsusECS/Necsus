@@ -218,16 +218,16 @@ proc generateSwap(details: GenerateContext, arg: SystemArg, name: string, dir: D
         return quote do:
             `convertProcs`
             proc `swapProc`(
-                `appStateIdent`: ptr `appStateTypeName`,
+                `appStatePtr`: pointer,
                 `entityId`: EntityId,
-                `newComps`: sink `componentTuple`
-            ) {.gcsafe, raises: [], used.} =
+                `newComps`: `componentTuple`
+            ) {.gcsafe, raises: [], fastcall, used.} =
+                let `appStateIdent` = cast[ptr `appStateTypeName`](`appStatePtr`)
                 `body`
     of Standard:
         let procName = ident(name)
         return quote:
-            `appStateIdent`.`procName` = proc(`entityId`: EntityId, `newComps`: `componentTuple`) {.gcsafe, raises: [].} =
-                `swapProc`(`appStatePtr`, `entityId`, `newComps`)
+            `appStateIdent`.`procName` = newCallbackDir(`appStatePtr`, `swapProc`)
     else:
         return newEmptyNode()
 
