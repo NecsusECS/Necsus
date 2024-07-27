@@ -55,10 +55,17 @@ type
     Bundle*[T] = ptr T
         ## A group of directives bundled together in an object
 
-    Save* = proc(): string {.raises: [IOError, OSError, ValueError, Exception].}
+    SaveProc = proc(app: pointer): string {.raises: [IOError, OSError, ValueError, Exception], fastcall.}
+
+    Save* = CallbackDir[SaveProc]
         ## Generates a saved game state as a json value
 
-    Restore* = proc(json: string) {.gcsafe, raises: [IOError, OSError, JsonParsingError, ValueError, Exception].}
+    RestoreProc = proc(
+        app: pointer,
+        json: string
+    ) {.fastcall, gcsafe, raises: [IOError, OSError, JsonParsingError, ValueError, Exception].}
+
+    Restore* = CallbackDir[RestoreProc]
         ## Executes all 'restore' systems using the given json as input data
 
     SystemInstance* = proc(): void {.closure.}
@@ -139,3 +146,13 @@ proc `()`*[A, B, T](comp: CallbackDir[Arity2Proc[A, B, T]], a: A, b: B): T =
 proc `.()`*[A, B, T](parent: auto, comp: CallbackDir[Arity2Proc[A, B, T]], a: A, b: B): T =
     ## Fetch a value out of a single directive
     comp.get(a, b)
+
+{.experimental: "callOperator".}
+proc `()`*(save: Save): string =
+    ## Executes a save
+    save.callback(save.appState)
+
+{.experimental: "callOperator".}
+proc `()`*(restore: Restore, value: string) =
+    ## Executes a restore operation
+    restore.callback(restore.appState, value)

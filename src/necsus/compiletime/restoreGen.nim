@@ -1,21 +1,32 @@
-import macros, systemGen, common, ../runtime/directives
+import std/[json, macros]
+import systemGen, common, ../runtime/directives
 
 proc worldFields(name: string): seq[WorldField] = @[ (name, bindSym("Restore")) ]
 
-let json {.compileTime.} = "json".ident
+let jsonArg {.compileTime.} = "json".ident
 
 proc generate(details: GenerateContext, arg: SystemArg, name: string): NimNode =
+    let wrapperName = details.globalName(name)
+
     case details.hook
+    of Outside:
+        let appType = details.appStateTypeName
+        return quote:
+            proc `wrapperName`(
+                `appStatePtr`: pointer,
+                `jsonArg`: string
+            ) {.fastcall, gcsafe, raises: [IOError, OSError, JsonParsingError, ValueError, Exception].} =
+                restore(cast[ptr `appType`](`appStatePtr`), `jsonArg`)
     of Late:
         let nameIdent = name.ident
         return quote:
-            `appStateIdent`.`nameIdent` = proc(`json`: string): auto = restore(`appStatePtr`, `json`)
+            `appStateIdent`.`nameIdent` = newCallbackDir(`appStatePtr`, `wrapperName`)
     else:
         return newEmptyNode()
 
 let restoreGenerator* {.compileTime.} = newGenerator(
     ident = "Restore",
-    interest = { Late },
+    interest = { Late, Outside },
     generate = generate,
     worldFields = worldFields,
 )
