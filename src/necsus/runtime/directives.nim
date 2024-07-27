@@ -1,10 +1,5 @@
 import entityId, std/[json, options]
 
-when defined(necsusFloat32):
-    type Nfloat* = float32
-else:
-    type Nfloat* = float
-
 type
     CallbackDir[T] = ref object
         ## A directive that uses a callback for interacting with a system
@@ -45,13 +40,13 @@ type
     Outbox*[T] = CallbackDir[OutboxProc[T]]
         ## Sends an event. Where `T` is the message being sent
 
-    TimeDelta* = CallbackDir[Arity0Proc[Nfloat]]
+    TimeDelta* = CallbackDir[Arity0Proc[BiggestFloat]]
         ## Tracks the amount of time since the last execution of a system
 
-    TimeElapsed* = CallbackDir[Arity0Proc[Nfloat]]
+    TimeElapsed* = CallbackDir[Arity0Proc[BiggestFloat]]
         ## The total amount of time spent in an app
 
-    TickId* = CallbackDir[Arity0Proc[uint32]]
+    TickId* = CallbackDir[Arity0Proc[BiggestUInt]]
         ## An auto-incrementing ID for each tick
 
     EntityDebug* = CallbackDir[Arity1Proc[EntityId, string]]

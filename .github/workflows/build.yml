@@ -80,7 +80,6 @@ jobs:
           profile,
           dump,
           archetypes,
-          necsusFloat32,
           necsusEntityTrace,
           necsusEventTrace,
           necsusQueryTrace,

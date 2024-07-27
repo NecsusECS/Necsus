@@ -1,14 +1,14 @@
 import std/[macros, options, tables, sequtils]
 import tools, codeGenInfo, archetype, common, systemGen, converters
 import tickGen, parse, eventGen, directiveSet, monoDirective
-import ../runtime/[world, archetypeStore, necsusConf, directives], ../util/profile
+import ../runtime/[world, archetypeStore, necsusConf], ../util/profile
 
 proc fields(genInfo: CodeGenInfo): seq[(NimNode, NimNode)] =
     ## Produces a list of all fields to attach to the state object
     result.add (confIdent, bindSym("NecsusConf"))
     result.add (worldIdent, bindSym("World"))
-    result.add (thisTime, bindSym("Nfloat"))
-    result.add (startTime, bindSym("Nfloat"))
+    result.add (thisTime, bindSym("BiggestFloat"))
+    result.add (startTime, bindSym("BiggestFloat"))
 
     for system in genInfo.systems:
         if system.phase == IndirectEventCallback:

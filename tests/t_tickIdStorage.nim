@@ -1,7 +1,7 @@
 import unittest, necsus
 
 proc checkTick(tickId: TickId): auto {.instanced.} =
-    var stored: uint
+    var stored: BiggestUInt
     return proc() =
         check(tickId() != stored)
         stored = tickId()

@@ -1,4 +1,4 @@
-import math, directives
+import math
 
 type
     NecsusLogger* = proc(message: string): void {.gcsafe, raises: [].}
@@ -7,7 +7,7 @@ type
         ## Used to configure
         entitySize*: int
         componentSize*: int
-        getTime*: proc(): Nfloat
+        getTime*: proc(): BiggestFloat
         log*: NecsusLogger
 
 proc logEcho(message: string) =
@@ -15,7 +15,7 @@ proc logEcho(message: string) =
         echo message
 
 proc newNecsusConf*(
-    getTime: proc(): Nfloat,
+    getTime: proc(): BiggestFloat,
     log: NecsusLogger,
     entitySize: int,
     componentSize: int,
@@ -28,7 +28,7 @@ proc newNecsusConf*(
         log: log,
     )
 
-proc newNecsusConf*(getTime: proc(): Nfloat, log: NecsusLogger): NecsusConf =
+proc newNecsusConf*(getTime: proc(): BiggestFloat, log: NecsusLogger): NecsusConf =
     ## Create a necsus configuration
     NecsusConf(entitySize: 1_000, componentSize: 400, getTime: getTime, log: log)
 
@@ -38,7 +38,7 @@ when defined(js) or defined(osx) or defined(windows) or defined(posix):
     let DEFAULT_ENTITY_COUNT = 1_000
 
     var firstTime = epochTime()
-    proc elapsedTime(): NFloat = NFloat(epochTime() - firstTime)
+    proc elapsedTime(): BiggestFloat = BiggestFloat(epochTime() - firstTime)
 
     proc newNecsusConf*(
         entitySize: int = DEFAULT_ENTITY_COUNT,
