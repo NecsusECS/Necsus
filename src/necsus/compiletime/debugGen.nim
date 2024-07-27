@@ -25,7 +25,7 @@ proc buildArchetypeLookup(
 
     return quote do:
         let `compsIdent` = getComps[`archetypeType`](
-            `appStatePtr`.`archetypeIdent`,
+            `appStateIdent`.`archetypeIdent`,
             `entityIndex`.archetypeIndex
         )
         return $`entityId` & " = " & `nameMapper`(`entityArchetype`) & $`compsIdent`[]
@@ -49,13 +49,12 @@ proc buildNameMapper(details: GenerateContext): NimNode =
 
 proc generateEntityDebug(details: GenerateContext, arg: SystemArg, name: string): NimNode =
     ## Generates the code for debugging the state of an entity
+    let debugProc = details.globalName(name)
+
     case details.hook
     of GenerateHook.Outside:
-        return buildNameMapper(details)
-
-    of GenerateHook.Standard:
-
-        let procName = ident(name)
+        let nameMapper = buildNameMapper(details)
+        let appType = details.appStateTypeName
 
         # Create a case statement where each branch is one of the archetypes
         var cases = newEmptyNode()
@@ -66,9 +65,17 @@ proc generateEntityDebug(details: GenerateContext, arg: SystemArg, name: string)
             cases.add(nnkElse.newTree(nnkDiscardStmt.newTree(newEmptyNode())))
 
         return quote:
-            `appStateIdent`.`procName` = proc(`entityId`: EntityId): string =
-                let `entityIndex` {.used.} = `appStatePtr`.`worldIdent`[`entityId`]
+            `nameMapper`
+
+            proc `debugProc`(`appStatePtr`: pointer, `entityId`: EntityId): string {.fastcall, gcsafe, raises: [].} =
+                let `appStateIdent` = cast[ptr `appType`](`appStatePtr`)
+                let `entityIndex` {.used.} = `appStateIdent`.`worldIdent`[`entityId`]
                 `cases`
+
+    of GenerateHook.Standard:
+        let procName = ident(name)
+        return quote:
+            `appStateIdent`.`procName` = newCallbackDir(`appStatePtr`, `debugProc`)
     else:
         return newEmptyNode()
 

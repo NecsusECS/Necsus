@@ -46,7 +46,7 @@ type
     TickId* = CallbackDir[Arity0Proc[uint32]]
         ## An auto-incrementing ID for each tick
 
-    EntityDebug* = proc(entityId: EntityId): string {.gcsafe, raises: [].}
+    EntityDebug* = CallbackDir[Arity1Proc[EntityId, string]]
         ## Looks up an entity and returns debug data about it
 
     Bundle*[T] = ptr T
