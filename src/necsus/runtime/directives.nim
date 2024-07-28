@@ -1,4 +1,9 @@
-import entityId, std/[json, options]
+import entityId, std/[json, options], macros
+
+static:
+    when not (compiles do:
+        proc `()`[T](arg: T) = discard):
+        error("Necsus must be compiled with --experimental:callOperator enabled")
 
 type
     CallbackDir[T] = ref object
@@ -87,80 +92,54 @@ proc get*[C](lookup: Lookup[C], entityId: EntityId): Option[C] =
     if lookup.callback(lookup.appState, entityId, output):
         return some(output)
 
-{.experimental: "callOperator".}
 proc `()`*[C](lookup: Lookup[C], entityId: EntityId): Option[C] =
     ## Executes a lookup
     lookup.get(entityId)
 
-{.experimental: "dotOperators".}
-proc `.()`*[C](obj: auto, lookup: Lookup[C], entityId: EntityId): Option[C] =
-    ## Executes a lookup
-    lookup.get(entityId)
-
 proc get*[T](comp: CallbackDir[Arity0Proc[T]]): T =
-    ## Fetch a value out of a single directive
+    ## Fetch a value out of a directive
     comp.callback(comp.appState)
 
-{.experimental: "callOperator".}
 proc `()`*[T](comp: CallbackDir[Arity0Proc[T]]): T =
-    ## Fetch a value out of a single directive
-    comp.get()
-
-{.experimental: "dotOperators".}
-proc `.()`*[T](parent: auto, comp: CallbackDir[Arity0Proc[T]]): T =
-    ## Fetch a value out of a single directive
+    ## Fetch a value out of a directive
     comp.get()
 
 proc get*[A, T](comp: CallbackDir[Arity1Proc[A, T]], a: A): T =
-    ## Fetch a value out of a single directive
+    ## Fetch a value out of a directive
     comp.callback(comp.appState, a)
 
 proc exec*[A](comp: CallbackDir[Arity1Proc[A, void]], a: A) =
-    ## Fetch a value out of a single directive
+    ## Execute a directive
     comp.callback(comp.appState, a)
 
-{.experimental: "callOperator".}
 proc `()`*[A, T](comp: CallbackDir[Arity1Proc[A, T]], a: A): T =
-    ## Fetch a value out of a single directive
-    comp.get(a)
-
-{.experimental: "dotOperators".}
-proc `.()`*[A, T](parent: auto, comp: CallbackDir[Arity1Proc[A, T]], a: A): T =
-    ## Fetch a value out of a single directive
+    ## Fetch a value out of a directive
     comp.get(a)
 
 proc get*[A, B, T](comp: CallbackDir[Arity2Proc[A, B, T]], a: A, b: B): T =
-    ## Fetch a value out of a single directive
+    ## Fetch a value out of a directive
     comp.callback(comp.appState, a, b)
 
 proc exec*[A, B](comp: CallbackDir[Arity2Proc[A, B, void]], a: A, b: B) =
-    ## Fetch a value out of a single directive
+    ## Execute a directive
     comp.callback(comp.appState, a, b)
 
-{.experimental: "callOperator".}
 proc `()`*[A, B, T](comp: CallbackDir[Arity2Proc[A, B, T]], a: A, b: B): T =
-    ## Fetch a value out of a single directive
+    ## Fetch a value out of a directive
     comp.get(a, b)
 
-{.experimental: "dotOperators".}
-proc `.()`*[A, B, T](parent: auto, comp: CallbackDir[Arity2Proc[A, B, T]], a: A, b: B): T =
-    ## Fetch a value out of a single directive
-    comp.get(a, b)
-
-{.experimental: "callOperator".}
 proc `()`*(save: Save): string =
     ## Executes a save
     save.callback(save.appState)
 
-{.experimental: "callOperator".}
 proc `()`*(restore: Restore, value: string) =
     ## Executes a restore operation
     restore.callback(restore.appState, value)
 
 proc exec*[T](outbox: Outbox[T], message: T) {.inline.} =
+    ## Sends a message through an outbox
     outbox.callback(outbox.appState, message)
 
-{.experimental: "callOperator".}
 proc `()`*[T](outbox: Outbox[T], message: T) =
     ## Sends a message through an outbox
     outbox.exec(message)

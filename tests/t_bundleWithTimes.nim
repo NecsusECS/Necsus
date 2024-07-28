@@ -10,10 +10,10 @@ var lastDelta = -1.0
 var timesThrough = 1
 
 proc assertion*(bundle: Bundle[A]) =
-    check(bundle.elapsed.get() > lastElapsed)
-    check(bundle.delta.get() > lastDelta)
+    check(bundle.elapsed() > lastElapsed)
+    check(bundle.delta() > lastDelta)
 
-    lastElapsed = bundle.elapsed.get()
+    lastElapsed = bundle.elapsed()
 
     sleep(timesThrough * 10)
     timesThrough += 1
