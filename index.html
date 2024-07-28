@@ -448,7 +448,7 @@ type
 
 proc useBundle(bundle: Bundle[MyBundle]) =
     let eid = bundle.spawn.with(A())
-    bundle.attach(eid, (B(), ))
+    bundle.attach.exec(eid, (B(), ))
 
 proc myApp() {.necsus([~useBundle], newNecsusConf()).}
 </code></pre>
@@ -688,7 +688,8 @@ proc myExampleSystem() =
 proc myApp() {.necsus([~myExampleSystem], newNecsusConf()).}
 
 # Initialize the app and execute the main loop 3 times
-var app = initMyApp()
+var app: myAppState
+app.initMyApp()
 app.tick()
 app.tick()
 app.tick()
@@ -713,7 +714,8 @@ proc printEvent(events: Inbox[MyEvent]) =
 
 proc myApp(data: MyData) {.necsus([~printData, ~printEvent], newNecsusConf()).}
 
-var app = initMyApp(MyData(value: &quot;some data&quot;))
+var app: myAppState
+app.initMyApp(MyData(value: &quot;some data&quot;))
 
 app.sendMyEvent(MyEvent(value: &quot;some event&quot;))
 app.sendMyEvent(MyEvent(value: &quot;another event&quot;))

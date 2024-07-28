@@ -1,11 +1,11 @@
 nimTitle	necsus	necsus.html	module src/necsus		0
-nim	SystemFlag	necsus.html#SystemFlag	object SystemFlag		20
-nim	RunLoop	necsus.html#RunLoop	NecsusRun.RunLoop		23
-nim	ExitLoop	necsus.html#ExitLoop	NecsusRun.ExitLoop		23
-nim	NecsusRun	necsus.html#NecsusRun	enum NecsusRun		23
-nim	`~`	necsus.html#~,proc	proc `~`(system: proc): SystemFlag		27
-nim	gameLoop	necsus.html#gameLoop,Shared[NecsusRun],proc)	proc gameLoop(exit: Shared[NecsusRun]; tick: proc (): void)		30
-nim	necsus	necsus.html#necsus.m,,openArray[SystemFlag],NecsusConf,untyped	macro necsus(runner: typed{sym}; systems: openArray[SystemFlag]; conf: NecsusConf;\n       pragmaProc: untyped)		73
-nim	necsus	necsus.html#necsus.m,openArray[SystemFlag],NecsusConf,untyped	macro necsus(systems: openArray[SystemFlag]; conf: NecsusConf; pragmaProc: untyped)		82
-nim	runSystemOnce	necsus.html#runSystemOnce.m,typed	macro runSystemOnce(systemDef: typed): untyped		90
-nimgrp	necsus	necsus.html#necsus-macros-all	macro		73
+nim	SystemFlag	necsus.html#SystemFlag	object SystemFlag		18
+nim	RunLoop	necsus.html#RunLoop	NecsusRun.RunLoop		21
+nim	ExitLoop	necsus.html#ExitLoop	NecsusRun.ExitLoop		21
+nim	NecsusRun	necsus.html#NecsusRun	enum NecsusRun		21
+nim	`~`	necsus.html#~,proc	proc `~`(system: proc): SystemFlag		25
+nim	gameLoop	necsus.html#gameLoop,Shared[NecsusRun],proc)	proc gameLoop(exit: Shared[NecsusRun]; tick: proc (): void)		28
+nim	necsus	necsus.html#necsus.m,,openArray[SystemFlag],NecsusConf,untyped	macro necsus(runner: typed{sym}; systems: openArray[SystemFlag]; conf: NecsusConf;\n       pragmaProc: untyped)		71
+nim	necsus	necsus.html#necsus.m,openArray[SystemFlag],NecsusConf,untyped	macro necsus(systems: openArray[SystemFlag]; conf: NecsusConf; pragmaProc: untyped)		80
+nim	runSystemOnce	necsus.html#runSystemOnce.m,typed	macro runSystemOnce(systemDef: typed): untyped		88
+nimgrp	necsus	necsus.html#necsus-macros-all	macro		71

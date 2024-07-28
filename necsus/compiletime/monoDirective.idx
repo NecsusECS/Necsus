@@ -4,3 +4,4 @@ nim	newMonoDir	necsus/compiletime/monoDirective.html#newMonoDir,NimNode	proc new
 nim	hash	necsus/compiletime/monoDirective.html#hash,MonoDirective	proc hash(directive: MonoDirective): Hash		15
 nim	`==`	necsus/compiletime/monoDirective.html#==,MonoDirective,MonoDirective	proc `==`(a, b: MonoDirective): bool		17
 nim	`$`	necsus/compiletime/monoDirective.html#$,MonoDirective	proc `$`(dir: MonoDirective): string		19
+nim	signature	necsus/compiletime/monoDirective.html#signature,MonoDirective	proc signature(dir: MonoDirective): string		21

@@ -1,11 +1,11 @@
 nimTitle	world	necsus/runtime/world.html	module src/necsus/runtime/world		0
-nim	EntityIndex	necsus/runtime/world.html#EntityIndex	object EntityIndex		4
-nim	NewEntity	necsus/runtime/world.html#NewEntity	type NewEntity		9
-nim	World	necsus/runtime/world.html#World	object World		11
-nim	newWorld	necsus/runtime/world.html#newWorld,SomeInteger	proc newWorld[Archs: enum](initialSize: SomeInteger): World[Archs]		15
-nim	`=copy`	necsus/runtime/world.html#=copy,World[Archs],World[Archs]	proc `=copy`[Archs](target: var World[Archs]; source: World[Archs])		19
-nim	newEntity	necsus/runtime/world.html#newEntity,World[Archs]	proc newEntity[Archs](world: var World[Archs]): NewEntity[Archs]		21
-nim	entityId	necsus/runtime/world.html#entityId,NewEntity[Archs]	proc entityId[Archs](newEntity: NewEntity[Archs]): EntityId		27
-nim	setArchetypeDetails	necsus/runtime/world.html#setArchetypeDetails,NewEntity[Archs],Archs,uint	proc setArchetypeDetails[Archs](newEntity: NewEntity[Archs]; archetype: Archs;\n                           index: uint)		31
-nim	`[]`	necsus/runtime/world.html#[],World[Archs: enum],EntityId	proc `[]`[Archs: enum](world: World[Archs]; entityId: EntityId): ptr EntityIndex[\n    Archs]		38
-nim	del	necsus/runtime/world.html#del,World[Archs: enum],EntityId	proc del[Archs: enum](world: var World[Archs]; entityId: EntityId): EntityIndex[Archs]		42
+nim	ArchetypeId	necsus/runtime/world.html#ArchetypeId	type ArchetypeId		4
+nim	EntityIndex	necsus/runtime/world.html#EntityIndex	object EntityIndex		6
+nim	NewEntity	necsus/runtime/world.html#NewEntity	type NewEntity		11
+nim	World	necsus/runtime/world.html#World	type World		13
+nim	newWorld	necsus/runtime/world.html#newWorld,SomeInteger	proc newWorld(initialSize: SomeInteger): World		16
+nim	newEntity	necsus/runtime/world.html#newEntity,World	proc newEntity(world: var World): NewEntity		23
+nim	entityId	necsus/runtime/world.html#entityId,NewEntity	proc entityId(newEntity: NewEntity): EntityId		29
+nim	setArchetypeDetails	necsus/runtime/world.html#setArchetypeDetails,NewEntity,ArchetypeId,uint	proc setArchetypeDetails(newEntity: NewEntity; archetype: ArchetypeId; index: uint)		33
+nim	`[]`	necsus/runtime/world.html#[],World,EntityId	proc `[]`(world: World; entityId: EntityId): ptr EntityIndex		40
+nim	del	necsus/runtime/world.html#del,World,EntityId	proc del(world: var World; entityId: EntityId): EntityIndex		44

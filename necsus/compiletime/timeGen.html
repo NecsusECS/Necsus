@@ -55,9 +55,9 @@
     <summary><a class="reference reference-toplevel" href="#9" id="59">Lets</a></summary>
     <ul class="simple simple-toc-section">
       <li><a class="reference" href="#deltaGenerator" title="deltaGenerator {.compileTime.} = newGenerator(&quot;TimeDelta&quot;,
-    {Late, BeforeLoop, LoopEnd}, generateDelta, deltaFields,
+    {Late, BeforeLoop, LoopEnd, Outside}, generateDelta, deltaFields,
     defaultSystemArgNone)">deltaGenerator</a></li>
-<li><a class="reference" href="#elapsedGenerator" title="elapsedGenerator {.compileTime.} = newGenerator(&quot;TimeElapsed&quot;, {Late},
+<li><a class="reference" href="#elapsedGenerator" title="elapsedGenerator {.compileTime.} = newGenerator(&quot;TimeElapsed&quot;, {Late, Outside},
     generateElapsed, elapsedFields, defaultSystemArgNone)">elapsedGenerator</a></li>
 
     </ul>
@@ -83,7 +83,7 @@
   <dl class="item">
     <div id="deltaGenerator">
   <dt><pre><a href="timeGen.html#deltaGenerator"><span class="Identifier">deltaGenerator</span></a> {.<span class="Identifier">compileTime</span>.} <span class="Other">=</span> <span class="Identifier">newGenerator</span><span class="Other">(</span><span class="StringLit">&quot;TimeDelta&quot;</span><span class="Other">,</span>
-    <span class="Other">{</span><span class="Identifier">Late</span><span class="Other">,</span> <span class="Identifier">BeforeLoop</span><span class="Other">,</span> <span class="Identifier">LoopEnd</span><span class="Other">}</span><span class="Other">,</span> <span class="Identifier">generateDelta</span><span class="Other">,</span> <span class="Identifier">deltaFields</span><span class="Other">,</span>
+    <span class="Other">{</span><span class="Identifier">Late</span><span class="Other">,</span> <span class="Identifier">BeforeLoop</span><span class="Other">,</span> <span class="Identifier">LoopEnd</span><span class="Other">,</span> <span class="Identifier">Outside</span><span class="Other">}</span><span class="Other">,</span> <span class="Identifier">generateDelta</span><span class="Other">,</span> <span class="Identifier">deltaFields</span><span class="Other">,</span>
     <span class="Identifier">defaultSystemArgNone</span><span class="Other">)</span></pre></dt>
   <dd>
     
@@ -92,7 +92,7 @@
   </dd>
 </div>
 <div id="elapsedGenerator">
-  <dt><pre><a href="timeGen.html#elapsedGenerator"><span class="Identifier">elapsedGenerator</span></a> {.<span class="Identifier">compileTime</span>.} <span class="Other">=</span> <span class="Identifier">newGenerator</span><span class="Other">(</span><span class="StringLit">&quot;TimeElapsed&quot;</span><span class="Other">,</span> <span class="Other">{</span><span class="Identifier">Late</span><span class="Other">}</span><span class="Other">,</span>
+  <dt><pre><a href="timeGen.html#elapsedGenerator"><span class="Identifier">elapsedGenerator</span></a> {.<span class="Identifier">compileTime</span>.} <span class="Other">=</span> <span class="Identifier">newGenerator</span><span class="Other">(</span><span class="StringLit">&quot;TimeElapsed&quot;</span><span class="Other">,</span> <span class="Other">{</span><span class="Identifier">Late</span><span class="Other">,</span> <span class="Identifier">Outside</span><span class="Other">}</span><span class="Other">,</span>
     <span class="Identifier">generateElapsed</span><span class="Other">,</span> <span class="Identifier">elapsedFields</span><span class="Other">,</span> <span class="Identifier">defaultSystemArgNone</span><span class="Other">)</span></pre></dt>
   <dd>
     
@@ -110,7 +110,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-07-16 16:12:07 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-07-28 22:38:30 UTC</small>
       </div>
     </div>
   </div>

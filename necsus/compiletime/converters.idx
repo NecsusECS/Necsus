@@ -1,2 +1,2 @@
 nimTitle	converters	necsus/compiletime/converters.html	module src/necsus/compiletime/converters		0
-nim	buildConverter	necsus/compiletime/converters.html#buildConverter,ConverterDef	proc buildConverter(convert: ConverterDef): NimNode		46
+nim	buildConverter	necsus/compiletime/converters.html#buildConverter,ConverterDef	proc buildConverter(convert: ConverterDef): NimNode		47

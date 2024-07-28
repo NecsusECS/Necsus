@@ -1,5 +1,8 @@
 nimTitle	typeReader	necsus/util/typeReader.html	module src/necsus/util/typeReader		0
-nim	findPragma	necsus/util/typeReader.html#findPragma,NimNode	proc findPragma(node: NimNode): NimNode		3
-nim	findChildSyms	necsus/util/typeReader.html#findChildSyms,NimNode,seq[NimNode]	proc findChildSyms(node: NimNode; output: var seq[NimNode])		16
-nim	resolveTo	necsus/util/typeReader.html#resolveTo,NimNode,set[NimNodeKind]	proc resolveTo(typeDef: NimNode; expectKind: set[NimNodeKind]): Option[NimNode]		52
-nim	resolveAlias	necsus/util/typeReader.html#resolveAlias,NimNode	proc resolveAlias(typeDef: NimNode): Option[NimNode]		67
+nim	isPragma	necsus/util/typeReader.html#isPragma,NimNode,NimNode	proc isPragma(found, expect: NimNode): bool		3
+nim	findPragma	necsus/util/typeReader.html#findPragma,NimNode	proc findPragma(node: NimNode): NimNode		12
+nim	findChildSyms	necsus/util/typeReader.html#findChildSyms,NimNode,seq[NimNode]	proc findChildSyms(node: NimNode; output: var seq[NimNode])		23
+nim	resolveBracketGeneric	necsus/util/typeReader.html#resolveBracketGeneric,NimNode	proc resolveBracketGeneric(typeDef: NimNode): NimNode		52
+nim	resolveTo	necsus/util/typeReader.html#resolveTo,NimNode,set[NimNodeKind]	proc resolveTo(typeDef: NimNode; expectKind: set[NimNodeKind]): Option[NimNode]		60
+nim	resolveAlias	necsus/util/typeReader.html#resolveAlias,NimNode	proc resolveAlias(typeDef: NimNode): Option[NimNode]		75
+nim	findSym	necsus/util/typeReader.html#findSym,NimNode	proc findSym(node: NimNode): NimNode		87

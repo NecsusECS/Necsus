@@ -59,8 +59,20 @@
   <li><a class="reference" href="#findPragma%2CNimNode" title="findPragma(node: NimNode): NimNode">findPragma(node: NimNode): NimNode</a></li>
 
 </ul>
+<ul class="simple nested-toc-section">findSym
+  <li><a class="reference" href="#findSym%2CNimNode" title="findSym(node: NimNode): NimNode">findSym(node: NimNode): NimNode</a></li>
+
+</ul>
+<ul class="simple nested-toc-section">isPragma
+  <li><a class="reference" href="#isPragma%2CNimNode%2CNimNode" title="isPragma(found, expect: NimNode): bool">isPragma(found, expect: NimNode): bool</a></li>
+
+</ul>
 <ul class="simple nested-toc-section">resolveAlias
   <li><a class="reference" href="#resolveAlias%2CNimNode" title="resolveAlias(typeDef: NimNode): Option[NimNode]">resolveAlias(typeDef: NimNode): Option[NimNode]</a></li>
+
+</ul>
+<ul class="simple nested-toc-section">resolveBracketGeneric
+  <li><a class="reference" href="#resolveBracketGeneric%2CNimNode" title="resolveBracketGeneric(typeDef: NimNode): NimNode">resolveBracketGeneric(typeDef: NimNode): NimNode</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">resolveTo
@@ -106,6 +118,28 @@
 </div>
 
 </div>
+<div id="findSym-procs-all">
+  <div id="findSym,NimNode">
+  <dt><pre><span class="Keyword">proc</span> <a href="#findSym%2CNimNode"><span class="Identifier">findSym</span></a><span class="Other">(</span><span class="Identifier">node</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Unwraps the symbol from a node
+    
+  </dd>
+</div>
+
+</div>
+<div id="isPragma-procs-all">
+  <div id="isPragma,NimNode,NimNode">
+  <dt><pre><span class="Keyword">proc</span> <a href="#isPragma%2CNimNode%2CNimNode"><span class="Identifier">isPragma</span></a><span class="Other">(</span><span class="Identifier">found</span><span class="Other">,</span> <span class="Identifier">expect</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Determines whether a NimNode represents the given pragma
+    
+  </dd>
+</div>
+
+</div>
 <div id="resolveAlias-procs-all">
   <div id="resolveAlias,NimNode">
   <dt><pre><span class="Keyword">proc</span> <a href="#resolveAlias%2CNimNode"><span class="Identifier">resolveAlias</span></a><span class="Other">(</span><span class="Identifier">typeDef</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Option</span><span class="Other">[</span><span class="Identifier">NimNode</span><span class="Other">]</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span>
@@ -113,6 +147,18 @@
   <dd>
     
     Attempts to resolve any aliases until a concrete type is reached
+    
+  </dd>
+</div>
+
+</div>
+<div id="resolveBracketGeneric-procs-all">
+  <div id="resolveBracketGeneric,NimNode">
+  <dt><pre><span class="Keyword">proc</span> <a href="#resolveBracketGeneric%2CNimNode"><span class="Identifier">resolveBracketGeneric</span></a><span class="Other">(</span><span class="Identifier">typeDef</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Replaces a generic alias with the underlying type it represents
     
   </dd>
 </div>
@@ -140,7 +186,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-07-16 16:12:07 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-07-28 22:38:29 UTC</small>
       </div>
     </div>
   </div>

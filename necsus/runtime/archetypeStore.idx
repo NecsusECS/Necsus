@@ -1,19 +1,21 @@
 nimTitle	archetypeStore	necsus/runtime/archetypeStore.html	module src/necsus/runtime/archetypeStore		0
 nim	ArchRow	necsus/runtime/archetypeStore.html#ArchRow	object ArchRow		4
-nim	ArchetypeStore	necsus/runtime/archetypeStore.html#ArchetypeStore	type ArchetypeStore		9
+nim	ArchetypeStore	necsus/runtime/archetypeStore.html#ArchetypeStore	object ArchetypeStore		9
 nim	NewArchSlot	necsus/runtime/archetypeStore.html#NewArchSlot	type NewArchSlot		15
 nim	ArchetypeIter	necsus/runtime/archetypeStore.html#ArchetypeIter	type ArchetypeIter		17
 nim	`=copy`	necsus/runtime/archetypeStore.html#=copy,ArchRow[Comps: tuple],ArchRow[Comps: tuple]	proc `=copy`[Comps: tuple](target: var ArchRow[Comps]; source: ArchRow[Comps])		20
-nim	newArchetypeStore	necsus/runtime/archetypeStore.html#newArchetypeStore,Archs,SomeInteger	proc newArchetypeStore[Archs: enum; Comps: tuple](archetype: Archs;\n    initialSize: SomeInteger): ArchetypeStore[Archs, Comps]		22
-nim	isFirst	necsus/runtime/archetypeStore.html#isFirst,ArchetypeIter	proc isFirst(iter: ArchetypeIter): bool		29
-nim	archetype	necsus/runtime/archetypeStore.html#archetype,ArchetypeStore[Archs: enum,Comps: tuple]	proc archetype[Archs: enum; Comps: tuple](store: ArchetypeStore[Archs, Comps]): Archs		31
-nim	next	necsus/runtime/archetypeStore.html#next,ArchetypeStore[Archs: enum,Comps: tuple],ArchetypeIter	proc next[Archs: enum; Comps: tuple](store: ArchetypeStore[Archs, Comps];\n                                iter: var ArchetypeIter): ptr ArchRow[Comps]		34
-nim	items	necsus/runtime/archetypeStore.html#items.i,ArchetypeStore[Archs: enum,Comps: tuple]	iterator items[Archs: enum; Comps: tuple](store: ArchetypeStore[Archs, Comps]): ptr ArchRow[\n    Comps]		41
-nim	addLen	necsus/runtime/archetypeStore.html#addLen,ArchetypeStore[Archs: enum,Comps: tuple],uint	proc addLen[Archs: enum; Comps: tuple](store: ArchetypeStore[Archs, Comps];\n                                  len: var uint)		51
-nim	newSlot	necsus/runtime/archetypeStore.html#newSlot,ArchetypeStore[Archs: enum,Comps: tuple],EntityId	proc newSlot[Archs: enum; Comps: tuple](store: var ArchetypeStore[Archs, Comps];\n                                   entityId: EntityId): NewArchSlot[Comps]		56
-nim	entityId	necsus/runtime/archetypeStore.html#entityId,NewArchSlot[Comps: tuple]	proc entityId[Comps: tuple](entry: NewArchSlot[Comps]): EntityId		69
-nim	index	necsus/runtime/archetypeStore.html#index,NewArchSlot[Comps: tuple]	proc index[Comps: tuple](entry: NewArchSlot[Comps]): uint		72
-nim	setComp	necsus/runtime/archetypeStore.html#setComp,NewArchSlot[Comps: tuple],sinkComps	proc setComp[Comps: tuple](slot: NewArchSlot[Comps]; comps: sink Comps): EntityId		74
-nim	getComps	necsus/runtime/archetypeStore.html#getComps,ArchetypeStore[Archs: enum,Comps: tuple],uint	proc getComps[Archs: enum; Comps: tuple](store: var ArchetypeStore[Archs, Comps];\n                                    index: uint): ptr Comps		81
-nim	del	necsus/runtime/archetypeStore.html#del,ArchetypeStore,uint	proc del(store: var ArchetypeStore; index: uint)		85
-nim	moveEntity	necsus/runtime/archetypeStore.html#moveEntity,World[Archs: enum],ptr.EntityIndex[Archs: enum],ArchetypeStore[Archs: enum,FromArch: tuple],ArchetypeStore[Archs: enum,ToArch: tuple],sinkNewComps,proc(sinkFromArch,sinkNewComps,ToArch)	proc moveEntity[Archs: enum; FromArch: tuple; NewComps: tuple; ToArch: tuple](\n    world: var World[Archs]; entityIndex: ptr EntityIndex[Archs];\n    fromArch: var ArchetypeStore[Archs, FromArch];\n    toArch: var ArchetypeStore[Archs, ToArch]; newValues: sink NewComps; combine: proc (\n    existing: sink FromArch; newValues: sink NewComps; output: var ToArch) {.\n    gcsafe, raises: [], fastcall.})		89
+nim	`=copy`	necsus/runtime/archetypeStore.html#=copy,ArchetypeStore[Comps: tuple],ArchetypeStore[Comps: tuple]	proc `=copy`[Comps: tuple](target: var ArchetypeStore[Comps];\n                      source: ArchetypeStore[Comps])		22
+nim	newArchetypeStore	necsus/runtime/archetypeStore.html#newArchetypeStore,ArchetypeId,SomeInteger	proc newArchetypeStore[Comps: tuple](archetype: ArchetypeId; initialSize: SomeInteger): ArchetypeStore[\n    Comps]		24
+nim	isFirst	necsus/runtime/archetypeStore.html#isFirst,ArchetypeIter	proc isFirst(iter: ArchetypeIter): bool		31
+nim	archetype	necsus/runtime/archetypeStore.html#archetype,ptr.ArchetypeStore[Comps: tuple]	proc archetype[Comps: tuple](store: ptr ArchetypeStore[Comps]): ArchetypeId		33
+nim	next	necsus/runtime/archetypeStore.html#next,ArchetypeStore[Comps: tuple],ArchetypeIter	proc next[Comps: tuple](store: var ArchetypeStore[Comps]; iter: var ArchetypeIter): ptr ArchRow[\n    Comps]		36
+nim	items	necsus/runtime/archetypeStore.html#items.i,ArchetypeStore[Comps: tuple]	iterator items[Comps: tuple](store: var ArchetypeStore[Comps]): ptr ArchRow[Comps]		43
+nim	addLen	necsus/runtime/archetypeStore.html#addLen,ArchetypeStore[Comps: tuple],uint	proc addLen[Comps: tuple](store: var ArchetypeStore[Comps]; len: var uint)		53
+nim	newSlot	necsus/runtime/archetypeStore.html#newSlot,ptr.ArchetypeStore[Comps: tuple],EntityId	proc newSlot[Comps: tuple](store: ptr ArchetypeStore[Comps]; entityId: EntityId): NewArchSlot[\n    Comps]		58
+nim	entityId	necsus/runtime/archetypeStore.html#entityId,NewArchSlot[Comps: tuple]	proc entityId[Comps: tuple](entry: NewArchSlot[Comps]): EntityId		71
+nim	index	necsus/runtime/archetypeStore.html#index,NewArchSlot[Comps: tuple]	proc index[Comps: tuple](entry: NewArchSlot[Comps]): uint		74
+nim	setComp	necsus/runtime/archetypeStore.html#setComp,NewArchSlot[Comps: tuple],sinkComps	proc setComp[Comps: tuple](slot: NewArchSlot[Comps]; comps: sink Comps): EntityId		76
+nim	getComps	necsus/runtime/archetypeStore.html#getComps,ArchetypeStore[Comps: tuple],uint	proc getComps[Comps: tuple](store: var ArchetypeStore[Comps]; index: uint): ptr Comps		83
+nim	del	necsus/runtime/archetypeStore.html#del,ArchetypeStore,uint	proc del(store: var ArchetypeStore; index: uint)		87
+nim	moveEntity	necsus/runtime/archetypeStore.html#moveEntity,World,ptr.EntityIndex,ArchetypeStore[FromArch: tuple],ArchetypeStore[ToArch: tuple],sinkNewComps,proc(sinkFromArch,sinkNewComps,ToArch)	proc moveEntity[FromArch: tuple; NewComps: tuple; ToArch: tuple](world: var World;\n    entityIndex: ptr EntityIndex; fromArch: var ArchetypeStore[FromArch];\n    toArch: var ArchetypeStore[ToArch]; newValues: sink NewComps; combine: proc (\n    existing: sink FromArch; newValues: sink NewComps; output: var ToArch) {.\n    gcsafe, raises: [], fastcall.})		91
+nimgrp	=copy	necsus/runtime/archetypeStore.html#=copy-procs-all	proc		20

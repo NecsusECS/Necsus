@@ -85,6 +85,10 @@
   <li><a class="reference" href="#%3D%3D%2CArchetype%5BT%5D%2CArchetype%5BT%5D" title="`==`[T](a, b: Archetype[T]): bool">`==`[T](a, b: Archetype[T]): bool</a></li>
 
 </ul>
+<ul class="simple nested-toc-section">archArchSymbolDef
+  <li><a class="reference" href="#archArchSymbolDef%2CArchetype%5BT%5D" title="archArchSymbolDef[T](archetype: Archetype[T]): NimNode">archArchSymbolDef[T](archetype: Archetype[T]): NimNode</a></li>
+
+</ul>
 <ul class="simple nested-toc-section">asStorageTuple
   <li><a class="reference" href="#asStorageTuple%2CArchetype%5BComponentDef%5D" title="asStorageTuple(archetype: Archetype[ComponentDef]): NimNode">asStorageTuple(archetype: Archetype[ComponentDef]): NimNode</a></li>
 
@@ -109,6 +113,10 @@
 </ul>
 <ul class="simple nested-toc-section">ident
   <li><a class="reference" href="#ident%2CArchetype%5BComponentDef%5D" title="ident(archetype: Archetype[ComponentDef]): NimNode">ident(archetype: Archetype[ComponentDef]): NimNode</a></li>
+
+</ul>
+<ul class="simple nested-toc-section">idSymbol
+  <li><a class="reference" href="#idSymbol%2CArchetype%5BT%5D" title="idSymbol[T](archetype: Archetype[T]): NimNode">idSymbol[T](archetype: Archetype[T]): NimNode</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">indexOf
@@ -171,7 +179,7 @@
     <div class="section" id="6">
   <h1><a class="toc-backref" href="#6">Imports</a></h1>
   <dl class="item">
-    <a class="reference external" href="componentDef.html">componentDef</a>, <a class="reference external" href="../util/bits.html">../util/bits</a>
+    <a class="reference external" href="componentDef.html">componentDef</a>, <a class="reference external" href="../util/bits.html">../util/bits</a>, <a class="reference external" href="../runtime/world.html">../runtime/world</a>
   </dl>
 </div>
 <div class="section" id="7">
@@ -269,6 +277,17 @@
 </div>
 
 </div>
+<div id="archArchSymbolDef-procs-all">
+  <div id="archArchSymbolDef,Archetype[T]">
+  <dt><pre><span class="Keyword">proc</span> <a href="#archArchSymbolDef%2CArchetype%5BT%5D"><span class="Identifier">archArchSymbolDef</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span></pre></dt>
+  <dd>
+    
+    Builds the code for defining an archetype symbol
+    
+  </dd>
+</div>
+
+</div>
 <div id="asStorageTuple-procs-all">
   <div id="asStorageTuple,Archetype[ComponentDef]">
   <dt><pre><span class="Keyword">proc</span> <a href="#asStorageTuple%2CArchetype%5BComponentDef%5D"><span class="Identifier">asStorageTuple</span></a><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
@@ -348,6 +367,17 @@
   <dd>
     
     Creates a variable for referencing an archetype store
+    
+  </dd>
+</div>
+
+</div>
+<div id="idSymbol-procs-all">
+  <div id="idSymbol,Archetype[T]">
+  <dt><pre><span class="Keyword">proc</span> <a href="#idSymbol%2CArchetype%5BT%5D"><span class="Identifier">idSymbol</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span></pre></dt>
+  <dd>
+    
+    Returns a unique symbol containing an ID for this archetype
     
   </dd>
 </div>
@@ -475,7 +505,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-07-16 16:12:07 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-07-28 22:38:29 UTC</small>
       </div>
     </div>
   </div>

@@ -54,22 +54,58 @@
   <details open>
     <summary><a class="reference reference-toplevel" href="#7" id="57">Types</a></summary>
     <ul class="simple simple-toc-section">
-      <li><a class="reference" href="#Attach" title="Attach[C] = proc (entityId: EntityId; components: C) {.gcsafe, raises: [].}">Attach</a></li>
+      <li><a class="reference" href="#Attach" title="Attach[C] = CallbackDir[Arity2Proc[EntityId, C, void]]">Attach</a></li>
 <li><a class="reference" href="#Bundle" title="Bundle[T] = ptr T">Bundle</a></li>
-<li><a class="reference" href="#Delete" title="Delete = proc (entityId: EntityId) {.gcsafe, raises: [].}">Delete</a></li>
-<li><a class="reference" href="#Detach" title="Detach[C] = proc (entityId: EntityId) {.gcsafe, raises: [].}">Detach</a></li>
-<li><a class="reference" href="#EntityDebug" title="EntityDebug = proc (entityId: EntityId): string {.gcsafe, raises: [].}">EntityDebug</a></li>
-<li><a class="reference" href="#Lookup" title="Lookup[C] = proc (entityId: EntityId): Option[C] {.gcsafe, raises: [].}">Lookup</a></li>
-<li><a class="reference" href="#Nfloat" title="Nfloat = float">Nfloat</a></li>
-<li><a class="reference" href="#Outbox" title="Outbox[T] = proc (message: T): void">Outbox</a></li>
-<li><a class="reference" href="#Restore" title="Restore = proc (json: string) {.gcsafe, raises: [IOError, OSError,
-    JsonParsingError, ValueError, Exception].}">Restore</a></li>
-<li><a class="reference" href="#Save" title="Save = proc (): string {.raises: [IOError, OSError, ValueError, Exception].}">Save</a></li>
-<li><a class="reference" href="#Swap" title="Swap[A; B] = proc (entityId: EntityId; components: A) {.gcsafe, raises: [].}">Swap</a></li>
+<li><a class="reference" href="#Delete" title="Delete = CallbackDir[Arity1Proc[EntityId, void]]">Delete</a></li>
+<li><a class="reference" href="#Detach" title="Detach[C] = CallbackDir[Arity1Proc[EntityId, void]]">Detach</a></li>
+<li><a class="reference" href="#EntityDebug" title="EntityDebug = CallbackDir[Arity1Proc[EntityId, string]]">EntityDebug</a></li>
+<li><a class="reference" href="#EventSystemInstance" title="EventSystemInstance[T] = proc (event: T): void {.closure.}">EventSystemInstance</a></li>
+<li><a class="reference" href="#Lookup" title="Lookup[C] = CallbackDir[LookupProc[C]]">Lookup</a></li>
+<li><a class="reference" href="#Outbox" title="Outbox[T] = CallbackDir[OutboxProc[T]]">Outbox</a></li>
+<li><a class="reference" href="#OutboxProc" title="OutboxProc[T] = proc (app: pointer; message: T): void {.fastcall.}">OutboxProc</a></li>
+<li><a class="reference" href="#Restore" title="Restore = CallbackDir[RestoreProc]">Restore</a></li>
+<li><a class="reference" href="#Save" title="Save = CallbackDir[SaveProc]">Save</a></li>
+<li><a class="reference" href="#SaveSystemInstance" title="SaveSystemInstance[T] = proc (): T {.closure.}">SaveSystemInstance</a></li>
+<li><a class="reference" href="#Swap" title="Swap[A; B] = CallbackDir[Arity2Proc[EntityId, A, void]]">Swap</a></li>
 <li><a class="reference" href="#SystemInstance" title="SystemInstance = proc (): void {.closure.}">SystemInstance</a></li>
-<li><a class="reference" href="#TickId" title="TickId = proc (): uint32 {.gcsafe, raises: [].}">TickId</a></li>
-<li><a class="reference" href="#TimeDelta" title="TimeDelta = proc (): Nfloat {.gcsafe, raises: [].}">TimeDelta</a></li>
-<li><a class="reference" href="#TimeElapsed" title="TimeElapsed = proc (): Nfloat {.gcsafe, raises: [].}">TimeElapsed</a></li>
+<li><a class="reference" href="#TickId" title="TickId = CallbackDir[Arity0Proc[BiggestUInt]]">TickId</a></li>
+<li><a class="reference" href="#TimeDelta" title="TimeDelta = CallbackDir[Arity0Proc[BiggestFloat]]">TimeDelta</a></li>
+<li><a class="reference" href="#TimeElapsed" title="TimeElapsed = CallbackDir[Arity0Proc[BiggestFloat]]">TimeElapsed</a></li>
+
+    </ul>
+  </details>
+</li>
+<li>
+  <details open>
+    <summary><a class="reference reference-toplevel" href="#12" id="62">Procs</a></summary>
+    <ul class="simple simple-toc-section">
+      <ul class="simple nested-toc-section">()
+  <li><a class="reference" href="#%28%29%2CRestore%2Cstring" title="`()`(restore: Restore; value: string)">`()`(restore: Restore; value: string)</a></li>
+<li><a class="reference" href="#%28%29%2CSave" title="`()`(save: Save): string">`()`(save: Save): string</a></li>
+<li><a class="reference" href="#%28%29%2CCallbackDir%5BArity2Proc%5BA%2CB%2CT%5D%5D%2CA%2CB" title="`()`[A, B, T](comp: CallbackDir[Arity2Proc[A, B, T]]; a: A; b: B): T">`()`[A, B, T](comp: CallbackDir[Arity2Proc[A, B, T]]; a: A; b: B): T</a></li>
+<li><a class="reference" href="#%28%29%2CCallbackDir%5BArity1Proc%5BA%2CT%5D%5D%2CA" title="`()`[A, T](comp: CallbackDir[Arity1Proc[A, T]]; a: A): T">`()`[A, T](comp: CallbackDir[Arity1Proc[A, T]]; a: A): T</a></li>
+<li><a class="reference" href="#%28%29%2CLookup%5BC%5D%2CEntityId" title="`()`[C](lookup: Lookup[C]; entityId: EntityId): Option[C]">`()`[C](lookup: Lookup[C]; entityId: EntityId): Option[C]</a></li>
+<li><a class="reference" href="#%28%29%2CCallbackDir%5BArity0Proc%5BT%5D%5D" title="`()`[T](comp: CallbackDir[Arity0Proc[T]]): T">`()`[T](comp: CallbackDir[Arity0Proc[T]]): T</a></li>
+<li><a class="reference" href="#%28%29%2COutbox%5BT%5D%2CT" title="`()`[T](outbox: Outbox[T]; message: T)">`()`[T](outbox: Outbox[T]; message: T)</a></li>
+
+</ul>
+<ul class="simple nested-toc-section">exec
+  <li><a class="reference" href="#exec%2CCallbackDir%5BArity2Proc%5BA%2CB%2Cvoid%5D%5D%2CA%2CB" title="exec[A, B](comp: CallbackDir[Arity2Proc[A, B, void]]; a: A; b: B)">exec[A, B](comp: CallbackDir[Arity2Proc[A, B, void]]; a: A; b: B)</a></li>
+<li><a class="reference" href="#exec%2CCallbackDir%5BArity1Proc%5BA%2Cvoid%5D%5D%2CA" title="exec[A](comp: CallbackDir[Arity1Proc[A, void]]; a: A)">exec[A](comp: CallbackDir[Arity1Proc[A, void]]; a: A)</a></li>
+<li><a class="reference" href="#exec%2COutbox%5BT%5D%2CT" title="exec[T](outbox: Outbox[T]; message: T)">exec[T](outbox: Outbox[T]; message: T)</a></li>
+
+</ul>
+<ul class="simple nested-toc-section">get
+  <li><a class="reference" href="#get%2CCallbackDir%5BArity2Proc%5BA%2CB%2CT%5D%5D%2CA%2CB" title="get[A, B, T](comp: CallbackDir[Arity2Proc[A, B, T]]; a: A; b: B): T">get[A, B, T](comp: CallbackDir[Arity2Proc[A, B, T]]; a: A; b: B): T</a></li>
+<li><a class="reference" href="#get%2CCallbackDir%5BArity1Proc%5BA%2CT%5D%5D%2CA" title="get[A, T](comp: CallbackDir[Arity1Proc[A, T]]; a: A): T">get[A, T](comp: CallbackDir[Arity1Proc[A, T]]; a: A): T</a></li>
+<li><a class="reference" href="#get%2CLookup%5BC%5D%2CEntityId" title="get[C](lookup: Lookup[C]; entityId: EntityId): Option[C]">get[C](lookup: Lookup[C]; entityId: EntityId): Option[C]</a></li>
+<li><a class="reference" href="#get%2CCallbackDir%5BArity0Proc%5BT%5D%5D" title="get[T](comp: CallbackDir[Arity0Proc[T]]): T">get[T](comp: CallbackDir[Arity0Proc[T]]): T</a></li>
+
+</ul>
+<ul class="simple nested-toc-section">newCallbackDir
+  <li><a class="reference" href="#newCallbackDir%2Cpointer%2CT" title="newCallbackDir[T: proc](appState: pointer; callback: T): CallbackDir[T]">newCallbackDir[T: proc](appState: pointer; callback: T): CallbackDir[T]</a></li>
+
+</ul>
 
     </ul>
   </details>
@@ -93,7 +129,7 @@
   <h1><a class="toc-backref" href="#7">Types</a></h1>
   <dl class="item">
     <div id="Attach">
-  <dt><pre><a href="directives.html#Attach"><span class="Identifier">Attach</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">entityId</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">;</span> <span class="Identifier">components</span><span class="Other">:</span> <span class="Identifier">C</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dt><pre><a href="directives.html#Attach"><span class="Identifier">Attach</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span> <span class="Other">=</span> <span class="Identifier">CallbackDir</span><span class="Other">[</span><span class="Identifier">Arity2Proc</span><span class="Other">[</span><a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">,</span> <span class="Identifier">C</span><span class="Other">,</span> <span class="Identifier">void</span><span class="Other">]</span><span class="Other">]</span></pre></dt>
   <dd>
     
     Describes a type that is able to update existing entities new entities. Where <tt class="docutils literal"><span class="pre"><span class="Identifier">C</span></span></tt> is a tuple with all the components to attach.
@@ -109,7 +145,7 @@
   </dd>
 </div>
 <div id="Delete">
-  <dt><pre><a href="directives.html#Delete"><span class="Identifier">Delete</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">entityId</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dt><pre><a href="directives.html#Delete"><span class="Identifier">Delete</span></a> <span class="Other">=</span> <span class="Identifier">CallbackDir</span><span class="Other">[</span><span class="Identifier">Arity1Proc</span><span class="Other">[</span><a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">,</span> <span class="Identifier">void</span><span class="Other">]</span><span class="Other">]</span></pre></dt>
   <dd>
     
     Deletes an entity and all associated components
@@ -117,7 +153,7 @@
   </dd>
 </div>
 <div id="Detach">
-  <dt><pre><a href="directives.html#Detach"><span class="Identifier">Detach</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">entityId</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dt><pre><a href="directives.html#Detach"><span class="Identifier">Detach</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span> <span class="Other">=</span> <span class="Identifier">CallbackDir</span><span class="Other">[</span><span class="Identifier">Arity1Proc</span><span class="Other">[</span><a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">,</span> <span class="Identifier">void</span><span class="Other">]</span><span class="Other">]</span></pre></dt>
   <dd>
     
     Detaches a set of components from an entity. Where <tt class="docutils literal"><span class="pre"><span class="Identifier">C</span></span></tt> is a tuple describing all the components to detach
@@ -125,40 +161,47 @@
   </dd>
 </div>
 <div id="EntityDebug">
-  <dt><pre><a href="directives.html#EntityDebug"><span class="Identifier">EntityDebug</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">entityId</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dt><pre><a href="directives.html#EntityDebug"><span class="Identifier">EntityDebug</span></a> <span class="Other">=</span> <span class="Identifier">CallbackDir</span><span class="Other">[</span><span class="Identifier">Arity1Proc</span><span class="Other">[</span><a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">,</span> <span class="Identifier">string</span><span class="Other">]</span><span class="Other">]</span></pre></dt>
   <dd>
     
     Looks up an entity and returns debug data about it
     
   </dd>
 </div>
+<div id="EventSystemInstance">
+  <dt><pre><a href="directives.html#EventSystemInstance"><span class="Identifier">EventSystemInstance</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">event</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">void</span> {.<span class="Identifier">closure</span>.}</pre></dt>
+  <dd>
+    
+    Marks the return type for an instanced event system
+    
+  </dd>
+</div>
 <div id="Lookup">
-  <dt><pre><a href="directives.html#Lookup"><span class="Identifier">Lookup</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">entityId</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Option</span><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dt><pre><a href="directives.html#Lookup"><span class="Identifier">Lookup</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span> <span class="Other">=</span> <span class="Identifier">CallbackDir</span><span class="Other">[</span><span class="Identifier">LookupProc</span><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">]</span></pre></dt>
   <dd>
     
     Looks up entity details based on its entity ID. Where <tt class="docutils literal"><span class="pre"><span class="Identifier">C</span></span></tt> is a tuple with all the components to fetch
     
   </dd>
 </div>
-<div id="Nfloat">
-  <dt><pre><a href="directives.html#Nfloat"><span class="Identifier">Nfloat</span></a> <span class="Other">=</span> <span class="Identifier">float</span></pre></dt>
-  <dd>
-    
-    
-    
-  </dd>
-</div>
 <div id="Outbox">
-  <dt><pre><a href="directives.html#Outbox"><span class="Identifier">Outbox</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">message</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">void</span></pre></dt>
+  <dt><pre><a href="directives.html#Outbox"><span class="Identifier">Outbox</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Other">=</span> <span class="Identifier">CallbackDir</span><span class="Other">[</span><a href="directives.html#OutboxProc"><span class="Identifier">OutboxProc</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">]</span></pre></dt>
   <dd>
     
     Sends an event. Where <tt class="docutils literal"><span class="pre"><span class="Identifier">T</span></span></tt> is the message being sent
     
   </dd>
 </div>
+<div id="OutboxProc">
+  <dt><pre><a href="directives.html#OutboxProc"><span class="Identifier">OutboxProc</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">app</span><span class="Other">:</span> <span class="Identifier">pointer</span><span class="Other">;</span> <span class="Identifier">message</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">void</span> {.<span class="Identifier">fastcall</span>.}</pre></dt>
+  <dd>
+    
+    
+    
+  </dd>
+</div>
 <div id="Restore">
-  <dt><pre><a href="directives.html#Restore"><span class="Identifier">Restore</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">json</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">IOError</span><span class="Other">,</span> <span class="Identifier">OSError</span><span class="Other">,</span>
-    <span class="Identifier">JsonParsingError</span><span class="Other">,</span> <span class="Identifier">ValueError</span><span class="Other">,</span> <span class="Identifier">Exception</span><span class="Other">]</span></span>.}</pre></dt>
+  <dt><pre><a href="directives.html#Restore"><span class="Identifier">Restore</span></a> <span class="Other">=</span> <span class="Identifier">CallbackDir</span><span class="Other">[</span><span class="Identifier">RestoreProc</span><span class="Other">]</span></pre></dt>
   <dd>
     
     Executes all 'restore' systems using the given json as input data
@@ -166,15 +209,23 @@
   </dd>
 </div>
 <div id="Save">
-  <dt><pre><a href="directives.html#Save"><span class="Identifier">Save</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">IOError</span><span class="Other">,</span> <span class="Identifier">OSError</span><span class="Other">,</span> <span class="Identifier">ValueError</span><span class="Other">,</span> <span class="Identifier">Exception</span><span class="Other">]</span></span>.}</pre></dt>
+  <dt><pre><a href="directives.html#Save"><span class="Identifier">Save</span></a> <span class="Other">=</span> <span class="Identifier">CallbackDir</span><span class="Other">[</span><span class="Identifier">SaveProc</span><span class="Other">]</span></pre></dt>
   <dd>
     
     Generates a saved game state as a json value
     
   </dd>
 </div>
+<div id="SaveSystemInstance">
+  <dt><pre><a href="directives.html#SaveSystemInstance"><span class="Identifier">SaveSystemInstance</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">T</span> {.<span class="Identifier">closure</span>.}</pre></dt>
+  <dd>
+    
+    Marks the return type for an instanced save system
+    
+  </dd>
+</div>
 <div id="Swap">
-  <dt><pre><a href="directives.html#Swap"><span class="Identifier">Swap</span></a><span class="Other">[</span><span class="Identifier">A</span><span class="Other">;</span> <span class="Identifier">B</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">entityId</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">;</span> <span class="Identifier">components</span><span class="Other">:</span> <span class="Identifier">A</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dt><pre><a href="directives.html#Swap"><span class="Identifier">Swap</span></a><span class="Other">[</span><span class="Identifier">A</span><span class="Other">;</span> <span class="Identifier">B</span><span class="Other">]</span> <span class="Other">=</span> <span class="Identifier">CallbackDir</span><span class="Other">[</span><span class="Identifier">Arity2Proc</span><span class="Other">[</span><a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">,</span> <span class="Identifier">A</span><span class="Other">,</span> <span class="Identifier">void</span><span class="Other">]</span><span class="Other">]</span></pre></dt>
   <dd>
     
     A directive that adds components in <tt class="docutils literal"><span class="pre"><span class="Identifier">A</span></span></tt> and removes components in <tt class="docutils literal"><span class="pre"><span class="Identifier">B</span></span></tt>
@@ -190,7 +241,7 @@
   </dd>
 </div>
 <div id="TickId">
-  <dt><pre><a href="directives.html#TickId"><span class="Identifier">TickId</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">uint32</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dt><pre><a href="directives.html#TickId"><span class="Identifier">TickId</span></a> <span class="Other">=</span> <span class="Identifier">CallbackDir</span><span class="Other">[</span><span class="Identifier">Arity0Proc</span><span class="Other">[</span><span class="Identifier">BiggestUInt</span><span class="Other">]</span><span class="Other">]</span></pre></dt>
   <dd>
     
     An auto-incrementing ID for each tick
@@ -198,7 +249,7 @@
   </dd>
 </div>
 <div id="TimeDelta">
-  <dt><pre><a href="directives.html#TimeDelta"><span class="Identifier">TimeDelta</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <a href="directives.html#Nfloat"><span class="Identifier">Nfloat</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dt><pre><a href="directives.html#TimeDelta"><span class="Identifier">TimeDelta</span></a> <span class="Other">=</span> <span class="Identifier">CallbackDir</span><span class="Other">[</span><span class="Identifier">Arity0Proc</span><span class="Other">[</span><span class="Identifier">BiggestFloat</span><span class="Other">]</span><span class="Other">]</span></pre></dt>
   <dd>
     
     Tracks the amount of time since the last execution of a system
@@ -206,12 +257,153 @@
   </dd>
 </div>
 <div id="TimeElapsed">
-  <dt><pre><a href="directives.html#TimeElapsed"><span class="Identifier">TimeElapsed</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <a href="directives.html#Nfloat"><span class="Identifier">Nfloat</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dt><pre><a href="directives.html#TimeElapsed"><span class="Identifier">TimeElapsed</span></a> <span class="Other">=</span> <span class="Identifier">CallbackDir</span><span class="Other">[</span><span class="Identifier">Arity0Proc</span><span class="Other">[</span><span class="Identifier">BiggestFloat</span><span class="Other">]</span><span class="Other">]</span></pre></dt>
   <dd>
     
     The total amount of time spent in an app
     
   </dd>
+</div>
+
+  </dl>
+</div>
+<div class="section" id="12">
+  <h1><a class="toc-backref" href="#12">Procs</a></h1>
+  <dl class="item">
+    <div id="()-procs-all">
+  <div id="(),Restore,string">
+  <dt><pre><span class="Keyword">proc</span> <a href="#%28%29%2CRestore%2Cstring"><span class="Identifier">`()`</span></a><span class="Other">(</span><span class="Identifier">restore</span><span class="Other">:</span> <a href="directives.html#Restore"><span class="Identifier">Restore</span></a><span class="Other">;</span> <span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span> {.
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">IOError</span><span class="Other">,</span> <span class="Identifier">OSError</span><span class="Other">,</span> <span class="Identifier">JsonParsingError</span><span class="Other">,</span> <span class="Identifier">ValueError</span><span class="Other">,</span> <span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Executes a restore operation
+    
+  </dd>
+</div>
+<div id="(),Save">
+  <dt><pre><span class="Keyword">proc</span> <a href="#%28%29%2CSave"><span class="Identifier">`()`</span></a><span class="Other">(</span><span class="Identifier">save</span><span class="Other">:</span> <a href="directives.html#Save"><span class="Identifier">Save</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">IOError</span><span class="Other">,</span> <span class="Identifier">OSError</span><span class="Other">,</span> <span class="Identifier">ValueError</span><span class="Other">,</span> <span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span>
+                                <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Executes a save
+    
+  </dd>
+</div>
+<div id="(),CallbackDir[Arity2Proc[A,B,T]],A,B">
+  <dt><pre><span class="Keyword">proc</span> <a href="#%28%29%2CCallbackDir%5BArity2Proc%5BA%2CB%2CT%5D%5D%2CA%2CB"><span class="Identifier">`()`</span></a><span class="Other">[</span><span class="Identifier">A</span><span class="Other">,</span> <span class="Identifier">B</span><span class="Other">,</span> <span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">comp</span><span class="Other">:</span> <span class="Identifier">CallbackDir</span><span class="Other">[</span><span class="Identifier">Arity2Proc</span><span class="Other">[</span><span class="Identifier">A</span><span class="Other">,</span> <span class="Identifier">B</span><span class="Other">,</span> <span class="Identifier">T</span><span class="Other">]</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">a</span><span class="Other">:</span> <span class="Identifier">A</span><span class="Other">;</span> <span class="Identifier">b</span><span class="Other">:</span> <span class="Identifier">B</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">T</span></pre></dt>
+  <dd>
+    
+    Fetch a value out of a directive
+    
+  </dd>
+</div>
+<div id="(),CallbackDir[Arity1Proc[A,T]],A">
+  <dt><pre><span class="Keyword">proc</span> <a href="#%28%29%2CCallbackDir%5BArity1Proc%5BA%2CT%5D%5D%2CA"><span class="Identifier">`()`</span></a><span class="Other">[</span><span class="Identifier">A</span><span class="Other">,</span> <span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">comp</span><span class="Other">:</span> <span class="Identifier">CallbackDir</span><span class="Other">[</span><span class="Identifier">Arity1Proc</span><span class="Other">[</span><span class="Identifier">A</span><span class="Other">,</span> <span class="Identifier">T</span><span class="Other">]</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">a</span><span class="Other">:</span> <span class="Identifier">A</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">T</span></pre></dt>
+  <dd>
+    
+    Fetch a value out of a directive
+    
+  </dd>
+</div>
+<div id="(),Lookup[C],EntityId">
+  <dt><pre><span class="Keyword">proc</span> <a href="#%28%29%2CLookup%5BC%5D%2CEntityId"><span class="Identifier">`()`</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">lookup</span><span class="Other">:</span> <a href="directives.html#Lookup"><span class="Identifier">Lookup</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">entityId</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Option</span><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span></pre></dt>
+  <dd>
+    
+    Executes a lookup
+    
+  </dd>
+</div>
+<div id="(),CallbackDir[Arity0Proc[T]]">
+  <dt><pre><span class="Keyword">proc</span> <a href="#%28%29%2CCallbackDir%5BArity0Proc%5BT%5D%5D"><span class="Identifier">`()`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">comp</span><span class="Other">:</span> <span class="Identifier">CallbackDir</span><span class="Other">[</span><span class="Identifier">Arity0Proc</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">T</span></pre></dt>
+  <dd>
+    
+    Fetch a value out of a directive
+    
+  </dd>
+</div>
+<div id="(),Outbox[T],T">
+  <dt><pre><span class="Keyword">proc</span> <a href="#%28%29%2COutbox%5BT%5D%2CT"><span class="Identifier">`()`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">outbox</span><span class="Other">:</span> <a href="directives.html#Outbox"><span class="Identifier">Outbox</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">message</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">)</span></pre></dt>
+  <dd>
+    
+    Sends a message through an outbox
+    
+  </dd>
+</div>
+
+</div>
+<div id="exec-procs-all">
+  <div id="exec,CallbackDir[Arity2Proc[A,B,void]],A,B">
+  <dt><pre><span class="Keyword">proc</span> <a href="#exec%2CCallbackDir%5BArity2Proc%5BA%2CB%2Cvoid%5D%5D%2CA%2CB"><span class="Identifier">exec</span></a><span class="Other">[</span><span class="Identifier">A</span><span class="Other">,</span> <span class="Identifier">B</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">comp</span><span class="Other">:</span> <span class="Identifier">CallbackDir</span><span class="Other">[</span><span class="Identifier">Arity2Proc</span><span class="Other">[</span><span class="Identifier">A</span><span class="Other">,</span> <span class="Identifier">B</span><span class="Other">,</span> <span class="Identifier">void</span><span class="Other">]</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">a</span><span class="Other">:</span> <span class="Identifier">A</span><span class="Other">;</span> <span class="Identifier">b</span><span class="Other">:</span> <span class="Identifier">B</span><span class="Other">)</span></pre></dt>
+  <dd>
+    
+    Execute a directive
+    
+  </dd>
+</div>
+<div id="exec,CallbackDir[Arity1Proc[A,void]],A">
+  <dt><pre><span class="Keyword">proc</span> <a href="#exec%2CCallbackDir%5BArity1Proc%5BA%2Cvoid%5D%5D%2CA"><span class="Identifier">exec</span></a><span class="Other">[</span><span class="Identifier">A</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">comp</span><span class="Other">:</span> <span class="Identifier">CallbackDir</span><span class="Other">[</span><span class="Identifier">Arity1Proc</span><span class="Other">[</span><span class="Identifier">A</span><span class="Other">,</span> <span class="Identifier">void</span><span class="Other">]</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">a</span><span class="Other">:</span> <span class="Identifier">A</span><span class="Other">)</span></pre></dt>
+  <dd>
+    
+    Execute a directive
+    
+  </dd>
+</div>
+<div id="exec,Outbox[T],T">
+  <dt><pre><span class="Keyword">proc</span> <a href="#exec%2COutbox%5BT%5D%2CT"><span class="Identifier">exec</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">outbox</span><span class="Other">:</span> <a href="directives.html#Outbox"><span class="Identifier">Outbox</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">message</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">)</span> {.<span class="Identifier">inline</span>.}</pre></dt>
+  <dd>
+    
+    Sends a message through an outbox
+    
+  </dd>
+</div>
+
+</div>
+<div id="get-procs-all">
+  <div id="get,CallbackDir[Arity2Proc[A,B,T]],A,B">
+  <dt><pre><span class="Keyword">proc</span> <a href="#get%2CCallbackDir%5BArity2Proc%5BA%2CB%2CT%5D%5D%2CA%2CB"><span class="Identifier">get</span></a><span class="Other">[</span><span class="Identifier">A</span><span class="Other">,</span> <span class="Identifier">B</span><span class="Other">,</span> <span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">comp</span><span class="Other">:</span> <span class="Identifier">CallbackDir</span><span class="Other">[</span><span class="Identifier">Arity2Proc</span><span class="Other">[</span><span class="Identifier">A</span><span class="Other">,</span> <span class="Identifier">B</span><span class="Other">,</span> <span class="Identifier">T</span><span class="Other">]</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">a</span><span class="Other">:</span> <span class="Identifier">A</span><span class="Other">;</span> <span class="Identifier">b</span><span class="Other">:</span> <span class="Identifier">B</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">T</span></pre></dt>
+  <dd>
+    
+    Fetch a value out of a directive
+    
+  </dd>
+</div>
+<div id="get,CallbackDir[Arity1Proc[A,T]],A">
+  <dt><pre><span class="Keyword">proc</span> <a href="#get%2CCallbackDir%5BArity1Proc%5BA%2CT%5D%5D%2CA"><span class="Identifier">get</span></a><span class="Other">[</span><span class="Identifier">A</span><span class="Other">,</span> <span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">comp</span><span class="Other">:</span> <span class="Identifier">CallbackDir</span><span class="Other">[</span><span class="Identifier">Arity1Proc</span><span class="Other">[</span><span class="Identifier">A</span><span class="Other">,</span> <span class="Identifier">T</span><span class="Other">]</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">a</span><span class="Other">:</span> <span class="Identifier">A</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">T</span></pre></dt>
+  <dd>
+    
+    Fetch a value out of a directive
+    
+  </dd>
+</div>
+<div id="get,Lookup[C],EntityId">
+  <dt><pre><span class="Keyword">proc</span> <a href="#get%2CLookup%5BC%5D%2CEntityId"><span class="Identifier">get</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">lookup</span><span class="Other">:</span> <a href="directives.html#Lookup"><span class="Identifier">Lookup</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">entityId</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Option</span><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span></pre></dt>
+  <dd>
+    
+    Executes a lookup
+    
+  </dd>
+</div>
+<div id="get,CallbackDir[Arity0Proc[T]]">
+  <dt><pre><span class="Keyword">proc</span> <a href="#get%2CCallbackDir%5BArity0Proc%5BT%5D%5D"><span class="Identifier">get</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">comp</span><span class="Other">:</span> <span class="Identifier">CallbackDir</span><span class="Other">[</span><span class="Identifier">Arity0Proc</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">T</span></pre></dt>
+  <dd>
+    
+    Fetch a value out of a directive
+    
+  </dd>
+</div>
+
+</div>
+<div id="newCallbackDir-procs-all">
+  <div id="newCallbackDir,pointer,T">
+  <dt><pre><span class="Keyword">proc</span> <a href="#newCallbackDir%2Cpointer%2CT"><span class="Identifier">newCallbackDir</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Keyword">proc</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">appState</span><span class="Other">:</span> <span class="Identifier">pointer</span><span class="Other">;</span> <span class="Identifier">callback</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">CallbackDir</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span></pre></dt>
+  <dd>
+    
+    Instantiates a directive that uses a callback
+    
+  </dd>
+</div>
+
 </div>
 
   </dl>
@@ -223,7 +415,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-07-16 16:12:06 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-07-28 22:38:29 UTC</small>
       </div>
     </div>
   </div>

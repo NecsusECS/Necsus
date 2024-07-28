@@ -13,7 +13,7 @@ nim	AnyQuery	necsus/runtime/query.html#AnyQuery	type AnyQuery		37
 nim	Not	necsus/runtime/query.html#Not	type Not		39
 nim	newQuery	necsus/runtime/query.html#newQuery,pointer,proc(pointer),NextEntityProc[Comps: tuple]	proc newQuery[Comps: tuple](appState: pointer; getLen: proc (appState: pointer): uint {.\n    gcsafe, raises: [], fastcall.}; nextEntity: NextEntityProc[Comps]): RawQuery		43
 nim	isFirst	necsus/runtime/query.html#isFirst,QueryIterator	proc isFirst(iter: QueryIterator): bool		50
-nim	next	necsus/runtime/query.html#next,ArchetypeStore[Archs: enum,Comps: tuple],QueryIterator,EntityId,NextIterState	proc next[Archs: enum; Comps: tuple](store: ArchetypeStore[Archs, Comps];\n                                iter: var QueryIterator; eid: var EntityId;\n                                state: var NextIterState): ptr Comps		52
+nim	next	necsus/runtime/query.html#next,ArchetypeStore[Comps: tuple],QueryIterator,EntityId,NextIterState	proc next[Comps: tuple](store: var ArchetypeStore[Comps]; iter: var QueryIterator;\n                   eid: var EntityId; state: var NextIterState): ptr Comps		52
 nim	pairs	necsus/runtime/query.html#pairs.i,FullQuery[Comps: tuple]	iterator pairs[Comps: tuple](query: FullQuery[Comps]): QueryItem[Comps]		67
 nim	items	necsus/runtime/query.html#items.i,AnyQuery[Comps: tuple]	iterator items[Comps: tuple](query: AnyQuery[Comps]): Comps		84
 nim	len	necsus/runtime/query.html#len,AnyQuery[Comps: tuple]	proc len[Comps: tuple](query: AnyQuery[Comps]): uint		89

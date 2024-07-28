@@ -1,8 +1,9 @@
 nimTitle	common	necsus/compiletime/common.html	module src/necsus/compiletime/common		0
 nim	confIdent	necsus/compiletime/common.html#confIdent	let confIdent		4
 nim	appStateIdent	necsus/compiletime/common.html#appStateIdent	let appStateIdent		7
-nim	lifecycle	necsus/compiletime/common.html#lifecycle	let lifecycle		10
-nim	worldIdent	necsus/compiletime/common.html#worldIdent	let worldIdent		13
-nim	thisTime	necsus/compiletime/common.html#thisTime	let thisTime		16
-nim	startTime	necsus/compiletime/common.html#startTime	let startTime		19
-nim	isFastCompileMode	necsus/compiletime/common.html#isFastCompileMode.t,untyped	template isFastCompileMode(title: untyped): bool		21
+nim	appStatePtr	necsus/compiletime/common.html#appStatePtr	let appStatePtr		10
+nim	lifecycle	necsus/compiletime/common.html#lifecycle	let lifecycle		13
+nim	worldIdent	necsus/compiletime/common.html#worldIdent	let worldIdent		16
+nim	thisTime	necsus/compiletime/common.html#thisTime	let thisTime		19
+nim	startTime	necsus/compiletime/common.html#startTime	let startTime		22
+nim	isFastCompileMode	necsus/compiletime/common.html#isFastCompileMode.t,untyped	template isFastCompileMode(title: untyped): bool		24
