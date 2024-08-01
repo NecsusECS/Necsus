@@ -30,7 +30,7 @@ proc newArchetypeStore*[Comps: tuple](
 
 proc isFirst*(iter: ArchetypeIter): bool = BlockIter(iter).isFirst
 
-proc archetype*[Comps: tuple](store: ptr ArchetypeStore[Comps]): ArchetypeId = store.archetype
+proc readArchetype*[Comps: tuple](store: ArchetypeStore[Comps]): ArchetypeId {.inline.} = store.archetype
     ## Accessor for the archetype of a store
 
 proc next*[Comps: tuple](
@@ -56,7 +56,7 @@ func addLen*[Comps: tuple](store: var ArchetypeStore[Comps], len: var uint) =
         len += store.compStore.len
 
 proc newSlot*[Comps: tuple](
-    store: ptr ArchetypeStore[Comps],
+    store: var ArchetypeStore[Comps],
     entityId: EntityId
 ): NewArchSlot[Comps] =
     ## Reserves a slot for storing a new component
@@ -99,7 +99,7 @@ proc moveEntity*[FromArch: tuple, NewComps: tuple, ToArch: tuple](
     ## Moves the components for an entity from one archetype to another
     let deleted = fromArch.compStore.del(entityIndex.archetypeIndex)
     let existing = deleted.components
-    let newSlot = newSlot[ToArch](addr toArch, entityIndex.entityId)
+    let newSlot = newSlot[ToArch](toArch, entityIndex.entityId)
     var output: ToArch
     combine(existing, newValues, output)
     discard setComp(newSlot, output)

@@ -344,9 +344,12 @@ proc systemArg*(ctx: GenerateContext, arg: SystemArg): NimNode =
     ## Returns the value to pass to a system when executin the given argument
     systemArg(ctx.directives, arg)
 
-proc globalName*(ctx: GenerateContext, name: string): NimNode =
+proc globalStr*(ctx: GenerateContext, name: string): string =
+    ## Generates a deterministic name for a global identifier that is unique to this app
+    ctx.appStateTypeName.strVal & "_" & name
+
+proc globalName*(ctx: GenerateContext, name: string): NimNode = ctx.globalStr(name).ident
     ## Generates a deterministic name for a global identifier
-    ident(ctx.appStateTypeName.strVal & "_" & name)
 
 proc allNestedArgs(arg: SystemArg, into: var seq[SystemArg]) =
     for nested in arg.nestedArgs:

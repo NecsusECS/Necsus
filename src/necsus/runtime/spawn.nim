@@ -3,8 +3,8 @@ import entityId, world, archetypeStore, std/macros
 type
     RawSpawn*[C: tuple] = ref object
         ## A callback for populating a component with values
-        world: World
-        store: ptr ArchetypeStore[C]
+        app: pointer
+        callback: proc(app: pointer, value: sink C): EntityId {.fastcall, raises: [], gcsafe.}
 
     Spawn*[C: tuple] = distinct RawSpawn[C]
         ## Describes a type that is able to create new entities. Where `C` is a tuple
@@ -14,8 +14,11 @@ type
         ## Describes a type that is able to create new entities. Where `C` is a tuple
         ## with all the components to initially attach to this entity. Returns the new EntityId
 
-proc newSpawn*[Comps: tuple](world: World, store: ptr ArchetypeStore[Comps]): RawSpawn[Comps] =
-    return RawSpawn[Comps](world: world, store: store)
+proc newSpawn*[Comps: tuple](
+    app: pointer,
+    callback: proc(app: pointer, value: sink Comps): EntityId {.fastcall, raises: [], gcsafe.}
+): RawSpawn[Comps] =
+    return RawSpawn[Comps](app: app, callback: callback)
 
 proc beginSpawn*[Comps: tuple](
     world: var World,
@@ -26,18 +29,15 @@ proc beginSpawn*[Comps: tuple](
     result = store.newSlot(newEntity.entityId)
     newEntity.setArchetypeDetails(store.archetype, result.index)
 
-func set*[C: tuple](spawn: Spawn[C], values: sink C) {.inline, raises: [].} =
+proc set*[C: tuple](spawn: Spawn[C], values: sink C) {.raises: [], inline.} =
     ## Spawns an entity with the given components
-    var world = RawSpawn[C](spawn).world
-    var slot = beginSpawn(world, RawSpawn[C](spawn).store)
-    discard setComp(slot, values)
+    var spawn = RawSpawn[C](spawn)
+    discard spawn.callback(spawn.app, values)
 
 proc set*[C: tuple](spawn: FullSpawn[C], values: sink C): EntityId {.inline.} =
     ## Spawns an entity with the given components
-    var store = RawSpawn[C](spawn).store
-    var world = RawSpawn[C](spawn).world
-    var slot = beginSpawn(world, store)
-    return setComp(slot, values)
+    var spawn = RawSpawn[C](spawn)
+    return spawn.callback(spawn.app, values)
 
 macro buildTuple(values: varargs[untyped]): untyped =
     result = nnkTupleConstr.newTree()
