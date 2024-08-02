@@ -6,7 +6,6 @@ type
         ## An individual component symbol within the ECS
         node*: NimNode
         name*: string
-        cachedHash: Hash
         uniqueId*: uint16
 
 const ids = CacheCounter("NecsusComponentIds")
@@ -30,7 +29,7 @@ proc getArchetypeValueId(value: NimNode): uint16 =
 proc newComponentDef*(node: NimNode): ComponentDef =
     ## Instantiate a ComponentDef
     let id = getArchetypeValueId(node)
-    ComponentDef(node: node, name: "c" & $id, cachedHash: hash(node), uniqueId: id)
+    ComponentDef(node: node, name: "c" & $id, uniqueId: id)
 
 proc readableName*(comp: ComponentDef): string = comp.node.symbols.join("_")
     ## Returns a human readable name for a node
@@ -54,7 +53,7 @@ proc ident*(def: ComponentDef): NimNode =
     result = copy(def.node)
     result.copyLineInfo(def.node)
 
-proc hash*(def: ComponentDef): Hash = def.cachedHash
+proc hash*(def: ComponentDef): Hash = def.uniqueId.hash
 
 proc addSignature*(onto: var string, comp: ComponentDef) = onto &= comp.name
     ## Generate a unique ID for a component

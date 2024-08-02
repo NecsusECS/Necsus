@@ -1,4 +1,4 @@
-import unittest, necsus, sequtils
+import necsus, std/[sequtils, sets, unittest]
 
 type
     A = int
@@ -17,8 +17,8 @@ proc swapper(values: FullQuery[tuple[a: A, b: B]], swap: Swap[(C, ), (B, )]) =
 proc assertSwapped(abc: Query[(A, B, C)], ab: Query[(A, B)], ac: Query[(A, C)], acd: Query[(A, C, D)]) =
     check(toSeq(abc.items).len == 0)
     check(toSeq(ab.items).len == 0)
-    check(toSeq(ac.items) == @[(1, 100), (2, 200)])
-    check(toSeq(acd.items) == @[(2, 200, 2000)])
+    check(toSeq(ac.items).toHashSet == [(1, 100), (2, 200)].toHashSet)
+    check(toSeq(acd.items).toHashSet == [(2, 200, 2000)].toHashSet)
 
 proc runner(tick: proc(): void) =
     tick()

@@ -1,4 +1,4 @@
-import unittest, sequtils, necsus
+import unittest, sequtils, necsus, sets
 
 type
     Person = object
@@ -25,8 +25,8 @@ proc assertion(
     ages: Query[tuple[age: Age, ]],
     all: Query[tuple[person: Person, name: Name, age: Age]]
 ) =
-    check(toSeq(people.items).mapIt(it.name.name) == @["Jack", "Jill", "Joe", "John"])
-    check(toSeq(ages.items).mapIt(it.age.age) == @[40, 39])
+    check(toSeq(people.items).mapIt(it.name.name).toHashSet() == ["Jack", "Jill", "Joe", "John"].toHashSet())
+    check(toSeq(ages.items).mapIt(it.age.age).toHashSet == [40, 39].toHashSet())
     check(toSeq(all.items).mapIt(it.name.name) == @["John"])
 
 proc runner(tick: proc(): void) =
