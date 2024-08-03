@@ -7,7 +7,6 @@ type
         values: seq[T]
         name*: string
         identName: string
-        cachedHash: Hash
         bitset: Bits
         id: ArchetypeId
 
@@ -61,7 +60,6 @@ proc newArchetype*[T](values: openarray[T]): Archetype[T] =
         values: verified,
         name: name,
         identName: "archetype_" & name,
-        cachedHash: hash(verified),
         bitset: bits,
         id: name.getId,
     )
@@ -69,7 +67,7 @@ proc newArchetype*[T](values: openarray[T]): Archetype[T] =
 proc readableName*(arch: Archetype[ComponentDef]): string = arch.values.mapIt(it.readableName).join("_")
     ## Returns a readable name that describes an archetype
 
-proc hash*[T](archetype: Archetype[T]): Hash = archetype.cachedHash
+proc hash*[T](archetype: Archetype[T]): Hash = archetype.bitset.hash
     ## Create a hash describing a archetype
 
 proc `==`*[T](a, b: Archetype[T]): bool =
