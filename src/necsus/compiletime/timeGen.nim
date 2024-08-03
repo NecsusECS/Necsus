@@ -1,6 +1,6 @@
 
-import macros, sets
-import archetype, archetypeBuilder, common, systemGen, ../runtime/directives
+import std/[macros, sets]
+import common, systemGen, ../runtime/directives
 
 let lastTime {.compileTime.} = ident("lastTime")
 

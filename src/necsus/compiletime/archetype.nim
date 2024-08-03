@@ -98,10 +98,6 @@ proc containsAllOf*[T](archetype: Archetype[T], others: openarray[T]): bool =
             return false
     return true
 
-proc containsAllOf*[T](archetype: Archetype[T], other: Archetype[T]): bool =
-    ## Whether an archetype contains all the given values
-    containsAllOf(archetype, other.values)
-
 proc removeAndAdd*[T](archetype: Archetype[T], remove: Bits, add: openarray[T]): Archetype[T] =
     var accum: seq[T]
     for value in archetype:
@@ -113,25 +109,6 @@ proc removeAndAdd*[T](archetype: Archetype[T], remove: Bits, add: openarray[T]):
                 accum.add(value)
         accum.sort()
     return newArchetype(accum)
-
-proc `-`*[T](archetype: Archetype[T], other: Archetype[T]): Archetype[T] =
-    ## Removes components in an archetype
-    archetype.values.filterIt(it notin other).newArchetype
-
-proc `-`*[T](archetype: Archetype[T], other: openarray[T]): Archetype[T] =
-    ## Adds values to an archetype
-    return if other.len == 0: archetype else: archetype.values.filterIt(it notin other).sorted().newArchetype
-
-proc `+`*[T](archetype: Archetype[T], other: openarray[T]): Archetype[T] =
-    ## Adds values to an archetype
-    return if other.len == 0: archetype else: concat(archetype.values, other.toSeq).sorted().newArchetype
-
-proc `+`*[T](archetype: Archetype[T], other: Archetype[T]): Archetype[T] =
-    ## Joins together two archetypes
-    return if archetype == other.archetype: archetype else: archetype + other.values
-
-proc len*[T](archetype: Archetype[T]): auto = archetype.values.len
-    ## The number of values in this archetype
 
 proc ident*(archetype: Archetype[ComponentDef]): NimNode = archetype.identName.ident
     ## Creates a variable for referencing an archetype store
