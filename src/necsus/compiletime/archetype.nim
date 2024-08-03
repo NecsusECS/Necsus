@@ -8,7 +8,7 @@ type
         name*: string
         identName: string
         cachedHash: Hash
-        bitset*: Bits
+        bitset: Bits
         id: ArchetypeId
 
     ArchetypeSet*[T] = ref object
@@ -180,3 +180,7 @@ proc archetypeFor*[T](archs: ArchetypeSet[T], components: openArray[T]): Archety
         bits.incl(comp.uniqueId)
     if bits in archs.archetypes:
         return archs.archetypes[bits]
+
+proc matches*(arch: Archetype, filter: BitsFilter): bool =
+    ## Whether this archetype can fulfill the given filter
+    arch.bitset.matches(filter)

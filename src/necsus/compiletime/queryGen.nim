@@ -5,7 +5,7 @@ import ../runtime/[archetypeStore, query], ../util/bits
 iterator selectArchetypes(details: GenerateContext, query: TupleDirective): Archetype[ComponentDef] =
     ## Iterates through the archetypes that contribute to a query
     for archetype in details.archetypes:
-        if archetype.bitset.matches(query.filter):
+        if archetype.matches(query.filter):
             yield archetype
 
 let slot {.compileTime.} = ident("slot")

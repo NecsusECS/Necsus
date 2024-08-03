@@ -1,6 +1,6 @@
 import macros, sequtils, tables
 import tupleDirective, tools, common, archetype, componentDef, systemGen
-import ../runtime/[world, archetypeStore, directives], ../util/bits
+import ../runtime/[world, archetypeStore, directives]
 
 let entityId {.compileTime.} = ident("entityId")
 let entityIndex {.compileTime.} = ident("entityIndex")
@@ -30,7 +30,7 @@ proc worldFields(name: string, dir: TupleDirective): seq[WorldField] =
 
 proc converters(ctx: GenerateContext, dir: TupleDirective): seq[ConverterDef] =
     for archetype in ctx.archetypes:
-        if archetype.bitset.matches(dir.filter):
+        if archetype.matches(dir.filter):
             result.add(newConverter(archetype, dir))
 
 proc generate(details: GenerateContext, arg: SystemArg, name: string, lookup: TupleDirective): NimNode =
@@ -50,7 +50,7 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, lookup: Tu
 
                 # Create a case statement where each branch is one of the archetypes
                 for (ofBranch, archetype) in archetypeCases(details):
-                    if archetype.bitset.matches(lookup.filter):
+                    if archetype.matches(lookup.filter):
                         cases.add(nnkOfBranch.newTree(ofBranch, details.buildArchetypeLookup(lookup, archetype)))
 
                 # Add a fall through 'else' branch for any archetypes that don't fit this lookup
