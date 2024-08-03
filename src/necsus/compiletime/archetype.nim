@@ -1,4 +1,4 @@
-import std/[tables, sets, hashes, strutils, sequtils, macros, algorithm, macrocache]
+import std/[tables, sets, hashes, strutils, sequtils, macros, algorithm, macrocache, strformat]
 import componentDef, ../util/bits, ../runtime/world
 
 type
@@ -13,7 +13,7 @@ type
 
     ArchetypeSet*[T] = ref object
         ## A set of all known archetypes
-        archetypes: HashSet[Archetype[T]]
+        archetypes: Table[Bits, Archetype[T]]
 
     UnsortedArchetype* = object of Defect
         ## Thrown when an archetype is out of sorted order
@@ -98,17 +98,15 @@ proc containsAllOf*[T](archetype: Archetype[T], others: openarray[T]): bool =
             return false
     return true
 
-proc removeAndAdd*[T](archetype: Archetype[T], remove: Bits, add: openarray[T]): Archetype[T] =
-    var accum: seq[T]
+proc removeAndAdd*[T](archetype: Archetype[T], remove: Bits, add: openarray[T]): seq[T] =
     for value in archetype:
         if value.uniqueId notin remove:
-            accum.add(value)
+            result.add(value)
     if add.len > 0:
         for value in add:
             if value notin archetype:
-                accum.add(value)
-        accum.sort()
-    return newArchetype(accum)
+                result.add(value)
+        result.sort()
 
 proc ident*(archetype: Archetype[ComponentDef]): NimNode = archetype.identName.ident
     ## Creates a variable for referencing an archetype store
@@ -155,16 +153,17 @@ proc archArchSymbolDef*[T](archetype: Archetype[T]): NimNode =
 
 proc newArchetypeSet*[T](values: openarray[Archetype[T]]): ArchetypeSet[T] =
     ## Creates a set of archetypes
-    result.new
-    result.archetypes = values.toHashSet
+    result = ArchetypeSet[T](archetypes: initTable[Bits, Archetype[T]](values.len))
+    for arch in values:
+        result.archetypes[arch.bitset] = arch
 
-proc len*[T](archetypes: ArchetypeSet[T]): int = archetypes.archetypes.card
+proc len*[T](archetypes: ArchetypeSet[T]): int = archetypes.archetypes.len
 
 proc contains*[T](archetypes: ArchetypeSet[T], archetype: Archetype[T]): bool = archetype in archetypes.archetypes
 
 iterator items*[T](archetypes: ArchetypeSet[T]): Archetype[T] =
     ## Produces all the archetypes
-    for archetype in items(archetypes.archetypes):
+    for _, archetype in pairs(archetypes.archetypes):
         yield archetype
 
 proc dumpAnalysis*[T](archetypes: ArchetypeSet[T]) =
@@ -173,3 +172,11 @@ proc dumpAnalysis*[T](archetypes: ArchetypeSet[T]) =
     for archetype in allArchetypes.sortedByIt(it.name):
         echo $archetype
     echo "TOTAL: ", allArchetypes.len
+
+proc archetypeFor*[T](archs: ArchetypeSet[T], components: openArray[T]): Archetype[T] =
+    ## Returns the archetype to use for a set of components
+    var bits = Bits()
+    for comp in components:
+        bits.incl(comp.uniqueId)
+    if bits in archs.archetypes:
+        return archs.archetypes[bits]

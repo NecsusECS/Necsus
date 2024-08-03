@@ -98,16 +98,17 @@ proc attachDetachProcBody(
         cases = nnkCaseStmt.newTree(newDotExpr(entityIndex, ident("archetype")))
         for (ofBranch, fromArch) in archetypeCases(details):
             if detachComps.len == 0 or fromArch.containsAllOf(detachComps):
-                let toArch = fromArch.removeAndAdd(toRemove, attachComps)
-                if fromArch == toArch:
-                    if attachComps.len > 0:
-                        cases.add(nnkOfBranch.newTree(ofBranch, details.createArchUpdate(title, attachComps, toArch)))
-                elif toArch in details.archetypes:
+                let toArch = details.archetypeFor(fromArch.removeAndAdd(toRemove, attachComps))
+                if toArch.isNil:
+                    discard
+                elif fromArch != toArch:
                     let convert = newConverter(fromArch, attachComps, toArch, true)
                     result.convertProcs.add(convert.buildConverter)
                     cases.add(
                         nnkOfBranch.newTree(ofBranch,
                         details.createArchMove(title, fromArch, attachComps, toArch, convert)))
+                elif attachComps.len > 0:
+                    cases.add(nnkOfBranch.newTree(ofBranch, details.createArchUpdate(title, attachComps, toArch)))
         cases.add(nnkElse.newTree(nnkDiscardStmt.newTree(newEmptyNode())))
 
     result.procBody = quote do:

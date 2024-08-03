@@ -1,4 +1,4 @@
-import std/[macros, sequtils, sets, macrocache]
+import std/[macros, sets, macrocache]
 import tools, tupleDirective, archetype, archetypeBuilder, componentDef, common, systemGen
 import ../runtime/[spawn, archetypeStore, world]
 
@@ -44,9 +44,8 @@ proc buildSpawnProc(details: GenerateContext, dir: TupleDirective): NimNode =
 
     let appState = details.appStateTypeName
     let spawnProc = details.spawnProcName(dir)
-    let archetype = newArchetype(dir.items.toSeq)
-    let archIdent = archetype.ident
-    let log = emitEntityTrace("Spawned ", ident("result"), " of kind ", archetype.name)
+    let archIdent = details.archetypeFor(dir).ident
+    let log = emitEntityTrace("Spawned ", ident("result"), " of kind ", $dir)
     let tupleTyp = dir.asTupleType
     result = quote:
         proc `spawnProc`(

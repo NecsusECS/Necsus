@@ -366,6 +366,14 @@ iterator allArgs*(args: openArray[SystemArg]): SystemArg =
 
         yield arg
 
+proc archetypeFor*(ctx: GenerateContext, components: openArray[ComponentDef]): Archetype[ComponentDef] =
+    ## Returns the archetype to use for a set of components
+    return ctx.archetypes.archetypeFor(components)
+
+proc archetypeFor*(ctx: GenerateContext, dir: TupleDirective): Archetype[ComponentDef] =
+    ## Returns the archetype to use for a set of components
+    return ctx.archetypeFor(dir.comps)
+
 when NimMajor >= 2:
     import std/macrocache
     const sendNames = CacheTable("SendProcNames")
