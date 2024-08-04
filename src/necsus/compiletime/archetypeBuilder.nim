@@ -24,6 +24,13 @@ type
         lookup: seq[T]
         archetypes: HashSet[Bits]
         actions: HashSet[BuilderAction]
+        accessories: Bits
+
+    ArchetypeAccum = ref object
+        ## Used during the final calculation as an accumulator for the full set of archetypes
+        seen: HashSet[Bits]
+        workQueue: HashSet[Bits]
+        output: Table[Bits, Bits]
 
 proc newArchetypeBuilder*[T](): ArchetypeBuilder[T] =
     ## Creates a new ArchetypeBuilder
@@ -31,6 +38,7 @@ proc newArchetypeBuilder*[T](): ArchetypeBuilder[T] =
         lookup: newSeq[T](256),
         archetypes: initHashSet[Bits](),
         actions: initHashSet[BuilderAction](),
+        accessories: Bits(),
     )
 
 proc hash*(action: BuilderAction): Hash =
@@ -85,6 +93,10 @@ proc detachable*[T](builder: var ArchetypeBuilder[T], values: openarray[T], opti
         )
     )
 
+proc accessory*[T](builder: var ArchetypeBuilder[T], value: T) =
+    ## Marks that a value is an accessory and should not, itself, cause the creation of a new archetype
+    builder.accessories.incl(value.uniqueId)
+
 proc attachDetach*[T](
     builder: var ArchetypeBuilder[T],
     attach: openarray[T],
@@ -101,41 +113,57 @@ proc attachDetach*[T](
         )
     )
 
-proc process[T](builder: ArchetypeBuilder[T], next: Bits, output: var HashSet[Bits], workQueue: var HashSet[Bits]) =
-    if next.card > 0 and next notin output:
-        output.incl(next)
 
-        for action in builder.actions:
-            if not action.filtered or next.matches(action.filter):
-                var variant = next
-                if action.attaching:
-                    variant = variant + action.attach
-                if action.detaching:
-                    if action.detach <= variant:
-                        variant = variant - action.detach
-                    variant = variant - action.optDetach
-                if variant notin output:
-                    workQueue.incl(variant)
+proc addWork[T](builder: ArchetypeBuilder[T], source: Bits, accum: var ArchetypeAccum) =
+    for action in builder.actions:
+        if not action.filtered or source.matches(action.filter):
+            var variant = source
+            if action.attaching:
+                variant = variant + action.attach
+            if action.detaching:
+                if action.detach <= variant:
+                    variant = variant - action.detach
+                variant = variant - action.optDetach
+            if variant notin accum.seen:
+                accum.workQueue.incl(variant)
+
+proc process[T](builder: ArchetypeBuilder[T], next: Bits, accum: var ArchetypeAccum) =
+    if next.card > 0 and next notin accum.seen:
+
+        # The minimal set of components, minus all the accessory components
+        var minValues = next - builder.accessories
+
+        # Makes sure the registerd output includes any new accessories
+        if minValues in accum.output:
+            accum.output[minValues] = accum.output[minValues] + next
+        else:
+            accum.output[minValues] = next
+
+        accum.seen.incl(next)
+        builder.addWork(next, accum)
 
 proc build*[T](builder: ArchetypeBuilder[T]): ArchetypeSet[T] =
     ## Constructs the final set of archetypes
 
-    var workQueue = initHashSet[Bits](256)
-    var output = initHashSet[Bits](256)
+    var accum = ArchetypeAccum(
+        workQueue: initHashSet[Bits](256),
+        seen: initHashSet[Bits](256),
+        output: initTable[Bits, Bits](256),
+    )
 
     # Add in all the baseline archetypes
     for archetype in builder.archetypes.items:
-        builder.process(archetype, output, workQueue)
+        builder.process(archetype, accum)
 
-    while workQueue.len > 0:
-        builder.process(workQueue.pop, output, workQueue)
+    while accum.workQueue.len > 0:
+        builder.process(accum.workQueue.pop, accum)
 
     var archetypes: seq[Archetype[T]]
-    for bits in output:
+    for _, bits in accum.output:
         var values: seq[T]
         for bit in bits.items:
             values.add(builder.lookup[bit])
         values.sort()
-        archetypes.add(newArchetype(values))
+        archetypes.add(newArchetype(values, builder.accessories))
 
     result = newArchetypeSet(archetypes)

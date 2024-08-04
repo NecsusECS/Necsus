@@ -21,6 +21,19 @@ suite "Creating archetypes":
 
         check(archetypes.toHashSet == [ "{A}", "{A, B}", "{A, B, C}" ].toHashSet)
 
+    test "Creating archetypes with accessories":
+
+        const archetypes = block:
+            var builder = newArchetypeBuilder[string]()
+            builder.define([ "A" ])
+            builder.define([ "A", "B" ])
+            builder.define([ "A", "B" ])
+            builder.define([ "A", "B", "C" ])
+            builder.accessory("B")
+            builder.build().toSeq.mapIt($it)
+
+        check(archetypes.toHashSet == [ "{A, B?}", "{A, B?, C}" ].toHashSet)
+
     test "Allowing for attaching new components to existing archetypes":
         const archetypes = block:
             var builder = newArchetypeBuilder[string]()
@@ -34,6 +47,20 @@ suite "Creating archetypes":
         check(archetypes.toHashSet == toHashSet([
             "{A}", "{A, B, C}", "{A, C, D}", "{A, B, C, D}", "{A, B}"
         ]))
+
+    test "Attaching components with accessories":
+        const archetypes = block:
+            var builder = newArchetypeBuilder[string]()
+            builder.define([ "A" ])
+            builder.define([ "A", "B" ])
+
+            builder.attachable([ "B", "C" ], builder.filter([], []))
+            builder.attachable([ "C", "D" ], builder.filter([], []))
+            builder.accessory("B")
+            builder.accessory("C")
+            builder.build().toSeq.mapIt($it)
+
+        check(archetypes.toHashSet == toHashSet([ "{A, B?, C?}", "{A, B?, C?, D}" ]))
 
     test "Allowing for attaching new components with a matching filter":
         const archetypes = block:
@@ -74,6 +101,26 @@ suite "Creating archetypes":
 
         check(archetypes.toHashSet == toHashSet([
             "{A}", "{A, D}", "{A, B, C}", "{B}", "{D}", "{B, C, D}", "{B, C}", "{A, B, C, D}", "{A, B}"
+        ]))
+
+    test "Detaching components with accessories":
+        const archetypes = block:
+            var builder = newArchetypeBuilder[string]()
+            builder.define([ "A" ])
+            builder.define([ "A", "B" ])
+            builder.define([ "A", "B", "C" ])
+            builder.define([ "A", "B", "C", "D" ])
+
+            builder.detachable([ "A" ])
+            builder.detachable([ "B", "C" ])
+            builder.detachable([ "C", "D" ])
+
+            builder.accessory("B")
+            builder.accessory("C")
+            builder.build().toSeq.mapIt($it)
+
+        check(archetypes.toHashSet == toHashSet([
+            "{A, B?, C?}", "{B?, C?}", "{A, B?, C?, D}", "{B?, C?, D}"
         ]))
 
     test "Attaching and detaching in a single action":

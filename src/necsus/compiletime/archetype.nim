@@ -7,7 +7,8 @@ type
         values: seq[T]
         name*: string
         identName: string
-        bitset: Bits
+        allValues: Bits
+        requiredValues: Bits
         id: ArchetypeId
 
     ArchetypeSet*[T] = ref object
@@ -38,10 +39,11 @@ proc getId(name: string): ArchetypeId =
         ids[name] = newId.newLit
         return ArchetypeId(newId)
 
-proc newArchetype*[T](values: openarray[T]): Archetype[T] =
+proc newArchetype*[T](values: openarray[T], accessories: Bits): Archetype[T] =
     ## Create an archetype
 
-    var bits = Bits()
+    var requiredValues = Bits()
+    var allValues = Bits()
 
     var verified: seq[T]
     var previous: T
@@ -51,7 +53,10 @@ proc newArchetype*[T](values: openarray[T]): Archetype[T] =
             raise newException(UnsortedArchetype, "Archetype must be in sorted order. Correct order is: " & correct)
         elif i == 0 or previous != value:
             verified.add(value)
-            bits.incl(value.uniqueId)
+            allValues.incl(value.uniqueId)
+
+            if value.uniqueId notin accessories:
+                requiredValues.incl(value.uniqueId)
         previous = value
 
     let name = generateName(verified)
@@ -60,29 +65,38 @@ proc newArchetype*[T](values: openarray[T]): Archetype[T] =
         values: verified,
         name: name,
         identName: "archetype_" & name,
-        bitset: bits,
+        allValues: allValues,
+        requiredValues: requiredValues,
         id: name.getId,
     )
 
 proc readableName*(arch: Archetype[ComponentDef]): string = arch.values.mapIt(it.readableName).join("_")
     ## Returns a readable name that describes an archetype
 
-proc hash*[T](archetype: Archetype[T]): Hash = archetype.bitset.hash
+proc hash*[T](archetype: Archetype[T]): Hash = archetype.allValues.hash !& archetype.requiredValues.hash
     ## Create a hash describing a archetype
 
 proc `==`*[T](a, b: Archetype[T]): bool =
     ## Determine archetype equality
-    a.bitset == b.bitset
+    a.allValues == b.allValues and a.requiredValues == b.requiredValues
 
 proc `$`*[T](archetype: Archetype[T]): string =
     ## Stringify a Archetype
     result.add("{")
-    result.add(archetype.values.items.toSeq.join(", "))
+    var first = true
+    for comp in archetype.values:
+        if first:
+            first = false
+        else:
+            result.add(", ")
+        result.add($comp)
+        if comp.uniqueId notin archetype.requiredValues:
+            result.add("?")
     result.add("}")
 
 proc contains*[T](archetype: Archetype[T], value: T): bool =
     ## Whether an archetype contains all the given value
-    value.uniqueId in archetype.bitset
+    value.uniqueId in archetype.allValues
 
 proc indexOf*[T](archetype: Archetype[T], value: T): int =
     ## Whether an archetype contains all the given value
@@ -153,7 +167,7 @@ proc newArchetypeSet*[T](values: openarray[Archetype[T]]): ArchetypeSet[T] =
     ## Creates a set of archetypes
     result = ArchetypeSet[T](archetypes: initTable[Bits, Archetype[T]](values.len))
     for arch in values:
-        result.archetypes[arch.bitset] = arch
+        result.archetypes[arch.allValues] = arch
 
 proc len*[T](archetypes: ArchetypeSet[T]): int = archetypes.archetypes.len
 
@@ -181,4 +195,4 @@ proc archetypeFor*[T](archs: ArchetypeSet[T], components: openArray[T]): Archety
 
 proc matches*(arch: Archetype, filter: BitsFilter): bool =
     ## Whether this archetype can fulfill the given filter
-    arch.bitset.matches(filter)
+    arch.allValues.matches(filter)
