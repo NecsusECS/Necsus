@@ -101,6 +101,12 @@ proc `==`*(a, b: Bits): bool =
             return false
     return true
 
+proc `+=`*(a: var Bits, b: Bits) =
+    ## Union of two sets
+    a.buckets.setLen(max(a.buckets.len, b.buckets.len))
+    for i, (aValue, bValue) in eachValue(a, b):
+        a.buckets[i] = aValue or bValue
+
 proc `+`*(a, b: Bits): Bits =
     ## Union of two sets
     result = Bits(buckets: newSeq[Word](max(a.buckets.len, b.buckets.len)))

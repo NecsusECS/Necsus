@@ -53,6 +53,13 @@ suite "Bits":
         check(bits1 + bits2 == newBits(1, 500))
         check((bits1 + bits2).card == 2)
 
+    test "In-place Bit addition":
+        var bits = newBits(1, 5, 10, 500)
+        bits += newBits(5, 6, 500, 700)
+
+        check(bits == newBits(1, 5, 6, 10, 500, 700))
+        check(bits.card == 6)
+
     test "Bit subtraction":
         check(newBits(1, 500) - newBits(500) == newBits(1))
         check(newBits(1, 500) - newBits(1) == newBits(500))
