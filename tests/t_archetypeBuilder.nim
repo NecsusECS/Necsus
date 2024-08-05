@@ -168,3 +168,14 @@ suite "Creating archetypes":
             builder.build().toSeq.mapIt($it)
 
         check(archetypes.toHashSet == [ "{A, B, C}" ].toHashSet)
+
+    test "Component iteration":
+        const components = block:
+            var builder = newArchetypeBuilder[string]()
+            builder.define([ "A", "B" ])
+            builder.define([ "B", "C" ])
+            builder.attachDetach([ "D", "E" ], [ "A" ])
+            builder.attachable([ "F" ], builder.filter([ "C" ], []))
+            builder.allComponents.toSeq
+
+        check(components.toHashSet == [ "A", "B", "C", "D", "E", "F" ].toHashSet)

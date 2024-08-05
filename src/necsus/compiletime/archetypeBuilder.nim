@@ -22,6 +22,7 @@ type
     ArchetypeBuilder*[T] = ref object
         ## A builder for creating a list of all known archetypes
         lookup: seq[T]
+        allComponents: Bits
         archetypes: HashSet[Bits]
         actions: HashSet[BuilderAction]
         accessories: Bits
@@ -36,6 +37,7 @@ proc newArchetypeBuilder*[T](): ArchetypeBuilder[T] =
     ## Creates a new ArchetypeBuilder
     ArchetypeBuilder[T](
         lookup: newSeq[T](256),
+        allComponents: Bits(),
         archetypes: initHashSet[Bits](),
         actions: initHashSet[BuilderAction](),
         accessories: Bits(),
@@ -76,12 +78,15 @@ proc filter*[T](builder: var ArchetypeBuilder[T], mustContain: openarray[T], mus
 
 proc define*[T](builder: var ArchetypeBuilder[T], values: openarray[T]) =
     ## Adds a new archetype with specific values
-    builder.archetypes.incl(asBits(builder, values))
+    let bits = asBits(builder, values)
+    builder.archetypes.incl(bits)
+    builder.allComponents += bits
 
 proc attachable*[T](builder: var ArchetypeBuilder[T], values: openarray[T], filter: BitsFilter) =
     ## Describes components that can be attached to entities to create new archetypes
-    builder.actions.incl(
-        BuilderAction(filtered: true, filter: filter, attaching: true, attach: asBits(builder, values)))
+    let bits = asBits(builder, values)
+    builder.actions.incl(BuilderAction(filtered: true, filter: filter, attaching: true, attach: bits))
+    builder.allComponents += bits
 
 proc detachable*[T](builder: var ArchetypeBuilder[T], values: openarray[T], optional: openarray[T] = []) =
     ## Describes components that can be detached from entities to create new archetypes
@@ -105,14 +110,23 @@ proc attachDetach*[T](
     filter: BitsFilter = builder.filter([], [])
 ) =
     ## Describes components that can be attached to entities to create new archetypes
+    let bits = asBits(builder, attach)
     builder.actions.incl(
         BuilderAction(
             filtered: true, filter: filter,
-            attaching: true, attach: asBits(builder, attach),
+            attaching: true, attach: bits,
             detaching: true, detach: asBits(builder, detach), optDetach: asBits(builder, optDetach)
         )
     )
+    builder.allComponents += bits
 
+iterator allComponents*[T](builder: ArchetypeBuilder[T]): T =
+    ## Yields all the components register in a builder
+    var seen = Bits()
+    for bit in builder.allComponents.items:
+        if bit notin seen:
+            seen.incl(bit)
+            yield builder.lookup[bit]
 
 proc addWork[T](builder: ArchetypeBuilder[T], source: Bits, accum: var ArchetypeAccum) =
     for action in builder.actions:
