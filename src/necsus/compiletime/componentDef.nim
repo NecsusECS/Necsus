@@ -1,5 +1,5 @@
 import std/[macros, hashes, sequtils, strutils, macrocache]
-import ../util/nimNode
+import ../util/[nimNode, typeReader], ../runtime/pragmas
 
 type
     ComponentDef* = ref object
@@ -57,3 +57,8 @@ proc hash*(def: ComponentDef): Hash = def.uniqueId.hash
 
 proc addSignature*(onto: var string, comp: ComponentDef) = onto &= comp.name
     ## Generate a unique ID for a component
+
+proc isAccessory*(comp: ComponentDef): bool =
+    let pragma = comp.node.findPragma
+    if pragma.kind == nnkPragma:
+        return pragma[0] == bindSym("accessory")

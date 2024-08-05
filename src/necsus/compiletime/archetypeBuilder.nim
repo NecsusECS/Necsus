@@ -180,4 +180,4 @@ proc build*[T](builder: ArchetypeBuilder[T]): ArchetypeSet[T] =
         values.sort()
         archetypes.add(newArchetype(values, builder.accessories))
 
-    result = newArchetypeSet(archetypes)
+    result = newArchetypeSet(archetypes, builder.accessories)

@@ -1,4 +1,4 @@
-import std/[tables, sets, hashes, strutils, sequtils, macros, algorithm, macrocache, strformat]
+import std/[tables, sets, hashes, strutils, sequtils, macros, algorithm, macrocache, strformat, options]
 import componentDef, ../util/bits, ../runtime/world
 
 type
@@ -13,6 +13,7 @@ type
 
     ArchetypeSet*[T] = ref object
         ## A set of all known archetypes
+        accessories: Bits
         archetypes: Table[Bits, Archetype[T]]
 
     UnsortedArchetype* = object of Defect
@@ -70,6 +71,10 @@ proc newArchetype*[T](values: openarray[T], accessories: Bits): Archetype[T] =
         id: name.getId,
     )
 
+proc hasAccessories*(arch: Archetype): bool =
+    ## Returns whether there are any accessories in this archetype
+    return arch.allValues.card != arch.requiredValues.card
+
 proc readableName*(arch: Archetype[ComponentDef]): string = arch.values.mapIt(it.readableName).join("_")
     ## Returns a readable name that describes an archetype
 
@@ -126,7 +131,11 @@ proc ident*(archetype: Archetype[ComponentDef]): NimNode = archetype.identName.i
 proc asStorageTuple*(archetype: Archetype[ComponentDef]): NimNode =
     ## Creates the tuple type for storing an archetype
     result = nnkTupleConstr.newTree()
-    for component in archetype.values: result.add(component.ident)
+    for component in archetype.values:
+        if component.isAccessory:
+            result.add(nnkBracketExpr.newTree(bindSym("Option"), component.ident))
+        else:
+            result.add(component.ident)
 
 iterator items*[T](archetype: Archetype[T]): T =
     ## Produces all the archetype values
@@ -163,11 +172,13 @@ proc archArchSymbolDef*[T](archetype: Archetype[T]): NimNode =
         {.hint[ConvFromXtoItselfNotNeeded]:off.}
         const `symbol` = ArchetypeId(`num`)
 
-proc newArchetypeSet*[T](values: openarray[Archetype[T]]): ArchetypeSet[T] =
+proc newArchetypeSet*[T](values: openarray[Archetype[T]], accessories: Bits): ArchetypeSet[T] =
     ## Creates a set of archetypes
-    result = ArchetypeSet[T](archetypes: initTable[Bits, Archetype[T]](values.len))
+    result = ArchetypeSet[T](archetypes: initTable[Bits, Archetype[T]](values.len), accessories: accessories)
     for arch in values:
-        result.archetypes[arch.allValues] = arch
+        let key = arch.allValues - accessories
+        assert(key notin result.archetypes)
+        result.archetypes[key] = arch
 
 proc len*[T](archetypes: ArchetypeSet[T]): int = archetypes.archetypes.len
 
@@ -189,7 +200,8 @@ proc archetypeFor*[T](archs: ArchetypeSet[T], components: openArray[T]): Archety
     ## Returns the archetype to use for a set of components
     var bits = Bits()
     for comp in components:
-        bits.incl(comp.uniqueId)
+        if not comp.isAccessory:
+            bits.incl(comp.uniqueId)
     if bits in archs.archetypes:
         return archs.archetypes[bits]
 

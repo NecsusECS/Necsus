@@ -17,6 +17,12 @@ proc calculateArchetypes(allSystems: openarray[ParsedSystem], runnerArgs: seq[Sy
     for system in allSystems:
         for arg in system.allArgs:
             builder.buildArchetype(system.args, arg)
+
+    # Mark any accessories
+    for component in builder.allComponents:
+        if component.isAccessory:
+            builder.accessory(component)
+
     return builder.build()
 
 proc calculateDirectives(args: openarray[SystemArg]): Table[DirectiveGen, DirectiveSet[SystemArg]] =

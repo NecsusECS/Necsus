@@ -1,4 +1,4 @@
-import std/[macros, sets, macrocache]
+import std/[macros, sets, macrocache, options]
 import tools, tupleDirective, archetype, archetypeBuilder, componentDef, common, systemGen
 import ../runtime/[spawn, archetypeStore, world]
 
@@ -36,6 +36,19 @@ when NimMajor >= 2:
 else:
     var spawnProcs {.compileTime.} = initTable[string, NimNode]()
 
+proc convertSpawnValue(archetype: Archetype[ComponentDef], dir: TupleDirective, readFrom: NimNode): NimNode =
+    ## Generates code for taking a tuple and converting it to the archetype in which it is being stored
+    if archetype.hasAccessories:
+        result = nnkTupleConstr.newTree()
+        for component in archetype.values:
+            if component in dir:
+                let read = nnkBracketExpr.newTree(readFrom, dir.indexOf(component).newLit)
+                result.add(if component.isAccessory: newCall(bindSym("some"), read) else: read)
+            else:
+                result.add(newCall(nnkBracketExpr.newTree(bindSym("none"), component.node)))
+    else:
+        result = readFrom
+
 proc buildSpawnProc(details: GenerateContext, dir: TupleDirective): NimNode =
     ## Builds the proc needed to execute a spawn against the given tuple
     let sig = details.globalStr(dir.signature)
@@ -44,19 +57,22 @@ proc buildSpawnProc(details: GenerateContext, dir: TupleDirective): NimNode =
 
     let appState = details.appStateTypeName
     let spawnProc = details.spawnProcName(dir)
-    let archIdent = details.archetypeFor(dir).ident
+    let archetype = details.archetypeFor(dir)
+    let archIdent = archetype.ident
+    let value = genSym(nskParam, "value")
+    let construct = archetype.convertSpawnValue(dir, value)
     let log = emitEntityTrace("Spawned ", ident("result"), " of kind ", $dir)
     let tupleTyp = dir.asTupleType
     result = quote:
         proc `spawnProc`(
             appStatePtr: pointer,
-            value: sink `tupleTyp`
+            `value`: sink `tupleTyp`
         ): EntityId {.fastcall, raises: [], gcsafe.} =
             let `appStateIdent` = cast[ptr `appState`](appStatePtr)
             var newEntity = `appStateIdent`.world.newEntity
             var slot = newSlot(`appStateIdent`.`archIdent`, newEntity.entityId)
-            newEntity.setArchetypeDetails(readArchetype[`tupleTyp`](`appStateIdent`.`archIdent`), slot.index)
-            result = setComp(slot, value)
+            newEntity.setArchetypeDetails(readArchetype(`appStateIdent`.`archIdent`), slot.index)
+            result = setComp(slot, `construct`)
             `log`
 
     spawnProcs[sig] = result

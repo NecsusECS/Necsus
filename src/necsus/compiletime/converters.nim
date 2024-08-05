@@ -8,7 +8,8 @@ let output {.compileTime.} = ident("output")
 
 proc read(arg: DirectiveArg, source: NimNode, index: int): NimNode =
     assert(index != -1, "Component is not present: " & $arg)
-    let readExpr = nnkBracketExpr.newTree(source, newLit(index))
+    let baseExpr = nnkBracketExpr.newTree(source, newLit(index))
+    let readExpr = if arg.component.isAccessory: newCall(bindSym("get"), baseExpr) else: baseExpr
     return if arg.isPointer: nnkAddr.newTree(readExpr) else: readExpr
 
 proc read(fromArch: Archetype[ComponentDef], newVals: openarray[ComponentDef], arg: DirectiveArg): NimNode =
@@ -18,24 +19,38 @@ proc read(fromArch: Archetype[ComponentDef], newVals: openarray[ComponentDef], a
     else:
         return read(arg, input, fromArch.find(arg.component))
 
+proc addAccessoryCondition(existing: NimNode, fromArch: Archetype[ComponentDef], arg: DirectiveArg): NimNode =
+    ## Adds a boolean check to see if an accessory component has a value
+    if arg.component.isAccessory:
+        let i = fromArch.find(arg.component)
+        return quote: `existing` and isSome(`input`[`i`])
+    else:
+        return existing
+
 proc copyTuple(fromArch: Archetype[ComponentDef], newVals: openarray[ComponentDef], directive: TupleDirective): NimNode =
     ## Generates code for copying from one tuple to another
     result = newStmtList()
+    var condition = newLit(true)
     var tupleConstr = nnkTupleConstr.newTree()
     for i, arg in directive.args:
         let value = case arg.kind
             of DirectiveArgKind.Exclude:
                 newCall(nnkBracketExpr.newTree(bindSym("Not"), arg.type), newLit(0'i8))
             of DirectiveArgKind.Include:
+                condition = condition.addAccessoryCondition(fromArch, arg)
                 read(fromArch, newVals, arg)
             of DirectiveArgKind.Optional:
                 if arg.component in fromArch or arg.component in newVals:
+                    condition = condition.addAccessoryCondition(fromArch, arg)
                     newCall(bindSym("some"), read(fromArch, newVals, arg))
                 else:
                     newCall(nnkBracketExpr.newTree(bindSym("none"), arg.type))
         tupleConstr.add(value)
     return quote:
-        `output` = `tupleConstr`
+        if `condition`:
+            `output` = `tupleConstr`
+            return ConvertSuccess
+        return ConvertSkip
 
 when NimMajor >= 2:
     import std/macrocache
@@ -65,12 +80,10 @@ proc buildConverter*(convert: ConverterDef): NimNode =
         if convert.sinkParams:
             quote:
                 `copier`
-                return ConvertSuccess
         else:
             quote:
                 if not `input`.isNil:
                     `copier`
-                    return ConvertSuccess
                 return ConvertEmpty
 
     let paramKeyword = if convert.sinkParams: ident("sink") else: ident("ptr")

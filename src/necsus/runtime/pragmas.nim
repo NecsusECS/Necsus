@@ -25,5 +25,9 @@ template instanced*() {.pragma.}
     ## an instance of a system. During the primary loop, the `tick` proc is
     ## called on that instance.
 
+template accessory*() {.pragma.}
+    ## Flags that a component should be attached to existing archetypes rather than creating new ones. This is a
+    ## useful tool for reducing build times when iteration over a set of entities is inexpensive.
+
 template active*(states: varargs[typed]) {.pragma.}
     ## Indicates a value that must be true for a system to run

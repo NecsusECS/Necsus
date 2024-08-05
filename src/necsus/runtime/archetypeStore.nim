@@ -1,7 +1,7 @@
 import world, entityId, ../util/blockstore
 
 type
-    ConvertResult* = enum ConvertSuccess, ConvertEmpty
+    ConvertResult* = enum ConvertSuccess, ConvertEmpty, ConvertSkip
         ## The results of converting from one component type to another
 
     ArchRow*[Comps: tuple] = object
@@ -33,7 +33,7 @@ proc newArchetypeStore*[Comps: tuple](
 
 proc isFirst*(iter: ArchetypeIter): bool = BlockIter(iter).isFirst
 
-proc readArchetype*[Comps: tuple](store: ArchetypeStore[Comps]): ArchetypeId {.inline.} = store.archetype
+proc readArchetype*(store: ArchetypeStore): ArchetypeId {.inline.} = store.archetype
     ## Accessor for the archetype of a store
 
 proc next*[Comps: tuple](

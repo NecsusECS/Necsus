@@ -10,7 +10,7 @@ type
         continuationIdx*: BiggestInt
         iter*: ArchetypeIter
 
-    NextIterState* = enum DoneIter, ActiveIter, IncrementIter
+    NextIterState* = enum DoneIter, ActiveIter, IncrementIter, SkipIter
 
     NextEntityProc*[Comps: tuple] = proc(
         iter: var QueryIterator, appStatePtr: pointer, eid: var EntityId, slot: var Comps
@@ -63,6 +63,8 @@ proc next*[Comps: tuple](
 proc asNextIterState*(convertResult: ConvertResult): NextIterState =
     ## Derives the next state for an iterator based on the result of a converter
     case convertResult
+    of ConvertSkip:
+        return SkipIter
     of ConvertSuccess:
         return ActiveIter
     of ConvertEmpty:
@@ -79,6 +81,8 @@ iterator pairs*[Comps: tuple](query: FullQuery[Comps]): QueryItem[Comps] =
         case nextEntity(iter, rawQuery.appState, eid, slot)
         of ActiveIter:
             yield (entityId: eid, components: slot)
+        of SkipIter:
+            discard
         of IncrementIter:
             iter.continuationIdx += 1
             iter.iter = default(ArchetypeIter)
