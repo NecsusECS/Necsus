@@ -41,7 +41,7 @@ type
 
     ConverterDef* = ref object
         ## Defines a function for converting from one tuple shape to another
-        input*: seq[ComponentDef]
+        input*: Archetype[ComponentDef]
         adding*: seq[ComponentDef]
         output*: TupleDirective
         sinkParams*: bool
@@ -112,10 +112,10 @@ proc newConverter*(
     output: Archetype[ComponentDef],
     sinkParams: bool
 ): ConverterDef =
-    ConverterDef(input: input.values, adding: adding, output: newTupleDir(output.values), sinkParams: sinkParams)
+    ConverterDef(input: input, adding: adding, output: newTupleDir(output.values), sinkParams: sinkParams)
 
 proc newConverter*(input: Archetype[ComponentDef], output: TupleDirective): ConverterDef =
-    ConverterDef(input: input.values, output: output)
+    ConverterDef(input: input, output: output)
 
 proc noArchetype[T](builder: var ArchetypeBuilder[ComponentDef], systemArgs: seq[SystemArg], dir: T) = discard
 

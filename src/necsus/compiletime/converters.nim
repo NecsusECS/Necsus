@@ -1,5 +1,5 @@
 import std/[macros, options]
-import tools, systemGen, componentDef, directiveArg, tupleDirective, common
+import tools, systemGen, componentDef, directiveArg, tupleDirective, common, archetype
 import ../runtime/query
 
 let input {.compileTime.} = ident("input")
@@ -11,14 +11,14 @@ proc read(arg: DirectiveArg, source: NimNode, index: int): NimNode =
     let readExpr = nnkBracketExpr.newTree(source, newLit(index))
     return if arg.isPointer: nnkAddr.newTree(readExpr) else: readExpr
 
-proc read(fromArch: openarray[ComponentDef], newVals: openarray[ComponentDef], arg: DirectiveArg): NimNode =
+proc read(fromArch: Archetype[ComponentDef], newVals: openarray[ComponentDef], arg: DirectiveArg): NimNode =
     let newValIdx = newVals.find(arg.component)
     if newValIdx >= 0:
         return read(arg, adding, newValIdx)
     else:
         return read(arg, input, fromArch.find(arg.component))
 
-proc copyTuple(fromArch: openarray[ComponentDef], newVals: openarray[ComponentDef], directive: TupleDirective): NimNode =
+proc copyTuple(fromArch: Archetype[ComponentDef], newVals: openarray[ComponentDef], directive: TupleDirective): NimNode =
     ## Generates code for copying from one tuple to another
     result = newStmtList()
     var tupleConstr = nnkTupleConstr.newTree()
@@ -51,7 +51,7 @@ proc buildConverter*(convert: ConverterDef): NimNode =
         return newStmtList()
 
     let name = convert.name
-    let inputTuple = convert.input.asTupleType
+    let inputTuple = convert.input.asStorageTuple
     let existingTuple = if convert.adding.len == 0:
             quote: (int, )
         else:
