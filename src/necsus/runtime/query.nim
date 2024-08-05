@@ -53,16 +53,20 @@ proc next*[Comps: tuple](
     store: var ArchetypeStore[Comps],
     iter: var QueryIterator,
     eid: var EntityId,
-    state: var NextIterState
 ): ptr Comps =
     ## Returns the next value for an interator
     let row = store.next(iter.iter)
-    if row == nil:
-        state = IncrementIter
-    else:
+    if row != nil:
         eid = row.entityId
-        state = ActiveIter
         return addr row.components
+
+proc asNextIterState*(convertResult: ConvertResult): NextIterState =
+    ## Derives the next state for an iterator based on the result of a converter
+    case convertResult
+    of ConvertSuccess:
+        return ActiveIter
+    of ConvertEmpty:
+        return IncrementIter
 
 iterator pairs*[Comps: tuple](query: FullQuery[Comps]): QueryItem[Comps] =
     ## Iterates through the entities in a query

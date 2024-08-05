@@ -1,6 +1,6 @@
 import std/[macros, options]
 import tools, systemGen, componentDef, directiveArg, tupleDirective, common, archetype
-import ../runtime/query
+import ../runtime/[query, archetypeStore]
 
 let input {.compileTime.} = ident("input")
 let adding {.compileTime.} = ident("adding")
@@ -63,11 +63,15 @@ proc buildConverter*(convert: ConverterDef): NimNode =
     else:
         let copier = copyTuple(convert.input, convert.adding, convert.output)
         if convert.sinkParams:
-            copier
+            quote:
+                `copier`
+                return ConvertSuccess
         else:
             quote:
                 if not `input`.isNil:
                     `copier`
+                    return ConvertSuccess
+                return ConvertEmpty
 
     let paramKeyword = if convert.sinkParams: ident("sink") else: ident("ptr")
 
@@ -76,7 +80,7 @@ proc buildConverter*(convert: ConverterDef): NimNode =
             `input`: `paramKeyword` `inputTuple`,
             `adding`: `paramKeyword` `existingTuple`,
             `output`: var `outputTuple`
-        ) {.gcsafe, raises: [], fastcall, used.} =
+        ): ConvertResult {.gcsafe, raises: [], fastcall, used.} =
             `body`
 
     built[sig] = result

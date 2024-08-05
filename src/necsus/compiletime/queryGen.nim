@@ -32,7 +32,7 @@ proc walkArchetypes(
             addLen(`appStateIdent`.`archetypeIdent`, result)
 
         let nextBody = quote do:
-            `copier`(`appStateIdent`.`archetypeIdent`.next(`iter`, `eid`, result), nil, `slot`)
+            result = `copier`(`appStateIdent`.`archetypeIdent`.next(`iter`, `eid`), nil, `slot`).asNextIterState
 
         nextEntityBody.add nnkOfBranch.newTree(newLit(index), nextBody)
         index += 1
