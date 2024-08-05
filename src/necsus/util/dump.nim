@@ -82,7 +82,7 @@ proc dumpGeneratedCode*(output: NimNode, app: ParsedApp, systems: openarray[Pars
         while "__" in line:
             line = line.replace("__", "_")
 
-        if line.endsWith("addr"):
+        if line.endsWith("addr") or line.endsWith("sink"):
             line &= " "
         else:
             echo line.strip(leading = false)
