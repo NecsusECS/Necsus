@@ -1,17 +1,21 @@
-import unittest, necsus
+import necsus/util/tools
 
-type
-    Thingy = object
-        value: int
+# Blocked by: https://github.com/nim-lang/Nim/issues/23907
+when isAboveNimVersion(2, 0, 8):
+    import unittest, necsus
 
-proc `=copy`(target: var Thingy, source: Thingy) {.error.}
+    type
+        Thingy = object
+            value: int
 
-proc spawner(spawn: Spawn[(Thingy, )]) =
-    spawn.with(Thingy())
+    proc `=copy`(target: var Thingy, source: Thingy) {.error.}
 
-proc runner(tick: proc(): void) = tick()
+    proc spawner(spawn: Spawn[(Thingy, )]) =
+        spawn.with(Thingy())
 
-proc myApp() {.necsus(runner, [~spawner], newNecsusConf()).}
+    proc runner(tick: proc(): void) = tick()
 
-test "Spawning a value should not require a copy":
-    myApp()
+    proc myApp() {.necsus(runner, [~spawner], newNecsusConf()).}
+
+    test "Spawning a value should not require a copy":
+        myApp()

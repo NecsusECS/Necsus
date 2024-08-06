@@ -1,19 +1,23 @@
-import unittest, necsus
+import necsus/util/tools
 
-type
-    A = object
-    B = object
+# Blocked by: https://github.com/nim-lang/Nim/issues/23907
+when isAboveNimVersion(2, 0, 8):
+    import unittest, necsus
 
-proc `=copy`(x: var A, y: A) {.error.}
-proc `=copy`(x: var B, y: B) {.error.}
+    type
+        A = object
+        B = object
 
-proc exec(spawn: FullSpawn[(A, B)], detach: Detach[(B, )]) =
-    detach(spawn.with(A(), B()))
+    proc `=copy`(x: var A, y: A) {.error.}
+    proc `=copy`(x: var B, y: B) {.error.}
 
-proc runner(tick: proc(): void) =
-    tick()
+    proc exec(spawn: FullSpawn[(A, B)], detach: Detach[(B, )]) =
+        detach(spawn.with(A(), B()))
 
-proc testDetach() {.necsus(runner, [~exec], newNecsusConf()).}
+    proc runner(tick: proc(): void) =
+        tick()
 
-test "Detaching components without requiring a copy":
-    testDetach()
+    proc testDetach() {.necsus(runner, [~exec], newNecsusConf()).}
+
+    test "Detaching components without requiring a copy":
+        testDetach()

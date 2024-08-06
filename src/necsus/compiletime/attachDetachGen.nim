@@ -17,6 +17,7 @@ proc createArchUpdate(
     details: GenerateContext,
     title: string,
     attachComps: seq[ComponentDef],
+    detachComps: seq[ComponentDef],
     archetype: Archetype[ComponentDef]
 ): NimNode =
     ## Creates code for updating archetype information in place
@@ -37,6 +38,12 @@ proc createArchUpdate(
         let newValue = component.readNewValue(newComps, i)
         result.add quote do:
             `existing`[`storageIndex`] = `newValue`
+
+    for component in detachComps:
+        let storageIndex = archetype.indexOf(component)
+        let typ = component.node
+        result.add quote do:
+            `existing`[`storageIndex`] = none[`typ`]()
 
 proc newCompsTupleType(newCompValues: seq[ComponentDef]): NimNode =
     ## Creates the type definition to use for a tuple that represents new values passed into a convert proc
@@ -113,9 +120,12 @@ proc attachDetachProcBody(
                     result.convertProcs.add(convert.buildConverter)
                     cases.add(
                         nnkOfBranch.newTree(ofBranch,
-                        details.createArchMove(title, fromArch, attachComps, toArch, convert)))
-                elif attachComps.len > 0:
-                    cases.add(nnkOfBranch.newTree(ofBranch, details.createArchUpdate(title, attachComps, toArch)))
+                            details.createArchMove(title, fromArch, attachComps, toArch, convert)))
+                else:
+                    cases.add(
+                        nnkOfBranch.newTree(ofBranch,
+                            details.createArchUpdate(title, attachComps, detachComps, toArch)))
+
         cases.add(nnkElse.newTree(nnkDiscardStmt.newTree(newEmptyNode())))
 
     result.procBody = quote do:

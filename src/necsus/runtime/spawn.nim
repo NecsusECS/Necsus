@@ -1,4 +1,4 @@
-import entityId, world, archetypeStore, std/macros
+import entityId, world, archetypeStore, ../util/tools, std/macros
 
 type
     RawSpawn*[C: tuple] = ref object
@@ -29,15 +29,21 @@ proc beginSpawn*[Comps: tuple](
     result = store.newSlot(newEntity.entityId)
     newEntity.setArchetypeDetails(store.archetype, result.index)
 
+# Blocked by: https://github.com/nim-lang/Nim/pull/23909
+when isAboveNimVersion(2, 0, 8):
+    proc set[C: tuple](spawn: RawSpawn[C], values: sink C): EntityId {.raises: [], inline.} =
+        return spawn.callback(spawn.app, values)
+else:
+    proc set[C: tuple](spawn: RawSpawn[C], values: C): EntityId {.raises: [], inline.} =
+        return spawn.callback(spawn.app, values)
+
 proc set*[C: tuple](spawn: Spawn[C], values: sink C) {.raises: [], inline.} =
     ## Spawns an entity with the given components
-    var spawn = RawSpawn[C](spawn)
-    discard spawn.callback(spawn.app, values)
+    discard set(RawSpawn[C](spawn), values)
 
 proc set*[C: tuple](spawn: FullSpawn[C], values: sink C): EntityId {.inline.} =
     ## Spawns an entity with the given components
-    var spawn = RawSpawn[C](spawn)
-    return spawn.callback(spawn.app, values)
+    return set(RawSpawn[C](spawn), values)
 
 macro buildTuple(values: varargs[untyped]): untyped =
     result = nnkTupleConstr.newTree()
