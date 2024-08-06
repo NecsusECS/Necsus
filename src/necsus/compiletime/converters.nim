@@ -6,18 +6,23 @@ let input {.compileTime.} = ident("input")
 let adding {.compileTime.} = ident("adding")
 let output {.compileTime.} = ident("output")
 
-proc read(arg: DirectiveArg, source: NimNode, index: int): NimNode =
+proc read(arg: DirectiveArg, source: NimNode, index: int, isAccessory: bool): NimNode =
     assert(index != -1, "Component is not present: " & $arg)
     let baseExpr = nnkBracketExpr.newTree(source, newLit(index))
-    let readExpr = if arg.component.isAccessory: newCall(bindSym("get"), baseExpr) else: baseExpr
+    let readExpr = if isAccessory: newCall(bindSym("get"), baseExpr) else: baseExpr
     return if arg.isPointer: nnkAddr.newTree(readExpr) else: readExpr
 
-proc read(fromArch: Archetype[ComponentDef], newVals: openarray[ComponentDef], arg: DirectiveArg): NimNode =
+proc read(
+    fromArch: Archetype[ComponentDef],
+    newVals: openarray[ComponentDef],
+    arg: DirectiveArg,
+    isAccessory: bool
+): NimNode =
     let newValIdx = newVals.find(arg.component)
     if newValIdx >= 0:
-        return read(arg, adding, newValIdx)
+        return read(arg, adding, newValIdx, isAccessory)
     else:
-        return read(arg, input, fromArch.find(arg.component))
+        return read(arg, input, fromArch.find(arg.component), isAccessory)
 
 proc addAccessoryCondition(
     existing: NimNode,
@@ -44,11 +49,13 @@ proc copyTuple(fromArch: Archetype[ComponentDef], newVals: openarray[ComponentDe
                 newCall(nnkBracketExpr.newTree(bindSym("Not"), arg.type), newLit(0'i8))
             of DirectiveArgKind.Include:
                 condition = condition.addAccessoryCondition(fromArch, arg, bindSym("isSome"))
-                read(fromArch, newVals, arg)
+                read(fromArch, newVals, arg, arg.component.isAccessory)
             of DirectiveArgKind.Optional:
                 if arg.component in fromArch or arg.component in newVals:
-                    condition = condition.addAccessoryCondition(fromArch, arg, bindSym("isSome"))
-                    newCall(bindSym("some"), read(fromArch, newVals, arg))
+                    if arg.component.isAccessory:
+                        read(fromArch, newVals, arg, false)
+                    else:
+                        newCall(bindSym("some"), read(fromArch, newVals, arg, false))
                 else:
                     newCall(nnkBracketExpr.newTree(bindSym("none"), arg.type))
         tupleConstr.add(value)
