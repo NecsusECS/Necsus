@@ -52,8 +52,8 @@ proc convertSpawnValue(archetype: Archetype[ComponentDef], dir: TupleDirective, 
 proc buildSpawnProc(details: GenerateContext, dir: TupleDirective): NimNode =
     ## Builds the proc needed to execute a spawn against the given tuple
     let sig = details.globalStr(dir.signature)
-    if sig in spawnSymbols:
-        return spawnSymbols[sig]
+    if sig in spawnProcs:
+        return newEmptyNode()
 
     let appState = details.appStateTypeName
     let spawnProc = details.spawnProcName(dir)
@@ -63,6 +63,7 @@ proc buildSpawnProc(details: GenerateContext, dir: TupleDirective): NimNode =
     let construct = archetype.convertSpawnValue(dir, value)
     let log = emitEntityTrace("Spawned ", ident("result"), " of kind ", $dir)
     let tupleTyp = dir.asTupleType
+
     result = quote:
         proc `spawnProc`(
             appStatePtr: pointer,
@@ -75,7 +76,7 @@ proc buildSpawnProc(details: GenerateContext, dir: TupleDirective): NimNode =
             result = setComp(slot, `construct`)
             `log`
 
-    spawnProcs[sig] = result
+    spawnProcs[sig] = true.newLit
 
 proc generate(details: GenerateContext, arg: SystemArg, name: string, dir: TupleDirective): NimNode =
     case details.hook
