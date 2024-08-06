@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         threads: [on, off]
-        nim: [ 2.0.0, 1.6.14 ]
+        nim: [ stable, 1.6.14 ]
     steps:
     - uses: actions/checkout@v1
     - name: Choose Nim
@@ -24,7 +24,7 @@ jobs:
     strategy:
       matrix:
         threads: [on, off]
-        nim: [ 2.0.0, 1.6.14 ]
+        nim: [ stable, 1.6.14 ]
     steps:
     - uses: actions/checkout@v1
     - name: Choose Nim
@@ -39,7 +39,7 @@ jobs:
     container: nimlang/choosenim
     strategy:
       matrix:
-        nim: [ 2.0.0, 1.6.14 ]
+        nim: [ stable, 1.6.14 ]
     steps:
     - uses: actions/checkout@v1
     - name: Choose Nim
@@ -55,7 +55,7 @@ jobs:
     strategy:
       matrix:
         project: [NecsusECS/NecsusAsteroids, NecsusECS/NecsusParticleDemo]
-        nim: [ 2.0.0, 1.6.14 ]
+        nim: [ stable, 1.6.14 ]
     steps:
     - uses: actions/checkout@v1
     - name: Choose Nim
@@ -75,7 +75,7 @@ jobs:
     container: nimlang/choosenim
     strategy:
       matrix:
-        nim: [ 2.0.0 ]
+        nim: [ stable ]
         flag: [
           profile,
           dump,
@@ -100,7 +100,7 @@ jobs:
     container: nimlang/choosenim
     strategy:
       matrix:
-        nim: [ 2.0.0, 1.6.14 ]
+        nim: [ stable, 1.6.14 ]
     steps:
     - uses: actions/checkout@v1
     - name: Choose Nim
