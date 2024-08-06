@@ -207,4 +207,4 @@ proc archetypeFor*[T](archs: ArchetypeSet[T], components: openArray[T]): Archety
 
 proc matches*(arch: Archetype, filter: BitsFilter): bool =
     ## Whether this archetype can fulfill the given filter
-    arch.allValues.matches(filter)
+    arch.allValues.matches(filter) or arch.requiredValues.matches(filter)

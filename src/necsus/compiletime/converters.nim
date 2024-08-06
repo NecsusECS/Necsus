@@ -19,11 +19,16 @@ proc read(fromArch: Archetype[ComponentDef], newVals: openarray[ComponentDef], a
     else:
         return read(arg, input, fromArch.find(arg.component))
 
-proc addAccessoryCondition(existing: NimNode, fromArch: Archetype[ComponentDef], arg: DirectiveArg): NimNode =
-    ## Adds a boolean check to see if an accessory component has a value
+proc addAccessoryCondition(
+    existing: NimNode,
+    fromArch: Archetype[ComponentDef],
+    arg: DirectiveArg,
+    predicate: NimNode
+): NimNode =
+    ## Adds a boolean check to see if an accessory component passes a predicate
     if arg.component.isAccessory:
         let i = fromArch.find(arg.component)
-        return quote: `existing` and isSome(`input`[`i`])
+        return quote: `existing` and `predicate`(`input`[`i`])
     else:
         return existing
 
@@ -35,13 +40,14 @@ proc copyTuple(fromArch: Archetype[ComponentDef], newVals: openarray[ComponentDe
     for i, arg in directive.args:
         let value = case arg.kind
             of DirectiveArgKind.Exclude:
+                condition = condition.addAccessoryCondition(fromArch, arg, bindSym("isNone"))
                 newCall(nnkBracketExpr.newTree(bindSym("Not"), arg.type), newLit(0'i8))
             of DirectiveArgKind.Include:
-                condition = condition.addAccessoryCondition(fromArch, arg)
+                condition = condition.addAccessoryCondition(fromArch, arg, bindSym("isSome"))
                 read(fromArch, newVals, arg)
             of DirectiveArgKind.Optional:
                 if arg.component in fromArch or arg.component in newVals:
-                    condition = condition.addAccessoryCondition(fromArch, arg)
+                    condition = condition.addAccessoryCondition(fromArch, arg, bindSym("isSome"))
                     newCall(bindSym("some"), read(fromArch, newVals, arg))
                 else:
                     newCall(nnkBracketExpr.newTree(bindSym("none"), arg.type))
