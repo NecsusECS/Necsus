@@ -1,4 +1,4 @@
-import std/macros
+import std/[macros, options]
 import tools, tupleDirective, dualDirective, common, queryGen, lookupGen, spawnGen, directiveArg
 import archetype, componentDef, systemGen, archetypeBuilder, converters
 import ../runtime/[world, archetypeStore, directives], ../util/bits
@@ -6,6 +6,12 @@ import ../runtime/[world, archetypeStore, directives], ../util/bits
 let entityIndex {.compileTime.} = ident("entityIndex")
 let newComps {.compileTime.} = ident("newComps")
 let entityId {.compileTime.} = ident("entityId")
+
+proc readNewValue(comp: ComponentDef, readFrom: NimNode, index: int): NimNode =
+    ## Generates the code necessary to read a new value
+    result = nnkBracketExpr.newTree(newComps, index.newLit)
+    if comp.isAccessory:
+        result = newCall(bindSym("some"), result)
 
 proc createArchUpdate(
     details: GenerateContext,
@@ -28,8 +34,9 @@ proc createArchUpdate(
 
     for i, component in attachComps:
         let storageIndex = archetype.indexOf(component)
+        let newValue = component.readNewValue(newComps, i)
         result.add quote do:
-            `existing`[`storageIndex`] = `newComps`[`i`]
+            `existing`[`storageIndex`] = `newValue`
 
 proc newCompsTupleType(newCompValues: seq[ComponentDef]): NimNode =
     ## Creates the type definition to use for a tuple that represents new values passed into a convert proc
