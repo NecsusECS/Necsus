@@ -6,36 +6,48 @@ let input {.compileTime.} = ident("input")
 let adding {.compileTime.} = ident("adding")
 let output {.compileTime.} = ident("output")
 
-proc read(arg: DirectiveArg, source: NimNode, index: int, isAccessory: bool): NimNode =
-    assert(index != -1, "Component is not present: " & $arg)
-    let baseExpr = nnkBracketExpr.newTree(source, newLit(index))
-    let readExpr = if isAccessory: newCall(bindSym("get"), baseExpr) else: baseExpr
-    return if arg.isPointer: nnkAddr.newTree(readExpr) else: readExpr
+type TupleAdapter = ref object
+    ## Data for reading from a value from one tuple and outputing another
+    source: NimNode
+    index: int
+    optionIn, optionOut, pointerOut: bool
 
-proc read(
+proc newAdapter(
     fromArch: Archetype[ComponentDef],
-    newVals: openarray[ComponentDef],
-    arg: DirectiveArg,
-    isAccessory: bool = arg.component.isAccessory
-): NimNode =
-    let newValIdx = newVals.find(arg.component)
+    newVals: openArray[ComponentDef],
+    output: DirectiveArg
+): TupleAdapter =
+    ## Data for reading from a value from one tuple and outputing another
+    let newValIdx = newVals.find(output.component)
     if newValIdx >= 0:
-        return read(arg, adding, newValIdx, isAccessory)
+        result = TupleAdapter(source: adding, index: newValIdx, optionIn: false)
     else:
-        return read(arg, input, fromArch.find(arg.component), isAccessory)
+        result = TupleAdapter(
+            source: input,
+            index: fromArch.find(output.component),
+            optionIn: fromArch.isAccessory(output.component)
+        )
+    result.pointerOut = output.isPointer
+    result.optionOut = output.kind == Optional
 
-proc addAccessoryCondition(
-    existing: NimNode,
-    fromArch: Archetype[ComponentDef],
-    arg: DirectiveArg,
-    predicate: NimNode
-): NimNode =
+proc addAccessoryCondition(existing: NimNode, adapter: TupleAdapter, predicate: NimNode): NimNode =
     ## Adds a boolean check to see if an accessory component passes a predicate
-    if arg.component.isAccessory:
-        let i = fromArch.find(arg.component)
-        return quote: `existing` and `predicate`(`input`[`i`])
+    if adapter.optionIn and not adapter.optionOut:
+        let read = nnkBracketExpr.newTree(adapter.source, adapter.index.newLit)
+        return quote: `existing` and `predicate`(`read`)
     else:
         return existing
+
+proc build(adapter: TupleAdapter): NimNode =
+    assert(adapter.index != -1, "Component is not present: " & $output)
+    result = nnkBracketExpr.newTree(adapter.source, newLit(adapter.index))
+    if not adapter.optionIn or not adapter.optionOut or adapter.pointerOut:
+        if adapter.optionIn:
+            result = newCall(bindSym("get"), result)
+        if adapter.pointerOut:
+            result = nnkAddr.newTree(result)
+        if adapter.optionOut:
+            result = newCall(bindSym("some"), result)
 
 proc copyTuple(fromArch: Archetype[ComponentDef], newVals: openarray[ComponentDef], directive: TupleDirective): NimNode =
     ## Generates code for copying from one tuple to another
@@ -43,22 +55,26 @@ proc copyTuple(fromArch: Archetype[ComponentDef], newVals: openarray[ComponentDe
     var condition = newLit(true)
     var tupleConstr = nnkTupleConstr.newTree()
     for i, arg in directive.args:
+        let adapter = newAdapter(fromArch, newVals, arg)
+
         let value = case arg.kind
             of DirectiveArgKind.Exclude:
-                condition = condition.addAccessoryCondition(fromArch, arg, bindSym("isNone"))
+                condition = condition.addAccessoryCondition(adapter, bindSym("isNone"))
                 newCall(nnkBracketExpr.newTree(bindSym("Not"), arg.type), newLit(0'i8))
+
             of DirectiveArgKind.Include:
-                condition = condition.addAccessoryCondition(fromArch, arg, bindSym("isSome"))
-                read(fromArch, newVals, arg)
+                if adapter.optionIn:
+                    condition = condition.addAccessoryCondition(adapter, bindSym("isSome"))
+                adapter.build()
+
             of DirectiveArgKind.Optional:
-                if arg.component in fromArch or arg.component in newVals:
-                    if arg.component.isAccessory and not arg.isPointer:
-                        read(fromArch, newVals, arg, false)
-                    else:
-                        newCall(bindSym("some"), read(fromArch, newVals, arg))
+                if adapter.index >= 0:
+                    adapter.build()
                 else:
                     newCall(nnkBracketExpr.newTree(bindSym("none"), arg.type))
+
         tupleConstr.add(value)
+
     return quote:
         if `condition`:
             `output` = `tupleConstr`

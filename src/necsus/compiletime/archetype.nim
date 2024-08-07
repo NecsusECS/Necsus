@@ -75,6 +75,9 @@ proc hasAccessories*(arch: Archetype): bool =
     ## Returns whether there are any accessories in this archetype
     return arch.accessoryComps.card > 0
 
+proc isAccessory*[T](arch: Archetype[T], value: T): bool = value.uniqueId in arch.accessoryComps
+    ## Whether a specific value is an accessory
+
 proc readableName*(arch: Archetype[ComponentDef]): string = arch.values.mapIt(it.readableName).join("_")
     ## Returns a readable name that describes an archetype
 
