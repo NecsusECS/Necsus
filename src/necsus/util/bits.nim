@@ -126,10 +126,15 @@ proc `-`*(a, b: Bits): Bits =
 
 proc `<=`*(a, b: Bits): bool =
     ## Returns whether a is a subset of b
+    if a.buckets.len > b.buckets.len:
+        return false
     for i, (aValue, bValue) in eachValue(a, b):
         if ((not bValue) and aValue) > 0:
             return false
     return true
+
+proc `>`*(a, b: Bits): bool = not(a <= b)
+    ## Returns whether a contains bits not set in b
 
 proc `<`*(a, b: Bits): bool =
     ## Returns whether a is a strict subset of b
@@ -151,24 +156,8 @@ proc newFilter*(mustContain, mustExclude: Bits): BitsFilter =
     ## Creates a new filter
     BitsFilter(mustContain: mustContain, mustExclude: mustExclude)
 
-proc matches*(target: Bits, filter: BitsFilter): bool =
+proc matches*(filter: BitsFilter, all: Bits, optional: Bits = newBits()): bool =
     ## Whether a target matches a filter
-    let targetLen = target.buckets.len
-    let mustContainLen = filter.mustContain.buckets.len
-    if targetLen < mustContainLen:
-        return false
-    let mustExcludeLen = filter.mustExclude.buckets.len
-    for i in 0..<targetLen:
-        let found = target.buckets[i]
-
-        if i < mustContainLen:
-            let mustContain = filter.mustContain.buckets[i]
-            if (mustContain and found) != mustContain:
-                return false
-
-        if i < mustExcludeLen and (found and filter.mustExclude.buckets[i]) > 0:
-            return false
-
-    return true
+    return filter.mustContain <= all and not (all - optional).anyIntersect(filter.mustExclude)
 
 proc hash*(filter: BitsFilter): Hash = filter.mustContain.hash !& filter.mustExclude.hash

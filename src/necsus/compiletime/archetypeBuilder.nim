@@ -130,7 +130,7 @@ iterator allComponents*[T](builder: ArchetypeBuilder[T]): T =
 
 proc addWork[T](builder: ArchetypeBuilder[T], source: Bits, accum: var ArchetypeAccum) =
     for action in builder.actions:
-        if not action.filtered or source.matches(action.filter):
+        if not action.filtered or action.filter.matches(source):
             var variant = source
             if action.attaching:
                 variant = variant + action.attach

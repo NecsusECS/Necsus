@@ -13,10 +13,18 @@ proc setup(spawn1: Spawn[(Age, Name, Person)], spawn2: Spawn[(Marbles, Name, Per
     spawn1.with(100, "Jack", Person())
     spawn2.with(41, "Jill", Person())
 
-proc assertion(all: Query[(Name, )], notAged: Query[(Name, Not[Age])], noMarbles: Query[(Name, Not[Marbles])]) =
+proc assertion(
+    all: Query[(Name, )],
+    notAged: Query[(Name, Not[Age])],
+    noMarbles: Query[(Name, Not[Marbles])],
+    marblesNoAge: Query[(Marbles, Not[Age])],
+    ageNoMarbles: Query[(Age, Not[Marbles])],
+) =
     check(toSeq(all.items) == @[("Jack", ), ("Jill", )])
     check(toSeq(notAged.items).mapIt(it[0]) == @["Jill"])
     check(toSeq(noMarbles.items).mapIt(it[0]) == @["Jack"])
+    check(toSeq(marblesNoAge.items).mapIt(it[0]) == @[41])
+    check(toSeq(ageNoMarbles.items).mapIt(it[0]) == @[100])
 
 proc runner(tick: proc(): void) =
     tick()
