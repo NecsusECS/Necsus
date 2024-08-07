@@ -7,6 +7,7 @@ type
         node*: NimNode
         name*: string
         uniqueId*: uint16
+        isAccessory*: bool
 
 const ids = CacheCounter("NecsusComponentIds")
 
@@ -29,7 +30,7 @@ proc getArchetypeValueId(value: NimNode): uint16 =
 proc newComponentDef*(node: NimNode): ComponentDef =
     ## Instantiate a ComponentDef
     let id = getArchetypeValueId(node)
-    ComponentDef(node: node, name: "c" & $id, uniqueId: id)
+    ComponentDef(node: node, name: "c" & $id, uniqueId: id, isAccessory: node.hasPragma(bindSym("accessory")))
 
 proc readableName*(comp: ComponentDef): string = comp.node.symbols.join("_")
     ## Returns a human readable name for a node
@@ -57,8 +58,3 @@ proc hash*(def: ComponentDef): Hash = def.uniqueId.hash
 
 proc addSignature*(onto: var string, comp: ComponentDef) = onto &= comp.name
     ## Generate a unique ID for a component
-
-proc isAccessory*(comp: ComponentDef): bool =
-    let pragma = comp.node.findPragma
-    if pragma.kind == nnkPragma:
-        return pragma[0] == bindSym("accessory")

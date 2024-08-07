@@ -24,6 +24,14 @@ proc findPragma*(node: NimNode): NimNode =
         discard
     return newEmptyNode()
 
+proc hasPragma*(node, pragma: NimNode): bool =
+    ## Determines whether a node has a given pragma
+    let pragmaSet = node.findPragma
+    if pragmaSet.kind == nnkPragma:
+        for child in pragmaSet:
+            if child.isPragma(pragma):
+                return true
+
 proc findChildSyms*(node: NimNode, output: var seq[NimNode]) =
     ## Finds all symbols in the children of a node and returns them
     if node.kind == nnkSym:
