@@ -16,7 +16,7 @@ proc read(
     fromArch: Archetype[ComponentDef],
     newVals: openarray[ComponentDef],
     arg: DirectiveArg,
-    isAccessory: bool
+    isAccessory: bool = arg.component.isAccessory
 ): NimNode =
     let newValIdx = newVals.find(arg.component)
     if newValIdx >= 0:
@@ -49,13 +49,13 @@ proc copyTuple(fromArch: Archetype[ComponentDef], newVals: openarray[ComponentDe
                 newCall(nnkBracketExpr.newTree(bindSym("Not"), arg.type), newLit(0'i8))
             of DirectiveArgKind.Include:
                 condition = condition.addAccessoryCondition(fromArch, arg, bindSym("isSome"))
-                read(fromArch, newVals, arg, arg.component.isAccessory)
+                read(fromArch, newVals, arg)
             of DirectiveArgKind.Optional:
                 if arg.component in fromArch or arg.component in newVals:
-                    if arg.component.isAccessory:
+                    if arg.component.isAccessory and not arg.isPointer:
                         read(fromArch, newVals, arg, false)
                     else:
-                        newCall(bindSym("some"), read(fromArch, newVals, arg, false))
+                        newCall(bindSym("some"), read(fromArch, newVals, arg))
                 else:
                     newCall(nnkBracketExpr.newTree(bindSym("none"), arg.type))
         tupleConstr.add(value)
