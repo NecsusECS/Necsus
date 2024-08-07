@@ -1,5 +1,5 @@
 import std/[tables, sets, hashes, strutils, sequtils, macros, algorithm, macrocache, strformat, options]
-import componentDef, ../util/bits, ../runtime/world
+import componentDef, ../util/bits, ../runtime/world, directiveArg, tupleDirective
 
 type
     Archetype*[T] = ref object
@@ -208,3 +208,10 @@ proc archetypeFor*[T](archs: ArchetypeSet[T], components: openArray[T]): Archety
 proc matches*(arch: Archetype, filter: BitsFilter): bool =
     ## Whether this archetype can fulfill the given filter
     filter.matches(all = arch.allComps, optional = arch.accessoryComps)
+
+proc asTupleDir*(arch: Archetype[ComponentDef]): TupleDirective =
+    ## Convert an archetype to a TupleDirective
+    var args = newSeq[DirectiveArg](arch.values.len)
+    for i, comp in arch.values:
+        args[i] = newDirectiveArg(comp, false, if comp.isAccessory: Optional else: Include)
+    return newTupleDir(args)

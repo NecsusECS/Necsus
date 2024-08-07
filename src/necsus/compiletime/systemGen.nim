@@ -112,7 +112,7 @@ proc newConverter*(
     output: Archetype[ComponentDef],
     sinkParams: bool
 ): ConverterDef =
-    ConverterDef(input: input, adding: adding, output: newTupleDir(output.values), sinkParams: sinkParams)
+    ConverterDef(input: input, adding: adding, output: output.asTupleDir, sinkParams: sinkParams)
 
 proc newConverter*(input: Archetype[ComponentDef], output: TupleDirective): ConverterDef =
     ConverterDef(input: input, output: output)
