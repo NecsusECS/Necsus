@@ -11,7 +11,7 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string): NimNode =
         return quote:
             proc`saveWrapperName`(
                 `appStatePtr`: pointer
-            ): string {.raises: [IOError, OSError, ValueError, Exception], fastcall.} =
+            ): string {.raises: [IOError, OSError, ValueError, Exception], fastcall, used.} =
                 save(cast[ptr `appType`](`appStatePtr`))
     of Late:
         let nameIdent = name.ident

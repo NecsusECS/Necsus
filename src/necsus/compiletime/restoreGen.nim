@@ -15,7 +15,7 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string): NimNode =
             proc `wrapperName`(
                 `appStatePtr`: pointer,
                 `jsonArg`: string
-            ) {.fastcall, gcsafe, raises: [IOError, OSError, JsonParsingError, ValueError, Exception].} =
+            ) {.fastcall, gcsafe, raises: [IOError, OSError, JsonParsingError, ValueError, Exception], used.} =
                 restore(cast[ptr `appType`](`appStatePtr`), `jsonArg`)
     of Late:
         let nameIdent = name.ident

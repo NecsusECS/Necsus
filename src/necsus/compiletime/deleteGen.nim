@@ -41,7 +41,7 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string): NimNode =
 
         return quote do:
             proc `deleteProcName`(`appStateIdent`: pointer, `entity`: EntityId) {.gcsafe, raises: [], fastcall, used.} =
-                let `appStateIdent` = cast[ptr `appStateTypeName`](`appStateIdent`)
+                let `appStateIdent` {.used.} = cast[ptr `appStateTypeName`](`appStateIdent`)
                 `body`
     of Standard:
         let deleteProc = name.ident

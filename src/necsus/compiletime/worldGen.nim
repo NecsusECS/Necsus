@@ -163,7 +163,7 @@ proc createAppStateDestructor*(genInfo: CodeGenInfo): NimNode =
                 `destroy`(`appStateIdent`.`name`)
 
     return quote:
-        {.warning[Deprecated]:off.}
+        {.warning[Deprecated]:off, hint[XCannotRaiseY]:off.}
         proc `destroy`*(
             `appStateIdent`: var `appStateType`
         ) {.raises: [Exception], used.} =
@@ -217,7 +217,7 @@ proc createSendProcs*(details: CodeGenInfo): NimNode =
 
         result.add quote do:
             proc `internalName`(`appStateIdent`: pointer, `event`: `eventType`) {.used, fastcall.} =
-                let `appStateIdent` = cast[ptr `appStateType`](`appStateIdent`)
+                let `appStateIdent` {.used.} = cast[ptr `appStateType`](`appStateIdent`)
                 `body`
 
             proc `externalName`(`appStateIdent`: var `appStateType`, `event`: `eventType`) {.used, fastcall.} =

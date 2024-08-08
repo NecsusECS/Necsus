@@ -156,7 +156,7 @@ proc generateAttach(details: GenerateContext, arg: SystemArg, name: string, atta
                 `entityId`: EntityId,
                 `newComps`: `componentTuple`
             ) {.gcsafe, raises: [], fastcall, used.} =
-                let `appStateIdent` = cast[ptr `appStateTypeName`](`appStatePtr`)
+                let `appStateIdent` {.used.} = cast[ptr `appStateTypeName`](`appStatePtr`)
                 `body`
     of Standard:
         let procName = ident(name)
@@ -200,7 +200,7 @@ proc generateDetach(details: GenerateContext, arg: SystemArg, name: string, deta
         return quote:
             `convertProcs`
             proc `detachProc`(`appStateIdent`: pointer, `entityId`: EntityId) {.used, fastcall, raises: [].} =
-                let `appStateIdent` = cast[ptr `appStateTypeName`](`appStateIdent`)
+                let `appStateIdent` {.used.} = cast[ptr `appStateTypeName`](`appStateIdent`)
                 `body`
 
     of GenerateHook.Standard:
@@ -235,7 +235,7 @@ proc generateSwap(details: GenerateContext, arg: SystemArg, name: string, dir: D
                 `entityId`: EntityId,
                 `newComps`: `componentTuple`
             ) {.gcsafe, raises: [], fastcall, used.} =
-                let `appStateIdent` = cast[ptr `appStateTypeName`](`appStatePtr`)
+                let `appStateIdent` {.used.} = cast[ptr `appStateTypeName`](`appStatePtr`)
                 `body`
     of Standard:
         let procName = ident(name)
