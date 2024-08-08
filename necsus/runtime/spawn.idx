@@ -2,11 +2,11 @@ nimTitle	spawn	necsus/runtime/spawn.html	module src/necsus/runtime/spawn		0
 nim	RawSpawn	necsus/runtime/spawn.html#RawSpawn	type RawSpawn		4
 nim	Spawn	necsus/runtime/spawn.html#Spawn	type Spawn		9
 nim	FullSpawn	necsus/runtime/spawn.html#FullSpawn	type FullSpawn		13
-nim	newSpawn	necsus/runtime/spawn.html#newSpawn,World,ptr.ArchetypeStore[Comps: tuple]	proc newSpawn[Comps: tuple](world: World; store: ptr ArchetypeStore[Comps]): RawSpawn[\n    Comps]		17
-nim	beginSpawn	necsus/runtime/spawn.html#beginSpawn,World,ptr.ArchetypeStore[Comps: tuple]	proc beginSpawn[Comps: tuple](world: var World; store: ptr ArchetypeStore[Comps]): NewArchSlot[\n    Comps]		20
-nim	set	necsus/runtime/spawn.html#set,Spawn[C: tuple],sinkC	proc set[C: tuple](spawn: Spawn[C]; values: sink C)		29
-nim	set	necsus/runtime/spawn.html#set,FullSpawn[C: tuple],sinkC	proc set[C: tuple](spawn: FullSpawn[C]; values: sink C): EntityId		35
-nim	with	necsus/runtime/spawn.html#with.t,Spawn[C: tuple],varargs[typed]	template with[C: tuple](spawn: Spawn[C]; values: varargs[typed])		46
-nim	with	necsus/runtime/spawn.html#with.t,FullSpawn[C: tuple],varargs[typed]	template with[C: tuple](spawn: FullSpawn[C]; values: varargs[typed]): EntityId		50
-nimgrp	set	necsus/runtime/spawn.html#set-procs-all	proc		29
-nimgrp	with	necsus/runtime/spawn.html#with-templates-all	template		46
+nim	newSpawn	necsus/runtime/spawn.html#newSpawn,pointer,proc(pointer,sinkComps)	proc newSpawn[Comps: tuple](app: pointer; callback: proc (app: pointer;\n    value: sink Comps): EntityId {.fastcall, raises: [], gcsafe.}): RawSpawn[\n    Comps]		17
+nim	beginSpawn	necsus/runtime/spawn.html#beginSpawn,World,ptr.ArchetypeStore[Comps: tuple]	proc beginSpawn[Comps: tuple](world: var World; store: ptr ArchetypeStore[Comps]): NewArchSlot[\n    Comps]		23
+nim	set	necsus/runtime/spawn.html#set,Spawn[C: tuple],sinkC	proc set[C: tuple](spawn: Spawn[C]; values: sink C)		40
+nim	set	necsus/runtime/spawn.html#set,FullSpawn[C: tuple],sinkC	proc set[C: tuple](spawn: FullSpawn[C]; values: sink C): EntityId		44
+nim	with	necsus/runtime/spawn.html#with.t,Spawn[C: tuple],varargs[typed]	template with[C: tuple](spawn: Spawn[C]; values: varargs[typed])		52
+nim	with	necsus/runtime/spawn.html#with.t,FullSpawn[C: tuple],varargs[typed]	template with[C: tuple](spawn: FullSpawn[C]; values: varargs[typed]): EntityId		56
+nimgrp	set	necsus/runtime/spawn.html#set-procs-all	proc		40
+nimgrp	with	necsus/runtime/spawn.html#with-templates-all	template		52

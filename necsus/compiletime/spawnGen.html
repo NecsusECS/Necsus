@@ -54,12 +54,12 @@
   <details open>
     <summary><a class="reference reference-toplevel" href="#9" id="59">Lets</a></summary>
     <ul class="simple simple-toc-section">
-      <li><a class="reference" href="#fullSpawnGenerator" title="fullSpawnGenerator {.compileTime.} = newGenerator(&quot;FullSpawn&quot;, {Standard},
-    generate, archetypes, defaultName, worldFields, fullSpawnSystemArg,
-    defaultNestedArgs, defaultConverters)">fullSpawnGenerator</a></li>
-<li><a class="reference" href="#spawnGenerator" title="spawnGenerator {.compileTime.} = newGenerator(&quot;Spawn&quot;, {Standard}, generate,
-    archetypes, defaultName, worldFields, spawnSystemArg, defaultNestedArgs,
-    defaultConverters)">spawnGenerator</a></li>
+      <li><a class="reference" href="#fullSpawnGenerator" title="fullSpawnGenerator {.compileTime.} = newGenerator(&quot;FullSpawn&quot;,
+    {Outside, Standard}, generate, archetypes, defaultName, worldFields,
+    fullSpawnSystemArg, defaultNestedArgs, defaultConverters)">fullSpawnGenerator</a></li>
+<li><a class="reference" href="#spawnGenerator" title="spawnGenerator {.compileTime.} = newGenerator(&quot;Spawn&quot;, {Outside, Standard},
+    generate, archetypes, defaultName, worldFields, spawnSystemArg,
+    defaultNestedArgs, defaultConverters)">spawnGenerator</a></li>
 
     </ul>
   </details>
@@ -76,16 +76,16 @@
     <div class="section" id="6">
   <h1><a class="toc-backref" href="#6">Imports</a></h1>
   <dl class="item">
-    <a class="reference external" href="tools.html">tools</a>, <a class="reference external" href="tupleDirective.html">tupleDirective</a>, <a class="reference external" href="archetype.html">archetype</a>, <a class="reference external" href="archetypeBuilder.html">archetypeBuilder</a>, <a class="reference external" href="componentDef.html">componentDef</a>, <a class="reference external" href="common.html">common</a>, <a class="reference external" href="systemGen.html">systemGen</a>, <a class="reference external" href="../runtime/spawn.html">../runtime/spawn</a>, <a class="reference external" href="../runtime/archetypeStore.html">../runtime/archetypeStore</a>
+    <a class="reference external" href="tools.html">tools</a>, <a class="reference external" href="tupleDirective.html">tupleDirective</a>, <a class="reference external" href="archetype.html">archetype</a>, <a class="reference external" href="archetypeBuilder.html">archetypeBuilder</a>, <a class="reference external" href="componentDef.html">componentDef</a>, <a class="reference external" href="common.html">common</a>, <a class="reference external" href="systemGen.html">systemGen</a>, <a class="reference external" href="../runtime/spawn.html">../runtime/spawn</a>, <a class="reference external" href="../runtime/archetypeStore.html">../runtime/archetypeStore</a>, <a class="reference external" href="../runtime/world.html">../runtime/world</a>
   </dl>
 </div>
 <div class="section" id="9">
   <h1><a class="toc-backref" href="#9">Lets</a></h1>
   <dl class="item">
     <div id="fullSpawnGenerator">
-  <dt><pre><a href="spawnGen.html#fullSpawnGenerator"><span class="Identifier">fullSpawnGenerator</span></a> {.<span class="Identifier">compileTime</span>.} <span class="Other">=</span> <span class="Identifier">newGenerator</span><span class="Other">(</span><span class="StringLit">&quot;FullSpawn&quot;</span><span class="Other">,</span> <span class="Other">{</span><span class="Identifier">Standard</span><span class="Other">}</span><span class="Other">,</span>
-    <span class="Identifier">generate</span><span class="Other">,</span> <span class="Identifier">archetypes</span><span class="Other">,</span> <span class="Identifier">defaultName</span><span class="Other">,</span> <span class="Identifier">worldFields</span><span class="Other">,</span> <span class="Identifier">fullSpawnSystemArg</span><span class="Other">,</span>
-    <span class="Identifier">defaultNestedArgs</span><span class="Other">,</span> <span class="Identifier">defaultConverters</span><span class="Other">)</span></pre></dt>
+  <dt><pre><a href="spawnGen.html#fullSpawnGenerator"><span class="Identifier">fullSpawnGenerator</span></a> {.<span class="Identifier">compileTime</span>.} <span class="Other">=</span> <span class="Identifier">newGenerator</span><span class="Other">(</span><span class="StringLit">&quot;FullSpawn&quot;</span><span class="Other">,</span>
+    <span class="Other">{</span><span class="Identifier">Outside</span><span class="Other">,</span> <span class="Identifier">Standard</span><span class="Other">}</span><span class="Other">,</span> <span class="Identifier">generate</span><span class="Other">,</span> <span class="Identifier">archetypes</span><span class="Other">,</span> <span class="Identifier">defaultName</span><span class="Other">,</span> <span class="Identifier">worldFields</span><span class="Other">,</span>
+    <span class="Identifier">fullSpawnSystemArg</span><span class="Other">,</span> <span class="Identifier">defaultNestedArgs</span><span class="Other">,</span> <span class="Identifier">defaultConverters</span><span class="Other">)</span></pre></dt>
   <dd>
     
     
@@ -93,9 +93,9 @@
   </dd>
 </div>
 <div id="spawnGenerator">
-  <dt><pre><a href="spawnGen.html#spawnGenerator"><span class="Identifier">spawnGenerator</span></a> {.<span class="Identifier">compileTime</span>.} <span class="Other">=</span> <span class="Identifier">newGenerator</span><span class="Other">(</span><span class="StringLit">&quot;Spawn&quot;</span><span class="Other">,</span> <span class="Other">{</span><span class="Identifier">Standard</span><span class="Other">}</span><span class="Other">,</span> <span class="Identifier">generate</span><span class="Other">,</span>
-    <span class="Identifier">archetypes</span><span class="Other">,</span> <span class="Identifier">defaultName</span><span class="Other">,</span> <span class="Identifier">worldFields</span><span class="Other">,</span> <span class="Identifier">spawnSystemArg</span><span class="Other">,</span> <span class="Identifier">defaultNestedArgs</span><span class="Other">,</span>
-    <span class="Identifier">defaultConverters</span><span class="Other">)</span></pre></dt>
+  <dt><pre><a href="spawnGen.html#spawnGenerator"><span class="Identifier">spawnGenerator</span></a> {.<span class="Identifier">compileTime</span>.} <span class="Other">=</span> <span class="Identifier">newGenerator</span><span class="Other">(</span><span class="StringLit">&quot;Spawn&quot;</span><span class="Other">,</span> <span class="Other">{</span><span class="Identifier">Outside</span><span class="Other">,</span> <span class="Identifier">Standard</span><span class="Other">}</span><span class="Other">,</span>
+    <span class="Identifier">generate</span><span class="Other">,</span> <span class="Identifier">archetypes</span><span class="Other">,</span> <span class="Identifier">defaultName</span><span class="Other">,</span> <span class="Identifier">worldFields</span><span class="Other">,</span> <span class="Identifier">spawnSystemArg</span><span class="Other">,</span>
+    <span class="Identifier">defaultNestedArgs</span><span class="Other">,</span> <span class="Identifier">defaultConverters</span><span class="Other">)</span></pre></dt>
   <dd>
     
     
@@ -112,7 +112,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-07-28 22:38:30 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-08-08 14:58:21 UTC</small>
       </div>
     </div>
   </div>

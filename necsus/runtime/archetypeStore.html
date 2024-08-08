@@ -59,6 +59,8 @@
 <li><a class="reference" href="#ArchRow" title="ArchRow[Comps] = object
   entityId*: EntityId
   components*: Comps">ArchRow</a></li>
+<li><a class="reference" href="#ConvertResult" title="ConvertResult = enum
+  ConvertSuccess, ConvertEmpty, ConvertSkip ## The results of converting from one component type to another">ConvertResult</a></li>
 <li><a class="reference" href="#NewArchSlot" title="NewArchSlot[Comps] = distinct Entry[ArchRow[Comps]]">NewArchSlot</a></li>
 
     </ul>
@@ -77,10 +79,9 @@
 </ul>
 <ul class="simple nested-toc-section">addLen
   <li><a class="reference" href="#addLen%2CArchetypeStore%5BComps%3A%20tuple%5D%2Cuint" title="addLen[Comps: tuple](store: var ArchetypeStore[Comps]; len: var uint)">addLen[Comps: tuple](store: var ArchetypeStore[Comps]; len: var uint)</a></li>
-
-</ul>
-<ul class="simple nested-toc-section">archetype
-  <li><a class="reference" href="#archetype%2Cptr.ArchetypeStore%5BComps%3A%20tuple%5D" title="archetype[Comps: tuple](store: ptr ArchetypeStore[Comps]): ArchetypeId">archetype[Comps: tuple](store: ptr ArchetypeStore[Comps]): ArchetypeId</a></li>
+<li><a class="reference" href="#addLen%2CArchetypeStore%5BComps%3A%20tuple%5D%2Cuint%2Cproc%28Comps%29" title="addLen[Comps: tuple](store: var ArchetypeStore[Comps]; len: var uint; predicate: proc (
+    row: var Comps): bool {.fastcall, gcsafe, raises: [].})">addLen[Comps: tuple](store: var ArchetypeStore[Comps]; len: var uint; predicate: proc (
+    row: var Comps): bool {.fastcall, gcsafe, raises: [].})</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">del
@@ -107,11 +108,11 @@
   <li><a class="reference" href="#moveEntity%2CWorld%2Cptr.EntityIndex%2CArchetypeStore%5BFromArch%3A%20tuple%5D%2CArchetypeStore%5BToArch%3A%20tuple%5D%2CsinkNewComps%2Cproc%28sinkFromArch%2CsinkNewComps%2CToArch%29" title="moveEntity[FromArch: tuple; NewComps: tuple; ToArch: tuple](world: var World;
     entityIndex: ptr EntityIndex; fromArch: var ArchetypeStore[FromArch];
     toArch: var ArchetypeStore[ToArch]; newValues: sink NewComps; combine: proc (
-    existing: sink FromArch; newValues: sink NewComps; output: var ToArch) {.
+    existing: sink FromArch; newValues: sink NewComps; output: var ToArch): ConvertResult {.
     gcsafe, raises: [], fastcall.})">moveEntity[FromArch: tuple; NewComps: tuple; ToArch: tuple](world: var World;
     entityIndex: ptr EntityIndex; fromArch: var ArchetypeStore[FromArch];
     toArch: var ArchetypeStore[ToArch]; newValues: sink NewComps; combine: proc (
-    existing: sink FromArch; newValues: sink NewComps; output: var ToArch) {.
+    existing: sink FromArch; newValues: sink NewComps; output: var ToArch): ConvertResult {.
     gcsafe, raises: [], fastcall.})</a></li>
 
 </ul>
@@ -122,8 +123,8 @@
 
 </ul>
 <ul class="simple nested-toc-section">newSlot
-  <li><a class="reference" href="#newSlot%2Cptr.ArchetypeStore%5BComps%3A%20tuple%5D%2CEntityId" title="newSlot[Comps: tuple](store: ptr ArchetypeStore[Comps]; entityId: EntityId): NewArchSlot[
-    Comps]">newSlot[Comps: tuple](store: ptr ArchetypeStore[Comps]; entityId: EntityId): NewArchSlot[
+  <li><a class="reference" href="#newSlot%2CArchetypeStore%5BComps%3A%20tuple%5D%2CEntityId" title="newSlot[Comps: tuple](store: var ArchetypeStore[Comps]; entityId: EntityId): NewArchSlot[
+    Comps]">newSlot[Comps: tuple](store: var ArchetypeStore[Comps]; entityId: EntityId): NewArchSlot[
     Comps]</a></li>
 
 </ul>
@@ -131,6 +132,10 @@
   <li><a class="reference" href="#next%2CArchetypeStore%5BComps%3A%20tuple%5D%2CArchetypeIter" title="next[Comps: tuple](store: var ArchetypeStore[Comps]; iter: var ArchetypeIter): ptr ArchRow[
     Comps]">next[Comps: tuple](store: var ArchetypeStore[Comps]; iter: var ArchetypeIter): ptr ArchRow[
     Comps]</a></li>
+
+</ul>
+<ul class="simple nested-toc-section">readArchetype
+  <li><a class="reference" href="#readArchetype%2CArchetypeStore" title="readArchetype(store: ArchetypeStore): ArchetypeId">readArchetype(store: ArchetypeStore): ArchetypeId</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">setComp
@@ -197,6 +202,15 @@
     
   </dd>
 </div>
+<div id="ConvertResult">
+  <dt><pre><a href="archetypeStore.html#ConvertResult"><span class="Identifier">ConvertResult</span></a> <span class="Other">=</span> <span class="Keyword">enum</span>
+  <span class="Identifier">ConvertSuccess</span><span class="Other">,</span> <span class="Identifier">ConvertEmpty</span><span class="Other">,</span> <span class="Identifier">ConvertSkip</span> <span class="Comment">## The results of converting from one component type to another</span></pre></dt>
+  <dd>
+    
+    
+    
+  </dd>
+</div>
 <div id="NewArchSlot">
   <dt><pre><a href="archetypeStore.html#NewArchSlot"><span class="Identifier">NewArchSlot</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">distinct</span> <a href="../util/blockstore.html#Entry"><span class="Identifier">Entry</span></a><span class="Other">[</span><a href="archetypeStore.html#ArchRow"><span class="Identifier">ArchRow</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">]</span></pre></dt>
   <dd>
@@ -241,14 +255,12 @@
     
   </dd>
 </div>
-
-</div>
-<div id="archetype-procs-all">
-  <div id="archetype,ptr.ArchetypeStore[Comps: tuple]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#archetype%2Cptr.ArchetypeStore%5BComps%3A%20tuple%5D"><span class="Identifier">archetype</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="world.html#ArchetypeId"><span class="Identifier">ArchetypeId</span></a></pre></dt>
+<div id="addLen,ArchetypeStore[Comps: tuple],uint,proc(Comps)">
+  <dt><pre><span class="Keyword">proc</span> <a href="#addLen%2CArchetypeStore%5BComps%3A%20tuple%5D%2Cuint%2Cproc%28Comps%29"><span class="Identifier">addLen</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">len</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">uint</span><span class="Other">;</span>
+    <span class="Identifier">predicate</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">row</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">Comps</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span class="Identifier">fastcall</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}<span class="Other">)</span></pre></dt>
   <dd>
     
-    Accessor for the archetype of a store
+    Reads the length of an archetype store, using a predicate to determine whether to count a row
     
   </dd>
 </div>
@@ -315,8 +327,8 @@
     <span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">entityIndex</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="world.html#EntityIndex"><span class="Identifier">EntityIndex</span></a><span class="Other">;</span>
     <span class="Identifier">fromArch</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">FromArch</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">toArch</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">ToArch</span><span class="Other">]</span><span class="Other">;</span>
     <span class="Identifier">newValues</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">NewComps</span><span class="Other">;</span> <span class="Identifier">combine</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">existing</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">FromArch</span><span class="Other">;</span>
-    <span class="Identifier">newValues</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">NewComps</span><span class="Other">;</span> <span class="Identifier">output</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">ToArch</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> </span><span class="Identifier">fastcall</span>.}<span class="Other">)</span> {.
-    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+    <span class="Identifier">newValues</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">NewComps</span><span class="Other">;</span> <span class="Identifier">output</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">ToArch</span><span class="Other">)</span><span class="Other">:</span> <a href="archetypeStore.html#ConvertResult"><span class="Identifier">ConvertResult</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span>
+    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> </span><span class="Identifier">fastcall</span>.}<span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
     Moves the components for an entity from one archetype to another
@@ -339,8 +351,8 @@
 
 </div>
 <div id="newSlot-procs-all">
-  <div id="newSlot,ptr.ArchetypeStore[Comps: tuple],EntityId">
-  <dt><pre><span class="Keyword">proc</span> <a href="#newSlot%2Cptr.ArchetypeStore%5BComps%3A%20tuple%5D%2CEntityId"><span class="Identifier">newSlot</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">entityId</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span><span class="Other">:</span> <a href="archetypeStore.html#NewArchSlot"><span class="Identifier">NewArchSlot</span></a><span class="Other">[</span>
+  <div id="newSlot,ArchetypeStore[Comps: tuple],EntityId">
+  <dt><pre><span class="Keyword">proc</span> <a href="#newSlot%2CArchetypeStore%5BComps%3A%20tuple%5D%2CEntityId"><span class="Identifier">newSlot</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">entityId</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span><span class="Other">:</span> <a href="archetypeStore.html#NewArchSlot"><span class="Identifier">NewArchSlot</span></a><span class="Other">[</span>
     <span class="Identifier">Comps</span><span class="Other">]</span></pre></dt>
   <dd>
     
@@ -357,6 +369,17 @@
   <dd>
     
     Returns the next value for an interator
+    
+  </dd>
+</div>
+
+</div>
+<div id="readArchetype-procs-all">
+  <div id="readArchetype,ArchetypeStore">
+  <dt><pre><span class="Keyword">proc</span> <a href="#readArchetype%2CArchetypeStore"><span class="Identifier">readArchetype</span></a><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">)</span><span class="Other">:</span> <a href="world.html#ArchetypeId"><span class="Identifier">ArchetypeId</span></a> {.<span class="Identifier">inline</span>.}</pre></dt>
+  <dd>
+    
+    Accessor for the archetype of a store
     
   </dd>
 </div>
@@ -401,7 +424,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-07-28 22:38:29 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-08-08 14:58:20 UTC</small>
       </div>
     </div>
   </div>

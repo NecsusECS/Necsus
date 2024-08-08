@@ -1,0 +1,2 @@
+nimTitle	tools	necsus/util/tools.html	module src/necsus/util/tools		0
+nim	isAboveNimVersion	necsus/util/tools.html#isAboveNimVersion,int,int,int	proc isAboveNimVersion(major, minor, patch: int): bool		2

@@ -55,8 +55,7 @@
     <summary><a class="reference reference-toplevel" href="#7" id="57">Types</a></summary>
     <ul class="simple simple-toc-section">
       <li><a class="reference" href="#Archetype" title="Archetype[T] = ref object
-  name*: string
-  bitset*: Bits">Archetype</a></li>
+  name*: string">Archetype</a></li>
 <li><a class="reference" href="#ArchetypeSet" title="ArchetypeSet[T] = ref object">ArchetypeSet</a></li>
 <li><a class="reference" href="#UnsortedArchetype" title="UnsortedArchetype = object of Defect">UnsortedArchetype</a></li>
 
@@ -71,16 +70,6 @@
   <li><a class="reference" href="#%24%2CArchetype%5BT%5D" title="`$`[T](archetype: Archetype[T]): string">`$`[T](archetype: Archetype[T]): string</a></li>
 
 </ul>
-<ul class="simple nested-toc-section">+
-  <li><a class="reference" href="#%2B%2CArchetype%5BT%5D%2CArchetype%5BT%5D" title="`+`[T](archetype: Archetype[T]; other: Archetype[T]): Archetype[T]">`+`[T](archetype: Archetype[T]; other: Archetype[T]): Archetype[T]</a></li>
-<li><a class="reference" href="#%2B%2CArchetype%5BT%5D%2CopenArray%5BT%5D" title="`+`[T](archetype: Archetype[T]; other: openArray[T]): Archetype[T]">`+`[T](archetype: Archetype[T]; other: openArray[T]): Archetype[T]</a></li>
-
-</ul>
-<ul class="simple nested-toc-section">-
-  <li><a class="reference" href="#-%2CArchetype%5BT%5D%2CArchetype%5BT%5D" title="`-`[T](archetype: Archetype[T]; other: Archetype[T]): Archetype[T]">`-`[T](archetype: Archetype[T]; other: Archetype[T]): Archetype[T]</a></li>
-<li><a class="reference" href="#-%2CArchetype%5BT%5D%2CopenArray%5BT%5D" title="`-`[T](archetype: Archetype[T]; other: openArray[T]): Archetype[T]">`-`[T](archetype: Archetype[T]; other: openArray[T]): Archetype[T]</a></li>
-
-</ul>
 <ul class="simple nested-toc-section">==
   <li><a class="reference" href="#%3D%3D%2CArchetype%5BT%5D%2CArchetype%5BT%5D" title="`==`[T](a, b: Archetype[T]): bool">`==`[T](a, b: Archetype[T]): bool</a></li>
 
@@ -89,8 +78,16 @@
   <li><a class="reference" href="#archArchSymbolDef%2CArchetype%5BT%5D" title="archArchSymbolDef[T](archetype: Archetype[T]): NimNode">archArchSymbolDef[T](archetype: Archetype[T]): NimNode</a></li>
 
 </ul>
+<ul class="simple nested-toc-section">archetypeFor
+  <li><a class="reference" href="#archetypeFor%2CArchetypeSet%5BT%5D%2CopenArray%5BT%5D" title="archetypeFor[T](archs: ArchetypeSet[T]; components: openArray[T]): Archetype[T]">archetypeFor[T](archs: ArchetypeSet[T]; components: openArray[T]): Archetype[T]</a></li>
+
+</ul>
 <ul class="simple nested-toc-section">asStorageTuple
   <li><a class="reference" href="#asStorageTuple%2CArchetype%5BComponentDef%5D" title="asStorageTuple(archetype: Archetype[ComponentDef]): NimNode">asStorageTuple(archetype: Archetype[ComponentDef]): NimNode</a></li>
+
+</ul>
+<ul class="simple nested-toc-section">asTupleDir
+  <li><a class="reference" href="#asTupleDir%2CArchetype%5BComponentDef%5D" title="asTupleDir(arch: Archetype[ComponentDef]): TupleDirective">asTupleDir(arch: Archetype[ComponentDef]): TupleDirective</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">contains
@@ -99,12 +96,15 @@
 
 </ul>
 <ul class="simple nested-toc-section">containsAllOf
-  <li><a class="reference" href="#containsAllOf%2CArchetype%5BT%5D%2CArchetype%5BT%5D" title="containsAllOf[T](archetype: Archetype[T]; other: Archetype[T]): bool">containsAllOf[T](archetype: Archetype[T]; other: Archetype[T]): bool</a></li>
-<li><a class="reference" href="#containsAllOf%2CArchetype%5BT%5D%2CopenArray%5BT%5D" title="containsAllOf[T](archetype: Archetype[T]; others: openArray[T]): bool">containsAllOf[T](archetype: Archetype[T]; others: openArray[T]): bool</a></li>
+  <li><a class="reference" href="#containsAllOf%2CArchetype%5BT%5D%2CopenArray%5BT%5D" title="containsAllOf[T](archetype: Archetype[T]; others: openArray[T]): bool">containsAllOf[T](archetype: Archetype[T]; others: openArray[T]): bool</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">dumpAnalysis
   <li><a class="reference" href="#dumpAnalysis%2CArchetypeSet%5BT%5D" title="dumpAnalysis[T](archetypes: ArchetypeSet[T])">dumpAnalysis[T](archetypes: ArchetypeSet[T])</a></li>
+
+</ul>
+<ul class="simple nested-toc-section">hasAccessories
+  <li><a class="reference" href="#hasAccessories%2CArchetype" title="hasAccessories(arch: Archetype): bool">hasAccessories(arch: Archetype): bool</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">hash
@@ -123,17 +123,26 @@
   <li><a class="reference" href="#indexOf%2CArchetype%5BT%5D%2CT" title="indexOf[T](archetype: Archetype[T]; value: T): int">indexOf[T](archetype: Archetype[T]; value: T): int</a></li>
 
 </ul>
+<ul class="simple nested-toc-section">isAccessory
+  <li><a class="reference" href="#isAccessory%2CArchetype%5BT%5D%2CT" title="isAccessory[T](arch: Archetype[T]; value: T): bool">isAccessory[T](arch: Archetype[T]; value: T): bool</a></li>
+
+</ul>
 <ul class="simple nested-toc-section">len
-  <li><a class="reference" href="#len%2CArchetype%5BT%5D" title="len[T](archetype: Archetype[T]): auto">len[T](archetype: Archetype[T]): auto</a></li>
-<li><a class="reference" href="#len%2CArchetypeSet%5BT%5D" title="len[T](archetypes: ArchetypeSet[T]): int">len[T](archetypes: ArchetypeSet[T]): int</a></li>
+  <li><a class="reference" href="#len%2CArchetypeSet%5BT%5D" title="len[T](archetypes: ArchetypeSet[T]): int">len[T](archetypes: ArchetypeSet[T]): int</a></li>
+
+</ul>
+<ul class="simple nested-toc-section">matches
+  <li><a class="reference" href="#matches%2CArchetype%2CBitsFilter" title="matches(arch: Archetype; filter: BitsFilter): bool">matches(arch: Archetype; filter: BitsFilter): bool</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">newArchetype
-  <li><a class="reference" href="#newArchetype%2CopenArray%5BT%5D" title="newArchetype[T](values: openArray[T]): Archetype[T]">newArchetype[T](values: openArray[T]): Archetype[T]</a></li>
+  <li><a class="reference" href="#newArchetype%2CopenArray%5BT%5D%2CBits" title="newArchetype[T](values: openArray[T]; accessories: Bits): Archetype[T]">newArchetype[T](values: openArray[T]; accessories: Bits): Archetype[T]</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">newArchetypeSet
-  <li><a class="reference" href="#newArchetypeSet%2CopenArray%5BArchetype%5BT%5D%5D" title="newArchetypeSet[T](values: openArray[Archetype[T]]): ArchetypeSet[T]">newArchetypeSet[T](values: openArray[Archetype[T]]): ArchetypeSet[T]</a></li>
+  <li><a class="reference" href="#newArchetypeSet%2CopenArray%5BArchetype%5BT%5D%5D%2CBits" title="newArchetypeSet[T](values: openArray[Archetype[T]]; accessories: Bits): ArchetypeSet[
+    T]">newArchetypeSet[T](values: openArray[Archetype[T]]; accessories: Bits): ArchetypeSet[
+    T]</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">readableName
@@ -141,9 +150,7 @@
 
 </ul>
 <ul class="simple nested-toc-section">removeAndAdd
-  <li><a class="reference" href="#removeAndAdd%2CArchetype%5BT%5D%2CBits%2CopenArray%5BT%5D" title="removeAndAdd[T](archetype: Archetype[T]; remove: Bits; add: openArray[T]): Archetype[
-    T]">removeAndAdd[T](archetype: Archetype[T]; remove: Bits; add: openArray[T]): Archetype[
-    T]</a></li>
+  <li><a class="reference" href="#removeAndAdd%2CArchetype%5BT%5D%2CBits%2CopenArray%5BT%5D" title="removeAndAdd[T](archetype: Archetype[T]; remove: Bits; add: openArray[T]): seq[T]">removeAndAdd[T](archetype: Archetype[T]; remove: Bits; add: openArray[T]): seq[T]</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">values
@@ -179,7 +186,7 @@
     <div class="section" id="6">
   <h1><a class="toc-backref" href="#6">Imports</a></h1>
   <dl class="item">
-    <a class="reference external" href="componentDef.html">componentDef</a>, <a class="reference external" href="../util/bits.html">../util/bits</a>, <a class="reference external" href="../runtime/world.html">../runtime/world</a>
+    <a class="reference external" href="componentDef.html">componentDef</a>, <a class="reference external" href="../util/bits.html">../util/bits</a>, <a class="reference external" href="../runtime/world.html">../runtime/world</a>, <a class="reference external" href="directiveArg.html">directiveArg</a>, <a class="reference external" href="tupleDirective.html">tupleDirective</a>
   </dl>
 </div>
 <div class="section" id="7">
@@ -187,8 +194,7 @@
   <dl class="item">
     <div id="Archetype">
   <dt><pre><a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">ref</span> <span class="Keyword">object</span>
-  <span class="Identifier">name</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">string</span>
-  <span class="Identifier">bitset</span><span class="Operator">*</span><span class="Other">:</span> <a href="../util/bits.html#Bits"><span class="Identifier">Bits</span></a></pre></dt>
+  <span class="Identifier">name</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">string</span></pre></dt>
   <dd>
     
     A archetype of values that can be stored together
@@ -228,44 +234,6 @@
 </div>
 
 </div>
-<div id="+-procs-all">
-  <div id="+,Archetype[T],Archetype[T]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#%2B%2CArchetype%5BT%5D%2CArchetype%5BT%5D"><span class="Identifier">`+`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">other</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span></pre></dt>
-  <dd>
-    
-    Joins together two archetypes
-    
-  </dd>
-</div>
-<div id="+,Archetype[T],openArray[T]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#%2B%2CArchetype%5BT%5D%2CopenArray%5BT%5D"><span class="Identifier">`+`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">other</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span></pre></dt>
-  <dd>
-    
-    Adds values to an archetype
-    
-  </dd>
-</div>
-
-</div>
-<div id="--procs-all">
-  <div id="-,Archetype[T],Archetype[T]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#-%2CArchetype%5BT%5D%2CArchetype%5BT%5D"><span class="Identifier">`-`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">other</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span></pre></dt>
-  <dd>
-    
-    Removes components in an archetype
-    
-  </dd>
-</div>
-<div id="-,Archetype[T],openArray[T]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#-%2CArchetype%5BT%5D%2CopenArray%5BT%5D"><span class="Identifier">`-`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">other</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span></pre></dt>
-  <dd>
-    
-    Adds values to an archetype
-    
-  </dd>
-</div>
-
-</div>
 <div id="==-procs-all">
   <div id="==,Archetype[T],Archetype[T]">
   <dt><pre><span class="Keyword">proc</span> <a href="#%3D%3D%2CArchetype%5BT%5D%2CArchetype%5BT%5D"><span class="Identifier">`==`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">a</span><span class="Other">,</span> <span class="Identifier">b</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span></pre></dt>
@@ -288,6 +256,18 @@
 </div>
 
 </div>
+<div id="archetypeFor-procs-all">
+  <div id="archetypeFor,ArchetypeSet[T],openArray[T]">
+  <dt><pre><span class="Keyword">proc</span> <a href="#archetypeFor%2CArchetypeSet%5BT%5D%2CopenArray%5BT%5D"><span class="Identifier">archetypeFor</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">archs</span><span class="Other">:</span> <a href="archetype.html#ArchetypeSet"><span class="Identifier">ArchetypeSet</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">components</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span>
+    <span class="Identifier">T</span><span class="Other">]</span></pre></dt>
+  <dd>
+    
+    Returns the archetype to use for a set of components
+    
+  </dd>
+</div>
+
+</div>
 <div id="asStorageTuple-procs-all">
   <div id="asStorageTuple,Archetype[ComponentDef]">
   <dt><pre><span class="Keyword">proc</span> <a href="#asStorageTuple%2CArchetype%5BComponentDef%5D"><span class="Identifier">asStorageTuple</span></a><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
@@ -295,6 +275,18 @@
   <dd>
     
     Creates the tuple type for storing an archetype
+    
+  </dd>
+</div>
+
+</div>
+<div id="asTupleDir-procs-all">
+  <div id="asTupleDir,Archetype[ComponentDef]">
+  <dt><pre><span class="Keyword">proc</span> <a href="#asTupleDir%2CArchetype%5BComponentDef%5D"><span class="Identifier">asTupleDir</span></a><span class="Other">(</span><span class="Identifier">arch</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Convert an archetype to a TupleDirective
     
   </dd>
 </div>
@@ -320,15 +312,7 @@
 
 </div>
 <div id="containsAllOf-procs-all">
-  <div id="containsAllOf,Archetype[T],Archetype[T]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#containsAllOf%2CArchetype%5BT%5D%2CArchetype%5BT%5D"><span class="Identifier">containsAllOf</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">other</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span></pre></dt>
-  <dd>
-    
-    Whether an archetype contains all the given values
-    
-  </dd>
-</div>
-<div id="containsAllOf,Archetype[T],openArray[T]">
+  <div id="containsAllOf,Archetype[T],openArray[T]">
   <dt><pre><span class="Keyword">proc</span> <a href="#containsAllOf%2CArchetype%5BT%5D%2CopenArray%5BT%5D"><span class="Identifier">containsAllOf</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">others</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span></pre></dt>
   <dd>
     
@@ -344,6 +328,17 @@
   <dd>
     
     Prints an analysis of the archetypes in a set
+    
+  </dd>
+</div>
+
+</div>
+<div id="hasAccessories-procs-all">
+  <div id="hasAccessories,Archetype">
+  <dt><pre><span class="Keyword">proc</span> <a href="#hasAccessories%2CArchetype"><span class="Identifier">hasAccessories</span></a><span class="Other">(</span><span class="Identifier">arch</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span></pre></dt>
+  <dd>
+    
+    Returns whether there are any accessories in this archetype
     
   </dd>
 </div>
@@ -394,16 +389,19 @@
 </div>
 
 </div>
-<div id="len-procs-all">
-  <div id="len,Archetype[T]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#len%2CArchetype%5BT%5D"><span class="Identifier">len</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">auto</span></pre></dt>
+<div id="isAccessory-procs-all">
+  <div id="isAccessory,Archetype[T],T">
+  <dt><pre><span class="Keyword">proc</span> <a href="#isAccessory%2CArchetype%5BT%5D%2CT"><span class="Identifier">isAccessory</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">arch</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span></pre></dt>
   <dd>
     
-    The number of values in this archetype
+    Whether a specific value is an accessory
     
   </dd>
 </div>
-<div id="len,ArchetypeSet[T]">
+
+</div>
+<div id="len-procs-all">
+  <div id="len,ArchetypeSet[T]">
   <dt><pre><span class="Keyword">proc</span> <a href="#len%2CArchetypeSet%5BT%5D"><span class="Identifier">len</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">archetypes</span><span class="Other">:</span> <a href="archetype.html#ArchetypeSet"><span class="Identifier">ArchetypeSet</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int</span></pre></dt>
   <dd>
     
@@ -413,9 +411,20 @@
 </div>
 
 </div>
+<div id="matches-procs-all">
+  <div id="matches,Archetype,BitsFilter">
+  <dt><pre><span class="Keyword">proc</span> <a href="#matches%2CArchetype%2CBitsFilter"><span class="Identifier">matches</span></a><span class="Other">(</span><span class="Identifier">arch</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">;</span> <span class="Identifier">filter</span><span class="Other">:</span> <a href="../util/bits.html#BitsFilter"><span class="Identifier">BitsFilter</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span></pre></dt>
+  <dd>
+    
+    Whether this archetype can fulfill the given filter
+    
+  </dd>
+</div>
+
+</div>
 <div id="newArchetype-procs-all">
-  <div id="newArchetype,openArray[T]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#newArchetype%2CopenArray%5BT%5D"><span class="Identifier">newArchetype</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">values</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span></pre></dt>
+  <div id="newArchetype,openArray[T],Bits">
+  <dt><pre><span class="Keyword">proc</span> <a href="#newArchetype%2CopenArray%5BT%5D%2CBits"><span class="Identifier">newArchetype</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">values</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">accessories</span><span class="Other">:</span> <a href="../util/bits.html#Bits"><span class="Identifier">Bits</span></a><span class="Other">)</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span></pre></dt>
   <dd>
     
     Create an archetype
@@ -425,8 +434,9 @@
 
 </div>
 <div id="newArchetypeSet-procs-all">
-  <div id="newArchetypeSet,openArray[Archetype[T]]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#newArchetypeSet%2CopenArray%5BArchetype%5BT%5D%5D"><span class="Identifier">newArchetypeSet</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">values</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="archetype.html#ArchetypeSet"><span class="Identifier">ArchetypeSet</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span></pre></dt>
+  <div id="newArchetypeSet,openArray[Archetype[T]],Bits">
+  <dt><pre><span class="Keyword">proc</span> <a href="#newArchetypeSet%2CopenArray%5BArchetype%5BT%5D%5D%2CBits"><span class="Identifier">newArchetypeSet</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">values</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">accessories</span><span class="Other">:</span> <a href="../util/bits.html#Bits"><span class="Identifier">Bits</span></a><span class="Other">)</span><span class="Other">:</span> <a href="archetype.html#ArchetypeSet"><span class="Identifier">ArchetypeSet</span></a><span class="Other">[</span>
+    <span class="Identifier">T</span><span class="Other">]</span></pre></dt>
   <dd>
     
     Creates a set of archetypes
@@ -449,7 +459,7 @@
 </div>
 <div id="removeAndAdd-procs-all">
   <div id="removeAndAdd,Archetype[T],Bits,openArray[T]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#removeAndAdd%2CArchetype%5BT%5D%2CBits%2CopenArray%5BT%5D"><span class="Identifier">removeAndAdd</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">remove</span><span class="Other">:</span> <a href="../util/bits.html#Bits"><span class="Identifier">Bits</span></a><span class="Other">;</span> <span class="Identifier">add</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span>
+  <dt><pre><span class="Keyword">proc</span> <a href="#removeAndAdd%2CArchetype%5BT%5D%2CBits%2CopenArray%5BT%5D"><span class="Identifier">removeAndAdd</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">remove</span><span class="Other">:</span> <a href="../util/bits.html#Bits"><span class="Identifier">Bits</span></a><span class="Other">;</span> <span class="Identifier">add</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span>
     <span class="Identifier">T</span><span class="Other">]</span></pre></dt>
   <dd>
     
@@ -505,7 +515,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-07-28 22:38:29 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-08-08 14:58:21 UTC</small>
       </div>
     </div>
   </div>

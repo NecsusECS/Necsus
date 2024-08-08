@@ -41,12 +41,16 @@ nim	converters	necsus/compiletime/systemGen.html#converters,GenerateContext,Syst
 nim	nameOf	necsus/compiletime/systemGen.html#nameOf,GenerateContext,SystemArg	proc nameOf(ctx: GenerateContext; arg: SystemArg): string		335
 nim	systemArg	necsus/compiletime/systemGen.html#systemArg,Table[DirectiveGen,DirectiveSet[SystemArg]],SystemArg	proc systemArg(directives: Table[DirectiveGen, DirectiveSet[SystemArg]];\n          arg: SystemArg): NimNode		339
 nim	systemArg	necsus/compiletime/systemGen.html#systemArg,GenerateContext,SystemArg	proc systemArg(ctx: GenerateContext; arg: SystemArg): NimNode		343
-nim	globalName	necsus/compiletime/systemGen.html#globalName,GenerateContext,string	proc globalName(ctx: GenerateContext; name: string): NimNode		347
-nim	allArgs	necsus/compiletime/systemGen.html#allArgs.i,openArray[SystemArg]	iterator allArgs(args: openArray[SystemArg]): SystemArg		356
-nim	sendEventProcName	necsus/compiletime/systemGen.html#sendEventProcName,MonoDirective	proc sendEventProcName(directive: MonoDirective): tuple[internal, external: NimNode]		372
-nim	nodes	necsus/compiletime/systemGen.html#nodes.i,SystemArg	iterator nodes(arg: SystemArg): NimNode		380
-nim	signature	necsus/compiletime/systemGen.html#signature,ConverterDef	proc signature(conv: ConverterDef): string		399
-nim	name	necsus/compiletime/systemGen.html#name,ConverterDef	proc name(convert: ConverterDef): NimNode		420
+nim	globalStr	necsus/compiletime/systemGen.html#globalStr,GenerateContext,string	proc globalStr(ctx: GenerateContext; name: string): string		347
+nim	globalName	necsus/compiletime/systemGen.html#globalName,GenerateContext,string	proc globalName(ctx: GenerateContext; name: string): NimNode		351
+nim	allArgs	necsus/compiletime/systemGen.html#allArgs.i,openArray[SystemArg]	iterator allArgs(args: openArray[SystemArg]): SystemArg		359
+nim	archetypeFor	necsus/compiletime/systemGen.html#archetypeFor,GenerateContext,openArray[ComponentDef]	proc archetypeFor(ctx: GenerateContext; components: openArray[ComponentDef]): Archetype[\n    ComponentDef]		369
+nim	archetypeFor	necsus/compiletime/systemGen.html#archetypeFor,GenerateContext,TupleDirective	proc archetypeFor(ctx: GenerateContext; dir: TupleDirective): Archetype[ComponentDef]		373
+nim	sendEventProcName	necsus/compiletime/systemGen.html#sendEventProcName,MonoDirective	proc sendEventProcName(directive: MonoDirective): tuple[internal, external: NimNode]		383
+nim	nodes	necsus/compiletime/systemGen.html#nodes.i,SystemArg	iterator nodes(arg: SystemArg): NimNode		391
+nim	signature	necsus/compiletime/systemGen.html#signature,ConverterDef	proc signature(conv: ConverterDef): string		410
+nim	name	necsus/compiletime/systemGen.html#name,ConverterDef	proc name(convert: ConverterDef): NimNode		431
+nimgrp	archetypefor	necsus/compiletime/systemGen.html#archetypeFor-procs-all	proc		369
 nimgrp	systemarg	necsus/compiletime/systemGen.html#systemArg-procs-all	proc		339
 nimgrp	newconverter	necsus/compiletime/systemGen.html#newConverter-procs-all	proc		109
 nimgrp	==	necsus/compiletime/systemGen.html#==-procs-all	proc		230

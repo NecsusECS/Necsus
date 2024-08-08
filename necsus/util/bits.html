@@ -69,6 +69,10 @@
   <li><a class="reference" href="#%2B%2CBits%2CBits" title="`+`(a, b: Bits): Bits">`+`(a, b: Bits): Bits</a></li>
 
 </ul>
+<ul class="simple nested-toc-section">+=
+  <li><a class="reference" href="#%2B%3D%2CBits%2CBits" title="`+=`(a: var Bits; b: Bits)">`+=`(a: var Bits; b: Bits)</a></li>
+
+</ul>
 <ul class="simple nested-toc-section">-
   <li><a class="reference" href="#-%2CBits%2CBits" title="`-`(a, b: Bits): Bits">`-`(a, b: Bits): Bits</a></li>
 
@@ -83,6 +87,10 @@
 </ul>
 <ul class="simple nested-toc-section">==
   <li><a class="reference" href="#%3D%3D%2CBits%2CBits" title="`==`(a, b: Bits): bool">`==`(a, b: Bits): bool</a></li>
+
+</ul>
+<ul class="simple nested-toc-section">>
+  <li><a class="reference" href="#%3E%2CBits%2CBits" title="`&gt;`(a, b: Bits): bool">`&gt;`(a, b: Bits): bool</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">anyIntersect
@@ -107,7 +115,7 @@
 
 </ul>
 <ul class="simple nested-toc-section">matches
-  <li><a class="reference" href="#matches%2CBits%2CBitsFilter" title="matches(target: Bits; filter: BitsFilter): bool">matches(target: Bits; filter: BitsFilter): bool</a></li>
+  <li><a class="reference" href="#matches%2CBitsFilter%2CBits%2CBits" title="matches(filter: BitsFilter; all: Bits; optional: Bits = newBits()): bool">matches(filter: BitsFilter; all: Bits; optional: Bits = newBits()): bool</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">newBits
@@ -190,6 +198,17 @@
 </div>
 
 </div>
+<div id="+=-procs-all">
+  <div id="+=,Bits,Bits">
+  <dt><pre><span class="Keyword">proc</span> <a href="#%2B%3D%2CBits%2CBits"><span class="Identifier">`+=`</span></a><span class="Other">(</span><span class="Identifier">a</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="bits.html#Bits"><span class="Identifier">Bits</span></a><span class="Other">;</span> <span class="Identifier">b</span><span class="Other">:</span> <a href="bits.html#Bits"><span class="Identifier">Bits</span></a><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Union of two sets
+    
+  </dd>
+</div>
+
+</div>
 <div id="--procs-all">
   <div id="-,Bits,Bits">
   <dt><pre><span class="Keyword">proc</span> <a href="#-%2CBits%2CBits"><span class="Identifier">`-`</span></a><span class="Other">(</span><span class="Identifier">a</span><span class="Other">,</span> <span class="Identifier">b</span><span class="Other">:</span> <a href="bits.html#Bits"><span class="Identifier">Bits</span></a><span class="Other">)</span><span class="Other">:</span> <a href="bits.html#Bits"><span class="Identifier">Bits</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
@@ -229,6 +248,17 @@
   <dd>
     
     Returns whether two sets contain the exact same set of values
+    
+  </dd>
+</div>
+
+</div>
+<div id="&gt;-procs-all">
+  <div id=">,Bits,Bits">
+  <dt><pre><span class="Keyword">proc</span> <a href="#%3E%2CBits%2CBits"><span class="Identifier">`&gt;`</span></a><span class="Other">(</span><span class="Identifier">a</span><span class="Other">,</span> <span class="Identifier">b</span><span class="Other">:</span> <a href="bits.html#Bits"><span class="Identifier">Bits</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Returns whether a contains bits not set in b
     
   </dd>
 </div>
@@ -299,9 +329,9 @@
 
 </div>
 <div id="matches-procs-all">
-  <div id="matches,Bits,BitsFilter">
-  <dt><pre><span class="Keyword">proc</span> <a href="#matches%2CBits%2CBitsFilter"><span class="Identifier">matches</span></a><span class="Other">(</span><span class="Identifier">target</span><span class="Other">:</span> <a href="bits.html#Bits"><span class="Identifier">Bits</span></a><span class="Other">;</span> <span class="Identifier">filter</span><span class="Other">:</span> <a href="bits.html#BitsFilter"><span class="Identifier">BitsFilter</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <div id="matches,BitsFilter,Bits,Bits">
+  <dt><pre><span class="Keyword">proc</span> <a href="#matches%2CBitsFilter%2CBits%2CBits"><span class="Identifier">matches</span></a><span class="Other">(</span><span class="Identifier">filter</span><span class="Other">:</span> <a href="bits.html#BitsFilter"><span class="Identifier">BitsFilter</span></a><span class="Other">;</span> <span class="Identifier">all</span><span class="Other">:</span> <a href="bits.html#Bits"><span class="Identifier">Bits</span></a><span class="Other">;</span> <span class="Identifier">optional</span><span class="Other">:</span> <a href="bits.html#Bits"><span class="Identifier">Bits</span></a> <span class="Other">=</span> <span class="Identifier">newBits</span><span class="Other">(</span><span class="Other">)</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
     Whether a target matches a filter
@@ -360,7 +390,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-07-28 22:38:29 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-08-08 14:58:21 UTC</small>
       </div>
     </div>
   </div>

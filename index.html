@@ -19,7 +19,7 @@
 <a href="https://github.com/NecsusECS/Necsus/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" alt="License" /></a></p>
 <p><img src="https://github.com/NecsusECS/NecsusParticleDemo/blob/main/demo.gif?raw=true" alt="" /></p>
 <p>A &quot;disappearing&quot; ECS (entity component system) library for Nim. Necsus uses Nim macros to generate code for creating
-and executing an ECS based application. Components are just regular objects, systems are regular procs, and everything
+and executing an ECS-based application. Components are just regular objects, systems are regular procs, and everything
 related to entities is handled for you.</p>
 <p>More details about how ECS architectures work can be found here:</p>
 <ul>
@@ -33,11 +33,11 @@ related to entities is handled for you.</p>
 based application, while still being approachable and keeping the cognitive overhead low.</p>
 <ul>
 <li>Entities are managed on your behalf. Under the covers, they're represented as an <code>int32</code></li>
-<li>Components are regular Nim types. Just about any type can be be used as a component.</li>
+<li>Components are regular Nim types. Just about any type can be used as a component.</li>
 <li>Systems are <code>proc</code>s. They get access to the broader application state through arguments with special types; called
 directives</li>
 <li>Systems and components are wired together automatically into a <code>proc</code> called an &quot;app&quot;. Running your app is as simple
-as calling the genereated <code>proc</code>.</li>
+as calling the generated <code>proc</code>.</li>
 </ul>
 <h3>An example</h3>
 <pre><code class="language-nim">import necsus, random
@@ -50,7 +50,7 @@ type
         dx*, dy*: float
 
 proc create(spawn: Spawn[(Position, Velocity)]) {.startupSys.}=
-    ## Creates a handful entities at random positions with random velocities
+    ## Creates a handful of entities at random positions with random velocities
     for _ in 1..10:
         spawn.with(
             Position(x: rand(0.0..100.0), y: rand(0.0..100.0)),
@@ -99,7 +99,7 @@ proc myApp() {.necsus([], newNecsusConf()).}
 were to call <code>myApp</code> it would just loop infinitely.</p>
 <h3>Adding systems</h3>
 <p>To make your application do useful work, you need to wire up systems. Creating a system is easy -- it's just a <code>proc</code>.
-The name of that <code>proc</code> then prefixed with a <code>~</code> and passed into the <code>necsus</code> pragma:</p>
+The name of that <code>proc</code> is then prefixed with a <code>~</code> and passed into the <code>necsus</code> pragma:</p>
 <pre><code class="language-nim">import necsus
 
 proc helloWorld() =
@@ -109,7 +109,7 @@ proc myApp() {.necsus([~helloWorld], newNecsusConf()).}
 </code></pre>
 <p>In the above example, if you called <code>myApp</code>, it would print <code>hello world</code> to the console in an infinite loop.</p>
 <p>If you're curious about the tilde prefix, it's used to convince the Nim type checker that all the give systems
-are actually compatible, despite being <code>proc</code>s with different arguments.</p>
+are compatible, despite being <code>proc</code>s with different arguments.</p>
 <h3>Passing multiple systems</h3>
 <p>When given multiple systems, they will be executed in the same order in which they are passed in:</p>
 <pre><code class="language-nim">import necsus
@@ -125,23 +125,23 @@ proc myApp() {.necsus([~first, ~second], newNecsusConf()).}
 <h3>Types of Systems</h3>
 <p>Within the lifecycle of an app, there are three phases in which a system can be executed:</p>
 <ol>
-<li>Startup: The system is executed once when the app is started. Systems opt in to this phase by adding the
+<li>Startup: The system is executed once when the app is started. Systems opt-in to this phase by adding the
 <code>startupSys</code> pragma.</li>
 <li>Loop: The system is executed for every loop. Systems naturally exist in this phase, though you can also be
 explicit by adding the <code>loopSys</code> pragma to them.</li>
-<li>Teardown: The system is executed once after the loop exits. Systems opt in to this phase by adding the
+<li>Teardown: The system is executed once after the loop exits. Systems opt-in to this phase by adding the
 <code>teardownSys</code> pragma.</li>
 </ol>
 <p>There are also callback systems that are only invoked when a specific situation is engaged:</p>
 <ol>
-<li>Save callback: The system is executed anytime the 'Save' directive is invoked. Systems opt in to this phase
+<li>Save callback: The system is executed anytime the 'Save' directive is invoked. Systems opt into this phase
 by adding the <code>saveSys</code> pragma. For these systems, the return type of the system is used as the value being
 saved. More on this below.</li>
-<li>Restore callback: The system is executed anytime the <code>Restore</code> directive is invoked. Systems opt in to this phase
+<li>Restore callback: The system is executed anytime the <code>Restore</code> directive is invoked. Systems opt-in to this phase
 with the <code>restoreSys</code> pragma. It is expected that the first parameter of these systems is not a directive, but is
 instead the value being decoded.</li>
 <li>Event callback: The system is executed whenever an event is triggered by another system. The first argument of
-of the system represents the type of event it listens to. Systems opt in to this phase with the <code>eventSys</code> pragma.</li>
+the system represents the type of event it listens to. Systems opt-in to this phase with the <code>eventSys</code> pragma.</li>
 </ol>
 <pre><code class="language-nim">import necsus
 
@@ -173,9 +173,9 @@ proc myApp(input: string) {.necsus([
 ], newNecsusConf()).}
 </code></pre>
 <h3>Directives</h3>
-<p>Systems interact with the rest of an app by using special method arguments, called <code>Directives</code>. These directives are
+<p>Systems interact with the rest of an app using special method arguments, called <code>Directives</code>. These directives are
 just regular types that Necsus knows how to wire up in special ways.</p>
-<p>Systems can't have any other type of argument. If Necsus doesn't recognize how to wire-up an argument, the compile
+<p>Systems can't have any other type of argument. If Necsus doesn't recognize how to wire up an argument, the compile
 will fail.</p>
 <h4>Spawn</h4>
 <p>To create new entities, use a <code>Spawn</code> directive. This takes a single argument, which is the initial set of components
@@ -197,7 +197,7 @@ proc spawningSystem(spawn: Spawn[(A, B)]) {.startupSys.} =
 proc myApp() {.necsus([~spawningSystem], newNecsusConf()).}
 </code></pre>
 <h5>Why <code>Spawn</code> and <code>FullSpawn</code>?</h5>
-<p>During a build, Necsus automatically generates a set of all possible archetypes that could possibly exist at
+<p>During a build, Necsus automatically generates a set of all possible archetypes that could exist at
 runtime. It does this by examining systems with <code>FullQuery</code>, <code>FullSpawn</code>, <code>Lookup</code>, and <code>Attach</code> directives then uses
 that to calculate all the combinatorial possibilities. Naively, this is an exponential algorithm. This is important
 because archetypes themselves aren't free. Each archetype that exists increases build times and slows down queries.</p>
@@ -305,7 +305,7 @@ proc deletingSystem(query: FullQuery[(A, B)], delete: Delete) =
 proc myApp() {.necsus([~deletingSystem], newNecsusConf()).}
 </code></pre>
 <h4>Lookup</h4>
-<p><code>Lookup</code> allows you to get components for an entity when you already have the entity id. It returns an <code>Option</code>, which
+<p><code>Lookup</code> allows you to get components for an entity when you already have the entity ID. It returns an <code>Option</code>, which
 will be a <code>Some</code> if the entity has the exact requested components:</p>
 <pre><code class="language-nim">import necsus, options
 
@@ -401,7 +401,7 @@ proc myApp() {.necsus([~updateCount, ~printCount], newNecsusConf()).}
 </code></pre>
 <h4>Inbox/Outbox (aka Events)</h4>
 <p><code>Inbox</code> and <code>Outbox</code> represent the eventing system in Necsus. Events are published using the <code>Outbox</code> and read using
-the <code>Inbox</code>. Any <code>Inbox</code> or <code>Outbox</code> with the same type will shared the same underlying mailbox.</p>
+the <code>Inbox</code>. Any <code>Inbox</code> or <code>Outbox</code> with the same type will share the same underlying mailbox.</p>
 <pre><code class="language-nim">import necsus
 
 type SomeEvent = distinct string
@@ -433,7 +433,7 @@ proc myApp() {.necsus([~publish, ~receive], newNecsusConf()).}
 <p>It's worth noting that event systems are executed immediately when an event is triggered. They will be directly invoked
 by the <code>Outbox</code>, within the call stack of the system that triggers the event.</p>
 <h4>Bundles</h4>
-<p><code>Bundle</code>s are a way of grouping together multiple directives into a single object to make them easier pass around. They
+<p><code>Bundle</code>s are a way of grouping multiple directives into a single object to make them easier to pass around. They
 are useful when you want to encapsulate a set of logic that needs to operate on multiple directives.</p>
 <pre><code class="language-nim">import necsus
 
@@ -475,10 +475,10 @@ proc myApp() {.necsus([~saveValues, ~doSave], newNecsusConf()).}
 </code></pre>
 <p>The benefit of using the <code>Save</code> pragma is that it lets you separate your logic for <em>what</em> needs to be serialized from
 your logic that defines <em>how</em> to serialize. You can scatter your <code>saveSys</code> systems throughout your project so they
-are colocated with the other systems they are associated with.</p>
+are co-located with the other systems they are associated with.</p>
 <h4>Restore</h4>
-<p>The <code>Restore</code> directive is the opposite of <code>Save</code>. It accepts a json stream, deserializes it, then invokes any systems
-marked with <code>restoreSys</code>. The key names of the JSON are expected to be the type names that get passed in to the
+<p>The <code>Restore</code> directive is the opposite of <code>Save</code>. It accepts a JSON stream, deserializes it, then invokes any systems
+marked with <code>restoreSys</code>. The key names of the JSON are expected to be the type names that get passed into the
 <code>restoreSys</code> systems.</p>
 <pre><code class="language-nim">import necsus
 
@@ -505,7 +505,7 @@ proc printTickId(tickId: TickId) =
 proc myApp() {.necsus([~printTickId], newNecsusConf()).}
 </code></pre>
 <h4>EntityDebug</h4>
-<p>When you find yourelf in a position that you need to see the exact state that an entity is in, you can get a string
+<p>When you find yourself in a position that you need to see the exact state that an entity is in, you can get a string
 dump of that entity by using the <code>EntityDebug</code> directive:</p>
 <pre><code class="language-nim">import necsus
 
@@ -541,7 +541,7 @@ proc myApp() {.necsus([~runSecond], newNecsusConf()).}
 got two options:</p>
 <p><strong>Option 1: Return a Proc</strong></p>
 <p>If your system returns a <code>proc</code>, set the return type of your system to <code>SystemInstance</code>. Necsus will invoke your
-parent <code>proc</code> during setup, then the returned <code>proc</code> will be invoked for every tick. The <code>proc</code> itself that gets
+parent <code>proc</code> during setup, and then the returned <code>proc</code> will be invoked for every tick. The <code>proc</code> itself that gets
 returned here cannot take any arguments. For example:</p>
 <pre><code class="language-nim">import necsus
 
@@ -553,12 +553,12 @@ proc someSystem(create: Spawn[(string, )], query: Query[(string,)]): SystemInsta
 
 proc myApp() {.necsus([~someSystem], newNecsusConf()).}
 </code></pre>
-<p>Obviously, this makes it easier to capture the pragmas from your parent system as closure variables,
+<p>This makes it easier to capture the pragmas from your parent system as closure variables,
 which can then be freely used.</p>
 <p><strong>Option 2: Return an Object</strong></p>
 <p>Your other option is to return an object from the parent <code>proc</code>. First, mark your parent <code>proc</code> with the <code>instanced</code>
-pragma. The parent <code>proc</code> will get invoked once during the startup phase, then a <code>tick</code> proc will get invoked as part of
-the main loop. This also allows you to create a <code>=destroy</code> proc that gets invoked during teardown:</p>
+pragma. The parent <code>proc</code> will get invoked once during the startup phase, and then a <code>tick</code> proc will get invoked as
+part of the main loop. This also allows you to create a <code>=destroy</code> proc that gets invoked during teardown:</p>
 <pre><code class="language-nim">import necsus
 
 type MySystem = object
@@ -581,7 +581,7 @@ proc myApp() {.necsus([~someSystem], newNecsusConf()).}
 <p>Reusing code is obviously a fundamental aspect of programming, and using generics is a fundamental aspect of
 that in Nim. Necsus, however, can't resolve generic parameters by itself. It needs to know exactly what components
 need to be passed to each system at compile time.</p>
-<p>To work around this, you can assign systems to variables, then pass those variables into your app:</p>
+<p>To work around this, you can assign systems to variables, and then pass those variables into your app:</p>
 <pre><code class="language-nim">import necsus
 
 type
@@ -597,11 +597,11 @@ let spawnAnotherComponent = genericSpawner[AnotherComponent]()
 
 proc myApp() {.necsus([~spawnSomeComponent, ~spawnAnotherComponent], newNecsusConf()).}
 </code></pre>
-<p>It's worth mentioning that if you start usin type aliases, Nim's type system has a tendency to hide those
+<p>It's worth mentioning that if you start using type aliases, Nim's type system tends to hide those
 from the macro system -- they generally get resolved directly down to the type they are aliasing. To work around that,
-you can add in explicit type declarations or use templates to define your systems.</p>
+you can add explicit type declarations or use templates to define your systems.</p>
 <h4>Game State Management</h4>
-<p>Often times, games will have various states they can be in at a high level.  For example, your game may have states to
+<p>Oftentimes, games will have various states they can be in at a high level.  For example, your game may have states to
 represent &quot;loading&quot;, &quot;playing&quot;, &quot;won&quot; or &quot;lost&quot;. For this, you can annotate a system with the <code>active</code> pragma so it
 only executes when the game is in a specific state. <code>Shared</code> directives are then used for changing between states.</p>
 <pre><code class="language-nim">import necsus
@@ -620,7 +620,7 @@ proc myApp() {.necsus([~showWon, ~switchGameState], newNecsusConf()).}
 <h3>App</h3>
 <p>At an app level, there are a few more features worth discussing.</p>
 <h4>App Arguments</h4>
-<p>Any arguments passed in to your app will be available as <code>Shared</code> arguments to your systems:</p>
+<p>Any arguments passed into your app will be available as <code>Shared</code> arguments to your systems:</p>
 <pre><code class="language-nim">import necsus
 
 proc exampleSystem(input: Shared[string]) =
@@ -656,12 +656,36 @@ proc myApp() {.necsus([~immediateExit], newNecsusConf()).}
 
 myApp()
 </code></pre>
+<h4>Accessory Components</h4>
+<p>As the number of archetypes in your app creeps up, it increases the build time of your app and the size of the
+generated binary. One way to combat this is with accessory components. When a component type is marked with the
+<code>{.accessory.}</code> it will no longer trigger the generation of a new archetype. Instead, it is stored as an optional
+value attached to existing archetypes. This is an entirely internal change. For the rest of the app, an accessory
+components looks like any other component in the system.</p>
+<p>The downside of accessory components is that they incur a runtime overhead for queries. Instead of being able to blindly
+iterate of the values in an archetype, Necsus now needs to check whether an accessory exists for every row in
+an archetype.</p>
+<pre><code class="language-nim">import necsus
+
+type
+    ItemName = string
+    IsEquiped {.accessory.} = object
+
+proc createInventory(create: Spawn[(ItemName, )]) =
+    create.with(&quot;Sword&quot;)
+
+proc equip(items: FullQuery[(ItemName, Not[IsEquiped])], equip: Attach[(IsEquiped, )]) =
+    for eid, _ in items:
+        eid.equip((IsEquiped(), ))
+
+proc myApp() {.necsus([~createInventory, ~equip], newNecsusConf()).}
+</code></pre>
 <h4>Custom runners</h4>
-<p>The <code>runner</code> is the function that is used to execute the primary system loop. The default runner is fairly simple -- it
+<p>The <code>runner</code> is the function used to execute the primary system loop. The default runner is fairly simple -- it
 executes the loop systems repeatedly until the Shared <code>NecsusRun</code> variable flips over to <code>ExitLoop</code>. If you need more
 control over your game loop, you can pass in your own.</p>
 <p>The last argument for a custom runner must be the <code>tick</code> callback. Any other arguments will be processed in the same
-manner as a system. This allows your runner to access entities, shared values or events.</p>
+manner as a system. This allows your runner to access entities, shared values, or events.</p>
 <pre><code class="language-nim">import necsus
 
 proc customRunner*(count: Shared[int], tick: proc(): void) =
@@ -678,7 +702,7 @@ myApp()
 </code></pre>
 <h4>Don't call me, I'll call you</h4>
 <p>There are situations where you may not want Necsus to be in charge of executing the loop. For example, if you are
-integrating with an SDK that uses a callback mechanism for controlling the main game loop. For those situations,
+integrating with an SDK that uses a callback mechanism for controlling the main game loop. In those situations,
 you can manually initialize your app and invoke the <code>tick</code> function that Necsus generates:</p>
 <pre><code class="language-nim">import necsus
 
@@ -725,7 +749,7 @@ app.tick()
 <h2>Patterns</h2>
 <p>There are a few useful design patterns that are useful when using Necsus</p>
 <h3>Extending Tuples</h3>
-<p>There will be times when you want to create the similar entities, but with slightly different overall
+<p>There will be times when you want to create similar entities, but with slightly different overall
 sets of components. You could use generics for this purpose, but Necsus has rules around the sort
 order of entities, so this doesn't always work. Instead, you can use the <code>extend</code> macro to combine
 two tuples into one. You can also use the <code>join</code> macro to create actual instances of a tuple that
@@ -756,12 +780,12 @@ proc myApp() {.necsus([~createEnemies], newNecsusConf()).}
 </code></pre>
 <h3>Encapsulation using Bundles</h3>
 <p>Bundles provide a way to put all your entity state logic in one place, then call it from other places. For example,
-you might have a state machien for an enemy that can change in various ways. You can put that logic in a single
+you might have a state machine for an enemy that can change in various ways. You can put that logic in a single
 file:</p>
 <pre><code class="language-nim">import necsus, options
 
 type
-    EnemyState = enum Alive, Atacking, KnockedBack, Dead
+    EnemyState = enum Alive, Attacking, KnockedBack, Dead
 
     EnemyData = object
         state: EnemyState
@@ -784,7 +808,7 @@ proc damage*(control: Bundle[EnemyControl], enemy: EntityId, damage: int) =
 </code></pre>
 <h3>Listening to state changes</h3>
 <p>When you have an action that needs to be executed once when a state changes, you can encapsulate your state changes
-into a <code>Bundle</code>, then publish an event into an <code>Outbox</code>. For example, imagine a project layed out in a few files
+into a <code>Bundle</code>, then publish an event into an <code>Outbox</code>. For example, imagine a project laid out in a few files
 like this:</p>
 <pre><code class="language-nim">##
 ## gameState.nim
@@ -800,7 +824,7 @@ type
         stateChange: Outbox[GameState]
 
 proc change*(manager: Bundle[StateManager], newState: GameState) =
-    ## Central entry point when then game state needs to be changed
+    ## Central entry point when the game state needs to be changed
     manager.state := newState
     manager.stateChange(newState)
 
@@ -828,7 +852,7 @@ proc app() {.necsus([~customSystem, ~changeStateSystem], newNecsusConf()).}
 </code></pre>
 <h2>Testing Systems</h2>
 <p>To test a system, you can use the <code>runSystemOnce</code> macro. It accepts a single lambda as an
-argument, and will invoke that lambda as if it were a system. You can then pass those
+argument and will invoke that lambda as if it were a system. You can then pass those
 directives to other systems, or interact with them directly.</p>
 <pre><code class="language-nim">import unittest, necsus
 
@@ -844,10 +868,10 @@ runSystemOnce do (str: Shared[string]) -&gt; void:
 <h3>Profiling systems</h3>
 <p>To get a quick and dirty idea of how your app is performing, you can compile with the <code>-d:profile</code> flag set. This
 will cause Necsus to add profiling code that will report how long each system is taking. It takes measurements,
-then outputs the timings to the console.</p>
+and then outputs the timings to the console.</p>
 <h3>Tracing</h3>
-<p>To understand what is happening in various systems over time, there are various flags that can be enabled
-to emit trace level logs. They are:</p>
+<p>To understand what is happening in various systems over time, various flags can be enabled
+to emit trace-level logs. They are:</p>
 <ul>
 <li><code>-d:necsusEntityTrace</code>: Logs whenever an entity is spawned, deleted, or modified in some way</li>
 <li><code>-d:necsusEventTrace</code>: Logs whenever an event is sent</li>
@@ -861,8 +885,8 @@ app and execute it. This can be enabled by compiling with the <code>-d:dump</cod
 <h3>Dumping Archetypes</h3>
 <p>If you find that builds are slowing down, it's often caused by archetypes being created that are never used. You can
 set the <code>-d:archetypes</code> flag as part of your build to do a dump of all the archetypes that exist. This gives you
-a jumping off point to see which archetypes are never actually used, then update your project so they are never
-created in the first place. For example, with targetd usage of <code>Query</code> versus <code>FullQuery</code> or <code>Spawn</code> vs <code>FullSpawn</code>.</p>
+a jumping-off point to see which archetypes are never actually used, then update your project so they are never
+created in the first place. For example, with targeted usage of <code>Query</code> versus <code>FullQuery</code> or <code>Spawn</code> vs <code>FullSpawn</code>.</p>
 <h1>License</h1>
 <p>Code released under the <a href="https://github.com/NecsusECS/Necsus/blob/main/LICENSE">Apache 2.0 license</a></p>
             </div>

@@ -72,8 +72,10 @@
 
 </ul>
 <ul class="simple nested-toc-section">newSpawn
-  <li><a class="reference" href="#newSpawn%2CWorld%2Cptr.ArchetypeStore%5BComps%3A%20tuple%5D" title="newSpawn[Comps: tuple](world: World; store: ptr ArchetypeStore[Comps]): RawSpawn[
-    Comps]">newSpawn[Comps: tuple](world: World; store: ptr ArchetypeStore[Comps]): RawSpawn[
+  <li><a class="reference" href="#newSpawn%2Cpointer%2Cproc%28pointer%2CsinkComps%29" title="newSpawn[Comps: tuple](app: pointer; callback: proc (app: pointer;
+    value: sink Comps): EntityId {.fastcall, raises: [], gcsafe.}): RawSpawn[
+    Comps]">newSpawn[Comps: tuple](app: pointer; callback: proc (app: pointer;
+    value: sink Comps): EntityId {.fastcall, raises: [], gcsafe.}): RawSpawn[
     Comps]</a></li>
 
 </ul>
@@ -111,7 +113,7 @@
     <div class="section" id="6">
   <h1><a class="toc-backref" href="#6">Imports</a></h1>
   <dl class="item">
-    <a class="reference external" href="entityId.html">entityId</a>, <a class="reference external" href="world.html">world</a>, <a class="reference external" href="archetypeStore.html">archetypeStore</a>
+    <a class="reference external" href="entityId.html">entityId</a>, <a class="reference external" href="world.html">world</a>, <a class="reference external" href="archetypeStore.html">archetypeStore</a>, <a class="reference external" href="../util/tools.html">../util/tools</a>
   </dl>
 </div>
 <div class="section" id="7">
@@ -160,8 +162,9 @@
 
 </div>
 <div id="newSpawn-procs-all">
-  <div id="newSpawn,World,ptr.ArchetypeStore[Comps: tuple]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#newSpawn%2CWorld%2Cptr.ArchetypeStore%5BComps%3A%20tuple%5D"><span class="Identifier">newSpawn</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">store</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="spawn.html#RawSpawn"><span class="Identifier">RawSpawn</span></a><span class="Other">[</span>
+  <div id="newSpawn,pointer,proc(pointer,sinkComps)">
+  <dt><pre><span class="Keyword">proc</span> <a href="#newSpawn%2Cpointer%2Cproc%28pointer%2CsinkComps%29"><span class="Identifier">newSpawn</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">app</span><span class="Other">:</span> <span class="Identifier">pointer</span><span class="Other">;</span> <span class="Identifier">callback</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">app</span><span class="Other">:</span> <span class="Identifier">pointer</span><span class="Other">;</span>
+    <span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">Comps</span><span class="Other">)</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a> {.<span class="Identifier">fastcall</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">gcsafe</span></span>.}<span class="Other">)</span><span class="Other">:</span> <a href="spawn.html#RawSpawn"><span class="Identifier">RawSpawn</span></a><span class="Other">[</span>
     <span class="Identifier">Comps</span><span class="Other">]</span></pre></dt>
   <dd>
     
@@ -181,7 +184,7 @@
   </dd>
 </div>
 <div id="set,Spawn[C: tuple],sinkC">
-  <dt><pre><span class="Keyword">func</span> <a href="#set%2CSpawn%5BC%3A%20tuple%5D%2CsinkC"><span class="Identifier">set</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">spawn</span><span class="Other">:</span> <a href="spawn.html#Spawn"><span class="Identifier">Spawn</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">values</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">C</span><span class="Other">)</span> {.<span class="Identifier">inline</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#set%2CSpawn%5BC%3A%20tuple%5D%2CsinkC"><span class="Identifier">set</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">spawn</span><span class="Other">:</span> <a href="spawn.html#Spawn"><span class="Identifier">Spawn</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">values</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">C</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> </span><span class="Identifier">inline</span>.}</pre></dt>
   <dd>
     
     Spawns an entity with the given components
@@ -225,7 +228,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-07-28 22:38:29 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-08-08 14:58:21 UTC</small>
       </div>
     </div>
   </div>

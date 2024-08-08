@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>src/necsus/compiletime/debugGen</title>
+<title>src/necsus/util/tools</title>
 
 <!-- Favicon -->
 <link rel="shortcut icon" href="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AAAAAAUAAAAF////AP///wD///8A////AP///wD///8A////AP///wD///8A////AAAAAAIAAABbAAAAlQAAAKIAAACbAAAAmwAAAKIAAACVAAAAWwAAAAL///8A////AP///wD///8A////AAAAABQAAADAAAAAYwAAAA3///8A////AP///wD///8AAAAADQAAAGMAAADAAAAAFP///wD///8A////AP///wAAAACdAAAAOv///wD///8A////AP///wD///8A////AP///wD///8AAAAAOgAAAJ3///8A////AP///wAAAAAnAAAAcP///wAAAAAoAAAASv///wD///8A////AP///wAAAABKAAAAKP///wAAAABwAAAAJ////wD///8AAAAAgQAAABwAAACIAAAAkAAAAJMAAACtAAAAFQAAABUAAACtAAAAkwAAAJAAAACIAAAAHAAAAIH///8A////AAAAAKQAAACrAAAAaP///wD///8AAAAARQAAANIAAADSAAAARf///wD///8AAAAAaAAAAKsAAACk////AAAAADMAAACcAAAAnQAAABj///8A////AP///wAAAAAYAAAAGP///wD///8A////AAAAABgAAACdAAAAnAAAADMAAAB1AAAAwwAAAP8AAADpAAAAsQAAAE4AAAAb////AP///wAAAAAbAAAATgAAALEAAADpAAAA/wAAAMMAAAB1AAAAtwAAAOkAAAD/AAAA/wAAAP8AAADvAAAA3gAAAN4AAADeAAAA3gAAAO8AAAD/AAAA/wAAAP8AAADpAAAAtwAAAGUAAAA/AAAA3wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAADfAAAAPwAAAGX///8A////AAAAAEgAAADtAAAAvwAAAL0AAADGAAAA7wAAAO8AAADGAAAAvQAAAL8AAADtAAAASP///wD///8A////AP///wD///8AAAAAO////wD///8A////AAAAAIcAAACH////AP///wD///8AAAAAO////wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A//8AAP//AAD4HwAA7/cAAN/7AAD//wAAoYUAAJ55AACf+QAAh+EAAAAAAADAAwAA4AcAAP5/AAD//wAA//8AAA=="/>
@@ -20,7 +20,7 @@
 <body>
   <div class="document" id="documentId">
     <div class="container">
-      <h1 class="title">src/necsus/compiletime/debugGen</h1>
+      <h1 class="title">src/necsus/util/tools</h1>
       <div class="row">
   <div class="three columns">
     <div class="theme-select-wrapper">
@@ -48,14 +48,13 @@
     </div>
     <ul class="simple simple-toc" id="toc-list">
   <li>
-  <a class="reference reference-toplevel" href="#6" id="56">Imports</a>
-</li>
-<li>
   <details open>
-    <summary><a class="reference reference-toplevel" href="#9" id="59">Lets</a></summary>
+    <summary><a class="reference reference-toplevel" href="#12" id="62">Procs</a></summary>
     <ul class="simple simple-toc-section">
-      <li><a class="reference" href="#entityDebugGenerator" title="entityDebugGenerator {.compileTime.} = newGenerator(&quot;EntityDebug&quot;,
-    {Standard, Outside}, generateEntityDebug, worldFields, defaultSystemArgNone)">entityDebugGenerator</a></li>
+      <ul class="simple nested-toc-section">isAboveNimVersion
+  <li><a class="reference" href="#isAboveNimVersion%2Cint%2Cint%2Cint" title="isAboveNimVersion(major, minor, patch: int): bool">isAboveNimVersion(major, minor, patch: int): bool</a></li>
+
+</ul>
 
     </ul>
   </details>
@@ -69,23 +68,20 @@
     <div id="tocRoot"></div>
     
     <p class="module-desc"></p>
-    <div class="section" id="6">
-  <h1><a class="toc-backref" href="#6">Imports</a></h1>
+    <div class="section" id="12">
+  <h1><a class="toc-backref" href="#12">Procs</a></h1>
   <dl class="item">
-    <a class="reference external" href="tools.html">tools</a>, <a class="reference external" href="common.html">common</a>, <a class="reference external" href="archetype.html">archetype</a>, <a class="reference external" href="componentDef.html">componentDef</a>, <a class="reference external" href="systemGen.html">systemGen</a>, <a class="reference external" href="../runtime/world.html">../runtime/world</a>, <a class="reference external" href="../runtime/archetypeStore.html">../runtime/archetypeStore</a>, <a class="reference external" href="../runtime/directives.html">../runtime/directives</a>
-  </dl>
-</div>
-<div class="section" id="9">
-  <h1><a class="toc-backref" href="#9">Lets</a></h1>
-  <dl class="item">
-    <div id="entityDebugGenerator">
-  <dt><pre><a href="debugGen.html#entityDebugGenerator"><span class="Identifier">entityDebugGenerator</span></a> {.<span class="Identifier">compileTime</span>.} <span class="Other">=</span> <span class="Identifier">newGenerator</span><span class="Other">(</span><span class="StringLit">&quot;EntityDebug&quot;</span><span class="Other">,</span>
-    <span class="Other">{</span><span class="Identifier">Standard</span><span class="Other">,</span> <span class="Identifier">Outside</span><span class="Other">}</span><span class="Other">,</span> <span class="Identifier">generateEntityDebug</span><span class="Other">,</span> <span class="Identifier">worldFields</span><span class="Other">,</span> <span class="Identifier">defaultSystemArgNone</span><span class="Other">)</span></pre></dt>
+    <div id="isAboveNimVersion-procs-all">
+  <div id="isAboveNimVersion,int,int,int">
+  <dt><pre><span class="Keyword">proc</span> <a href="#isAboveNimVersion%2Cint%2Cint%2Cint"><span class="Identifier">isAboveNimVersion</span></a><span class="Other">(</span><span class="Identifier">major</span><span class="Other">,</span> <span class="Identifier">minor</span><span class="Other">,</span> <span class="Identifier">patch</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
-    
+    Returns whether the current nim compiler is above a given version
     
   </dd>
+</div>
+
 </div>
 
   </dl>

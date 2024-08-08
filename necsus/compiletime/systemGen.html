@@ -58,7 +58,7 @@
 <li><a class="reference" href="#BuildArchetype" title="BuildArchetype[T] = proc (builder: var ArchetypeBuilder[ComponentDef];
                           systemArgs: seq[SystemArg]; dir: T)">BuildArchetype</a></li>
 <li><a class="reference" href="#ConverterDef" title="ConverterDef = ref object
-  input*: seq[ComponentDef]
+  input*: Archetype[ComponentDef]
   adding*: seq[ComponentDef]
   output*: TupleDirective
   sinkParams*: bool">ConverterDef</a></li>
@@ -147,6 +147,13 @@
 <li><a class="reference" href="#%3D%3D%2CSystemArg%2CSystemArg" title="`==`(a, b: SystemArg): bool">`==`(a, b: SystemArg): bool</a></li>
 
 </ul>
+<ul class="simple nested-toc-section">archetypeFor
+  <li><a class="reference" href="#archetypeFor%2CGenerateContext%2CopenArray%5BComponentDef%5D" title="archetypeFor(ctx: GenerateContext; components: openArray[ComponentDef]): Archetype[
+    ComponentDef]">archetypeFor(ctx: GenerateContext; components: openArray[ComponentDef]): Archetype[
+    ComponentDef]</a></li>
+<li><a class="reference" href="#archetypeFor%2CGenerateContext%2CTupleDirective" title="archetypeFor(ctx: GenerateContext; dir: TupleDirective): Archetype[ComponentDef]">archetypeFor(ctx: GenerateContext; dir: TupleDirective): Archetype[ComponentDef]</a></li>
+
+</ul>
 <ul class="simple nested-toc-section">buildArchetype
   <li><a class="reference" href="#buildArchetype%2CArchetypeBuilder%5BComponentDef%5D%2Cseq%5BSystemArg%5D%2CSystemArg" title="buildArchetype(builder: var ArchetypeBuilder[ComponentDef];
                systemArgs: seq[SystemArg]; arg: SystemArg)">buildArchetype(builder: var ArchetypeBuilder[ComponentDef];
@@ -167,6 +174,10 @@
 </ul>
 <ul class="simple nested-toc-section">globalName
   <li><a class="reference" href="#globalName%2CGenerateContext%2Cstring" title="globalName(ctx: GenerateContext; name: string): NimNode">globalName(ctx: GenerateContext; name: string): NimNode</a></li>
+
+</ul>
+<ul class="simple nested-toc-section">globalStr
+  <li><a class="reference" href="#globalStr%2CGenerateContext%2Cstring" title="globalStr(ctx: GenerateContext; name: string): string">globalStr(ctx: GenerateContext; name: string): string</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">hash
@@ -328,7 +339,7 @@
 </div>
 <div id="ConverterDef">
   <dt><pre><a href="systemGen.html#ConverterDef"><span class="Identifier">ConverterDef</span></a> <span class="Other">=</span> <span class="Keyword">ref</span> <span class="Keyword">object</span>
-  <span class="Identifier">input</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span>
+  <span class="Identifier">input</span><span class="Operator">*</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span>
   <span class="Identifier">adding</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span>
   <span class="Identifier">output</span><span class="Operator">*</span><span class="Other">:</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a>
   <span class="Identifier">sinkParams</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">bool</span></pre></dt>
@@ -526,6 +537,27 @@
 </div>
 
 </div>
+<div id="archetypeFor-procs-all">
+  <div id="archetypeFor,GenerateContext,openArray[ComponentDef]">
+  <dt><pre><span class="Keyword">proc</span> <a href="#archetypeFor%2CGenerateContext%2CopenArray%5BComponentDef%5D"><span class="Identifier">archetypeFor</span></a><span class="Other">(</span><span class="Identifier">ctx</span><span class="Other">:</span> <a href="systemGen.html#GenerateContext"><span class="Identifier">GenerateContext</span></a><span class="Other">;</span> <span class="Identifier">components</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span>
+    <a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Returns the archetype to use for a set of components
+    
+  </dd>
+</div>
+<div id="archetypeFor,GenerateContext,TupleDirective">
+  <dt><pre><span class="Keyword">proc</span> <a href="#archetypeFor%2CGenerateContext%2CTupleDirective"><span class="Identifier">archetypeFor</span></a><span class="Other">(</span><span class="Identifier">ctx</span><span class="Other">:</span> <a href="systemGen.html#GenerateContext"><span class="Identifier">GenerateContext</span></a><span class="Other">;</span> <span class="Identifier">dir</span><span class="Other">:</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a><span class="Other">)</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span>
+    <a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Returns the archetype to use for a set of components
+    
+  </dd>
+</div>
+
+</div>
 <div id="buildArchetype-procs-all">
   <div id="buildArchetype,ArchetypeBuilder[ComponentDef],seq[SystemArg],SystemArg">
   <dt><pre><span class="Keyword">proc</span> <a href="#buildArchetype%2CArchetypeBuilder%5BComponentDef%5D%2Cseq%5BSystemArg%5D%2CSystemArg"><span class="Identifier">buildArchetype</span></a><span class="Other">(</span><span class="Identifier">builder</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeBuilder.html#ArchetypeBuilder"><span class="Identifier">ArchetypeBuilder</span></a><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span><span class="Other">;</span>
@@ -581,6 +613,18 @@
   <dd>
     
     Generates a deterministic name for a global identifier
+    
+  </dd>
+</div>
+
+</div>
+<div id="globalStr-procs-all">
+  <div id="globalStr,GenerateContext,string">
+  <dt><pre><span class="Keyword">proc</span> <a href="#globalStr%2CGenerateContext%2Cstring"><span class="Identifier">globalStr</span></a><span class="Other">(</span><span class="Identifier">ctx</span><span class="Other">:</span> <a href="systemGen.html#GenerateContext"><span class="Identifier">GenerateContext</span></a><span class="Other">;</span> <span class="Identifier">name</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Generates a deterministic name for a global identifier that is unique to this app
     
   </dd>
 </div>
@@ -823,7 +867,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-07-28 22:38:29 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-08-08 14:58:21 UTC</small>
       </div>
     </div>
   </div>

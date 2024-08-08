@@ -67,6 +67,10 @@
   <li><a class="reference" href="#%3D%3D%2CBuilderAction%2CBuilderAction" title="`==`(a, b: BuilderAction): bool">`==`(a, b: BuilderAction): bool</a></li>
 
 </ul>
+<ul class="simple nested-toc-section">accessory
+  <li><a class="reference" href="#accessory%2CArchetypeBuilder%5BT%5D%2CT" title="accessory[T](builder: var ArchetypeBuilder[T]; value: T)">accessory[T](builder: var ArchetypeBuilder[T]; value: T)</a></li>
+
+</ul>
 <ul class="simple nested-toc-section">attachable
   <li><a class="reference" href="#attachable%2CArchetypeBuilder%5BT%5D%2CopenArray%5BT%5D%2CBitsFilter" title="attachable[T](builder: var ArchetypeBuilder[T]; values: openArray[T];
               filter: BitsFilter)">attachable[T](builder: var ArchetypeBuilder[T]; values: openArray[T];
@@ -114,6 +118,18 @@
   </details>
 </li>
 <li>
+  <details open>
+    <summary><a class="reference reference-toplevel" href="#15" id="65">Iterators</a></summary>
+    <ul class="simple simple-toc-section">
+      <ul class="simple nested-toc-section">allComponents
+  <li><a class="reference" href="#allComponents.i%2CArchetypeBuilder%5BT%5D" title="allComponents[T](builder: ArchetypeBuilder[T]): T">allComponents[T](builder: ArchetypeBuilder[T]): T</a></li>
+
+</ul>
+
+    </ul>
+  </details>
+</li>
+<li>
   <a class="reference reference-toplevel" href="#19" id="69">Exports</a>
 </li>
 
@@ -154,6 +170,17 @@
   <dd>
     
     
+    
+  </dd>
+</div>
+
+</div>
+<div id="accessory-procs-all">
+  <div id="accessory,ArchetypeBuilder[T],T">
+  <dt><pre><span class="Keyword">proc</span> <a href="#accessory%2CArchetypeBuilder%5BT%5D%2CT"><span class="Identifier">accessory</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">builder</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeBuilder.html#ArchetypeBuilder"><span class="Identifier">ArchetypeBuilder</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">)</span></pre></dt>
+  <dd>
+    
+    Marks that a value is an accessory and should not, itself, cause the creation of a new archetype
     
   </dd>
 </div>
@@ -255,10 +282,27 @@
 
   </dl>
 </div>
+<div class="section" id="15">
+  <h1><a class="toc-backref" href="#15">Iterators</a></h1>
+  <dl class="item">
+    <div id="allComponents-iterators-all">
+  <div id="allComponents.i,ArchetypeBuilder[T]">
+  <dt><pre><span class="Keyword">iterator</span> <a href="#allComponents.i%2CArchetypeBuilder%5BT%5D"><span class="Identifier">allComponents</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">builder</span><span class="Other">:</span> <a href="archetypeBuilder.html#ArchetypeBuilder"><span class="Identifier">ArchetypeBuilder</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">T</span></pre></dt>
+  <dd>
+    
+    Yields all the components register in a builder
+    
+  </dd>
+</div>
+
+</div>
+
+  </dl>
+</div>
 <div class="section" id="19">
   <h1><a class="toc-backref" href="#19">Exports</a></h1>
   <dl class="item">
-    <a href="archetype.html#newArchetype,openArray[T]"><span class="Identifier">newArchetype</span></a>, <a href="archetype.html#readableName,Archetype[ComponentDef]"><span class="Identifier">readableName</span></a>, <a href="archetype.html#archArchSymbolDef,Archetype[T]"><span class="Identifier">archArchSymbolDef</span></a>, <a href="archetype.html#ident,Archetype[ComponentDef]"><span class="Identifier">ident</span></a>, <a href="archetype.html#contains,ArchetypeSet[T],Archetype[T]"><span class="Identifier">contains</span></a>, <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a>, <a href="archetype.html#containsAllOf,Archetype[T],openArray[T]"><span class="Identifier">containsAllOf</span></a>, <a href="archetype.html#indexOf,Archetype[T],T"><span class="Identifier">indexOf</span></a>, <a href="archetype.html#items.i,Archetype[T]"><span class="Identifier">items</span></a>, <a href="archetype.html#==,Archetype[T],Archetype[T]"><span class="Identifier">==</span></a>, <a href="archetype.html#UnsortedArchetype"><span class="Identifier">UnsortedArchetype</span></a>, <a href="archetype.html#+,Archetype[T],openArray[T]"><span class="Identifier">+</span></a>, <a href="archetype.html#hash,Archetype[T]"><span class="Identifier">hash</span></a>, <a href="archetype.html#idSymbol,Archetype[T]"><span class="Identifier">idSymbol</span></a>, <a href="archetype.html#newArchetypeSet,openArray[Archetype[T]]"><span class="Identifier">newArchetypeSet</span></a>, <a href="archetype.html#contains,Archetype[T],T"><span class="Identifier">contains</span></a>, <a href="archetype.html#$,Archetype[T]"><span class="Identifier">$</span></a>, <a href="archetype.html#len,Archetype[T]"><span class="Identifier">len</span></a>, <a href="archetype.html#len,ArchetypeSet[T]"><span class="Identifier">len</span></a>, <a href="archetype.html#values,Archetype[T]"><span class="Identifier">values</span></a>, <a href="archetype.html#-,Archetype[T],openArray[T]"><span class="Identifier">-</span></a>, <a href="archetype.html#dumpAnalysis,ArchetypeSet[T]"><span class="Identifier">dumpAnalysis</span></a>, <a href="archetype.html#asStorageTuple,Archetype[ComponentDef]"><span class="Identifier">asStorageTuple</span></a>, <a href="archetype.html#-,Archetype[T],Archetype[T]"><span class="Identifier">-</span></a>, <a href="archetype.html#items.i,ArchetypeSet[T]"><span class="Identifier">items</span></a>, <a href="archetype.html#ArchetypeSet"><span class="Identifier">ArchetypeSet</span></a>, <a href="archetype.html#+,Archetype[T],Archetype[T]"><span class="Identifier">+</span></a>, <a href="archetype.html#removeAndAdd,Archetype[T],Bits,openArray[T]"><span class="Identifier">removeAndAdd</span></a>, <a href="archetype.html#containsAllOf,Archetype[T],Archetype[T]"><span class="Identifier">containsAllOf</span></a>, <a href="../util/bits.html#hash,Bits"><span class="Identifier">hash</span></a>, <a href="../util/bits.html#hash,BitsFilter"><span class="Identifier">hash</span></a>, <a href="../util/bits.html#$,Bits"><span class="Identifier">$</span></a>, <a href="../util/bits.html#==,Bits,Bits"><span class="Identifier">==</span></a>
+    <a href="archetype.html#newArchetype,openArray[T],Bits"><span class="Identifier">newArchetype</span></a>, <a href="archetype.html#readableName,Archetype[ComponentDef]"><span class="Identifier">readableName</span></a>, <a href="archetype.html#archArchSymbolDef,Archetype[T]"><span class="Identifier">archArchSymbolDef</span></a>, <a href="archetype.html#ident,Archetype[ComponentDef]"><span class="Identifier">ident</span></a>, <a href="archetype.html#contains,ArchetypeSet[T],Archetype[T]"><span class="Identifier">contains</span></a>, <a href="archetype.html#values,Archetype[T]"><span class="Identifier">values</span></a>, <a href="archetype.html#hasAccessories,Archetype"><span class="Identifier">hasAccessories</span></a>, <a href="archetype.html#containsAllOf,Archetype[T],openArray[T]"><span class="Identifier">containsAllOf</span></a>, <a href="archetype.html#indexOf,Archetype[T],T"><span class="Identifier">indexOf</span></a>, <a href="archetype.html#items.i,Archetype[T]"><span class="Identifier">items</span></a>, <a href="archetype.html#==,Archetype[T],Archetype[T]"><span class="Identifier">==</span></a>, <a href="archetype.html#UnsortedArchetype"><span class="Identifier">UnsortedArchetype</span></a>, <a href="archetype.html#hash,Archetype[T]"><span class="Identifier">hash</span></a>, <a href="archetype.html#idSymbol,Archetype[T]"><span class="Identifier">idSymbol</span></a>, <a href="archetype.html#matches,Archetype,BitsFilter"><span class="Identifier">matches</span></a>, <a href="archetype.html#newArchetypeSet,openArray[Archetype[T]],Bits"><span class="Identifier">newArchetypeSet</span></a>, <a href="archetype.html#contains,Archetype[T],T"><span class="Identifier">contains</span></a>, <a href="archetype.html#$,Archetype[T]"><span class="Identifier">$</span></a>, <a href="archetype.html#len,ArchetypeSet[T]"><span class="Identifier">len</span></a>, <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a>, <a href="archetype.html#dumpAnalysis,ArchetypeSet[T]"><span class="Identifier">dumpAnalysis</span></a>, <a href="archetype.html#asStorageTuple,Archetype[ComponentDef]"><span class="Identifier">asStorageTuple</span></a>, <a href="archetype.html#isAccessory,Archetype[T],T"><span class="Identifier">isAccessory</span></a>, <a href="archetype.html#asTupleDir,Archetype[ComponentDef]"><span class="Identifier">asTupleDir</span></a>, <a href="archetype.html#archetypeFor,ArchetypeSet[T],openArray[T]"><span class="Identifier">archetypeFor</span></a>, <a href="archetype.html#ArchetypeSet"><span class="Identifier">ArchetypeSet</span></a>, <a href="archetype.html#removeAndAdd,Archetype[T],Bits,openArray[T]"><span class="Identifier">removeAndAdd</span></a>, <a href="archetype.html#items.i,ArchetypeSet[T]"><span class="Identifier">items</span></a>, <a href="../util/bits.html#hash,Bits"><span class="Identifier">hash</span></a>, <a href="../util/bits.html#hash,BitsFilter"><span class="Identifier">hash</span></a>, <a href="../util/bits.html#$,Bits"><span class="Identifier">$</span></a>, <a href="../util/bits.html#==,Bits,Bits"><span class="Identifier">==</span></a>
   </dl>
 </div>
 
@@ -268,7 +312,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-07-28 22:38:29 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-08-08 14:58:21 UTC</small>
       </div>
     </div>
   </div>

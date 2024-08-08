@@ -7,4 +7,5 @@ nim	saveSys	necsus/runtime/pragmas.html#saveSys.t	template saveSys()		14
 nim	restoreSys	necsus/runtime/pragmas.html#restoreSys.t	template restoreSys()		17
 nim	eventSys	necsus/runtime/pragmas.html#eventSys.t	template eventSys()		20
 nim	instanced	necsus/runtime/pragmas.html#instanced.t	template instanced()		23
-nim	active	necsus/runtime/pragmas.html#active.t,varargs[typed]	template active(states: varargs[typed])		28
+nim	accessory	necsus/runtime/pragmas.html#accessory.t	template accessory()		28
+nim	active	necsus/runtime/pragmas.html#active.t,varargs[typed]	template active(states: varargs[typed])		32

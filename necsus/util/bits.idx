@@ -9,12 +9,14 @@ nim	hash	necsus/util/bits.html#hash,Bits	proc hash(bitset: Bits): Hash		62
 nim	contains	necsus/util/bits.html#contains,Bits,uint16	proc contains(bitset: Bits; value: uint16): bool		70
 nim	card	necsus/util/bits.html#card,Bits	proc card(bitset: Bits): int		78
 nim	`==`	necsus/util/bits.html#==,Bits,Bits	proc `==`(a, b: Bits): bool		94
-nim	`+`	necsus/util/bits.html#+,Bits,Bits	proc `+`(a, b: Bits): Bits		104
-nim	`-`	necsus/util/bits.html#-,Bits,Bits	proc `-`(a, b: Bits): Bits		110
-nim	`<=`	necsus/util/bits.html#<=,Bits,Bits	proc `<=`(a, b: Bits): bool		121
-nim	`<`	necsus/util/bits.html#<,Bits,Bits	proc `<`(a, b: Bits): bool		128
-nim	anyIntersect	necsus/util/bits.html#anyIntersect,Bits,Bits	proc anyIntersect(a, b: Bits): bool		137
-nim	newFilter	necsus/util/bits.html#newFilter,Bits,Bits	proc newFilter(mustContain, mustExclude: Bits): BitsFilter		144
-nim	matches	necsus/util/bits.html#matches,Bits,BitsFilter	proc matches(target: Bits; filter: BitsFilter): bool		148
-nim	hash	necsus/util/bits.html#hash,BitsFilter	proc hash(filter: BitsFilter): Hash		168
+nim	`+=`	necsus/util/bits.html#+=,Bits,Bits	proc `+=`(a: var Bits; b: Bits)		104
+nim	`+`	necsus/util/bits.html#+,Bits,Bits	proc `+`(a, b: Bits): Bits		110
+nim	`-`	necsus/util/bits.html#-,Bits,Bits	proc `-`(a, b: Bits): Bits		116
+nim	`<=`	necsus/util/bits.html#<=,Bits,Bits	proc `<=`(a, b: Bits): bool		127
+nim	`>`	necsus/util/bits.html#>,Bits,Bits	proc `>`(a, b: Bits): bool		136
+nim	`<`	necsus/util/bits.html#<,Bits,Bits	proc `<`(a, b: Bits): bool		139
+nim	anyIntersect	necsus/util/bits.html#anyIntersect,Bits,Bits	proc anyIntersect(a, b: Bits): bool		148
+nim	newFilter	necsus/util/bits.html#newFilter,Bits,Bits	proc newFilter(mustContain, mustExclude: Bits): BitsFilter		155
+nim	matches	necsus/util/bits.html#matches,BitsFilter,Bits,Bits	proc matches(filter: BitsFilter; all: Bits; optional: Bits = newBits()): bool		159
+nim	hash	necsus/util/bits.html#hash,BitsFilter	proc hash(filter: BitsFilter): Hash		163
 nimgrp	hash	necsus/util/bits.html#hash-procs-all	proc		62

@@ -52,10 +52,31 @@
 </li>
 <li>
   <details open>
+    <summary><a class="reference reference-toplevel" href="#7" id="57">Types</a></summary>
+    <ul class="simple simple-toc-section">
+      <li><a class="reference" href="#TupleAdapter" title="TupleAdapter = ref object">TupleAdapter</a></li>
+
+    </ul>
+  </details>
+</li>
+<li>
+  <details open>
     <summary><a class="reference reference-toplevel" href="#12" id="62">Procs</a></summary>
     <ul class="simple simple-toc-section">
-      <ul class="simple nested-toc-section">buildConverter
+      <ul class="simple nested-toc-section">build
+  <li><a class="reference" href="#build%2CTupleAdapter" title="build(adapter: TupleAdapter): NimNode">build(adapter: TupleAdapter): NimNode</a></li>
+
+</ul>
+<ul class="simple nested-toc-section">buildConverter
   <li><a class="reference" href="#buildConverter%2CConverterDef" title="buildConverter(convert: ConverterDef): NimNode">buildConverter(convert: ConverterDef): NimNode</a></li>
+
+</ul>
+<ul class="simple nested-toc-section">newAdapter
+  <li><a class="reference" href="#newAdapter%2CArchetype%5BComponentDef%5D%2CopenArray%5BComponentDef%5D%2C%2CNimNode%2CNimNode" title="newAdapter(fromArch: Archetype[ComponentDef]; newVals: openArray[ComponentDef];
+           produce: DirectiveArg | ComponentDef; addingSource: NimNode = adding;
+           existingSource: NimNode = input): TupleAdapter">newAdapter(fromArch: Archetype[ComponentDef]; newVals: openArray[ComponentDef];
+           produce: DirectiveArg | ComponentDef; addingSource: NimNode = adding;
+           existingSource: NimNode = input): TupleAdapter</a></li>
 
 </ul>
 
@@ -74,19 +95,58 @@
     <div class="section" id="6">
   <h1><a class="toc-backref" href="#6">Imports</a></h1>
   <dl class="item">
-    <a class="reference external" href="tools.html">tools</a>, <a class="reference external" href="systemGen.html">systemGen</a>, <a class="reference external" href="componentDef.html">componentDef</a>, <a class="reference external" href="directiveArg.html">directiveArg</a>, <a class="reference external" href="tupleDirective.html">tupleDirective</a>, <a class="reference external" href="common.html">common</a>, <a class="reference external" href="../runtime/query.html">../runtime/query</a>
+    <a class="reference external" href="tools.html">tools</a>, <a class="reference external" href="systemGen.html">systemGen</a>, <a class="reference external" href="componentDef.html">componentDef</a>, <a class="reference external" href="directiveArg.html">directiveArg</a>, <a class="reference external" href="tupleDirective.html">tupleDirective</a>, <a class="reference external" href="common.html">common</a>, <a class="reference external" href="archetype.html">archetype</a>, <a class="reference external" href="../runtime/query.html">../runtime/query</a>, <a class="reference external" href="../runtime/archetypeStore.html">../runtime/archetypeStore</a>
+  </dl>
+</div>
+<div class="section" id="7">
+  <h1><a class="toc-backref" href="#7">Types</a></h1>
+  <dl class="item">
+    <div id="TupleAdapter">
+  <dt><pre><a href="converters.html#TupleAdapter"><span class="Identifier">TupleAdapter</span></a> <span class="Other">=</span> <span class="Keyword">ref</span> <span class="Keyword">object</span></pre></dt>
+  <dd>
+    
+    Data for reading from a value from one tuple and outputing another
+    
+  </dd>
+</div>
+
   </dl>
 </div>
 <div class="section" id="12">
   <h1><a class="toc-backref" href="#12">Procs</a></h1>
   <dl class="item">
-    <div id="buildConverter-procs-all">
+    <div id="build-procs-all">
+  <div id="build,TupleAdapter">
+  <dt><pre><span class="Keyword">proc</span> <a href="#build%2CTupleAdapter"><span class="Identifier">build</span></a><span class="Other">(</span><span class="Identifier">adapter</span><span class="Other">:</span> <a href="converters.html#TupleAdapter"><span class="Identifier">TupleAdapter</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    
+    
+  </dd>
+</div>
+
+</div>
+<div id="buildConverter-procs-all">
   <div id="buildConverter,ConverterDef">
   <dt><pre><span class="Keyword">proc</span> <a href="#buildConverter%2CConverterDef"><span class="Identifier">buildConverter</span></a><span class="Other">(</span><span class="Identifier">convert</span><span class="Other">:</span> <a href="systemGen.html#ConverterDef"><span class="Identifier">ConverterDef</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
     Builds a single converter proc
+    
+  </dd>
+</div>
+
+</div>
+<div id="newAdapter-procs-all">
+  <div id="newAdapter,Archetype[ComponentDef],openArray[ComponentDef],,NimNode,NimNode">
+  <dt><pre><span class="Keyword">proc</span> <a href="#newAdapter%2CArchetype%5BComponentDef%5D%2CopenArray%5BComponentDef%5D%2C%2CNimNode%2CNimNode"><span class="Identifier">newAdapter</span></a><span class="Other">(</span><span class="Identifier">fromArch</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span><span class="Other">;</span>
+                <span class="Identifier">newVals</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span><span class="Other">;</span>
+                <span class="Identifier">produce</span><span class="Other">:</span> <a href="directiveArg.html#DirectiveArg"><span class="Identifier">DirectiveArg</span></a> <span class="Operator">|</span> <a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">;</span>
+                <span class="Identifier">addingSource</span><span class="Other">:</span> <span class="Identifier">NimNode</span> <span class="Other">=</span> <span class="Identifier">adding</span><span class="Other">;</span> <span class="Identifier">existingSource</span><span class="Other">:</span> <span class="Identifier">NimNode</span> <span class="Other">=</span> <span class="Identifier">input</span><span class="Other">)</span><span class="Other">:</span> <a href="converters.html#TupleAdapter"><span class="Identifier">TupleAdapter</span></a></pre></dt>
+  <dd>
+    
+    Data for reading from a value from one tuple and outputing another
     
   </dd>
 </div>
@@ -102,7 +162,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-07-28 22:38:30 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-08-08 14:58:21 UTC</small>
       </div>
     </div>
   </div>
