@@ -116,7 +116,7 @@ proc attachDetachProcBody(
                     cases.add(
                         nnkOfBranch.newTree(ofBranch,
                             details.createArchMove(title, fromArch, attachComps, toArch, convert)))
-                else:
+                elif toArch.containsAllOf(attachComps):
                     cases.add(
                         nnkOfBranch.newTree(ofBranch,
                             details.createArchUpdate(title, attachComps, detachComps, toArch)))
