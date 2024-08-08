@@ -6,24 +6,31 @@ let input {.compileTime.} = ident("input")
 let adding {.compileTime.} = ident("adding")
 let output {.compileTime.} = ident("output")
 
-type TupleAdapter = ref object
+type TupleAdapter* = ref object
     ## Data for reading from a value from one tuple and outputing another
     source: NimNode
     index: int
     optionIn, optionOut, pointerOut: bool
 
-proc newAdapter(
+proc newAdapter*(
     fromArch: Archetype[ComponentDef],
     newVals: openArray[ComponentDef],
-    output: DirectiveArg
+    produce: DirectiveArg | ComponentDef,
+    addingSource: NimNode = adding,
+    existingSource: NimNode = input
 ): TupleAdapter =
     ## Data for reading from a value from one tuple and outputing another
+    let output = when produce is ComponentDef:
+        newDirectiveArg(produce, false, if produce.isAccessory: Optional else: Include)
+    else:
+        produce
+
     let newValIdx = newVals.find(output.component)
     if newValIdx >= 0:
-        result = TupleAdapter(source: adding, index: newValIdx, optionIn: false)
+        result = TupleAdapter(source: addingSource, index: newValIdx, optionIn: false)
     else:
         result = TupleAdapter(
-            source: input,
+            source: existingSource,
             index: fromArch.find(output.component),
             optionIn: fromArch.isAccessory(output.component)
         )
@@ -38,7 +45,7 @@ proc addAccessoryCondition(existing: NimNode, adapter: TupleAdapter, predicate: 
     else:
         return existing
 
-proc build(adapter: TupleAdapter): NimNode =
+proc build*(adapter: TupleAdapter): NimNode =
     assert(adapter.index != -1, "Component is not present: " & $output)
     result = nnkBracketExpr.newTree(adapter.source, newLit(adapter.index))
     if not adapter.optionIn or not adapter.optionOut or adapter.pointerOut:

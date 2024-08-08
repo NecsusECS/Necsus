@@ -7,12 +7,6 @@ let entityIndex {.compileTime.} = ident("entityIndex")
 let newComps {.compileTime.} = ident("newComps")
 let entityId {.compileTime.} = ident("entityId")
 
-proc readNewValue(comp: ComponentDef, readFrom: NimNode, index: int): NimNode =
-    ## Generates the code necessary to read a new value
-    result = nnkBracketExpr.newTree(newComps, index.newLit)
-    if comp.isAccessory:
-        result = newCall(bindSym("some"), result)
-
 proc createArchUpdate(
     details: GenerateContext,
     title: string,
@@ -35,7 +29,8 @@ proc createArchUpdate(
 
     for i, component in attachComps:
         let storageIndex = archetype.indexOf(component)
-        let newValue = component.readNewValue(newComps, i)
+        let adapter = newAdapter(archetype, attachComps, component, newComps, existing)
+        let newValue = adapter.build()
         result.add quote do:
             `existing`[`storageIndex`] = `newValue`
 
