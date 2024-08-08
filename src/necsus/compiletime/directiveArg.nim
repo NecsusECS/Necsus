@@ -41,7 +41,17 @@ proc type*(def: DirectiveArg): NimNode =
 
 proc name(arg: DirectiveArg): string =
     ## Creates a name to describe an arg
-    return if arg.isPointer: "ptr_" & arg.component.name else: arg.component.name
+    if arg.isPointer:
+        result = "p"
+    case arg.kind
+    of Include: result &= "i"
+    of Exclude: result &= "e"
+    of Optional: result &= "o"
+    result &= arg.component.name
+
+proc isAccessory*(arg: DirectiveArg): bool =
+    ## Whether this arg contains an accessory component
+    return arg.component.isAccessory
 
 proc generateName*(args: openarray[DirectiveArg]): string =
     ## Creates a name to describe the given components

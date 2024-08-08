@@ -1,5 +1,5 @@
-import tables, macros
-import tupleDirective, archetype, componentDef, tools, systemGen, archetypeBuilder, common
+import std/[tables, macros, options]
+import tupleDirective, archetype, componentDef, tools, systemGen, archetypeBuilder, common, directiveArg
 import ../runtime/[archetypeStore, query], ../util/bits
 
 iterator selectArchetypes(details: GenerateContext, query: TupleDirective): Archetype[ComponentDef] =
@@ -11,6 +11,42 @@ iterator selectArchetypes(details: GenerateContext, query: TupleDirective): Arch
 let slot {.compileTime.} = ident("slot")
 let iter {.compileTime.} = ident("iter")
 let eid {.compileTime.} = ident("eid")
+
+proc addLenPredicate(append: var NimNode, row: NimNode, arch: Archetype[ComponentDef], arg: DirectiveArg, fn: NimNode) =
+    let index = arch.indexOf(arg.component).newLit
+    append.add(newCall(fn, nnkBracketExpr.newTree(row, index)))
+
+proc buildAddLen(query: TupleDirective, archetype: Archetype[ComponentDef]): NimNode =
+    ## Builds the code for calculating the length of an archetype
+
+    let archetypeIdent = archetype.ident
+
+    # Builds a predicate that is able to determine whether a row should be counted against the length of a query.
+    # This is needed because accessories are optional and not specifically tracked
+    if query.hasAccessories:
+        let row = genSym(nskParam, "row")
+
+        var predicateList = nnkBracketExpr.newTree()
+        for arg in query.args:
+            if arg.isAccessory:
+                case arg.kind
+                of Optional: discard
+                of Include: predicateList.addLenPredicate(row, archetype, arg, bindSym("isSome"))
+                of Exclude: predicateList.addLenPredicate(row, archetype, arg, bindSym("isNone"))
+
+        if predicateList.len > 0:
+            let symbol = genSym(nskProc, "filter")
+            let rowType = archetype.asStorageTuple
+            let predicates = nestList(bindSym("and"), predicateList)
+            return quote:
+                proc `symbol`(`row`: var `rowType`): bool {.fastcall, gcsafe, raises: [].} =
+                    return `predicates`
+
+                addLen(`appStateIdent`.`archetypeIdent`, result, `symbol`)
+
+    # This is the simple case -- no accessories, so we can just trust the length of the archetype itself
+    return quote:
+        addLen(`appStateIdent`.`archetypeIdent`, result)
 
 proc walkArchetypes(
     details: GenerateContext,
@@ -24,13 +60,11 @@ proc walkArchetypes(
 
     var index = 0
     for archetype in details.selectArchetypes(query):
+
+        lenCalculation.add(buildAddLen(query, archetype))
+
         let archetypeIdent = archetype.ident
-
         let copier = newConverter(archetype, query).name
-
-        lenCalculation.add quote do:
-            addLen(`appStateIdent`.`archetypeIdent`, result)
-
         let nextBody = quote do:
             result = `copier`(`appStateIdent`.`archetypeIdent`.next(`iter`, `eid`), nil, `slot`).asNextIterState
 
@@ -87,7 +121,7 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, dir: Tuple
 
         return quote do:
 
-            func `getLen`(`appStatePtr`: pointer): uint {.fastcall.} =
+            proc `getLen`(`appStatePtr`: pointer): uint {.fastcall.} =
                 let `appStateIdent` {.used.} = cast[ptr `appStateTypeName`](`appStatePtr`)
                 result = 0
                 `lenCalculation`

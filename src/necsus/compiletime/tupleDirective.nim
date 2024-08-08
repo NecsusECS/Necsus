@@ -87,3 +87,9 @@ proc signature*(dir: TupleDirective): string =
     ## Generates a unique ID for a tuple
     for arg in dir.args:
         result.addSignature(arg)
+
+proc hasAccessories*(dir: TupleDirective): bool =
+    ## Whether this tuple contains any accessory components
+    for arg in dir.args:
+        if arg.isAccessory:
+            return true

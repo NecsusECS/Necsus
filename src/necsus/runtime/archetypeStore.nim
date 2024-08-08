@@ -58,6 +58,16 @@ func addLen*[Comps: tuple](store: var ArchetypeStore[Comps], len: var uint) =
     if store.compStore != nil:
         len += store.compStore.len
 
+proc addLen*[Comps: tuple](
+    store: var ArchetypeStore[Comps],
+    len: var uint,
+    predicate: proc(row: var Comps): bool {.fastcall, gcsafe, raises: [].},
+) =
+    ## Reads the length of an archetype store, using a predicate to determine whether to count a row
+    for row in store.compStore.items:
+        if predicate(row.components):
+            len += 1
+
 proc newSlot*[Comps: tuple](
     store: var ArchetypeStore[Comps],
     entityId: EntityId
