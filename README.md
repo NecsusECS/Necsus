@@ -809,6 +809,35 @@ proc myApp() {.necsus([~immediateExit], newNecsusConf()).}
 myApp()
 ```
 
+#### Accessory Components
+
+As the number of archetypes in your app creeps up, it increases the build time of your app and the size of the
+generated binary. One way to combat this is with accessory components. When a component type is marked with the
+`{.accessory.}` it will no longer trigger the generation of a new archetype. Instead, it is stored as an optional
+value attached to existing archetypes. This is an entirely internal change. For the rest of the app, an accessory
+components looks like any other component in the system.
+
+The downside of accessory components is that they incur a runtime overhead for queries. Instead of being able to blindly
+iterate of the values in an archetype, Necsus now needs to check whether an accessory exists for every row in
+an archetype.
+
+```nim
+import necsus
+
+type
+    ItemName = string
+    IsEquiped {.accessory.} = object
+
+proc createInventory(create: Spawn[(ItemName, )]) =
+    create.with("Sword")
+
+proc equip(items: FullQuery[(ItemName, Not[IsEquiped])], equip: Attach[(IsEquiped, )]) =
+    for eid, _ in items:
+        eid.equip((IsEquiped(), ))
+
+proc myApp() {.necsus([~createInventory, ~equip], newNecsusConf()).}
+```
+
 #### Custom runners
 
 The `runner` is the function used to execute the primary system loop. The default runner is fairly simple -- it
