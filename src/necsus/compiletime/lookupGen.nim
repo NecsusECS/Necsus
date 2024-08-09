@@ -23,7 +23,7 @@ proc buildArchetypeLookup(
             `appStateIdent`.`archetypeIdent`,
             `entityIndex`.archetypeIndex
         )
-        `convert`(`compsIdent`, nil, `output`)
+        discard `convert`(`compsIdent`, nil, `output`)
 
 proc worldFields(name: string, dir: TupleDirective): seq[WorldField] =
     @[ (name, nnkBracketExpr.newTree(bindSym("Lookup"), dir.asTupleType)) ]
