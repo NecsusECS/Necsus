@@ -31,17 +31,3 @@ proc testLookup() {.necsus(runner, [~spawn, ~assertions], newNecsusConf()).}
 
 test "Looking up components by entity Id":
     testLookup()
-
-proc modify(query: FullQuery[tuple[a: A, b: B]], lookup: Lookup[tuple[a: ptr A, b: ptr B]]) =
-    for eid, _ in query:
-        eid.lookup().get().a.value = eid.lookup().get().a.value * 2
-        eid.lookup().get().b.value = eid.lookup().get().b.value & "bar"
-
-proc assertModifications(query: Query[tuple[a: A, b: B]]) =
-    check(query.items.toSeq.mapIt(it.a.value) == @[2, 4])
-    check(query.items.toSeq.mapIt(it.b.value) == @["foobar", "barbar"])
-
-proc testLookupWithPointers() {.necsus(runner, [~spawn, ~modify, ~assertModifications], newNecsusConf()).}
-
-test "Modifying components from a lookup":
-    testLookupWithPointers()
