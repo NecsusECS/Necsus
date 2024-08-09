@@ -118,3 +118,9 @@ proc moveEntity*[FromArch: tuple, NewComps: tuple, ToArch: tuple](
     discard setComp(newSlot, output)
     entityIndex.archetype = toArch.archetype
     entityIndex.archetypeIndex = newSlot.index
+
+proc asBool*(convert: ConvertResult): bool =
+    ## Returns whether a conversion was succesful
+    case convert
+    of ConvertEmpty, ConvertSkip: return false
+    of ConvertSuccess: return true

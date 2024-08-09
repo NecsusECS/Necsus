@@ -23,7 +23,7 @@ proc buildArchetypeLookup(
             `appStateIdent`.`archetypeIdent`,
             `entityIndex`.archetypeIndex
         )
-        discard `convert`(`compsIdent`, nil, `output`)
+        return `convert`(`compsIdent`, nil, `output`).asBool
 
 proc worldFields(name: string, dir: TupleDirective): seq[WorldField] =
     @[ (name, nnkBracketExpr.newTree(bindSym("Lookup"), dir.asTupleType)) ]
@@ -65,7 +65,6 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, lookup: Tu
                 var `appStateIdent` = cast[ptr `appStateTypeName`](`appStateIdent`)
                 let `entityIndex` {.used.} = `appStateIdent`.`worldIdent`[`entityId`]
                 `cases`
-                return true
 
     of GenerateHook.Standard:
         let procName = ident(name)
