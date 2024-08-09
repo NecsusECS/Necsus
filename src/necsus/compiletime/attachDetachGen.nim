@@ -1,4 +1,4 @@
-import std/[macros, options]
+import std/[macros, options, strformat]
 import tools, tupleDirective, dualDirective, common, queryGen, lookupGen, spawnGen, directiveArg
 import archetype, componentDef, systemGen, archetypeBuilder, converters
 import ../runtime/[world, archetypeStore, directives], ../util/bits
@@ -121,7 +121,17 @@ proc attachDetachProcBody(
                         nnkOfBranch.newTree(ofBranch,
                             details.createArchUpdate(title, attachComps, detachComps, toArch)))
 
-        cases.add(nnkElse.newTree(nnkDiscardStmt.newTree(newEmptyNode())))
+        let errMsg = newLit(
+            fmt"{title} failed. Attach: {attachComps}, Detach: {detachComps}, Optional Detach: {optDetachComps}")
+
+        # It's okay for archetype updating to fail if none of the detach branches match, but if we aren't detaching
+        # then it's never okay to fail an attach
+        cases.add(nnkElse.newTree(
+            if detachComps.len == 0 and compileOption("assertions"):
+                quote: assert(false, `errMsg`)
+            else:
+                quote: `appStateIdent`.`confIdent`.log(`errMsg`)
+        ))
 
     result.procBody = quote do:
         var `entityIndex` {.used.} = `appStateIdent`.`worldIdent`[`entityId`]
