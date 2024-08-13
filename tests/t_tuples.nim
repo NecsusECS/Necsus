@@ -8,6 +8,10 @@ type
     E = object
     F = seq[int]
 
+    X = object
+    Y = object
+    Z = object
+
     ACE = (A, C, E)
     BDF = (B, D, F)
     ABCDEF = (A, B, C, D, E, F)
@@ -59,3 +63,13 @@ suite "Tuple tools":
         )
 
         check(joined == abcdef)
+
+    test "Join without as":
+        let joined = join(
+            (X(), E()),
+            (Z(), Y()),
+            ("foo", ) as (A, ),
+            (123, ) as (B, ),
+        )
+
+        check(joined == ("foo", 123, E(), X(), Y(), Z()))

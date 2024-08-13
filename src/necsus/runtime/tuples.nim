@@ -34,6 +34,17 @@ proc `as`*[T: tuple](value: T, typ: typedesc): T =
         assert(typ is T)
     value
 
+proc getTupleData(tup: NimNode): tuple[typ: NimNode, construct: NimNode] =
+    case tup.kind
+    of nnkInfix:
+        if tup[0].strVal != "as":
+            error("Expecting an 'as' infix operator", tup[0])
+        return (typ: tup[2], construct: tup[1])
+    of nnkTupleConstr:
+        return (typ: tup.getTypeInst, construct: tup)
+    else:
+        tup.expectKind({ nnkInfix, nnkTupleConstr })
+
 macro join*(exprs: varargs[typed]): untyped =
     ## Combines two tuple values into a single tuple value according to the sorting
     ## rules for archetype component types
@@ -44,11 +55,12 @@ macro join*(exprs: varargs[typed]): untyped =
     var children: seq[(NimNode, int, NimNode)]
 
     for tup in exprs:
-        tup.expectKind(nnkInfix)
-        let thisVar = genSym(nskLet, "tuple")
-        lets.add(nnkIdentDefs.newTree(thisVar, tup[2], tup[1]))
+        let (tupleType, tupleConstruct) = tup.getTupleData()
 
-        let tupleSubs = tup[2].getTupleSubtypes()
+        let thisVar = genSym(nskLet, "temp")
+        lets.add(nnkIdentDefs.newTree(thisVar, tupleType, tupleConstruct))
+
+        let tupleSubs = tupleType.getTupleSubtypes()
         for i, child in tupleSubs:
             children.add((thisVar, i, child))
 
