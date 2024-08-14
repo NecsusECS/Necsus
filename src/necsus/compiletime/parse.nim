@@ -364,6 +364,19 @@ proc determineReturnType(sysTyp: NimNode, isInstanced: bool): NimNode =
     else:
         sysTyp.expectKind({ nnkProcTy, nnkSym, nnkObjectTy, nnkBracketExpr })
 
+proc hasReturnValue(system: ParsedSystem): bool =
+    ## Returns whether a return value is present for a system
+    let returnNode: NimNode =
+        if system.instanced.isSome:
+            let instance = system.instanced.get
+            if instance.typeKind == ntyObject:
+                return false
+            instance[0][0]
+        else:
+            system.returns
+
+    return returnNode.typeKind notin { ntyNone, ntyVoid }
+
 proc parseSystemDef*(ident: NimNode, impl: NimNode): ParsedSystem =
     ## Parses a single system proc
     ident.expectKind(nnkSym)
@@ -400,12 +413,13 @@ proc parseSystemDef*(ident: NimNode, impl: NimNode): ParsedSystem =
                 result.phase = IndirectEventCallback
                 break
 
-    case phase
-    of RestoreCallback:
-        if instancing.isSome:
-            error("Restore callbacks do not support instancing", ident)
-    else:
-        discard
+    if phase == RestoreCallback and instancing.isSome:
+        error("Restore callbacks do not support instancing", ident)
+
+    if phase != SaveCallback and result.hasReturnValue:
+        error("System should not return a value", result.returns)
+    elif phase == SaveCallback and not result.hasReturnValue:
+        error("System should must return a value", ident)
 
 proc parseSystem(ident: NimNode): ParsedSystem =
     ## Parses a single system proc
