@@ -1,5 +1,34 @@
 # Changelog
 
+## 0.11.0
+
+### Bug Fixes
+
+* Fix inbox sharing when a system is assigned to a variable
+* Fix inbox name collisions when argument names were the same
+* Fix error messages when a system incorrectly returns a value
+* Fix invalid code dumping when a newline is injected after a sink parameter
+* Allow joined tuples to operated on joined tuples
+
+### Backwards incompatible changes
+
+* Use `()` operator for directives instead of passing in procs. This improves compile speed
+  and performance by removing the need for Nim to create and manage closures. However, it
+  requires that all Necsus users enable the `--experimental:callOperator` flag.
+* Remove the `necsusFloat32` flag and instead use `BiggestUInt` and `BiggestFloat`
+
+### New Features
+
+* Accessory components
+   * Adding the `accessory` pragma means that a component no longer forces the creation
+     of new archetypes. This reduces the size of generated code and improves compile speed.
+* Adds `SystemVar.clear`
+* Support tuple joining without explicit type definitions
+* Add an error message when attach/detach/swap fails
+* Build speed improvements
+* Adds `SaveSystemInstance` and `EventSystemInstance` types
+* Fast compile mode for speeding up IDE integration
+
 ## 0.10.0
 
 ### Bug Fixes
