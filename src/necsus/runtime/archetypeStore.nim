@@ -29,7 +29,11 @@ proc newArchetypeStore*[Comps: tuple](
     initialSize: SomeInteger
 ): ArchetypeStore[Comps] =
     ## Creates a new storage block for an archetype
-    ArchetypeStore[Comps](initialSize: initialSize.int, archetype: archetype)
+    ArchetypeStore[Comps](
+        initialSize: initialSize.int,
+        archetype: archetype,
+        compStore: newBlockStore[ArchRow[Comps]](initialSize)
+    )
 
 proc isFirst*(iter: ArchetypeIter): bool = BlockIter(iter).isFirst
 
@@ -41,7 +45,7 @@ proc next*[Comps: tuple](
     iter: var ArchetypeIter
 ): ptr ArchRow[Comps] =
     ## Returns the next value for an interator
-    return if store.compStore == nil: nil else: store.compStore.next(BlockIter(iter))
+    return store.compStore.next(BlockIter(iter))
 
 iterator items*[Comps: tuple](store: var ArchetypeStore[Comps]): ptr ArchRow[Comps] =
     ## Iterates over the components in a view
@@ -55,8 +59,7 @@ iterator items*[Comps: tuple](store: var ArchetypeStore[Comps]): ptr ArchRow[Com
 
 func addLen*[Comps: tuple](store: var ArchetypeStore[Comps], len: var uint) =
     ## Accessor for the archetype of a store
-    if store.compStore != nil:
-        len += store.compStore.len
+    len += store.compStore.len
 
 proc addLen*[Comps: tuple](
     store: var ArchetypeStore[Comps],
@@ -73,10 +76,6 @@ proc newSlot*[Comps: tuple](
     entityId: EntityId
 ): NewArchSlot[Comps] =
     ## Reserves a slot for storing a new component
-
-    if store.compStore == nil:
-        store.compStore = newBlockStore[ArchRow[Comps]](store.initialSize)
-
     let slot = store.compStore.reserve
     slot.value.entityId = entityId
     return NewArchSlot[Comps](slot)
