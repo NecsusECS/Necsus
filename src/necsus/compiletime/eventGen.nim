@@ -9,13 +9,13 @@ proc eventStorageIdent(event: MonoDirective | NimNode): NimNode =
 
 proc getSignature(node: NimNode): string =
     case node.kind
+    of nnkIdent: return node.strVal
     of nnkSym: return node.signatureHash
     of nnkBracketExpr: return node.children.toSeq.mapIt(it.getSignature).join()
     else: node.expectKind({nnkSym})
 
 proc chooseInboxName(context, argName: NimNode, local: MonoDirective): string =
-    let signature = if argName.kind == nnkSym: argName.getSignature else: context.getSignature
-    return signature & argName.strVal
+    context.getSignature & argName.getSignature
 
 proc inboxFields(name: string, dir: MonoDirective): seq[WorldField] = @[
     (name, nnkBracketExpr.newTree(bindSym("seq"), dir.argType))

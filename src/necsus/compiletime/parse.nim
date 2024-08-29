@@ -192,7 +192,7 @@ proc parseArgType(context, argName, argType, original: NimNode): SystemArg =
 
     var parsed: Option[SystemArg]
     case argType.kind:
-    of nnkBracketExpr: parsed = parseParametricArg(original, argName, argType[0], argType[1..^1])
+    of nnkBracketExpr: parsed = parseParametricArg(context, argName, argType[0], argType[1..^1])
     of nnkCall: parsed = parseParametricArg(context, argName, argType[1], argType[2..^1])
     of nnkSym: parsed = parseFlagSystemArg(argName, argType)
     of nnkVarTy: parsed = some(parseArgType(context, argName, argType[0], original))
