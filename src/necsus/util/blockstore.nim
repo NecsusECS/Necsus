@@ -74,7 +74,7 @@ proc del*[V](store: var BlockStore[V], idx: uint): V =
         store.len.atomicDec(1)
         let deleted = move(store.data[idx])
         result = deleted.value
-        discard store.recycle.tryPush(idx)
+        store.recycle.tryPush(idx)
         store.hasRecycledValues = true
 
 proc `[]`*[V](store: BlockStore[V], idx: uint): var V =
