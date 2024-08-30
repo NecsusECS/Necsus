@@ -1,9 +1,6 @@
-import world, entityId, ../util/blockstore
+import world, entityId, ../util/blockstore, std/[strformat]
 
 type
-    ConvertResult* = enum ConvertSuccess, ConvertEmpty, ConvertSkip
-        ## The results of converting from one component type to another
-
     ArchRow*[Comps: tuple] = object
         ## A row of data stored about an entity that matches a specific archetype
         entityId*: EntityId
@@ -89,17 +86,15 @@ proc moveEntity*[FromArch: tuple, NewComps: tuple, ToArch: tuple](
     fromArch: var ArchetypeStore[FromArch],
     toArch: var ArchetypeStore[ToArch],
     newValues: sink NewComps,
-    combine: proc (existing: sink FromArch, newValues: sink NewComps, output: var ToArch): ConvertResult {.gcsafe, raises: [], fastcall.}
+    combine: proc (existing: sink FromArch, newValues: sink NewComps, output: var ToArch): bool {.gcsafe, raises: [], fastcall.}
 ) {.gcsafe, raises: [].} =
     ## Moves the components for an entity from one archetype to another
     let deleted = fromArch.compStore.del(entityIndex.archetypeIndex)
     let existing = deleted.components
     let newSlot = newSlot[ToArch](toArch, entityIndex.entityId)
     var output: ToArch
-    assert(combine(existing, newValues, output) == ConvertSuccess)
+    let success = combine(existing, newValues, output)
+    assert(success, fmt"Unable to convert tuple from {$FromArch} with {$NewComps} to {$ToArch}")
     discard setComp(newSlot, output)
     entityIndex.archetype = toArch.archetype
     entityIndex.archetypeIndex = newSlot.index
-
-proc asBool*(convert: ConvertResult): bool {.inline.} = convert == ConvertSuccess
-    ## Returns whether a conversion was succesful

@@ -1,6 +1,6 @@
 import std/[macros, options]
 import tools, systemGen, componentDef, directiveArg, tupleDirective, common, archetype
-import ../runtime/[query, archetypeStore]
+import ../runtime/query
 
 let input {.compileTime.} = ident("input")
 let adding {.compileTime.} = ident("adding")
@@ -85,8 +85,7 @@ proc copyTuple(fromArch: Archetype[ComponentDef], newVals: openarray[ComponentDe
     return quote:
         if `condition`:
             `output` = `tupleConstr`
-            return ConvertSuccess
-        return ConvertSkip
+            result = true
 
 when NimMajor >= 2:
     import std/macrocache
@@ -120,7 +119,6 @@ proc buildConverter*(convert: ConverterDef): NimNode =
             quote:
                 if not `input`.isNil:
                     `copier`
-                return ConvertEmpty
 
     let paramKeyword = if convert.sinkParams: ident("sink") else: ident("ptr")
 
@@ -129,7 +127,7 @@ proc buildConverter*(convert: ConverterDef): NimNode =
             `input`: `paramKeyword` `inputTuple`,
             `adding`: `paramKeyword` `existingTuple`,
             `output`: var `outputTuple`
-        ): ConvertResult {.gcsafe, raises: [], fastcall, used.} =
+        ): bool {.gcsafe, raises: [], fastcall, used.} =
             `body`
 
     built[sig] = result

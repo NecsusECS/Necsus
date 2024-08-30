@@ -65,7 +65,7 @@ proc walkArchetypes(
 
         iteratorBody.add quote do:
             for row in items(`appStateIdent`.`archetypeIdent`):
-                if likely(asBool(`copier`(addr row.components, nil, `slot`))):
+                if likely(`copier`(addr row.components, nil, `slot`)):
                     yield row.entityId
 
     return (lenCalculation, iteratorBody)
