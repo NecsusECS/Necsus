@@ -101,8 +101,5 @@ proc moveEntity*[FromArch: tuple, NewComps: tuple, ToArch: tuple](
     entityIndex.archetype = toArch.archetype
     entityIndex.archetypeIndex = newSlot.index
 
-proc asBool*(convert: ConvertResult): bool =
+proc asBool*(convert: ConvertResult): bool {.inline.} = convert == ConvertSuccess
     ## Returns whether a conversion was succesful
-    case convert
-    of ConvertEmpty, ConvertSkip: return false
-    of ConvertSuccess: return true
