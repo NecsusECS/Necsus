@@ -16,6 +16,7 @@ proc modify(a: FullQuery[(A, )], attach: Attach[(A, )]) =
         attach(entity, (A(int(comp[0]) * 2), ))
 
 proc runner(tick: proc(): void) =
+    tick()
     benchmark "Packed iteration with 1 query and 1 system: https://github.com/noctjs/ecs-benchmark/", 1000:
         tick()
 

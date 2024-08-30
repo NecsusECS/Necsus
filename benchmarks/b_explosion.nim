@@ -49,6 +49,7 @@ proc query(
         storage = int(comp[0])
 
 proc runner(tick: proc(): void) =
+    tick()
     benchmark "Archetype explosion", 1000:
         tick()
 

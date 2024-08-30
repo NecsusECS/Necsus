@@ -23,6 +23,7 @@ setupSystem(D)
 setupSystem(E)
 
 proc runner(tick: proc(): void) =
+    tick()
     benchmark "Packed iteration with 1 query and 5 systems: https://github.com/noctjs/ecs-benchmark/", 5000:
         tick()
 

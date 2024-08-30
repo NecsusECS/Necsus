@@ -35,6 +35,7 @@ proc comflab(entities: Query[tuple[comflab: ptr Comflabulation]]) =
         comp.comflab.dingy = comp.comflab.dingy + 1
 
 proc runner(tick: proc(): void) =
+    tick()
     benchmark "Updating " & $entityCount & " components: https://github.com/abeimler/ecs_benchmark", entityCount:
         tick()
 
