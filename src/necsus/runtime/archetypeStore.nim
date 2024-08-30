@@ -17,9 +17,6 @@ type
 
     NewArchSlot*[Comps: tuple] = distinct Entry[ArchRow[Comps]]
 
-    ArchetypeIter* = distinct BlockIter
-        ## A manual iterator instance
-
 proc `=copy`*[Comps: tuple](target: var ArchRow[Comps], source: ArchRow[Comps]) {.error.}
 
 proc `=copy`*[Comps: tuple](target: var ArchetypeStore[Comps], source: ArchetypeStore[Comps]) {.error.}
@@ -35,27 +32,13 @@ proc newArchetypeStore*[Comps: tuple](
         compStore: newBlockStore[ArchRow[Comps]](initialSize)
     )
 
-proc isFirst*(iter: ArchetypeIter): bool = BlockIter(iter).isFirst
-
 proc readArchetype*(store: ArchetypeStore): ArchetypeId {.inline.} = store.archetype
     ## Accessor for the archetype of a store
 
-proc next*[Comps: tuple](
-    store: var ArchetypeStore[Comps],
-    iter: var ArchetypeIter
-): ptr ArchRow[Comps] =
-    ## Returns the next value for an interator
-    return store.compStore.next(BlockIter(iter))
-
-iterator items*[Comps: tuple](store: var ArchetypeStore[Comps]): ptr ArchRow[Comps] =
+iterator items*[Comps: tuple](store: var ArchetypeStore[Comps]): var ArchRow[Comps] =
     ## Iterates over the components in a view
-    var iter: ArchetypeIter
-    var value: ptr ArchRow[Comps]
-    while true:
-        value = store.next(iter)
-        if value == nil:
-            break
-        yield value[]
+    for row in store.compStore.items:
+        yield row
 
 func addLen*[Comps: tuple](store: var ArchetypeStore[Comps], len: var uint) =
     ## Accessor for the archetype of a store

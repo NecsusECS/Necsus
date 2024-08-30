@@ -10,8 +10,8 @@ proc spawn(ab: Spawn[(A, B)], abc: Spawn[(A, B, C)]) =
     abc.with(2, "bar", 3.14)
 
 proc assertions(query: FullQuery[(A, )], lookup: Lookup[(B, Not[C])]) =
-    for eid, (a) in query:
-        if a == 1:
+    for eid, comps in query:
+        if comps[0] == 1:
             check(lookup(eid).get[0] == "foo")
         else:
             check(not lookup(eid).isSome)

@@ -1,36 +1,28 @@
-import entityId, options, archetypeStore
+import entityId, options
 
 type
     QueryItem*[Comps: tuple] = tuple[entityId: EntityId, components: Comps]
         ## An individual value yielded by a query. Where `Comps` is a tuple of the components to fetch in
         ## this query
 
-    QueryIterator* = object
-        ## An iterator over a query
-        continuationIdx*: BiggestInt
-        iter*: ArchetypeIter
+    QueryIterator*[Comps: tuple] = iterator(appState: pointer, slot: var Comps): EntityId {.gcsafe, raises: [].}
 
-    NextIterState* = enum DoneIter, ActiveIter, IncrementIter, SkipIter
+    QueryIteratorBuilder[Comps: tuple] = proc(): QueryIterator[Comps] {.gcsafe, raises: [], fastcall.}
 
-    NextEntityProc*[Comps: tuple] = proc(
-        iter: var QueryIterator, appStatePtr: pointer, eid: var EntityId, slot: var Comps
-    ): NextIterState {.gcsafe, raises: [], fastcall.}
-        ## Returns the next row in a query
+    QueryGetLen = proc(appState: pointer): uint {.gcsafe, raises: [], fastcall.}
 
-    RawQuery* = object
+    RawQuery*[Comps] = ref object
         ## Allows systems to query for entities with specific components. Where `Comps` is a tuple of
         ## the components to fetch in this query.
         appState: pointer
-        getLen: proc(appState: pointer): uint {.gcsafe, raises: [], fastcall.}
-        nextEntity: pointer # Pointer to a NextEntityProc[Comps]
+        getLen: QueryGetLen
+        getIterator: QueryIteratorBuilder[Comps]
 
-    RawQueryPtr = ptr RawQuery
-
-    Query*[Comps: tuple] = distinct RawQueryPtr
+    Query*[Comps: tuple] = distinct RawQuery[Comps]
         ## Allows systems to query for entities with specific components. Where `Comps` is a tuple of
         ## the components to fetch in this query. Does not provide access to the entity ID
 
-    FullQuery*[Comps: tuple] = distinct RawQueryPtr
+    FullQuery*[Comps: tuple] = distinct RawQuery[Comps]
         ## Allows systems to query for entities with specific components. Where `Comps` is a tuple of
         ## the components to fetch in this query. Provides access to the EntityId
 
@@ -42,61 +34,30 @@ type
 
 proc newQuery*[Comps: tuple](
     appState: pointer,
-    getLen: proc(appState: pointer): uint {.gcsafe, raises: [], fastcall.},
-    nextEntity: NextEntityProc[Comps],
-): RawQuery {.inline.} =
-    RawQuery(appState: appState, getLen: getLen, nextEntity: nextEntity)
-
-proc isFirst*(iter: QueryIterator): bool = iter.continuationIdx == 0 and iter.iter.isFirst
-
-proc next*[Comps: tuple](
-    store: var ArchetypeStore[Comps],
-    iter: var QueryIterator,
-    eid: var EntityId,
-): ptr Comps =
-    ## Returns the next value for an interator
-    let row = store.next(iter.iter)
-    if row != nil:
-        eid = row.entityId
-        return addr row.components
-
-proc asNextIterState*(convertResult: ConvertResult): NextIterState =
-    ## Derives the next state for an iterator based on the result of a converter
-    case convertResult
-    of ConvertSkip:
-        return SkipIter
-    of ConvertSuccess:
-        return ActiveIter
-    of ConvertEmpty:
-        return IncrementIter
+    getLen: QueryGetLen,
+    getIterator: QueryIteratorBuilder[Comps]
+): RawQuery[Comps] {.inline.} =
+    RawQuery[Comps](appState: appState, getLen: getLen, getIterator: getIterator)
 
 iterator pairs*[Comps: tuple](query: FullQuery[Comps]): QueryItem[Comps] =
     ## Iterates through the entities in a query
-    let rawQuery = RawQueryPtr(query)
-    var iter: QueryIterator
-    var slot: Comps
-    var eid: EntityId
-    let nextEntity = cast[NextEntityProc[Comps]](rawQuery.nextEntity)
-    while true:
-        case nextEntity(iter, rawQuery.appState, eid, slot)
-        of ActiveIter:
-            yield (entityId: eid, components: slot)
-        of SkipIter:
-            discard
-        of IncrementIter:
-            iter.continuationIdx += 1
-            iter.iter = default(ArchetypeIter)
-        of DoneIter:
-            break
+    let raw = RawQuery[Comps](query)
+    var output: Comps
+    let iter = raw.getIterator()
+    for eid in iter(raw.appState, output):
+        yield (eid, output)
 
 iterator items*[Comps: tuple](query: AnyQuery[Comps]): Comps =
     ## Iterates through the entities in a query
-    {.hint[ConvFromXtoItselfNotNeeded]:off.}
-    for (_, components) in pairs(FullQuery[Comps](query)): yield components
+    let raw = RawQuery[Comps](query)
+    var output: Comps
+    let iter = raw.getIterator()
+    for _ in iter(raw.appState, output):
+        yield output
 
 proc len*[Comps: tuple](query: AnyQuery[Comps]): uint {.gcsafe, raises: [].} =
     ## Returns the number of entities in this query
-    let rawQuery = RawQueryPtr(query)
+    let rawQuery = RawQuery[Comps](query)
     return rawQuery.getLen(rawQuery.appState)
 
 proc single*[Comps: tuple](query: AnyQuery[Comps]): Option[Comps] =
