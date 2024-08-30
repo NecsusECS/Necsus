@@ -1,20 +1,20 @@
-import threads, ringbuffer, options
+import ringbuffer, options
 
 type
     EntryData[V] = object
         idx: uint
-        alive: Atomic[bool]
+        alive: bool
         value: V
 
     Entry*[V] = ptr EntryData[V]
 
     BlockStore*[V] = ref object
         ## Stores a block of packed values
-        nextId: Atomic[uint]
+        nextId: uint
         hasRecycledValues: bool
         recycle: RingBuffer[uint]
         data: seq[EntryData[V]]
-        len: Atomic[uint]
+        len: uint
 
     BlockIter* {.byref.} = object
         max, index: uint
@@ -25,7 +25,7 @@ proc newBlockStore*[V](size: SomeInteger): BlockStore[V] =
 
 proc isFirst*(iter: BlockIter): bool = iter.index == 0
 
-func len*[V](blockstore: var BlockStore[V]): uint = blockstore.len.load
+func len*[V](blockstore: var BlockStore[V]): uint = blockstore.len
     ## Returns the length of this blockstore
 
 proc reserve*[V](blockstore: var BlockStore[V]): Entry[V] =
@@ -38,11 +38,13 @@ proc reserve*[V](blockstore: var BlockStore[V]): Entry[V] =
             index = unsafeGet(recycled)
         else:
             blockstore.hasRecycledValues = false
-            index = fetchAdd(blockstore.nextId, 1)
+            index = blockstore.nextId
+            blockstore.nextId += 1
     else:
-        index = fetchAdd(blockstore.nextId, 1)
+        index = blockstore.nextId
+        blockstore.nextId += 1
 
-    blockstore.len.atomicInc(1)
+    blockstore.len += 1
     result = addr blockstore.data[index]
     result.idx = index
 
@@ -54,7 +56,7 @@ template value*[V](entry: Entry[V]): var V = entry.value
 
 proc commit*[V](entry: Entry[V]) {.inline.} =
     ## Marks that an entry is ready to be used
-    store(entry.alive, true)
+    entry.alive = true
 
 proc set*[V](entry: Entry[V], value: sink V) =
     ## Sets a value on an entry
@@ -70,8 +72,9 @@ proc push*[V](store: var BlockStore[V], value: sink V): uint =
 proc del*[V](store: var BlockStore[V], idx: uint): V =
     ## Deletes a field
     var falsey = true
-    if store.data[idx].alive.compareExchange(falsey, false):
-        store.len.atomicDec(1)
+    if store.data[idx].alive:
+        store.data[idx].alive = false
+        store.len -= 1
         let deleted = move(store.data[idx])
         result = deleted.value
         store.recycle.tryPush(idx)
@@ -88,11 +91,11 @@ template `[]=`*[V](store: BlockStore[V], idx: uint, newValue: V) =
 proc next*[V](store: var BlockStore[V], iter: var BlockIter): ptr V =
     ## Returns the next value in an iterator
     if iter.max == 0:
-        iter.max = store.nextId.load
+        iter.max = store.nextId
 
     if iter.index >= iter.max:
         return nil
-    elif store.data[iter.index].alive.load:
+    elif store.data[iter.index].alive:
         iter.index += 1
         return addr store.data[iter.index - 1].value
     else:
