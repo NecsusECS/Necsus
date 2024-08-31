@@ -103,7 +103,7 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, dir: Tuple
 
         let (lenCalculation, iteratorBody) = details.walkArchetypes(name, dir, queryTuple)
 
-        let trace = emitQueryTrace("Query for ", dir.name, " returned ", newCall(getLen, appStatePtr), " result(s)")
+        let trace = emitQueryTrace("Query for ", $dir, " returned ", newCall(getLen, appStatePtr), " result(s)")
 
         return quote do:
 

@@ -22,7 +22,7 @@ proc `$`*(arg: DirectiveArg): string =
     result = $arg.kind & "("
     if arg.isPointer:
         result &= "ptr "
-    result &= arg.component.name & ")"
+    result &= arg.component.readableName & ")"
 
 proc `==`*(a, b: DirectiveArg): auto =
     ## Compare two Directive instances

@@ -21,6 +21,14 @@ proc newTupleDir*(comps: openarray[ComponentDef]): TupleDirective =
 proc `$`*(dir: TupleDirective): string =
     dir.name & "(" & join(dir.args, ", ") & ")"
 
+proc `readable`*(dir: TupleDirective): string =
+    result = dir.name & "("
+    for i, arg in dir.args:
+        if i != 0:
+            result &= ", "
+        result &= $arg
+    result &= ")"
+
 iterator items*(directive: TupleDirective): ComponentDef =
     ## Produce all components in a directive
     for arg in directive.args: yield arg.component
