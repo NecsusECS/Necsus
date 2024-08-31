@@ -87,7 +87,7 @@ proc moveEntity*[FromArch: tuple, NewComps: tuple, ToArch: tuple](
     toArch: var ArchetypeStore[ToArch],
     newValues: sink NewComps,
     combine: proc (existing: sink FromArch, newValues: sink NewComps, output: var ToArch): bool {.gcsafe, raises: [], fastcall.}
-) {.gcsafe, raises: [].} =
+) {.gcsafe, raises: [ValueError].} =
     ## Moves the components for an entity from one archetype to another
     let deleted = fromArch.compStore.del(entityIndex.archetypeIndex)
     let existing = deleted.components

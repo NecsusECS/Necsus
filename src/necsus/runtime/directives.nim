@@ -11,13 +11,13 @@ type
         appState: pointer
         callback: T
 
-    Arity0Proc[T] = proc(app: pointer): T {.gcsafe, raises: [], fastcall.}
+    Arity0Proc[T] = proc(app: pointer): T {.gcsafe, raises: [ValueError], fastcall.}
         ## A directive callback that just returns a value to our customers
 
-    Arity1Proc[A, T] = proc(app: pointer, arg: A): T {.gcsafe, raises: [], fastcall.}
+    Arity1Proc[A, T] = proc(app: pointer, arg: A): T {.gcsafe, raises: [ValueError], fastcall.}
         ## A directive callback that accepts 1 parameter and returns
 
-    Arity2Proc[A, B, T] = proc(app: pointer, a: A, b: B): T {.gcsafe, raises: [], fastcall.}
+    Arity2Proc[A, B, T] = proc(app: pointer, a: A, b: B): T {.gcsafe, raises: [ValueError], fastcall.}
         ## A directive callback that accepts 2 parameters and returns
 
     Delete* = CallbackDir[Arity1Proc[EntityId, void]]

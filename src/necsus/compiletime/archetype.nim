@@ -25,7 +25,6 @@ when NimMajor >= 2:
     const nextId = CacheCounter("NextArchetypeId")
     const ids = CacheTable("ArchetypeIds")
 else:
-    import std/tables
     var nextId {.compileTime.} = 0
     var ids {.compileTime.} = initTable[string, NimNode]()
     proc value(num: int): int {.inline.} = num
