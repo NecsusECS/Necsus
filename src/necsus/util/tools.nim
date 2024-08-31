@@ -1,3 +1,4 @@
+import std/options
 
 proc isAboveNimVersion*(major, minor, patch: int): bool =
     ## Returns whether the current nim compiler is above a given version
@@ -18,3 +19,7 @@ proc stringify*[T](value: T): string {.raises: [], gcsafe.} =
             return $T
     except:
         return $T & "(Failed to generate string)"
+
+template optionPtr*[T](opt: Option[T]): Option[ptr T] =
+    ## Returns a pointer to a value in an option
+    if opt.isSome: some(addr opt.unsafeGet) else: none(ptr T)

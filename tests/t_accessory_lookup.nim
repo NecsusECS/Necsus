@@ -23,7 +23,7 @@ proc exec(
     let second = spawn2.with(Person(), "Jack")
     check(second.lookup1().get()[0] == "Jack")
     check(second.lookup2().isNone())
-    check(second.lookup3().isNone())
+    check(second.lookup3() == some(("Jack", none(ptr Age))))
 
     let third = spawn3.with(Person(), "Jack", 25)
     check(third.lookup1().isNone())

@@ -1,6 +1,6 @@
 import std/[macros, options]
 import tools, systemGen, componentDef, directiveArg, tupleDirective, common, archetype
-import ../runtime/query
+import ../runtime/query, ../util/tools
 
 let input {.compileTime.} = ident("input")
 let adding {.compileTime.} = ident("adding")
@@ -8,7 +8,7 @@ let output {.compileTime.} = ident("output")
 
 type TupleAdapter* = ref object
     ## Data for reading from a value from one tuple and outputing another
-    source: NimNode
+    source, outputType: NimNode
     index: int
     optionIn, optionOut, pointerOut: bool
 
@@ -48,7 +48,9 @@ proc addAccessoryCondition(existing: NimNode, adapter: TupleAdapter, predicate: 
 proc build*(adapter: TupleAdapter): NimNode =
     assert(adapter.index != -1, "Component is not present: " & $output)
     result = nnkBracketExpr.newTree(adapter.source, newLit(adapter.index))
-    if not adapter.optionIn or not adapter.optionOut or adapter.pointerOut:
+    if adapter.optionIn and adapter.optionOut and adapter.pointerOut:
+        result = newCall(bindSym("optionPtr"), result)
+    elif not adapter.optionIn or not adapter.optionOut or adapter.pointerOut:
         if adapter.optionIn:
             result = newCall(bindSym("get"), result)
         if adapter.pointerOut:
@@ -76,8 +78,6 @@ proc copyTuple(fromArch: Archetype[ComponentDef], newVals: openarray[ComponentDe
 
             of DirectiveArgKind.Optional:
                 if adapter.index >= 0:
-                    if adapter.optionIn:
-                        condition = condition.addAccessoryCondition(adapter, bindSym("isSome"))
                     adapter.build()
                 else:
                     newCall(nnkBracketExpr.newTree(bindSym("none"), arg.type))
