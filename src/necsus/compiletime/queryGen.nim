@@ -10,9 +10,10 @@ iterator selectArchetypes(details: GenerateContext, query: TupleDirective): Arch
 
 let slot {.compileTime.} = ident("slot")
 
-proc addLenPredicate(append: var NimNode, row: NimNode, arch: Archetype[ComponentDef], arg: DirectiveArg, fn: NimNode) =
+proc addLenPredicate(existing, row: NimNode, arch: Archetype[ComponentDef], arg: DirectiveArg, fn: NimNode): NimNode =
     let index = arch.indexOf(arg.component).newLit
-    append.add(newCall(fn, nnkBracketExpr.newTree(row, index)))
+    let newCheck = newCall(fn, nnkBracketExpr.newTree(row, index))
+    return if existing.kind == nnkEmpty: newCheck else: infix(existing, "and", newCheck)
 
 proc buildAddLen(query: TupleDirective, archetype: Archetype[ComponentDef]): NimNode =
     ## Builds the code for calculating the length of an archetype
@@ -24,21 +25,20 @@ proc buildAddLen(query: TupleDirective, archetype: Archetype[ComponentDef]): Nim
     if query.hasAccessories:
         let row = genSym(nskParam, "row")
 
-        var predicateList = nnkBracketExpr.newTree()
+        var predicate = newEmptyNode()
         for arg in query.args:
             if arg.isAccessory:
                 case arg.kind
                 of Optional: discard
-                of Include: predicateList.addLenPredicate(row, archetype, arg, bindSym("isSome"))
-                of Exclude: predicateList.addLenPredicate(row, archetype, arg, bindSym("isNone"))
+                of Include: predicate = predicate.addLenPredicate(row, archetype, arg, bindSym("isSome"))
+                of Exclude: predicate = predicate.addLenPredicate(row, archetype, arg, bindSym("isNone"))
 
-        if predicateList.len > 0:
+        if predicate.kind != nnkEmpty:
             let symbol = genSym(nskProc, "filter")
             let rowType = archetype.asStorageTuple
-            let predicates = nestList(bindSym("and"), predicateList)
             return quote:
                 proc `symbol`(`row`: var `rowType`): bool {.fastcall, gcsafe, raises: [].} =
-                    return `predicates`
+                    return `predicate`
 
                 addLen(`appStateIdent`.`archetypeIdent`, result, `symbol`)
 
