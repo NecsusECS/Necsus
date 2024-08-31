@@ -1,2 +1,4 @@
 nimTitle	tools	necsus/util/tools.html	module src/necsus/util/tools		0
-nim	isAboveNimVersion	necsus/util/tools.html#isAboveNimVersion,int,int,int	proc isAboveNimVersion(major, minor, patch: int): bool		2
+nim	isAboveNimVersion	necsus/util/tools.html#isAboveNimVersion,int,int,int	proc isAboveNimVersion(major, minor, patch: int): bool		3
+nim	stringify	necsus/util/tools.html#stringify,T	proc stringify[T](value: T): string		11
+nim	optionPtr	necsus/util/tools.html#optionPtr.t,Option[T]	template optionPtr[T](opt: Option[T]): Option[ptr T]		23
