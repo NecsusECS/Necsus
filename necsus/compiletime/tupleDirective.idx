@@ -3,16 +3,17 @@ nim	TupleDirective	necsus/compiletime/tupleDirective.html#TupleDirective	type Tu
 nim	newTupleDir	necsus/compiletime/tupleDirective.html#newTupleDir,openArray[DirectiveArg]	proc newTupleDir(args: openArray[DirectiveArg]): TupleDirective		10
 nim	newTupleDir	necsus/compiletime/tupleDirective.html#newTupleDir,openArray[ComponentDef]	proc newTupleDir(comps: openArray[ComponentDef]): TupleDirective		14
 nim	`$`	necsus/compiletime/tupleDirective.html#$,TupleDirective	proc `$`(dir: TupleDirective): string		21
-nim	items	necsus/compiletime/tupleDirective.html#items.i,TupleDirective	iterator items(directive: TupleDirective): ComponentDef		24
-nim	comps	necsus/compiletime/tupleDirective.html#comps,TupleDirective	proc comps(directive: TupleDirective): seq[ComponentDef]		28
-nim	args	necsus/compiletime/tupleDirective.html#args.i,TupleDirective	iterator args(directive: TupleDirective): DirectiveArg		32
-nim	hash	necsus/compiletime/tupleDirective.html#hash,TupleDirective	proc hash(directive: TupleDirective): Hash		36
-nim	indexOf	necsus/compiletime/tupleDirective.html#indexOf,TupleDirective,ComponentDef	proc indexOf(directive: TupleDirective; comp: ComponentDef): int		38
-nim	contains	necsus/compiletime/tupleDirective.html#contains,TupleDirective,ComponentDef	proc contains(directive: TupleDirective; comp: ComponentDef): bool		45
-nim	`==`	necsus/compiletime/tupleDirective.html#==,TupleDirective,TupleDirective	proc `==`(a, b: TupleDirective): auto		52
-nim	`<`	necsus/compiletime/tupleDirective.html#<,TupleDirective,TupleDirective	proc `<`(a, b: TupleDirective): auto		56
-nim	filter	necsus/compiletime/tupleDirective.html#filter,TupleDirective	proc filter(dir: TupleDirective): BitsFilter		67
-nim	bits	necsus/compiletime/tupleDirective.html#bits,TupleDirective	proc bits(dir: TupleDirective): Bits		80
-nim	signature	necsus/compiletime/tupleDirective.html#signature,TupleDirective	proc signature(dir: TupleDirective): string		86
-nim	hasAccessories	necsus/compiletime/tupleDirective.html#hasAccessories,TupleDirective	proc hasAccessories(dir: TupleDirective): bool		91
+nim	readable	necsus/compiletime/tupleDirective.html#readable,TupleDirective	proc readable(dir: TupleDirective): string		24
+nim	items	necsus/compiletime/tupleDirective.html#items.i,TupleDirective	iterator items(directive: TupleDirective): ComponentDef		32
+nim	comps	necsus/compiletime/tupleDirective.html#comps,TupleDirective	proc comps(directive: TupleDirective): seq[ComponentDef]		36
+nim	args	necsus/compiletime/tupleDirective.html#args.i,TupleDirective	iterator args(directive: TupleDirective): DirectiveArg		40
+nim	hash	necsus/compiletime/tupleDirective.html#hash,TupleDirective	proc hash(directive: TupleDirective): Hash		44
+nim	indexOf	necsus/compiletime/tupleDirective.html#indexOf,TupleDirective,ComponentDef	proc indexOf(directive: TupleDirective; comp: ComponentDef): int		46
+nim	contains	necsus/compiletime/tupleDirective.html#contains,TupleDirective,ComponentDef	proc contains(directive: TupleDirective; comp: ComponentDef): bool		53
+nim	`==`	necsus/compiletime/tupleDirective.html#==,TupleDirective,TupleDirective	proc `==`(a, b: TupleDirective): auto		60
+nim	`<`	necsus/compiletime/tupleDirective.html#<,TupleDirective,TupleDirective	proc `<`(a, b: TupleDirective): auto		64
+nim	filter	necsus/compiletime/tupleDirective.html#filter,TupleDirective	proc filter(dir: TupleDirective): BitsFilter		75
+nim	bits	necsus/compiletime/tupleDirective.html#bits,TupleDirective	proc bits(dir: TupleDirective): Bits		88
+nim	signature	necsus/compiletime/tupleDirective.html#signature,TupleDirective	proc signature(dir: TupleDirective): string		94
+nim	hasAccessories	necsus/compiletime/tupleDirective.html#hasAccessories,TupleDirective	proc hasAccessories(dir: TupleDirective): bool		99
 nimgrp	newtupledir	necsus/compiletime/tupleDirective.html#newTupleDir-procs-all	proc		10

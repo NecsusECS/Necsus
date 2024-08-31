@@ -48,35 +48,16 @@
     </div>
     <ul class="simple simple-toc" id="toc-list">
   <li>
-  <a class="reference reference-toplevel" href="#6" id="56">Imports</a>
-</li>
-<li>
   <details open>
     <summary><a class="reference reference-toplevel" href="#7" id="57">Types</a></summary>
     <ul class="simple simple-toc-section">
       <li><a class="reference" href="#RingBuffer" title="RingBuffer[T] {.byref.} = object
-  ## On push (enqueue), the thread works as a producer:
-  ##  - it produces a new datum moving the head forward
-  ##  - and the datum enables the readers (consumers) to read it
-  ##    moving the tail forward to (yes, the push moves the tail too).
+  ## Head is the index of the front of the ringbuffer, tail is the index of the back
   ## The queue is memory-bounded. Instead of saving the
   ## size of the queue we save the bit mask: assuming
   ## a size power of 2 N, we can compute X % N as
   ## X &amp; mask for any integer. (where &amp; is faster than %).
-  ## Pad between producer and consumer attributes. This avoids the &quot;false sharing&quot; problem: when we modify
-  ## and attribute, the whole L1/L2 cache line needs to be updated in all the cores. If at the same time other
-  ## thread is accessing to the other attributes a conflict will arise. The CPU will know how to fix it but it
-  ## is going to have a penalty.
-  ## On pop (dequeue), the thread works as a consumer:
-  ##  - it consumes a datum moving the tail forward
-  ##  - and moves the head forward too, let the writers (producers)
-  ##    know that there is a new free slot there.
-  ## Why again the mask? Having two copies of the mask, each next
-  ## to the respective head/tail ensures that the head, the tail
-  ## and the mask of the producer will be in its own L2 cache line
-  ## avoiding &quot;false sharings&quot;
-  ## More padding to prevent false sharing
-  ## The length of data being stored">RingBuffer</a></li>
+  ## The overall capacity of the ringbuffer">RingBuffer</a></li>
 
     </ul>
   </details>
@@ -86,7 +67,7 @@
     <summary><a class="reference reference-toplevel" href="#12" id="62">Procs</a></summary>
     <ul class="simple simple-toc-section">
       <ul class="simple nested-toc-section">$
-  <li><a class="reference" href="#%24%2CRingBuffer%5BT%5D" title="`$`[T](ring: var RingBuffer[T]): string">`$`[T](ring: var RingBuffer[T]): string</a></li>
+  <li><a class="reference" href="#%24%2CRingBuffer%5BT%5D" title="`$`[T](ring: RingBuffer[T]): string">`$`[T](ring: RingBuffer[T]): string</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">capacity
@@ -98,7 +79,7 @@
 
 </ul>
 <ul class="simple nested-toc-section">isEmpty
-  <li><a class="reference" href="#isEmpty%2CRingBuffer%5BT%5D" title="isEmpty[T](ring: var RingBuffer[T]): bool">isEmpty[T](ring: var RingBuffer[T]): bool</a></li>
+  <li><a class="reference" href="#isEmpty%2CRingBuffer%5BT%5D" title="isEmpty[T](ring: RingBuffer[T]): bool">isEmpty[T](ring: RingBuffer[T]): bool</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">newRingBuffer
@@ -106,7 +87,7 @@
 
 </ul>
 <ul class="simple nested-toc-section">tryPush
-  <li><a class="reference" href="#tryPush%2CRingBuffer%5BT%5D%2CsinkT" title="tryPush[T](ring: var RingBuffer[T]; value: sink T): bool">tryPush[T](ring: var RingBuffer[T]; value: sink T): bool</a></li>
+  <li><a class="reference" href="#tryPush%2CRingBuffer%5BT%5D%2CsinkT" title="tryPush[T](ring: var RingBuffer[T]; value: sink T)">tryPush[T](ring: var RingBuffer[T]; value: sink T)</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">tryShift
@@ -125,47 +106,18 @@
     
     <div id="tocRoot"></div>
     
-    <p class="module-desc"><p>Multi Producer/Multi Consumer Ring Buffer</p>
-<p>This is a lock free structure that allows multiple threads to push (produce) and pop (consume) data in a FIFO way.</p>
-<p>The queue is bounded with a size of N where N must be a power of 2. The implementation however allows to store only a maximum of N-1 elements.</p>
-<p>References:</p>
-<ul class="simple"><li><a class="reference external" href="https://book-of-gehn.github.io/articles/2020/04/28/Lock-Free-Queue-Part-II.html">https://book-of-gehn.github.io/articles/2020/04/28/Lock-Free-Queue-Part-II.html</a></li>
-<li><a class="reference external" href="https://github.com/eldipa/loki">https://github.com/eldipa/loki</a></li>
-</ul>
-</p>
-    <div class="section" id="6">
-  <h1><a class="toc-backref" href="#6">Imports</a></h1>
-  <dl class="item">
-    <a class="reference external" href="threads.html">threads</a>
-  </dl>
-</div>
-<div class="section" id="7">
+    <p class="module-desc"></p>
+    <div class="section" id="7">
   <h1><a class="toc-backref" href="#7">Types</a></h1>
   <dl class="item">
     <div id="RingBuffer">
   <dt><pre><a href="ringbuffer.html#RingBuffer"><span class="Identifier">RingBuffer</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> {.<span class="Identifier">byref</span>.} <span class="Other">=</span> <span class="Keyword">object</span>
-  <span class="Comment">## On push (enqueue), the thread works as a producer:</span>
-  <span class="Comment">##  - it produces a new datum moving the head forward</span>
-  <span class="Comment">##  - and the datum enables the readers (consumers) to read it</span>
-  <span class="Comment">##    moving the tail forward to (yes, the push moves the tail too).</span>
+  <span class="Comment">## Head is the index of the front of the ringbuffer, tail is the index of the back</span>
   <span class="Comment">## The queue is memory-bounded. Instead of saving the</span>
   <span class="Comment">## size of the queue we save the bit mask: assuming</span>
   <span class="Comment">## a size power of 2 N, we can compute X % N as</span>
   <span class="Comment">## X &amp; mask for any integer. (where &amp; is faster than %).</span>
-  <span class="Comment">## Pad between producer and consumer attributes. This avoids the &quot;false sharing&quot; problem: when we modify</span>
-  <span class="Comment">## and attribute, the whole L1/L2 cache line needs to be updated in all the cores. If at the same time other</span>
-  <span class="Comment">## thread is accessing to the other attributes a conflict will arise. The CPU will know how to fix it but it</span>
-  <span class="Comment">## is going to have a penalty.</span>
-  <span class="Comment">## On pop (dequeue), the thread works as a consumer:</span>
-  <span class="Comment">##  - it consumes a datum moving the tail forward</span>
-  <span class="Comment">##  - and moves the head forward too, let the writers (producers)</span>
-  <span class="Comment">##    know that there is a new free slot there.</span>
-  <span class="Comment">## Why again the mask? Having two copies of the mask, each next</span>
-  <span class="Comment">## to the respective head/tail ensures that the head, the tail</span>
-  <span class="Comment">## and the mask of the producer will be in its own L2 cache line</span>
-  <span class="Comment">## avoiding &quot;false sharings&quot;</span>
-  <span class="Comment">## More padding to prevent false sharing</span>
-  <span class="Comment">## The length of data being stored</span></pre></dt>
+  <span class="Comment">## The overall capacity of the ringbuffer</span></pre></dt>
   <dd>
     
     Ring buffer instance
@@ -180,7 +132,7 @@
   <dl class="item">
     <div id="$-procs-all">
   <div id="$,RingBuffer[T]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#%24%2CRingBuffer%5BT%5D"><span class="Identifier">`$`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">ring</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="ringbuffer.html#RingBuffer"><span class="Identifier">RingBuffer</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span></pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#%24%2CRingBuffer%5BT%5D"><span class="Identifier">`$`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">ring</span><span class="Other">:</span> <a href="ringbuffer.html#RingBuffer"><span class="Identifier">RingBuffer</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span></pre></dt>
   <dd>
     
     
@@ -213,7 +165,7 @@
 </div>
 <div id="isEmpty-procs-all">
   <div id="isEmpty,RingBuffer[T]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#isEmpty%2CRingBuffer%5BT%5D"><span class="Identifier">isEmpty</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">ring</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="ringbuffer.html#RingBuffer"><span class="Identifier">RingBuffer</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span></pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#isEmpty%2CRingBuffer%5BT%5D"><span class="Identifier">isEmpty</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">ring</span><span class="Other">:</span> <a href="ringbuffer.html#RingBuffer"><span class="Identifier">RingBuffer</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span></pre></dt>
   <dd>
     
     Return whether this ring buffer is void of any values
@@ -235,7 +187,7 @@
 </div>
 <div id="tryPush-procs-all">
   <div id="tryPush,RingBuffer[T],sinkT">
-  <dt><pre><span class="Keyword">proc</span> <a href="#tryPush%2CRingBuffer%5BT%5D%2CsinkT"><span class="Identifier">tryPush</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">ring</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="ringbuffer.html#RingBuffer"><span class="Identifier">RingBuffer</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">T</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span></pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#tryPush%2CRingBuffer%5BT%5D%2CsinkT"><span class="Identifier">tryPush</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">ring</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="ringbuffer.html#RingBuffer"><span class="Identifier">RingBuffer</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">T</span><span class="Other">)</span></pre></dt>
   <dd>
     
     Pushes a value onto the ring, returning true if it was a success
@@ -249,7 +201,7 @@
   <dt><pre><span class="Keyword">proc</span> <a href="#tryShift%2CRingBuffer%5BT%5D"><span class="Identifier">tryShift</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">ring</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="ringbuffer.html#RingBuffer"><span class="Identifier">RingBuffer</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Option</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span></pre></dt>
   <dd>
     
-    Shifts a value from the ring
+    
     
   </dd>
 </div>
@@ -265,7 +217,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-08-29 03:07:52 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-08-31 02:13:38 UTC</small>
       </div>
     </div>
   </div>
