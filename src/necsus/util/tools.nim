@@ -22,4 +22,4 @@ proc stringify*[T](value: T): string {.raises: [], gcsafe.} =
 
 template optionPtr*[T](opt: Option[T]): Option[ptr T] =
     ## Returns a pointer to a value in an option
-    if opt.isSome: some(addr opt.unsafeGet) else: none(ptr T)
+    if opt.isSome: some(unsafeAddr opt.unsafeGet) else: none(ptr T)
