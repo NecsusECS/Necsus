@@ -39,7 +39,7 @@ proc newAdapter*(
 
 proc addAccessoryCondition(existing: NimNode, adapter: TupleAdapter, predicate: NimNode): NimNode =
     ## Adds a boolean check to see if an accessory component passes a predicate
-    if adapter.optionIn and not adapter.optionOut:
+    if adapter.optionIn and (not adapter.optionOut or adapter.pointerOut):
         let read = nnkBracketExpr.newTree(adapter.source, adapter.index.newLit)
         return quote: `existing` and `predicate`(`read`)
     else:
@@ -76,6 +76,8 @@ proc copyTuple(fromArch: Archetype[ComponentDef], newVals: openarray[ComponentDe
 
             of DirectiveArgKind.Optional:
                 if adapter.index >= 0:
+                    if adapter.optionIn:
+                        condition = condition.addAccessoryCondition(adapter, bindSym("isSome"))
                     adapter.build()
                 else:
                     newCall(nnkBracketExpr.newTree(bindSym("none"), arg.type))
