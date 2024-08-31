@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.11.1
+
+### Bug Fixes
+
+* Resolved a crash when looking up a pointer for an optional accessory
+* Fix invalid dumped code for temporary variables and queries over accessories
+
+### New Features
+
+* Runtime performance optimizations
+
 ## 0.11.0
 
 ### Bug Fixes
