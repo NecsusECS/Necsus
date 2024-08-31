@@ -14,7 +14,7 @@ type
     Arity0Proc[T] = proc(app: pointer): T {.gcsafe, raises: [ValueError], fastcall.}
         ## A directive callback that just returns a value to our customers
 
-    Arity1Proc[A, T] = proc(app: pointer, arg: A): T {.gcsafe, raises: [ValueError], fastcall.}
+    Arity1Proc[A, T] = proc(app: pointer, arg: A): T {.gcsafe, raises: [ValueError, Exception], fastcall.}
         ## A directive callback that accepts 1 parameter and returns
 
     Arity2Proc[A, B, T] = proc(app: pointer, a: A, b: B): T {.gcsafe, raises: [ValueError], fastcall.}

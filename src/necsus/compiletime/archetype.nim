@@ -151,10 +151,13 @@ when NimMajor >= 2:
 else:
     var archetypeSymbols {.compileTime.} = initTable[string, NimNode]()
 
+const idSymCounter = CacheCounter("NecsusArchetypeIdSymbols")
+
 proc idSymbol*[T](archetype: Archetype[T]): NimNode =
     ## Returns a unique symbol containing an ID for this archetype
     if archetype.name notin archetypeSymbols:
-        archetypeSymbols[archetype.name] = genSym(nskConst, "archetypeId")
+        archetypeSymbols[archetype.name] = genSym(nskConst, "archetypeId" & idSymCounter.value.toHex(4))
+        idSymCounter.inc
     return archetypeSymbols[archetype.name]
 
 when NimMajor >= 2:
