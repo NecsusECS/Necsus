@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.11.2
+
+### Bug Fixes
+
+* Fix `none` lookup result for optional pointers to accessory components
+
+### New Features
+
+* Improve readability of `EntityDebug` output
+
 ## 0.11.1
 
 ### Bug Fixes
