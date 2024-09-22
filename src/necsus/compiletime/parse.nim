@@ -1,4 +1,4 @@
-import macros, sequtils, strformat, options, strutils
+import std/[macros, sequtils, strformat, options, strutils, macrocache]
 import componentDef, tupleDirective, monoDirective, dualDirective, systemGen, directiveArg
 import ../runtime/[pragmas, directives], ../util/typeReader
 import spawnGen, queryGen, deleteGen, attachDetachGen, sharedGen, tickIdGen
@@ -22,6 +22,7 @@ type
 
     ParsedSystem* = ref object
         ## Parsed information about a system proc
+        id*: int
         phase*: SystemPhase
         symbol*: NimNode
         prefixArgs*: seq[NimNode]
@@ -377,6 +378,8 @@ proc hasReturnValue(system: ParsedSystem): bool =
 
     return returnNode.typeKind notin { ntyNone, ntyVoid }
 
+const systemId = CacheCounter("NecsusSystemIds")
+
 proc parseSystemDef*(ident: NimNode, impl: NimNode): ParsedSystem =
     ## Parses a single system proc
     ident.expectKind(nnkSym)
@@ -395,6 +398,7 @@ proc parseSystemDef*(ident: NimNode, impl: NimNode): ParsedSystem =
     let prefixArgs = impl.getPrefixArgs(phase, args, instancing)
 
     result = ParsedSystem(
+        id: systemId.value,
         phase: phase,
         symbol: ident,
         prefixArgs: prefixArgs,
@@ -404,6 +408,8 @@ proc parseSystemDef*(ident: NimNode, impl: NimNode): ParsedSystem =
         checks: parseActiveChecks(ident, impl),
         returns: determineReturnType(typeImpl, instancing.isSome)
     )
+
+    systemId.inc
 
     # For event callbacks, if the system invokes any Outboxes, we need to break any infinite loop
     # cycles, so we flip it to an IndirectEventCallback instead

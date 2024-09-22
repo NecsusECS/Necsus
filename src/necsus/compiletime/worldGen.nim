@@ -36,10 +36,13 @@ proc createAppStateType*(genInfo: CodeGenInfo): NimNode =
             fields.add nnkIdentDefs.newTree(fieldName, fieldType, newEmptyNode())
 
     if profilingEnabled():
+        var maxId = 0
+        for system in genInfo.systems:
+            maxId = max(maxId, system.id)
         fields.add(
             nnkIdentDefs.newTree(
                 ident("profile"),
-                nnkBracketExpr.newTree(ident("array"), newLit(genInfo.systems.len), bindSym("Profiler")),
+                nnkBracketExpr.newTree(ident("array"), newLit(maxId + 1), bindSym("Profiler")),
                 newEmptyNode()
             )
         )
@@ -89,8 +92,9 @@ proc createArchetypeState(genInfo: CodeGenInfo): NimNode =
 proc initProfilers(genInfo: CodeGenInfo): NimNode =
     result = newStmtList()
     if profilingEnabled():
-        for i, system in genInfo.systems:
+        for system in genInfo.systems:
             let name = system.symbol.strVal
+            let i = system.id
             result.add quote do:
                 `appStateIdent`.profile[`i`].name = `name`
 
