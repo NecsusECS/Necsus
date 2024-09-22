@@ -1,6 +1,6 @@
-import std/[macros, options, tables, sequtils]
+import std/[macros, options, tables, sequtils, sets]
 import tools, codeGenInfo, archetype, common, systemGen, converters
-import tickGen, parse, eventGen, directiveSet, monoDirective
+import tickGen, parse, eventGen, monoDirective
 import ../runtime/[world, archetypeStore, necsusConf], ../util/profile
 
 proc fields(genInfo: CodeGenInfo): seq[(NimNode, NimNode)] =
@@ -173,22 +173,39 @@ proc createAppStateDestructor*(genInfo: CodeGenInfo): NimNode =
         ) {.raises: [Exception], used.} =
             `destroys`
 
-proc mailboxIndex(details: CodeGenInfo): Table[MonoDirective, seq[NimNode]] =
+proc mailboxIndex(details: CodeGenInfo): Table[MonoDirective, seq[(ParsedSystem, NimNode)]] =
     ## Creates a table of all inboxes keyd on the type of message they receive
-    result = initTable[MonoDirective, seq[NimNode]](64)
-    if inboxGenerator in details.directives:
-        for name, directive in details.directives[inboxGenerator]:
-            result.mgetOrPut(directive.monoDir, newSeq[NimNode]()).add(ident(name))
+    result = initTable[MonoDirective, seq[(ParsedSystem, NimNode)]](64)
+    for system in details.systems:
+        for arg in system.allArgs:
 
-    if outboxGenerator in details.directives:
-        for name, directive in details.directives[outboxGenerator]:
-            discard result.mgetOrPut(directive.monoDir, newSeq[NimNode]())
+            if arg.generator == inboxGenerator:
+                result.mgetOrPut(arg.monoDir, newSeq[(ParsedSystem, NimNode)]())
+                    .add((system, details.nameOf(arg).ident))
+
+            elif arg.generator == outboxGenerator:
+                # Store any outboxes to ensure the public send procs get created
+                discard result.mgetOrPut(arg.monoDir, newSeq[(ParsedSystem, NimNode)]())
+
+let event {.compileTime.} = ident("event")
+
+proc genAddToInbox(
+    details: CodeGenInfo, system: ParsedSystem,
+    eventType, inboxIdent: NimNode,
+    seen: var HashSet[string]
+): NimNode =
+    ## Generates code for adding an event to an inbox
+    if inboxIdent.strVal notin seen:
+        seen.incl(inboxIdent.strVal)
+        let addStmt = quote: add[`eventType`](`appStateIdent`.`inboxIdent`, `event`)
+        return addStmt.addActiveChecks(details, system.checks, EventCallback)
+    else:
+        return newStmtList()
 
 proc createSendProcs*(details: CodeGenInfo): NimNode =
     ## Generates a set of procs needed to send messages
     result = newStmtList()
     let appStateType = details.appStateTypeName
-    let event = ident("event")
 
     for directive, inboxes in details.mailboxIndex:
         let (internalName, externalName) = directive.sendEventProcName
@@ -198,10 +215,11 @@ proc createSendProcs*(details: CodeGenInfo): NimNode =
             emitEventTrace("Event ", directive.name, ": ", `event`)
         )
 
+        var seen = initHashSet[string]()
+
         if not isFastCompileMode(fastEvents):
-            for inboxIdent in inboxes:
-                body.add quote do:
-                    add[`eventType`](`appStateIdent`.`inboxIdent`, `event`)
+            for (system, inboxIdent) in inboxes:
+                body.add details.genAddToInbox(system, eventType, inboxIdent, seen)
 
             for system in details.systems:
                 case system.phase
@@ -210,9 +228,7 @@ proc createSendProcs*(details: CodeGenInfo): NimNode =
                         body.add(details.invokeSystem(system, {EventCallback}, [ event ]))
                 of IndirectEventCallback:
                     if eventType == system.callbackSysType:
-                        let inboxIdent = system.callbackSysMailboxName
-                        body.add quote do:
-                            add[`eventType`](`appStateIdent`.`inboxIdent`, `event`)
+                        body.add details.genAddToInbox(system, eventType, system.callbackSysMailboxName, seen)
                 else:
                     discard
 

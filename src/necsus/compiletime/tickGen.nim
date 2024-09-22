@@ -5,14 +5,14 @@ proc renderSystemArgs(codeGenInfo: CodeGenInfo, args: openarray[SystemArg]): seq
     ## Renders system arguments down to nim code
     args.mapIt: systemArg(codeGenInfo, it)
 
-proc addActiveChecks(
+proc addActiveChecks*(
     invocation: NimNode,
     codeGenInfo: CodeGenInfo,
     checks: seq[ActiveCheck],
     phase: SystemPhase,
 ): NimNode =
     ## Wraps the system invocation code in the checks required
-    if phase notin {LoopPhase, IndirectEventCallback} or checks.len == 0:
+    if phase notin {LoopPhase, IndirectEventCallback, EventCallback} or checks.len == 0:
         return invocation
 
     var condition: NimNode = newLit(false)
@@ -69,34 +69,32 @@ proc invokeSystem*(
         let eachEvent = genSym(nskForVar, "event")
         let mailboxName = system.callbackSysMailboxName
         let invoke = codeGenInfo.singleInvokeSystem(system, [ eachEvent ])
-        return quote:
+        result = quote:
             for `eachEvent` in `appStateIdent`.`mailboxName`:
                 `invoke`
             `appStateIdent`.`mailboxName`.setLen(0)
 
     else:
-        return codeGenInfo.singleInvokeSystem(system, prefixArgs)
+        result = codeGenInfo.singleInvokeSystem(system, prefixArgs)
+
+    if system.phase != SaveCallback:
+
+        result = codeGenInfo.wrapInProfiler(system.id, result)
+
+        result = newStmtList(
+            system.logSystemCall("Starting system"),
+            result.addActiveChecks(codeGenInfo, system.checks, system.phase),
+            system.logSystemCall("System done"),
+            codeGenInfo.generateForHook(system, AfterActiveCheck),
+        )
 
 proc callSystems*(codeGenInfo: CodeGenInfo, phases: set[SystemPhase]): NimNode =
     ## Generates the code for invoke a list of systems
     result = newStmtList()
     for i, system in codeGenInfo.systems:
-
         var invokeSystem = codeGenInfo.invokeSystem(system, phases)
-
         if invokeSystem.kind != nnkEmpty:
-            invokeSystem = newStmtList(
-                system.logSystemCall("Starting system"),
-                invokeSystem,
-                system.logSystemCall("System done"),
-            )
-
-            invokeSystem = codeGenInfo.wrapInProfiler(i, invokeSystem)
-
-            result.add(newStmtList(
-                invokeSystem.addActiveChecks(codeGenInfo, system.checks, system.phase),
-                codeGenInfo.generateForHook(system, AfterActiveCheck)
-            ))
+            result.add(invokeSystem)
 
 proc createTickProc*(genInfo: CodeGenInfo): NimNode =
     ## Creates a function that executes the next tick
