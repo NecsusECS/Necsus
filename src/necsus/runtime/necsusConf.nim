@@ -7,7 +7,7 @@ type
         ## Used to configure
         entitySize*: int
         componentSize*: int
-        getTime*: proc(): BiggestFloat
+        getTime*: proc(): BiggestFloat {.gcsafe.}
         log*: NecsusLogger
 
 proc logEcho(message: string) =
@@ -15,7 +15,7 @@ proc logEcho(message: string) =
         echo message
 
 proc newNecsusConf*(
-    getTime: proc(): BiggestFloat,
+    getTime: proc(): BiggestFloat {.gcsafe.},
     log: NecsusLogger,
     entitySize: int,
     componentSize: int,
@@ -28,7 +28,7 @@ proc newNecsusConf*(
         log: log,
     )
 
-proc newNecsusConf*(getTime: proc(): BiggestFloat, log: NecsusLogger): NecsusConf =
+proc newNecsusConf*(getTime: proc(): BiggestFloat {.gcsafe.}, log: NecsusLogger): NecsusConf =
     ## Create a necsus configuration
     NecsusConf(entitySize: 1_000, componentSize: 400, getTime: getTime, log: log)
 
