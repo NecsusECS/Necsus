@@ -170,6 +170,12 @@
 <li><a class="reference external"
           data-doc-search-tag="parse: type ActiveCheck" href="necsus/compiletime/parse.html#ActiveCheck">parse: type ActiveCheck</a></li>
           </ul></dd>
+<dt><a name="addActiveChecks" href="#addActiveChecks"><span>addActiveChecks:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="tickGen: proc addActiveChecks(invocation: NimNode; codeGenInfo: CodeGenInfo;
+                checks: seq[ActiveCheck]; phase: SystemPhase): NimNode" href="necsus/compiletime/tickGen.html#addActiveChecks%2CNimNode%2CCodeGenInfo%2Cseq%5BActiveCheck%5D%2CSystemPhase">tickGen: proc addActiveChecks(invocation: NimNode; codeGenInfo: CodeGenInfo;
+                checks: seq[ActiveCheck]; phase: SystemPhase): NimNode</a></li>
+          </ul></dd>
 <dt><a name="addLen" href="#addLen"><span>addLen:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="archetypeStore: proc addLen[Comps: tuple](store: var ArchetypeStore[Comps]; len: var uint)" href="necsus/runtime/archetypeStore.html#addLen%2CArchetypeStore%5BComps%3A%20tuple%5D%2Cuint">archetypeStore: proc addLen[Comps: tuple](store: var ArchetypeStore[Comps]; len: var uint)</a></li>
@@ -1240,10 +1246,10 @@
               componentSize: int = ceilDiv(entitySize, 3)): NecsusConf" href="necsus/runtime/necsusConf.html#newNecsusConf%2Cint%2Cint">necsusConf: proc newNecsusConf(entitySize: int = DEFAULT_ENTITY_COUNT;
               componentSize: int = ceilDiv(entitySize, 3)): NecsusConf</a></li>
           <li><a class="reference external"
-          data-doc-search-tag="necsusConf: proc newNecsusConf(getTime: proc (): BiggestFloat; log: NecsusLogger): NecsusConf" href="necsus/runtime/necsusConf.html#newNecsusConf%2Cproc%29%2CNecsusLogger">necsusConf: proc newNecsusConf(getTime: proc (): BiggestFloat; log: NecsusLogger): NecsusConf</a></li>
+          data-doc-search-tag="necsusConf: proc newNecsusConf(getTime: proc (): BiggestFloat {.gcsafe.}; log: NecsusLogger): NecsusConf" href="necsus/runtime/necsusConf.html#newNecsusConf%2Cproc%29%2CNecsusLogger">necsusConf: proc newNecsusConf(getTime: proc (): BiggestFloat {.gcsafe.}; log: NecsusLogger): NecsusConf</a></li>
           <li><a class="reference external"
-          data-doc-search-tag="necsusConf: proc newNecsusConf(getTime: proc (): BiggestFloat; log: NecsusLogger;
-              entitySize: int; componentSize: int): NecsusConf" href="necsus/runtime/necsusConf.html#newNecsusConf%2Cproc%29%2CNecsusLogger%2Cint%2Cint">necsusConf: proc newNecsusConf(getTime: proc (): BiggestFloat; log: NecsusLogger;
+          data-doc-search-tag="necsusConf: proc newNecsusConf(getTime: proc (): BiggestFloat {.gcsafe.}; log: NecsusLogger;
+              entitySize: int; componentSize: int): NecsusConf" href="necsus/runtime/necsusConf.html#newNecsusConf%2Cproc%29%2CNecsusLogger%2Cint%2Cint">necsusConf: proc newNecsusConf(getTime: proc (): BiggestFloat {.gcsafe.}; log: NecsusLogger;
               entitySize: int; componentSize: int): NecsusConf</a></li>
           </ul></dd>
 <dt><a name="newQuery" href="#newQuery"><span>newQuery:</span></a></dt><dd><ul class="simple">
@@ -1700,7 +1706,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-09-01 00:17:36 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-09-22 03:18:59 UTC</small>
       </div>
     </div>
   </div>

@@ -9,21 +9,21 @@ nim	IndirectEventCallback	necsus/compiletime/parse.html#IndirectEventCallback	Sy
 nim	SystemPhase	necsus/compiletime/parse.html#SystemPhase	enum SystemPhase		8
 nim	ActiveCheck	necsus/compiletime/parse.html#ActiveCheck	type ActiveCheck		18
 nim	ParsedSystem	necsus/compiletime/parse.html#ParsedSystem	type ParsedSystem		23
-nim	ParsedApp	necsus/compiletime/parse.html#ParsedApp	type ParsedApp		34
-nim	`$`	necsus/compiletime/parse.html#$,ActiveCheck	proc `$`(check: ActiveCheck): string		41
-nim	`$`	necsus/compiletime/parse.html#$,ParsedSystem	proc `$`(system: ParsedSystem): string		44
-nim	kind	necsus/compiletime/parse.html#kind,SystemArg	proc kind(arg: SystemArg): auto		55
-nim	allArgs	necsus/compiletime/parse.html#allArgs.i,ParsedSystem	iterator allArgs(system: ParsedSystem): SystemArg		57
-nim	parseSystemDef	necsus/compiletime/parse.html#parseSystemDef,NimNode,NimNode	proc parseSystemDef(ident: NimNode; impl: NimNode): ParsedSystem		380
-nim	parseSystemList	necsus/compiletime/parse.html#parseSystemList,NimNode	proc parseSystemList(systems: NimNode): seq[ParsedSystem]		449
-nim	components	necsus/compiletime/parse.html#components.i,SystemArg	iterator components(arg: SystemArg): ComponentDef		454
-nim	components	necsus/compiletime/parse.html#components.i,openArray[ParsedSystem]	iterator components(systems: openArray[ParsedSystem]): ComponentDef		464
-nim	args	necsus/compiletime/parse.html#args.i,openArray[ParsedSystem]	iterator args(systems: openArray[ParsedSystem]): SystemArg		471
-nim	components	necsus/compiletime/parse.html#components.i,ParsedApp	iterator components(app: ParsedApp): ComponentDef		477
-nim	parseApp	necsus/compiletime/parse.html#parseApp,NimNode,NimNode	proc parseApp(appProc: NimNode; runner: NimNode): ParsedApp		493
-nim	newEmptyApp	necsus/compiletime/parse.html#newEmptyApp,string	proc newEmptyApp(name: string): ParsedApp		514
-nim	instancedInfo	necsus/compiletime/parse.html#instancedInfo,ParsedSystem	proc instancedInfo(system: ParsedSystem): Option[\n    tuple[fieldName: NimNode, typ: NimNode]]		518
-nim	callbackSysMailboxName	necsus/compiletime/parse.html#callbackSysMailboxName,ParsedSystem	proc callbackSysMailboxName(system: ParsedSystem): NimNode		525
-nim	callbackSysType	necsus/compiletime/parse.html#callbackSysType,ParsedSystem	proc callbackSysType(system: ParsedSystem): NimNode		529
-nimgrp	$	necsus/compiletime/parse.html#$-procs-all	proc		41
-nimgrp	components	necsus/compiletime/parse.html#components-iterators-all	iterator		454
+nim	ParsedApp	necsus/compiletime/parse.html#ParsedApp	type ParsedApp		35
+nim	`$`	necsus/compiletime/parse.html#$,ActiveCheck	proc `$`(check: ActiveCheck): string		42
+nim	`$`	necsus/compiletime/parse.html#$,ParsedSystem	proc `$`(system: ParsedSystem): string		45
+nim	kind	necsus/compiletime/parse.html#kind,SystemArg	proc kind(arg: SystemArg): auto		56
+nim	allArgs	necsus/compiletime/parse.html#allArgs.i,ParsedSystem	iterator allArgs(system: ParsedSystem): SystemArg		58
+nim	parseSystemDef	necsus/compiletime/parse.html#parseSystemDef,NimNode,NimNode	proc parseSystemDef(ident: NimNode; impl: NimNode): ParsedSystem		383
+nim	parseSystemList	necsus/compiletime/parse.html#parseSystemList,NimNode	proc parseSystemList(systems: NimNode): seq[ParsedSystem]		455
+nim	components	necsus/compiletime/parse.html#components.i,SystemArg	iterator components(arg: SystemArg): ComponentDef		460
+nim	components	necsus/compiletime/parse.html#components.i,openArray[ParsedSystem]	iterator components(systems: openArray[ParsedSystem]): ComponentDef		470
+nim	args	necsus/compiletime/parse.html#args.i,openArray[ParsedSystem]	iterator args(systems: openArray[ParsedSystem]): SystemArg		477
+nim	components	necsus/compiletime/parse.html#components.i,ParsedApp	iterator components(app: ParsedApp): ComponentDef		483
+nim	parseApp	necsus/compiletime/parse.html#parseApp,NimNode,NimNode	proc parseApp(appProc: NimNode; runner: NimNode): ParsedApp		499
+nim	newEmptyApp	necsus/compiletime/parse.html#newEmptyApp,string	proc newEmptyApp(name: string): ParsedApp		520
+nim	instancedInfo	necsus/compiletime/parse.html#instancedInfo,ParsedSystem	proc instancedInfo(system: ParsedSystem): Option[\n    tuple[fieldName: NimNode, typ: NimNode]]		524
+nim	callbackSysMailboxName	necsus/compiletime/parse.html#callbackSysMailboxName,ParsedSystem	proc callbackSysMailboxName(system: ParsedSystem): NimNode		531
+nim	callbackSysType	necsus/compiletime/parse.html#callbackSysType,ParsedSystem	proc callbackSysType(system: ParsedSystem): NimNode		535
+nimgrp	$	necsus/compiletime/parse.html#$-procs-all	proc		42
+nimgrp	components	necsus/compiletime/parse.html#components-iterators-all	iterator		460

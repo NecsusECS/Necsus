@@ -54,7 +54,7 @@
       <li><a class="reference" href="#NecsusConf" title="NecsusConf = ref object
   entitySize*: int
   componentSize*: int
-  getTime*: proc (): BiggestFloat
+  getTime*: proc (): BiggestFloat {.gcsafe.}
   log*: NecsusLogger">NecsusConf</a></li>
 <li><a class="reference" href="#NecsusLogger" title="NecsusLogger = proc (message: string): void {.gcsafe, raises: [].}">NecsusLogger</a></li>
 
@@ -69,9 +69,9 @@
   <li><a class="reference" href="#newNecsusConf%2Cint%2Cint" title="newNecsusConf(entitySize: int = DEFAULT_ENTITY_COUNT;
               componentSize: int = ceilDiv(entitySize, 3)): NecsusConf">newNecsusConf(entitySize: int = DEFAULT_ENTITY_COUNT;
               componentSize: int = ceilDiv(entitySize, 3)): NecsusConf</a></li>
-<li><a class="reference" href="#newNecsusConf%2Cproc%29%2CNecsusLogger" title="newNecsusConf(getTime: proc (): BiggestFloat; log: NecsusLogger): NecsusConf">newNecsusConf(getTime: proc (): BiggestFloat; log: NecsusLogger): NecsusConf</a></li>
-<li><a class="reference" href="#newNecsusConf%2Cproc%29%2CNecsusLogger%2Cint%2Cint" title="newNecsusConf(getTime: proc (): BiggestFloat; log: NecsusLogger;
-              entitySize: int; componentSize: int): NecsusConf">newNecsusConf(getTime: proc (): BiggestFloat; log: NecsusLogger;
+<li><a class="reference" href="#newNecsusConf%2Cproc%29%2CNecsusLogger" title="newNecsusConf(getTime: proc (): BiggestFloat {.gcsafe.}; log: NecsusLogger): NecsusConf">newNecsusConf(getTime: proc (): BiggestFloat {.gcsafe.}; log: NecsusLogger): NecsusConf</a></li>
+<li><a class="reference" href="#newNecsusConf%2Cproc%29%2CNecsusLogger%2Cint%2Cint" title="newNecsusConf(getTime: proc (): BiggestFloat {.gcsafe.}; log: NecsusLogger;
+              entitySize: int; componentSize: int): NecsusConf">newNecsusConf(getTime: proc (): BiggestFloat {.gcsafe.}; log: NecsusLogger;
               entitySize: int; componentSize: int): NecsusConf</a></li>
 
 </ul>
@@ -95,7 +95,7 @@
   <dt><pre><a href="necsusConf.html#NecsusConf"><span class="Identifier">NecsusConf</span></a> <span class="Other">=</span> <span class="Keyword">ref</span> <span class="Keyword">object</span>
   <span class="Identifier">entitySize</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span>
   <span class="Identifier">componentSize</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span>
-  <span class="Identifier">getTime</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">BiggestFloat</span>
+  <span class="Identifier">getTime</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">BiggestFloat</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span></span>.}
   <span class="Identifier">log</span><span class="Operator">*</span><span class="Other">:</span> <a href="necsusConf.html#NecsusLogger"><span class="Identifier">NecsusLogger</span></a></pre></dt>
   <dd>
     
@@ -129,7 +129,7 @@
   </dd>
 </div>
 <div id="newNecsusConf,proc),NecsusLogger">
-  <dt><pre><span class="Keyword">proc</span> <a href="#newNecsusConf%2Cproc%29%2CNecsusLogger"><span class="Identifier">newNecsusConf</span></a><span class="Other">(</span><span class="Identifier">getTime</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">BiggestFloat</span><span class="Other">;</span> <span class="Identifier">log</span><span class="Other">:</span> <a href="necsusConf.html#NecsusLogger"><span class="Identifier">NecsusLogger</span></a><span class="Other">)</span><span class="Other">:</span> <a href="necsusConf.html#NecsusConf"><span class="Identifier">NecsusConf</span></a> {.
+  <dt><pre><span class="Keyword">proc</span> <a href="#newNecsusConf%2Cproc%29%2CNecsusLogger"><span class="Identifier">newNecsusConf</span></a><span class="Other">(</span><span class="Identifier">getTime</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">BiggestFloat</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span></span>.}<span class="Other">;</span> <span class="Identifier">log</span><span class="Other">:</span> <a href="necsusConf.html#NecsusLogger"><span class="Identifier">NecsusLogger</span></a><span class="Other">)</span><span class="Other">:</span> <a href="necsusConf.html#NecsusConf"><span class="Identifier">NecsusConf</span></a> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
@@ -138,7 +138,7 @@
   </dd>
 </div>
 <div id="newNecsusConf,proc),NecsusLogger,int,int">
-  <dt><pre><span class="Keyword">proc</span> <a href="#newNecsusConf%2Cproc%29%2CNecsusLogger%2Cint%2Cint"><span class="Identifier">newNecsusConf</span></a><span class="Other">(</span><span class="Identifier">getTime</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">BiggestFloat</span><span class="Other">;</span> <span class="Identifier">log</span><span class="Other">:</span> <a href="necsusConf.html#NecsusLogger"><span class="Identifier">NecsusLogger</span></a><span class="Other">;</span>
+  <dt><pre><span class="Keyword">proc</span> <a href="#newNecsusConf%2Cproc%29%2CNecsusLogger%2Cint%2Cint"><span class="Identifier">newNecsusConf</span></a><span class="Other">(</span><span class="Identifier">getTime</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">BiggestFloat</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span></span>.}<span class="Other">;</span> <span class="Identifier">log</span><span class="Other">:</span> <a href="necsusConf.html#NecsusLogger"><span class="Identifier">NecsusLogger</span></a><span class="Other">;</span>
                    <span class="Identifier">entitySize</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">;</span> <span class="Identifier">componentSize</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">:</span> <a href="necsusConf.html#NecsusConf"><span class="Identifier">NecsusConf</span></a> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
@@ -159,7 +159,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-09-01 00:17:35 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-09-22 03:18:58 UTC</small>
       </div>
     </div>
   </div>
