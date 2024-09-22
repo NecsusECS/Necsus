@@ -530,7 +530,7 @@ proc instancedInfo*(system: ParsedSystem): Option[tuple[fieldName: NimNode, typ:
 
 proc callbackSysMailboxName*(system: ParsedSystem): NimNode =
     ## The name of the mailbox to use for an event callback system
-    ident("event_mailbox_" & system.symbol.signatureHash)
+    ident("event_mailbox_" & $system.id)
 
 proc callbackSysType*(system: ParsedSystem): NimNode =
     ## Returns the event type handled by a callback system

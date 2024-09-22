@@ -29,8 +29,8 @@ proc receiveAfter1(receiver: Inbox[SomeEvent], i: Shared[int]) {.active(StateB).
 proc receiveAfter2(value: SomeEvent) {.active(StateB), eventSys.} =
     check(value == 1)
 
-# proc receiveAfter3(value: SomeEvent, _: Outbox[string]) {.active(StateB), eventSys.} =
-#     check(value == 1)
+proc receiveAfter3(value: SomeEvent, _: Outbox[string]) {.active(StateB), eventSys.} =
+    check(value == 1)
 
 proc runner(i: Shared[int], tick: proc(): void) =
     i := 0
@@ -46,7 +46,7 @@ proc testEvents() {.necsus(runner, [
     ~changeState,
     ~receiveAfter1,
     ~receiveAfter2,
-    # ~receiveAfter3,
+    ~receiveAfter3,
 ], newNecsusConf()).}
 
 test "Events should not be sent to disabled systems":
