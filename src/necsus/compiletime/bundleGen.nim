@@ -15,7 +15,7 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, dir: MonoD
             construct.add(nnkExprColonExpr.newTree(ident(nested.originalName), details.systemArg(nested)))
 
         result.add quote do:
-            privateAccess(`bundleType`)
+            privateAccess(`appStateIdent`.`nameIdent`.type)
             `appStateIdent`.`nameIdent` = `construct`
     else:
         discard
