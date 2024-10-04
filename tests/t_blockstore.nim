@@ -89,3 +89,15 @@ suite "BlockStore":
         e2.commit
         check(store[e2.index] == "bar")
         check(store.items.toSeq == @["foo", "bar"])
+
+    test "Manual iteration":
+        var store = newBlockStore[string](50)
+        let id1 = store.push("foo")
+        let id2 = store.push("bar")
+        let id3 = store.push("baz")
+
+        var iter: BlockIter
+        check(store.next(iter)[] == "foo")
+        check(store.next(iter)[] == "bar")
+        check(store.next(iter)[] == "baz")
+        check(store.next(iter) == nil)

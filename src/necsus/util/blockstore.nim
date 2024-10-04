@@ -16,9 +16,14 @@ type
         data: seq[EntryData[V]]
         len: uint
 
+    BlockIter* = object
+        index: uint
+
 proc newBlockStore*[V](size: SomeInteger): BlockStore[V] =
     ## Instantiates a new BlockStore
     BlockStore[V](recycle: newRingBuffer[uint](size), data: newSeq[EntryData[V]](size))
+
+proc isFirst*(iter: BlockIter): bool = iter.index == 0
 
 func len*[V](blockstore: var BlockStore[V]): uint = blockstore.len
     ## Returns the length of this blockstore
@@ -82,8 +87,23 @@ template `[]=`*[V](store: BlockStore[V], idx: uint, newValue: V) =
     ## Sets a new value for a key
     store.data[idx].value = newValue
 
+proc next*[V](store: var BlockStore[V], iter: var BlockIter): ptr V {.inline.} =
+    ## Returns the next value in an iterator
+    while true:
+        if unlikely(iter.index >= store.nextId):
+            return nil
+        elif likely(store.data[iter.index].alive):
+            iter.index += 1
+            return addr store.data[iter.index - 1].value
+        else:
+            iter.index += 1
+
 iterator items*[V](store: var BlockStore[V]): var V =
     ## Iterate through all values in this BlockStore
-    for i in 0..<store.nextId:
-        if likely(store.data[i].alive):
-            yield store.data[i].value
+    var iter: BlockIter
+    var value: ptr V
+    while true:
+        value = store.next(iter)
+        if value == nil:
+            break
+        yield value[]
