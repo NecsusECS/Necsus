@@ -24,12 +24,14 @@ proc getModule(node: NimNode): string =
             return ownerModule
 
         let owner = node.owner
-        if owner.kind != nnkNilLit:
+        if owner == node:
+            return node.strVal
+        elif owner.kind != nnkNilLit:
             let parent = owner.getModule
             if parent == "":
-                result = owner.strVal
+                return owner.strVal
             else:
-                result = parent & "/" & owner.strVal
+                return parent & "/" & owner.strVal
     else:
         return ""
 
