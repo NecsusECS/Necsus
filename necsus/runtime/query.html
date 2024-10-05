@@ -59,8 +59,9 @@
 <li><a class="reference" href="#Not" title="Not[Comps] = distinct int8">Not</a></li>
 <li><a class="reference" href="#Query" title="Query[Comps] = distinct RawQuery[Comps]">Query</a></li>
 <li><a class="reference" href="#QueryItem" title="QueryItem[Comps] = tuple[entityId: EntityId, components: Comps]">QueryItem</a></li>
-<li><a class="reference" href="#QueryIterator" title="QueryIterator[Comps] = iterator (appState: pointer; slot: var Comps): EntityId {.
-    gcsafe, raises: [].}">QueryIterator</a></li>
+<li><a class="reference" href="#QueryNext" title="QueryNext[Comps] = proc (appStatePtr: pointer; state: var uint;
+                         iter: var BlockIter; eid: var EntityId; slot: var Comps): bool {.
+    gcsafe, raises: [], fastcall.}">QueryNext</a></li>
 <li><a class="reference" href="#RawQuery" title="RawQuery[Comps] = ref object">RawQuery</a></li>
 
     </ul>
@@ -75,9 +76,9 @@
 
 </ul>
 <ul class="simple nested-toc-section">newQuery
-  <li><a class="reference" href="#newQuery%2Cpointer%2CQueryGetLen%2CQueryIteratorBuilder%5BComps%3A%20tuple%5D" title="newQuery[Comps: tuple](appState: pointer; getLen: QueryGetLen;
-                       getIterator: QueryIteratorBuilder[Comps]): RawQuery[Comps]">newQuery[Comps: tuple](appState: pointer; getLen: QueryGetLen;
-                       getIterator: QueryIteratorBuilder[Comps]): RawQuery[Comps]</a></li>
+  <li><a class="reference" href="#newQuery%2Cpointer%2CQueryGetLen%2CQueryNext%5BComps%3A%20tuple%5D" title="newQuery[Comps: tuple](appState: pointer; getLen: QueryGetLen;
+                       getNext: QueryNext[Comps]): RawQuery[Comps]">newQuery[Comps: tuple](appState: pointer; getLen: QueryGetLen;
+                       getNext: QueryNext[Comps]): RawQuery[Comps]</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">single
@@ -116,7 +117,7 @@
     <div class="section" id="6">
   <h1><a class="toc-backref" href="#6">Imports</a></h1>
   <dl class="item">
-    <a class="reference external" href="entityId.html">entityId</a>
+    <a class="reference external" href="entityId.html">entityId</a>, <a class="reference external" href="../util/blockstore.html">../util/blockstore</a>
   </dl>
 </div>
 <div class="section" id="7">
@@ -162,9 +163,10 @@
     
   </dd>
 </div>
-<div id="QueryIterator">
-  <dt><pre><a href="query.html#QueryIterator"><span class="Identifier">QueryIterator</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">iterator</span> <span class="Other">(</span><span class="Identifier">appState</span><span class="Other">:</span> <span class="Identifier">pointer</span><span class="Other">;</span> <span class="Identifier">slot</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">Comps</span><span class="Other">)</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a> {.
-    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<div id="QueryNext">
+  <dt><pre><a href="query.html#QueryNext"><span class="Identifier">QueryNext</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">appStatePtr</span><span class="Other">:</span> <span class="Identifier">pointer</span><span class="Other">;</span> <span class="Identifier">state</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">uint</span><span class="Other">;</span>
+                         <span class="Identifier">iter</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="../util/blockstore.html#BlockIter"><span class="Identifier">BlockIter</span></a><span class="Other">;</span> <span class="Identifier">eid</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">;</span> <span class="Identifier">slot</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">Comps</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> </span><span class="Identifier">fastcall</span>.}</pre></dt>
   <dd>
     
     
@@ -197,10 +199,9 @@
 
 </div>
 <div id="newQuery-procs-all">
-  <div id="newQuery,pointer,QueryGetLen,QueryIteratorBuilder[Comps: tuple]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#newQuery%2Cpointer%2CQueryGetLen%2CQueryIteratorBuilder%5BComps%3A%20tuple%5D"><span class="Identifier">newQuery</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">appState</span><span class="Other">:</span> <span class="Identifier">pointer</span><span class="Other">;</span> <span class="Identifier">getLen</span><span class="Other">:</span> <span class="Identifier">QueryGetLen</span><span class="Other">;</span>
-                            <span class="Identifier">getIterator</span><span class="Other">:</span> <span class="Identifier">QueryIteratorBuilder</span><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="query.html#RawQuery"><span class="Identifier">RawQuery</span></a><span class="Other">[</span>
-    <span class="Identifier">Comps</span><span class="Other">]</span> {.<span class="Identifier">inline</span>.}</pre></dt>
+  <div id="newQuery,pointer,QueryGetLen,QueryNext[Comps: tuple]">
+  <dt><pre><span class="Keyword">proc</span> <a href="#newQuery%2Cpointer%2CQueryGetLen%2CQueryNext%5BComps%3A%20tuple%5D"><span class="Identifier">newQuery</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">appState</span><span class="Other">:</span> <span class="Identifier">pointer</span><span class="Other">;</span> <span class="Identifier">getLen</span><span class="Other">:</span> <span class="Identifier">QueryGetLen</span><span class="Other">;</span>
+                            <span class="Identifier">getNext</span><span class="Other">:</span> <a href="query.html#QueryNext"><span class="Identifier">QueryNext</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="query.html#RawQuery"><span class="Identifier">RawQuery</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span></pre></dt>
   <dd>
     
     
@@ -258,7 +259,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-10-01 16:06:04 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-10-05 04:26:43 UTC</small>
       </div>
     </div>
   </div>

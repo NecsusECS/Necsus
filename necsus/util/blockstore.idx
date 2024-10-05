@@ -1,15 +1,19 @@
 nimTitle	blockstore	necsus/util/blockstore.html	module src/necsus/util/blockstore		0
 nim	Entry	necsus/util/blockstore.html#Entry	type Entry		9
 nim	BlockStore	necsus/util/blockstore.html#BlockStore	type BlockStore		11
-nim	newBlockStore	necsus/util/blockstore.html#newBlockStore,SomeInteger	proc newBlockStore[V](size: SomeInteger): BlockStore[V]		19
-nim	len	necsus/util/blockstore.html#len,BlockStore[V]	proc len[V](blockstore: var BlockStore[V]): uint		23
-nim	reserve	necsus/util/blockstore.html#reserve,BlockStore[V]	proc reserve[V](blockstore: var BlockStore[V]): Entry[V]		26
-nim	index	necsus/util/blockstore.html#index,Entry[V]	proc index[V](entry: Entry[V]): uint		46
-nim	value	necsus/util/blockstore.html#value.t,Entry[V]	template value[V](entry: Entry[V]): var V		49
-nim	commit	necsus/util/blockstore.html#commit,Entry[V]	proc commit[V](entry: Entry[V])		52
-nim	set	necsus/util/blockstore.html#set,Entry[V],sinkV	proc set[V](entry: Entry[V]; value: sink V)		56
-nim	push	necsus/util/blockstore.html#push,BlockStore[V],sinkV	proc push[V](store: var BlockStore[V]; value: sink V): uint		61
-nim	del	necsus/util/blockstore.html#del,BlockStore[V],uint	proc del[V](store: var BlockStore[V]; idx: uint): V		67
-nim	`[]`	necsus/util/blockstore.html#[],BlockStore[V],uint	proc `[]`[V](store: BlockStore[V]; idx: uint): var V		77
-nim	`[]=`	necsus/util/blockstore.html#[]=.t,BlockStore[V],uint,V	template `[]=`[V](store: BlockStore[V]; idx: uint; newValue: V)		81
-nim	items	necsus/util/blockstore.html#items.i,BlockStore[V]	iterator items[V](store: var BlockStore[V]): var V		85
+nim	BlockIter	necsus/util/blockstore.html#BlockIter	object BlockIter		19
+nim	newBlockStore	necsus/util/blockstore.html#newBlockStore,SomeInteger	proc newBlockStore[V](size: SomeInteger): BlockStore[V]		23
+nim	isFirst	necsus/util/blockstore.html#isFirst,BlockIter	proc isFirst(iter: BlockIter): bool		27
+nim	isDone	necsus/util/blockstore.html#isDone,BlockIter	proc isDone(iter: BlockIter): bool		29
+nim	len	necsus/util/blockstore.html#len,BlockStore[V]	proc len[V](blockstore: var BlockStore[V]): uint		31
+nim	reserve	necsus/util/blockstore.html#reserve,BlockStore[V]	proc reserve[V](blockstore: var BlockStore[V]): Entry[V]		34
+nim	index	necsus/util/blockstore.html#index,Entry[V]	proc index[V](entry: Entry[V]): uint		54
+nim	value	necsus/util/blockstore.html#value.t,Entry[V]	template value[V](entry: Entry[V]): var V		57
+nim	commit	necsus/util/blockstore.html#commit,Entry[V]	proc commit[V](entry: Entry[V])		60
+nim	set	necsus/util/blockstore.html#set,Entry[V],sinkV	proc set[V](entry: Entry[V]; value: sink V)		64
+nim	push	necsus/util/blockstore.html#push,BlockStore[V],sinkV	proc push[V](store: var BlockStore[V]; value: sink V): uint		69
+nim	del	necsus/util/blockstore.html#del,BlockStore[V],uint	proc del[V](store: var BlockStore[V]; idx: uint): V		75
+nim	`[]`	necsus/util/blockstore.html#[],BlockStore[V],uint	proc `[]`[V](store: BlockStore[V]; idx: uint): var V		85
+nim	`[]=`	necsus/util/blockstore.html#[]=.t,BlockStore[V],uint,V	template `[]=`[V](store: BlockStore[V]; idx: uint; newValue: V)		89
+nim	next	necsus/util/blockstore.html#next,BlockStore[V],BlockIter	proc next[V](store: var BlockStore[V]; iter: var BlockIter): ptr V		93
+nim	items	necsus/util/blockstore.html#items.i,BlockStore[V]	iterator items[V](store: var BlockStore[V]): var V		105

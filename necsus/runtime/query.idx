@@ -1,13 +1,13 @@
 nimTitle	query	necsus/runtime/query.html	module src/necsus/runtime/query		0
 nim	QueryItem	necsus/runtime/query.html#QueryItem	tuple QueryItem		4
-nim	QueryIterator	necsus/runtime/query.html#QueryIterator	type QueryIterator		8
-nim	RawQuery	necsus/runtime/query.html#RawQuery	type RawQuery		14
-nim	Query	necsus/runtime/query.html#Query	type Query		21
-nim	FullQuery	necsus/runtime/query.html#FullQuery	type FullQuery		25
-nim	AnyQuery	necsus/runtime/query.html#AnyQuery	type AnyQuery		29
-nim	Not	necsus/runtime/query.html#Not	type Not		31
-nim	newQuery	necsus/runtime/query.html#newQuery,pointer,QueryGetLen,QueryIteratorBuilder[Comps: tuple]	proc newQuery[Comps: tuple](appState: pointer; getLen: QueryGetLen;\n                       getIterator: QueryIteratorBuilder[Comps]): RawQuery[Comps]		35
-nim	pairs	necsus/runtime/query.html#pairs.i,FullQuery[Comps: tuple]	iterator pairs[Comps: tuple](query: FullQuery[Comps]): QueryItem[Comps]		42
-nim	items	necsus/runtime/query.html#items.i,AnyQuery[Comps: tuple]	iterator items[Comps: tuple](query: AnyQuery[Comps]): Comps		50
-nim	len	necsus/runtime/query.html#len,AnyQuery[Comps: tuple]	proc len[Comps: tuple](query: AnyQuery[Comps]): uint		58
-nim	single	necsus/runtime/query.html#single,AnyQuery[Comps: tuple]	proc single[Comps: tuple](query: AnyQuery[Comps]): Option[Comps]		63
+nim	QueryNext	necsus/runtime/query.html#QueryNext	type QueryNext		8
+nim	RawQuery	necsus/runtime/query.html#RawQuery	type RawQuery		18
+nim	Query	necsus/runtime/query.html#Query	type Query		25
+nim	FullQuery	necsus/runtime/query.html#FullQuery	type FullQuery		29
+nim	AnyQuery	necsus/runtime/query.html#AnyQuery	type AnyQuery		33
+nim	Not	necsus/runtime/query.html#Not	type Not		35
+nim	newQuery	necsus/runtime/query.html#newQuery,pointer,QueryGetLen,QueryNext[Comps: tuple]	proc newQuery[Comps: tuple](appState: pointer; getLen: QueryGetLen;\n                       getNext: QueryNext[Comps]): RawQuery[Comps]		39
+nim	pairs	necsus/runtime/query.html#pairs.i,FullQuery[Comps: tuple]	iterator pairs[Comps: tuple](query: FullQuery[Comps]): QueryItem[Comps]		46
+nim	items	necsus/runtime/query.html#items.i,AnyQuery[Comps: tuple]	iterator items[Comps: tuple](query: AnyQuery[Comps]): Comps		56
+nim	len	necsus/runtime/query.html#len,AnyQuery[Comps: tuple]	proc len[Comps: tuple](query: AnyQuery[Comps]): uint		66
+nim	single	necsus/runtime/query.html#single,AnyQuery[Comps: tuple]	proc single[Comps: tuple](query: AnyQuery[Comps]): Option[Comps]		71

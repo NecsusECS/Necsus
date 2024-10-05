@@ -121,6 +121,12 @@
     Comps]</a></li>
 
 </ul>
+<ul class="simple nested-toc-section">next
+  <li><a class="reference" href="#next%2CArchetypeStore%5BComps%3A%20tuple%5D%2CBlockIter%2CEntityId" title="next[Comps: tuple](store: var ArchetypeStore[Comps]; iter: var BlockIter;
+                   eid: var EntityId): ptr Comps">next[Comps: tuple](store: var ArchetypeStore[Comps]; iter: var BlockIter;
+                   eid: var EntityId): ptr Comps</a></li>
+
+</ul>
 <ul class="simple nested-toc-section">readArchetype
   <li><a class="reference" href="#readArchetype%2CArchetypeStore" title="readArchetype(store: ArchetypeStore): ArchetypeId">readArchetype(store: ArchetypeStore): ArchetypeId</a></li>
 
@@ -138,7 +144,7 @@
     <summary><a class="reference reference-toplevel" href="#15" id="65">Iterators</a></summary>
     <ul class="simple simple-toc-section">
       <ul class="simple nested-toc-section">items
-  <li><a class="reference" href="#items.i%2CArchetypeStore%5BComps%3A%20tuple%5D" title="items[Comps: tuple](store: var ArchetypeStore[Comps]): var ArchRow[Comps]">items[Comps: tuple](store: var ArchetypeStore[Comps]): var ArchRow[Comps]</a></li>
+  <li><a class="reference" href="#items.i%2CArchetypeStore%5BComps%3A%20tuple%5D" title="items[Comps: tuple](store: var ArchetypeStore[Comps]): ptr ArchRow[Comps]">items[Comps: tuple](store: var ArchetypeStore[Comps]): ptr ArchRow[Comps]</a></li>
 
 </ul>
 
@@ -321,6 +327,18 @@
 </div>
 
 </div>
+<div id="next-procs-all">
+  <div id="next,ArchetypeStore[Comps: tuple],BlockIter,EntityId">
+  <dt><pre><span class="Keyword">proc</span> <a href="#next%2CArchetypeStore%5BComps%3A%20tuple%5D%2CBlockIter%2CEntityId"><span class="Identifier">next</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">iter</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="../util/blockstore.html#BlockIter"><span class="Identifier">BlockIter</span></a><span class="Other">;</span>
+                        <span class="Identifier">eid</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Keyword">ptr</span> <span class="Identifier">Comps</span></pre></dt>
+  <dd>
+    
+    Returns the next row of components in this archetype store
+    
+  </dd>
+</div>
+
+</div>
 <div id="readArchetype-procs-all">
   <div id="readArchetype,ArchetypeStore">
   <dt><pre><span class="Keyword">proc</span> <a href="#readArchetype%2CArchetypeStore"><span class="Identifier">readArchetype</span></a><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">)</span><span class="Other">:</span> <a href="world.html#ArchetypeId"><span class="Identifier">ArchetypeId</span></a> {.<span class="Identifier">inline</span>.}</pre></dt>
@@ -351,7 +369,7 @@
   <dl class="item">
     <div id="items-iterators-all">
   <div id="items.i,ArchetypeStore[Comps: tuple]">
-  <dt><pre><span class="Keyword">iterator</span> <a href="#items.i%2CArchetypeStore%5BComps%3A%20tuple%5D"><span class="Identifier">items</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchRow"><span class="Identifier">ArchRow</span></a><span class="Other">[</span>
+  <dt><pre><span class="Keyword">iterator</span> <a href="#items.i%2CArchetypeStore%5BComps%3A%20tuple%5D"><span class="Identifier">items</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="archetypeStore.html#ArchRow"><span class="Identifier">ArchRow</span></a><span class="Other">[</span>
     <span class="Identifier">Comps</span><span class="Other">]</span></pre></dt>
   <dd>
     
@@ -371,7 +389,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-10-01 16:06:04 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-10-05 04:26:43 UTC</small>
       </div>
     </div>
   </div>
