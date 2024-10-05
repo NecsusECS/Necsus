@@ -1,12 +1,10 @@
 import std/options
 
-proc isAboveNimVersion*(major, minor, patch: int): bool =
-    ## Returns whether the current nim compiler is above a given version
-    if NimMajor > major: return true
-    if NimMajor < major: return false
-    if NimMinor > minor: return true
-    if NimMinor < minor: return false
-    return NimPatch > patch
+proc isSinkMemoryCorruptionFixed*(): bool =
+    ## Returns whether the current version of Nim has a fixed implementation of
+    ## the 'sink' parameter that doesn't cause memory corruption.
+    ## See https://github.com/nim-lang/Nim/issues/23907
+    return false
 
 proc stringify*[T](value: T): string {.raises: [], gcsafe.} =
     ## Converts a value to a string as best as it can

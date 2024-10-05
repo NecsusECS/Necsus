@@ -1,7 +1,6 @@
 import necsus/util/tools
 
-# Blocked by: https://github.com/nim-lang/Nim/issues/23907
-when isAboveNimVersion(2, 0, 8):
+when isSinkMemoryCorruptionFixed():
     import unittest, necsus
 
     type

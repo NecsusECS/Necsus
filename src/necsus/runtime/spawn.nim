@@ -29,8 +29,7 @@ proc beginSpawn*[Comps: tuple](
     result = store.newSlot(newEntity.entityId)
     newEntity.setArchetypeDetails(store.archetype, result.index)
 
-# Blocked by: https://github.com/nim-lang/Nim/pull/23909
-when isAboveNimVersion(2, 0, 8):
+when isSinkMemoryCorruptionFixed():
     proc set[C: tuple](spawn: RawSpawn[C], values: sink C): EntityId {.raises: [], inline.} =
         return spawn.callback(spawn.app, values)
 else:
