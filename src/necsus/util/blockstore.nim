@@ -61,16 +61,16 @@ proc commit*[V](entry: Entry[V]) {.inline.} =
     ## Marks that an entry is ready to be used
     entry.alive = true
 
-proc set*[V](entry: Entry[V], value: sink V) =
+template set*[V](entry: Entry[V], newValue: V) =
     ## Sets a value on an entry
-    entry.value = value
+    entry.value = newValue
     entry.commit
 
-proc push*[V](store: var BlockStore[V], value: sink V): uint =
+template push*[V](store: var BlockStore[V], newValue: V): uint =
     ## Adds a value and returns an index to it
     var entry = store.reserve
-    entry.set(value)
-    return entry.index
+    entry.set(newValue)
+    entry.index
 
 proc del*[V](store: var BlockStore[V], idx: uint): V =
     ## Deletes a field
