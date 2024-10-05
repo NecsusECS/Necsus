@@ -18,12 +18,15 @@ type
 
     BlockIter* = object
         index: uint
+        isDone: bool
 
 proc newBlockStore*[V](size: SomeInteger): BlockStore[V] =
     ## Instantiates a new BlockStore
     BlockStore[V](recycle: newRingBuffer[uint](size), data: newSeq[EntryData[V]](size))
 
 proc isFirst*(iter: BlockIter): bool = iter.index == 0
+
+proc isDone*(iter: BlockIter): bool {.inline.} = iter.isDone
 
 func len*[V](blockstore: var BlockStore[V]): uint = blockstore.len
     ## Returns the length of this blockstore
@@ -91,6 +94,7 @@ proc next*[V](store: var BlockStore[V], iter: var BlockIter): ptr V {.inline.} =
     ## Returns the next value in an iterator
     while true:
         if unlikely(iter.index >= store.nextId):
+            iter.isDone = true
             return nil
         elif likely(store.data[iter.index].alive):
             iter.index += 1

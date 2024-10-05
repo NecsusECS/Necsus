@@ -97,7 +97,12 @@ suite "BlockStore":
         let id3 = store.push("baz")
 
         var iter: BlockIter
+        check(not iter.isDone)
         check(store.next(iter)[] == "foo")
+        check(not iter.isDone)
         check(store.next(iter)[] == "bar")
+        check(not iter.isDone)
         check(store.next(iter)[] == "baz")
+        check(not iter.isDone)
         check(store.next(iter) == nil)
+        check(iter.isDone)
