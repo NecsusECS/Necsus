@@ -4,7 +4,7 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    container: nimlang/choo/enim
+    container: nimlang/choosenim
     strategy:
       matrix:
         nim: [ 2.0.10, 1.6.14 ]
