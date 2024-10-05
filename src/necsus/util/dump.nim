@@ -104,7 +104,7 @@ proc fixTempVars(output: NimNode): NimNode =
 proc dumpGeneratedCode*(output: NimNode, app: ParsedApp, systems: openarray[ParsedSystem]) =
     ## Prints the generated necsus app for debugging purposes
     echo "import std/[math, json, jsonutils, options, importutils]"
-    echo "import necsus/runtime/[world, archetypeStore], necsus/util/profile"
+    echo "import necsus/runtime/[world, archetypeStore], necsus/util/[profile, tools, blockstore]"
     dumpImports(app, systems)
 
     echo "const DEFAULT_ENTITY_COUNT = 1_000"
