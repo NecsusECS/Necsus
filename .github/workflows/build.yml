@@ -7,7 +7,6 @@ jobs:
     container: nimlang/choo/enim
     strategy:
       matrix:
-        threads: [on, off]
         nim: [ 2.0.10, 1.6.14 ]
     steps:
     - uses: actions/checkout@v1
@@ -16,14 +15,13 @@ jobs:
     - name: Safe git directory
       run: git config --global --add safe.directory "$(pwd)"
     - name: Test
-      run: nimble --threads:${{ matrix.threads }} test -y
+      run: nimble test -y
 
   benchmark:
     runs-on: ubuntu-latest
     container: nimlang/choosenim
     strategy:
       matrix:
-        threads: [on, off]
         nim: [ 2.0.10, 1.6.14 ]
     steps:
     - uses: actions/checkout@v1
@@ -32,7 +30,7 @@ jobs:
     - name: Safe git directory
       run: git config --global --add safe.directory "$(pwd)"
     - name: Benchmark
-      run: nimble -y -d:release --threads:${{ matrix.threads }} benchmark
+      run: nimble -y -d:release benchmark
 
   readme:
     runs-on: ubuntu-latest
