@@ -4,11 +4,11 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    container: nimlang/choosenim
+    container: nimlang/choo/enim
     strategy:
       matrix:
         threads: [on, off]
-        nim: [ stable, 1.6.14 ]
+        nim: [ 2.0.10, 1.6.14 ]
     steps:
     - uses: actions/checkout@v1
     - name: Choose Nim
@@ -24,7 +24,7 @@ jobs:
     strategy:
       matrix:
         threads: [on, off]
-        nim: [ stable, 1.6.14 ]
+        nim: [ 2.0.10, 1.6.14 ]
     steps:
     - uses: actions/checkout@v1
     - name: Choose Nim
@@ -39,7 +39,7 @@ jobs:
     container: nimlang/choosenim
     strategy:
       matrix:
-        nim: [ stable, 1.6.14 ]
+        nim: [ 2.0.10, 1.6.14 ]
     steps:
     - uses: actions/checkout@v1
     - name: Choose Nim
@@ -55,7 +55,7 @@ jobs:
     strategy:
       matrix:
         project: [NecsusECS/NecsusAsteroids, NecsusECS/NecsusParticleDemo]
-        nim: [ stable, 1.6.14 ]
+        nim: [ 2.0.10, 1.6.14 ]
     steps:
     - uses: actions/checkout@v1
     - name: Choose Nim
@@ -75,7 +75,7 @@ jobs:
     container: nimlang/choosenim
     strategy:
       matrix:
-        nim: [ stable ]
+        nim: [ 2.0.10 ]
         flag: [
           profile,
           dump,
@@ -100,7 +100,7 @@ jobs:
     container: nimlang/choosenim
     strategy:
       matrix:
-        nim: [ stable, 1.6.14 ]
+        nim: [ 2.0.10, 1.6.14 ]
     steps:
     - uses: actions/checkout@v1
     - name: Choose Nim
