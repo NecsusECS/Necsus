@@ -40,7 +40,7 @@ proc capacity*[T](ring: RingBuffer[T]): uint =
     # so the capacity is also N-1
     ring.size
 
-proc tryPush*[T](ring: var RingBuffer[T], value: sink T) =
+template tryPush*[T](ring: var RingBuffer[T], value: T) =
     ## Pushes a value onto the ring, returning true if it was a success
     if ring.size + ring.head - ring.tail <= 0:
         ring.head += 1
