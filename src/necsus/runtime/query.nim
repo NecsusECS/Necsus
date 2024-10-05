@@ -1,13 +1,17 @@
-import entityId, options
+import entityId, options, ../util/blockstore
 
 type
     QueryItem*[Comps: tuple] = tuple[entityId: EntityId, components: Comps]
         ## An individual value yielded by a query. Where `Comps` is a tuple of the components to fetch in
         ## this query
 
-    QueryIterator*[Comps: tuple] = iterator(appState: pointer, slot: var Comps): EntityId {.gcsafe, raises: [].}
-
-    QueryIteratorBuilder[Comps: tuple] = proc(): QueryIterator[Comps] {.gcsafe, raises: [], fastcall.}
+    QueryNext*[Comps: tuple] = proc(
+        appStatePtr: pointer,
+        state: var uint,
+        iter: var BlockIter,
+        eid: var EntityId,
+        slot: var Comps,
+    ): bool {.gcsafe, raises: [], fastcall.}
 
     QueryGetLen = proc(appState: pointer): uint {.gcsafe, raises: [], fastcall.}
 
@@ -16,7 +20,7 @@ type
         ## the components to fetch in this query.
         appState: pointer
         getLen: QueryGetLen
-        getIterator: QueryIteratorBuilder[Comps]
+        getNext: QueryNext[Comps]
 
     Query*[Comps: tuple] = distinct RawQuery[Comps]
         ## Allows systems to query for entities with specific components. Where `Comps` is a tuple of
@@ -35,25 +39,29 @@ type
 proc newQuery*[Comps: tuple](
     appState: pointer,
     getLen: QueryGetLen,
-    getIterator: QueryIteratorBuilder[Comps]
-): RawQuery[Comps] {.inline.} =
-    RawQuery[Comps](appState: appState, getLen: getLen, getIterator: getIterator)
+    getNext: QueryNext[Comps],
+): RawQuery[Comps] =
+    RawQuery[Comps](appState: appState, getLen: getLen, getNext: getNext)
 
 iterator pairs*[Comps: tuple](query: FullQuery[Comps]): QueryItem[Comps] =
     ## Iterates through the entities in a query
     let raw = RawQuery[Comps](query)
-    var output: Comps
-    let iter = raw.getIterator()
-    for eid in iter(raw.appState, output):
-        yield (eid, output)
+    var state: uint
+    var iter: BlockIter
+    var eid: EntityId
+    var slot: Comps
+    while raw.getNext(raw.appState, state, iter, eid, slot):
+        yield (eid, slot)
 
 iterator items*[Comps: tuple](query: AnyQuery[Comps]): Comps =
     ## Iterates through the entities in a query
     let raw = RawQuery[Comps](query)
-    var output: Comps
-    let iter = raw.getIterator()
-    for _ in iter(raw.appState, output):
-        yield output
+    var state: uint
+    var iter: BlockIter
+    var eid: EntityId
+    var slot: Comps
+    while raw.getNext(raw.appState, state, iter, eid, slot):
+        yield slot
 
 proc len*[Comps: tuple](query: AnyQuery[Comps]): uint {.gcsafe, raises: [].} =
     ## Returns the number of entities in this query

@@ -1,6 +1,6 @@
 import std/[tables, macros, options]
 import tupleDirective, archetype, componentDef, tools, systemGen, archetypeBuilder, common, directiveArg
-import ../runtime/[archetypeStore, query], ../util/bits
+import ../runtime/[archetypeStore, query], ../util/[bits, blockstore]
 
 iterator selectArchetypes(details: GenerateContext, query: TupleDirective): Archetype[ComponentDef] =
     ## Iterates through the archetypes that contribute to a query
@@ -8,6 +8,9 @@ iterator selectArchetypes(details: GenerateContext, query: TupleDirective): Arch
         if archetype.matches(query.filter):
             yield archetype
 
+let state {.compileTime.} = ident("state")
+let iter {.compileTime.} = ident("iter")
+let eid {.compileTime.} = ident("eid")
 let slot {.compileTime.} = ident("slot")
 
 proc addLenPredicate(existing, row: NimNode, arch: Archetype[ComponentDef], arg: DirectiveArg, fn: NimNode): NimNode =
@@ -54,19 +57,43 @@ proc walkArchetypes(
 ): (NimNode, NimNode) {.used.} =
     ## Creates the views that bind an archetype to a query
     var lenCalculation = newStmtList()
-    var iteratorBody = newStmtList()
+
+    var iterCases: seq[NimNode]
 
     for archetype in details.selectArchetypes(query):
 
         lenCalculation.add(buildAddLen(query, archetype))
 
         let archetypeIdent = archetype.ident
-        let copier = newConverter(archetype, query).name
+        let convert = newConverter(archetype, query).name
 
-        iteratorBody.add quote do:
-            for row in items(`appStateIdent`.`archetypeIdent`):
-                if likely(`copier`(addr row.components, nil, `slot`)):
-                    yield row.entityId
+        iterCases.add nnkOfBranch.newTree(
+            iterCases.len.newLit,
+            quote do:
+                if likely(`convert`(`appStateIdent`.`archetypeIdent`.next(`iter`, `eid`), nil, `slot`)):
+                    return true
+        )
+
+    let iteratorBody = if iterCases.len == 0:
+        nnkReturnStmt.newTree(false.newLit)
+    else:
+        let maxLen = iterCases.len.newLit
+
+        var iterCaseStmt = nnkCaseStmt.newTree()
+        iterCaseStmt.add quote do:
+            cast[range[0..`maxLen`]](`state`)
+        iterCaseStmt.add(iterCases)
+        iterCaseStmt.add nnkOfBranch.newTree(
+            iterCases.len.newLit,
+            nnkReturnStmt.newTree(false.newLit)
+        )
+
+        quote:
+            while true:
+                `iterCaseStmt`
+                if `iter`.isDone:
+                    `state` += 1
+                    `iter` = default(BlockIter)
 
     return (lenCalculation, iteratorBody)
 
@@ -95,7 +122,7 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, dir: Tuple
 
     let queryTuple = dir.args.asTupleType
     let getLen = details.globalName(name & "_getLen")
-    let getIterator = details.globalName(name & "_getIterator")
+    let getNext = details.globalName(name & "_getNext")
 
     case details.hook
     of GenerateHook.Outside:
@@ -112,16 +139,21 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, dir: Tuple
                 result = 0
                 `lenCalculation`
 
-            proc `getIterator`(): QueryIterator[`queryTuple`] {.gcsafe, raises: [], fastcall.} =
-                return iterator(`appStatePtr`: pointer, `slot`: var `queryTuple`): EntityId =
-                    let `appStateIdent` {.used.} = cast[ptr `appStateTypeName`](`appStatePtr`)
-                    `trace`
-                    `iteratorBody`
+            proc `getNext`(
+                `appStatePtr`: pointer,
+                `state`: var uint,
+                `iter`: var BlockIter,
+                `eid`: var EntityId,
+                `slot`: var `queryTuple`,
+            ): bool {.gcsafe, raises: [], fastcall.} =
+                let `appStateIdent` {.used.} = cast[ptr `appStateTypeName`](`appStatePtr`)
+                `trace`
+                `iteratorBody`
 
     of GenerateHook.Standard:
         let ident = name.ident
         return quote do:
-            `appStateIdent`.`ident` = newQuery[`queryTuple`](addr `appStateIdent`, `getLen`, `getIterator`)
+            `appStateIdent`.`ident` = newQuery[`queryTuple`](`appStatePtr`, `getLen`, `getNext`)
     else:
         return newEmptyNode()
 

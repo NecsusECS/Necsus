@@ -32,9 +32,13 @@ proc newArchetypeStore*[Comps: tuple](
 proc readArchetype*(store: ArchetypeStore): ArchetypeId {.inline.} = store.archetype
     ## Accessor for the archetype of a store
 
-proc next*[Comps: tuple](store: var ArchetypeStore[Comps], iter: var BlockIter): ptr ArchRow[Comps] =
-    ## Returns the next value for an interator
-    return store.compStore.next(BlockIter(iter))
+proc next*[Comps: tuple](store: var ArchetypeStore[Comps], iter: var BlockIter, eid: var EntityId): ptr Comps =
+    ## Returns the next row of components in this archetype store
+    let row = store.compStore.next(BlockIter(iter))
+    if unlikely(row == nil):
+        return nil
+    eid = row.entityId
+    return addr row.components
 
 iterator items*[Comps: tuple](store: var ArchetypeStore[Comps]): ptr ArchRow[Comps] =
     ## Iterates over the components in a view
