@@ -1,4 +1,4 @@
-import std/[macros, options, strformat]
+import std/[macros, options, strformat, sequtils, strutils]
 import tools, tupleDirective, dualDirective, common, queryGen, lookupGen, spawnGen, directiveArg
 import archetype, componentDef, systemGen, archetypeBuilder, converters
 import ../runtime/[world, archetypeStore, directives], ../util/bits
@@ -15,7 +15,14 @@ proc createArchUpdate(
     archetype: Archetype[ComponentDef]
 ): NimNode =
     ## Creates code for updating archetype information in place
-    result = newStmtList(emitEntityTrace(title, " ", entityId, " for ", archetype.name))
+
+    let attachStr = attachComps.mapIt(it.readableName).join(", ")
+    let detachStr = detachComps.mapIt(it.readableName).join(", ")
+    result = newStmtList(emitEntityTrace(
+        fmt"{title} for ",
+        entityId,
+        fmt"; from {archetype.readableName}, attaching [{attachStr}], detaching [{detachStr}], "
+    ))
 
     let archIdent = archetype.ident
     let archTuple = archetype.asStorageTuple
