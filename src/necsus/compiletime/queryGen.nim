@@ -14,6 +14,9 @@ let eid {.compileTime.} = ident("eid")
 let slot {.compileTime.} = ident("slot")
 
 proc addLenPredicate(existing, row: NimNode, arch: Archetype[ComponentDef], arg: DirectiveArg, fn: NimNode): NimNode =
+    if arg.component notin arch:
+        return false.newLit
+
     let index = arch.indexOf(arg.component).newLit
     let newCheck = newCall(fn, nnkBracketExpr.newTree(row, index))
     return if existing.kind == nnkEmpty: newCheck else: infix(existing, "and", newCheck)
