@@ -1,5 +1,5 @@
 import macros, sequtils, systemGen, options
-import codeGenInfo, parse, common, ../runtime/[systemVar, directives], ../util/profile
+import codeGenInfo, parse, common, tools, ../runtime/[systemVar, directives], ../util/profile
 
 proc renderSystemArgs(codeGenInfo: CodeGenInfo, args: openarray[SystemArg]): seq[NimNode] =
     ## Renders system arguments down to nim code
@@ -24,7 +24,7 @@ proc addActiveChecks*(
 
     return newIfStmt((condition, invocation))
 
-proc wrapInProfiler(codeGenInfo: CodeGenInfo, i: int, node: NimNode): NimNode =
+proc wrapInProfiler(node: NimNode, i: int, codeGenInfo: CodeGenInfo): NimNode =
     ## Wraps a system invocation in a profiler call when enabled
     if not profilingEnabled():
         return node
@@ -35,13 +35,24 @@ proc wrapInProfiler(codeGenInfo: CodeGenInfo, i: int, node: NimNode): NimNode =
         `node`
         `appStateIdent`.profile[`i`].record(`appStateIdent`.config.getTime() - `profileVar`)
 
-proc logSystemCall(system: ParsedSystem, prefix: string): NimNode =
-    if defined(necsusLog):
-        let message = prefix & ": " & system.symbol.strVal
-        return quote:
-            `appStateIdent`.config.log(`message`)
-    else:
-        return newEmptyNode()
+proc wrapInSystemLog(invoke: NimNode, system: ParsedSystem): NimNode =
+    if not defined(necsusSystemTrace):
+        return invoke
+
+    let startMessage = emitLog("Starting system: " & system.symbol.strVal)
+    let endMessage = emitLog("System done: " & system.symbol.strVal)
+    result = quote:
+        try:
+            `startMessage`
+            `invoke`
+        finally:
+            `endMessage`
+
+    if system.phase == IndirectEventCallback:
+        let mailboxName = system.callbackSysMailboxName
+        result = quote:
+            if `appStateIdent`.`mailboxName`.len > 0:
+                `result`
 
 proc singleInvokeSystem(codeGenInfo: CodeGenInfo, system: ParsedSystem, prefixArgs: openArray[NimNode]): NimNode =
     ## Generates the code needed call a system once
@@ -77,14 +88,13 @@ proc invokeSystem*(
     else:
         result = codeGenInfo.singleInvokeSystem(system, prefixArgs)
 
+    result = result
+        .wrapInProfiler(system.id, codeGenInfo)
+        .wrapInSystemLog(system)
+
     if system.phase != SaveCallback:
-
-        result = codeGenInfo.wrapInProfiler(system.id, result)
-
         result = newStmtList(
-            system.logSystemCall("Starting system"),
             result.addActiveChecks(codeGenInfo, system.checks, system.phase),
-            system.logSystemCall("System done"),
             codeGenInfo.generateForHook(system, AfterActiveCheck),
         )
 

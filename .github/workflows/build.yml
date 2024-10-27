@@ -78,6 +78,7 @@ jobs:
           profile,
           dump,
           archetypes,
+          necsusSystemTrace,
           necsusEntityTrace,
           necsusEventTrace,
           necsusQueryTrace,

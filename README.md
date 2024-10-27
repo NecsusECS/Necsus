@@ -1065,6 +1065,7 @@ and then outputs the timings to the console.
 To understand what is happening in various systems over time, various flags can be enabled
 to emit trace-level logs. They are:
 
+* `-d:necsusSystemTrace`: Logs before and after a system is executed
 * `-d:necsusEntityTrace`: Logs whenever an entity is spawned, deleted, or modified in some way
 * `-d:necsusEventTrace`: Logs whenever an event is sent
 * `-d:necsusQueryTrace`: Logs when a query is executed
