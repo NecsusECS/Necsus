@@ -5,10 +5,11 @@ on:
       - main
 jobs:
   docs:
-    concurrency: ci-${{ github.ref }}
     runs-on: ubuntu-latest
-    container: nimlang/nim
+    container: nimlang/choosenim
     steps:
+    - name: Choose Nim
+      run: choosenim update -y 2.0.10
     - uses: actions/checkout@v3
     - run: git config --global --add safe.directory "$(pwd)"
     - run: nimble install -y markdown
