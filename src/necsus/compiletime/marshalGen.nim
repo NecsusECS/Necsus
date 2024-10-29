@@ -85,18 +85,18 @@ proc createSaveProc(genInfo: CodeGenInfo): NimNode =
     let body = if isFastCompileMode(fastMarshal):
         newStmtList()
     else:
+        var precalc = newStmtList()
+
         var construct = nnkObjConstr.newTree(genInfo.saveTypeName)
         for system in genInfo.systems.filterIt(it.phase == SaveCallback):
-            construct.add(
-                nnkExprColonExpr.newTree(
-                    system.returns.strVal.ident,
-                    genInfo.invokeSystem(system, {SaveCallback})
-                )
-            )
+            let temp = genSym(nskLet)
+            precalc.add(newLetStmt(temp, genInfo.invokeSystem(system, {SaveCallback})))
+            construct.add(nnkExprColonExpr.newTree( system.returns.strVal.ident, temp))
 
         let log = emitSaveTrace("Saved: ", ident("result"))
 
         quote:
+            `precalc`
             result = $toJson(`construct`)
             `log`
 

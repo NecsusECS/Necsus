@@ -29,11 +29,14 @@ proc wrapInProfiler(node: NimNode, i: int, codeGenInfo: CodeGenInfo): NimNode =
     if not profilingEnabled():
         return node
 
-    let profileVar = ident("profile_start_time_" & $i)
+    let profileVar = genSym(nskLet, "profile_start_time")
     return quote do:
-        let `profileVar` = `appStateIdent`.config.getTime()
-        `node`
-        `appStateIdent`.profile[`i`].record(`appStateIdent`.config.getTime() - `profileVar`)
+        block:
+            let `profileVar` = `appStateIdent`.config.getTime()
+            try:
+                `node`
+            finally:
+                `appStateIdent`.profile[`i`].record(`appStateIdent`.config.getTime() - `profileVar`)
 
 proc wrapInSystemLog(invoke: NimNode, system: ParsedSystem): NimNode =
     if not defined(necsusSystemTrace):
