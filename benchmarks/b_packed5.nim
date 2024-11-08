@@ -30,7 +30,7 @@ proc runner(tick: proc(): void) =
 proc myApp() {.necsus(
     runner,
     [~setup, ~modifyA, ~modifyB, ~modifyC, ~modifyD, ~modifyE],
-    newNecsusConf(10_000)
+    newNecsusConf(10_000, eagerAlloc = true)
 ).}
 
 myApp()

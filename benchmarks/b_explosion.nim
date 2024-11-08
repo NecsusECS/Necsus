@@ -53,7 +53,7 @@ proc runner(tick: proc(): void) =
     benchmark "Archetype explosion", 1000:
         tick()
 
-proc myApp() {.necsus(runner, [~setup, ~query], newNecsusConf(10_000)).}
+proc myApp() {.necsus(runner, [~setup, ~query], newNecsusConf(10_000, eagerAlloc = true)).}
 
 myApp()
 

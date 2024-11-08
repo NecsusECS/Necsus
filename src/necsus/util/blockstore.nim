@@ -93,7 +93,7 @@ template `[]=`*[V](store: BlockStore[V], idx: uint, newValue: V) =
 proc next*[V](store: var BlockStore[V], iter: var BlockIter): ptr V {.inline.} =
     ## Returns the next value in an iterator
     while true:
-        if unlikely(iter.index >= store.nextId):
+        if unlikely(store == nil or iter.index >= store.nextId):
             iter.isDone = true
             return nil
         elif likely(store.data[iter.index].alive):

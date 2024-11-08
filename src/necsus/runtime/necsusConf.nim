@@ -9,6 +9,7 @@ type
         componentSize*: int
         getTime*: proc(): BiggestFloat {.gcsafe.}
         log*: NecsusLogger
+        eagerAlloc*: bool
 
 proc logEcho(message: string) =
     when defined(necsusEchoLog):
@@ -19,6 +20,7 @@ proc newNecsusConf*(
     log: NecsusLogger,
     entitySize: int,
     componentSize: int,
+    eagerAlloc: bool = false
 ): NecsusConf =
     ## Create a necsus configuration
     NecsusConf(
@@ -26,11 +28,16 @@ proc newNecsusConf*(
         componentSize: componentSize,
         getTime: getTime,
         log: log,
+        eagerAlloc: eagerAlloc
     )
 
-proc newNecsusConf*(getTime: proc(): BiggestFloat {.gcsafe.}, log: NecsusLogger): NecsusConf =
+proc newNecsusConf*(
+    getTime: proc(): BiggestFloat {.gcsafe.},
+    log: NecsusLogger,
+    eagerAlloc: bool = false
+): NecsusConf =
     ## Create a necsus configuration
-    NecsusConf(entitySize: 1_000, componentSize: 400, getTime: getTime, log: log)
+    NecsusConf(entitySize: 1_000, componentSize: 400, getTime: getTime, log: log, eagerAlloc: eagerAlloc)
 
 when defined(js) or defined(osx) or defined(windows) or defined(posix):
     import std/times
@@ -43,6 +50,7 @@ when defined(js) or defined(osx) or defined(windows) or defined(posix):
     proc newNecsusConf*(
         entitySize: int = DEFAULT_ENTITY_COUNT,
         componentSize: int = ceilDiv(entitySize, 3),
+        eagerAlloc: bool = false
     ): NecsusConf =
         ## Create a necsus configuration
-        newNecsusConf(elapsedTime, logEcho, entitySize, componentSize)
+        newNecsusConf(elapsedTime, logEcho, entitySize, componentSize, eagerAlloc)

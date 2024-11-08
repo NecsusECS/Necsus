@@ -88,6 +88,8 @@ proc createArchetypeState(genInfo: CodeGenInfo): NimNode =
                 `archetypeRef`,
                 `appStateIdent`.config.componentSize
             )
+            if `appStateIdent`.`confIdent`.eagerAlloc:
+                ensureAlloced(`appStateIdent`.`ident`)
 
 proc initProfilers(genInfo: CodeGenInfo): NimNode =
     result = newStmtList()

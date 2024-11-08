@@ -9,7 +9,7 @@ type
     ArchetypeStore*[Comps: tuple] = object
         ## Stores a specific archetype shape
         archetype: ArchetypeId
-        initialSize: int
+        initialSize: BiggestInt
         compStore: BlockStore[ArchRow[Comps]]
 
     NewArchSlot*[Comps: tuple] = distinct Entry[ArchRow[Comps]]
@@ -23,11 +23,7 @@ proc newArchetypeStore*[Comps: tuple](
     initialSize: SomeInteger
 ): ArchetypeStore[Comps] =
     ## Creates a new storage block for an archetype
-    ArchetypeStore[Comps](
-        initialSize: initialSize.int,
-        archetype: archetype,
-        compStore: newBlockStore[ArchRow[Comps]](initialSize)
-    )
+    ArchetypeStore[Comps](initialSize: initialSize.BiggestInt, archetype: archetype)
 
 proc readArchetype*(store: ArchetypeStore): ArchetypeId {.inline.} = store.archetype
     ## Accessor for the archetype of a store
@@ -53,7 +49,8 @@ iterator items*[Comps: tuple](store: var ArchetypeStore[Comps]): ptr ArchRow[Com
 
 func addLen*[Comps: tuple](store: var ArchetypeStore[Comps], len: var uint) =
     ## Accessor for the archetype of a store
-    len += store.compStore.len
+    if likely(store.compStore != nil):
+        len += store.compStore.len
 
 proc addLen*[Comps: tuple](
     store: var ArchetypeStore[Comps],
@@ -61,15 +58,22 @@ proc addLen*[Comps: tuple](
     predicate: proc(row: var Comps): bool {.fastcall, gcsafe, raises: [].},
 ) =
     ## Reads the length of an archetype store, using a predicate to determine whether to count a row
-    for row in store.compStore.items:
-        if predicate(row.components):
-            len += 1
+    if likely(store.compStore != nil):
+        for row in store.compStore.items:
+            if predicate(row.components):
+                len += 1
+
+proc ensureAlloced*[Comps: tuple](store: var ArchetypeStore[Comps]) =
+    ## Allocs the memory for this archetype if it hasn't been alloced already
+    if unlikely(store.compStore == nil):
+        store.compStore = newBlockStore[ArchRow[Comps]](store.initialSize)
 
 proc newSlot*[Comps: tuple](
     store: var ArchetypeStore[Comps],
     entityId: EntityId
 ): NewArchSlot[Comps] =
     ## Reserves a slot for storing a new component
+    store.ensureAlloced()
     let slot = store.compStore.reserve
     slot.value.entityId = entityId
     return NewArchSlot[Comps](slot)
@@ -88,10 +92,12 @@ proc setComp*[Comps: tuple](slot: NewArchSlot[Comps], comps: sink Comps): Entity
 
 proc getComps*[Comps: tuple](store: var ArchetypeStore[Comps], index: uint): ptr Comps =
     ## Return the components for an archetype
+    assert(unlikely(store.compStore != nil))
     addr store.compStore[index].components
 
 proc del*(store: var ArchetypeStore, index: uint) =
     ## Return the components for an archetype
+    assert(unlikely(store.compStore != nil))
     discard store.compStore.del(index)
 
 proc moveEntity*[FromArch: tuple, NewComps: tuple, ToArch: tuple](
@@ -103,6 +109,7 @@ proc moveEntity*[FromArch: tuple, NewComps: tuple, ToArch: tuple](
     combine: proc (existing: sink FromArch, newValues: sink NewComps, output: var ToArch): bool {.gcsafe, raises: [], fastcall.}
 ) {.gcsafe, raises: [ValueError].} =
     ## Moves the components for an entity from one archetype to another
+    assert(unlikely(fromArch.compStore != nil))
     let deleted = fromArch.compStore.del(entityIndex.archetypeIndex)
     let existing = deleted.components
     let newSlot = newSlot[ToArch](toArch, entityIndex.entityId)
