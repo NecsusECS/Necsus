@@ -1,5 +1,5 @@
 import std/[tables, sets, hashes, strutils, sequtils, macros, algorithm, macrocache, strformat, options]
-import componentDef, ../util/[bits, typeReader], ../runtime/[world, pragmas], directiveArg, tupleDirective
+import componentDef, ../util/[bits], ../runtime/[world], directiveArg, tupleDirective
 
 type
     Archetype*[T] = ref object
@@ -221,52 +221,6 @@ proc asTupleDir*(arch: Archetype[ComponentDef]): TupleDirective =
         args[i] = newDirectiveArg(comp, false, if comp.isAccessory: Optional else: Include)
     return newTupleDir(args)
 
-when NimMajor >= 2:
-    const capacityCache = CacheTable("NecsusCapacityCache")
-else:
-    var capacityCache {.compileTime.} = initTable[string, NimNode]()
-
-proc getCapacity(node: NimNode): Option[NimNode] =
-    case node.kind
-    of nnkSym:
-        let hash = node.signatureHash
-        if hash in capacityCache:
-            let cached = capacityCache[hash]
-            return if cached.kind == nnkEmpty: none(NimNode) else: some(cached)
-
-        var res = node.getImpl.getCapacity()
-        if res.isNone:
-            let dealiased = node.resolveAlias()
-            if dealiased.isSome:
-                res = dealiased.get.getCapacity()
-
-        capacityCache[hash] = if res.isSome: res.get else: newEmptyNode()
-
-        return res
-    of nnkObjectTy, nnkTypeDef:
-        for pragma in node.findPragma:
-            if pragma.isPragma(bindSym("maxCapacity")):
-                return some(pragma[1])
-    of nnkBracketExpr:
-        return node[0].getCapacity
-    else:
-        return none(NimNode)
-
-
 proc calculateSize*(arch: Archetype[ComponentDef]): Option[NimNode] =
     ## Calculates the storage size required to store the components of an archetype
-    for comp in arch:
-        let capacity = comp.node.getCapacity
-        if capacity.isSome:
-            let newValue = newCall("uint", capacity.get)
-            if result.isSome:
-                result = some(newCall(bindSym("max"), result.get, newValue))
-            else:
-                result = some(newValue)
-
-    when defined(requireMaxCapacity):
-        if result.isNone:
-            for comp in arch:
-                hint(fmt"{comp} does not have a maxCapacity pragma", comp.node)
-            error(fmt"Archetype must have at least one component with a maxCapacity defined: {arch}")
-
+    return maxCapacity(nil, arch)

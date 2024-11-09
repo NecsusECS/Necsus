@@ -83,6 +83,9 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, dir: Tuple
     of Outside:
         return details.buildSpawnProc(dir)
     of Standard:
+        # Check for max capacity, as we can produce a better error by doing it here versus doing it later
+        discard maxCapacity(arg.source, dir)
+
         try:
             let spawnProc = details.spawnProcName(dir)
             let ident = name.ident
