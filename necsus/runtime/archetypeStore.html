@@ -85,6 +85,10 @@
   <li><a class="reference" href="#del%2CArchetypeStore%2Cuint" title="del(store: var ArchetypeStore; index: uint)">del(store: var ArchetypeStore; index: uint)</a></li>
 
 </ul>
+<ul class="simple nested-toc-section">ensureAlloced
+  <li><a class="reference" href="#ensureAlloced%2CArchetypeStore%5BComps%3A%20tuple%5D" title="ensureAlloced[Comps: tuple](store: var ArchetypeStore[Comps])">ensureAlloced[Comps: tuple](store: var ArchetypeStore[Comps])</a></li>
+
+</ul>
 <ul class="simple nested-toc-section">entityId
   <li><a class="reference" href="#entityId%2CNewArchSlot%5BComps%3A%20tuple%5D" title="entityId[Comps: tuple](entry: NewArchSlot[Comps]): EntityId">entityId[Comps: tuple](entry: NewArchSlot[Comps]): EntityId</a></li>
 
@@ -253,6 +257,17 @@
 </div>
 
 </div>
+<div id="ensureAlloced-procs-all">
+  <div id="ensureAlloced,ArchetypeStore[Comps: tuple]">
+  <dt><pre><span class="Keyword">proc</span> <a href="#ensureAlloced%2CArchetypeStore%5BComps%3A%20tuple%5D"><span class="Identifier">ensureAlloced</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">)</span></pre></dt>
+  <dd>
+    
+    Allocs the memory for this archetype if it hasn't been alloced already
+    
+  </dd>
+</div>
+
+</div>
 <div id="entityId-procs-all">
   <div id="entityId,NewArchSlot[Comps: tuple]">
   <dt><pre><span class="Keyword">proc</span> <a href="#entityId%2CNewArchSlot%5BComps%3A%20tuple%5D"><span class="Identifier">entityId</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">entry</span><span class="Other">:</span> <a href="archetypeStore.html#NewArchSlot"><span class="Identifier">NewArchSlot</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a></pre></dt>
@@ -389,7 +404,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-10-29 03:41:29 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-11-09 02:52:42 UTC</small>
       </div>
     </div>
   </div>

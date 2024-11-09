@@ -382,6 +382,10 @@
 <li><a class="reference external"
           data-doc-search-tag="bundleGen: let bundleGenerator" href="necsus/compiletime/bundleGen.html#bundleGenerator">bundleGen: let bundleGenerator</a></li>
           </ul></dd>
+<dt><a name="calculateSize" href="#calculateSize"><span>calculateSize:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="archetype: proc calculateSize(arch: Archetype[ComponentDef]): Option[uint]" href="necsus/compiletime/archetype.html#calculateSize%2CArchetype%5BComponentDef%5D">archetype: proc calculateSize(arch: Archetype[ComponentDef]): Option[uint]</a></li>
+          </ul></dd>
 <dt><a name="callbackSysMailboxName" href="#callbackSysMailboxName"><span>callbackSysMailboxName:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="parse: proc callbackSysMailboxName(system: ParsedSystem): NimNode" href="necsus/compiletime/parse.html#callbackSysMailboxName%2CParsedSystem">parse: proc callbackSysMailboxName(system: ParsedSystem): NimNode</a></li>
@@ -627,6 +631,10 @@
 <dt><a name="emitSaveTrace" href="#emitSaveTrace"><span>emitSaveTrace:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="tools: proc emitSaveTrace(args: varargs[NimNode, loggable]): NimNode" href="necsus/compiletime/tools.html#emitSaveTrace%2Cvarargs%5BNimNode%2Cloggable%5D">tools: proc emitSaveTrace(args: varargs[NimNode, loggable]): NimNode</a></li>
+          </ul></dd>
+<dt><a name="ensureAlloced" href="#ensureAlloced"><span>ensureAlloced:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="archetypeStore: proc ensureAlloced[Comps: tuple](store: var ArchetypeStore[Comps])" href="necsus/runtime/archetypeStore.html#ensureAlloced%2CArchetypeStore%5BComps%3A%20tuple%5D">archetypeStore: proc ensureAlloced[Comps: tuple](store: var ArchetypeStore[Comps])</a></li>
           </ul></dd>
 <dt><a name="EntityDebug" href="#EntityDebug"><span>EntityDebug:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -1030,6 +1038,10 @@
           <li><a class="reference external"
           data-doc-search-tag="bits: proc matches(filter: BitsFilter; all: Bits; optional: Bits = newBits()): bool" href="necsus/util/bits.html#matches%2CBitsFilter%2CBits%2CBits">bits: proc matches(filter: BitsFilter; all: Bits; optional: Bits = newBits()): bool</a></li>
           </ul></dd>
+<dt><a name="maxCapacity" href="#maxCapacity"><span>maxCapacity:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="pragmas: template maxCapacity(capacity: Natural)" href="necsus/runtime/pragmas.html#maxCapacity.t%2CNatural">pragmas: template maxCapacity(capacity: Natural)</a></li>
+          </ul></dd>
 <dt><a name="mentioning" href="#mentioning"><span>mentioning:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="directiveSet: proc mentioning(queries: DirectiveSet[TupleDirective];
@@ -1255,14 +1267,18 @@
 <dt><a name="newNecsusConf" href="#newNecsusConf"><span>newNecsusConf:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="necsusConf: proc newNecsusConf(entitySize: int = DEFAULT_ENTITY_COUNT;
-              componentSize: int = ceilDiv(entitySize, 3)): NecsusConf" href="necsus/runtime/necsusConf.html#newNecsusConf%2Cint%2Cint">necsusConf: proc newNecsusConf(entitySize: int = DEFAULT_ENTITY_COUNT;
-              componentSize: int = ceilDiv(entitySize, 3)): NecsusConf</a></li>
-          <li><a class="reference external"
-          data-doc-search-tag="necsusConf: proc newNecsusConf(getTime: proc (): BiggestFloat {.gcsafe.}; log: NecsusLogger): NecsusConf" href="necsus/runtime/necsusConf.html#newNecsusConf%2Cproc%29%2CNecsusLogger">necsusConf: proc newNecsusConf(getTime: proc (): BiggestFloat {.gcsafe.}; log: NecsusLogger): NecsusConf</a></li>
+              componentSize: int = ceilDiv(entitySize, 3);
+              eagerAlloc: bool = false): NecsusConf" href="necsus/runtime/necsusConf.html#newNecsusConf%2Cint%2Cint%2Cbool">necsusConf: proc newNecsusConf(entitySize: int = DEFAULT_ENTITY_COUNT;
+              componentSize: int = ceilDiv(entitySize, 3);
+              eagerAlloc: bool = false): NecsusConf</a></li>
           <li><a class="reference external"
           data-doc-search-tag="necsusConf: proc newNecsusConf(getTime: proc (): BiggestFloat {.gcsafe.}; log: NecsusLogger;
-              entitySize: int; componentSize: int): NecsusConf" href="necsus/runtime/necsusConf.html#newNecsusConf%2Cproc%29%2CNecsusLogger%2Cint%2Cint">necsusConf: proc newNecsusConf(getTime: proc (): BiggestFloat {.gcsafe.}; log: NecsusLogger;
-              entitySize: int; componentSize: int): NecsusConf</a></li>
+              eagerAlloc: bool = false): NecsusConf" href="necsus/runtime/necsusConf.html#newNecsusConf%2Cproc%29%2CNecsusLogger%2Cbool">necsusConf: proc newNecsusConf(getTime: proc (): BiggestFloat {.gcsafe.}; log: NecsusLogger;
+              eagerAlloc: bool = false): NecsusConf</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="necsusConf: proc newNecsusConf(getTime: proc (): BiggestFloat {.gcsafe.}; log: NecsusLogger;
+              entitySize: int; componentSize: int; eagerAlloc: bool = false): NecsusConf" href="necsus/runtime/necsusConf.html#newNecsusConf%2Cproc%29%2CNecsusLogger%2Cint%2Cint%2Cbool">necsusConf: proc newNecsusConf(getTime: proc (): BiggestFloat {.gcsafe.}; log: NecsusLogger;
+              entitySize: int; componentSize: int; eagerAlloc: bool = false): NecsusConf</a></li>
           </ul></dd>
 <dt><a name="newQuery" href="#newQuery"><span>newQuery:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -1726,7 +1742,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-10-29 03:41:29 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-11-09 02:52:42 UTC</small>
       </div>
     </div>
   </div>

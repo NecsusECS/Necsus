@@ -1,7 +1,7 @@
 nimTitle	necsusConf	necsus/runtime/necsusConf.html	module src/necsus/runtime/necsusConf		0
 nim	NecsusLogger	necsus/runtime/necsusConf.html#NecsusLogger	type NecsusLogger		4
 nim	NecsusConf	necsus/runtime/necsusConf.html#NecsusConf	type NecsusConf		6
-nim	newNecsusConf	necsus/runtime/necsusConf.html#newNecsusConf,proc),NecsusLogger,int,int	proc newNecsusConf(getTime: proc (): BiggestFloat {.gcsafe.}; log: NecsusLogger;\n              entitySize: int; componentSize: int): NecsusConf		17
-nim	newNecsusConf	necsus/runtime/necsusConf.html#newNecsusConf,proc),NecsusLogger	proc newNecsusConf(getTime: proc (): BiggestFloat {.gcsafe.}; log: NecsusLogger): NecsusConf		31
-nim	newNecsusConf	necsus/runtime/necsusConf.html#newNecsusConf,int,int	proc newNecsusConf(entitySize: int = DEFAULT_ENTITY_COUNT;\n              componentSize: int = ceilDiv(entitySize, 3)): NecsusConf		43
-nimgrp	newnecsusconf	necsus/runtime/necsusConf.html#newNecsusConf-procs-all	proc		17
+nim	newNecsusConf	necsus/runtime/necsusConf.html#newNecsusConf,proc),NecsusLogger,int,int,bool	proc newNecsusConf(getTime: proc (): BiggestFloat {.gcsafe.}; log: NecsusLogger;\n              entitySize: int; componentSize: int; eagerAlloc: bool = false): NecsusConf		18
+nim	newNecsusConf	necsus/runtime/necsusConf.html#newNecsusConf,proc),NecsusLogger,bool	proc newNecsusConf(getTime: proc (): BiggestFloat {.gcsafe.}; log: NecsusLogger;\n              eagerAlloc: bool = false): NecsusConf		34
+nim	newNecsusConf	necsus/runtime/necsusConf.html#newNecsusConf,int,int,bool	proc newNecsusConf(entitySize: int = DEFAULT_ENTITY_COUNT;\n              componentSize: int = ceilDiv(entitySize, 3);\n              eagerAlloc: bool = false): NecsusConf		50
+nimgrp	newnecsusconf	necsus/runtime/necsusConf.html#newNecsusConf-procs-all	proc		18

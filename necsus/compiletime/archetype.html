@@ -90,6 +90,10 @@
   <li><a class="reference" href="#asTupleDir%2CArchetype%5BComponentDef%5D" title="asTupleDir(arch: Archetype[ComponentDef]): TupleDirective">asTupleDir(arch: Archetype[ComponentDef]): TupleDirective</a></li>
 
 </ul>
+<ul class="simple nested-toc-section">calculateSize
+  <li><a class="reference" href="#calculateSize%2CArchetype%5BComponentDef%5D" title="calculateSize(arch: Archetype[ComponentDef]): Option[uint]">calculateSize(arch: Archetype[ComponentDef]): Option[uint]</a></li>
+
+</ul>
 <ul class="simple nested-toc-section">contains
   <li><a class="reference" href="#contains%2CArchetype%5BT%5D%2CT" title="contains[T](archetype: Archetype[T]; value: T): bool">contains[T](archetype: Archetype[T]; value: T): bool</a></li>
 <li><a class="reference" href="#contains%2CArchetypeSet%5BT%5D%2CArchetype%5BT%5D" title="contains[T](archetypes: ArchetypeSet[T]; archetype: Archetype[T]): bool">contains[T](archetypes: ArchetypeSet[T]; archetype: Archetype[T]): bool</a></li>
@@ -186,7 +190,7 @@
     <div class="section" id="6">
   <h1><a class="toc-backref" href="#6">Imports</a></h1>
   <dl class="item">
-    <a class="reference external" href="componentDef.html">componentDef</a>, <a class="reference external" href="../util/bits.html">../util/bits</a>, <a class="reference external" href="../runtime/world.html">../runtime/world</a>, <a class="reference external" href="directiveArg.html">directiveArg</a>, <a class="reference external" href="tupleDirective.html">tupleDirective</a>
+    <a class="reference external" href="componentDef.html">componentDef</a>, <a class="reference external" href="../util/bits.html">../util/bits</a>, <a class="reference external" href="../util/typeReader.html">../util/typeReader</a>, <a class="reference external" href="../runtime/world.html">../runtime/world</a>, <a class="reference external" href="../runtime/pragmas.html">../runtime/pragmas</a>, <a class="reference external" href="directiveArg.html">directiveArg</a>, <a class="reference external" href="tupleDirective.html">tupleDirective</a>
   </dl>
 </div>
 <div class="section" id="7">
@@ -287,6 +291,18 @@
   <dd>
     
     Convert an archetype to a TupleDirective
+    
+  </dd>
+</div>
+
+</div>
+<div id="calculateSize-procs-all">
+  <div id="calculateSize,Archetype[ComponentDef]">
+  <dt><pre><span class="Keyword">proc</span> <a href="#calculateSize%2CArchetype%5BComponentDef%5D"><span class="Identifier">calculateSize</span></a><span class="Other">(</span><span class="Identifier">arch</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Option</span><span class="Other">[</span><span class="Identifier">uint</span><span class="Other">]</span> {.
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Calculates the storage size required to store the components of an archetype
     
   </dd>
 </div>
@@ -515,7 +531,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-10-29 03:41:29 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-11-09 02:52:42 UTC</small>
       </div>
     </div>
   </div>

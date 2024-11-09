@@ -9,3 +9,4 @@ nim	eventSys	necsus/runtime/pragmas.html#eventSys.t	template eventSys()		20
 nim	instanced	necsus/runtime/pragmas.html#instanced.t	template instanced()		23
 nim	accessory	necsus/runtime/pragmas.html#accessory.t	template accessory()		28
 nim	active	necsus/runtime/pragmas.html#active.t,varargs[typed]	template active(states: varargs[typed])		32
+nim	maxCapacity	necsus/runtime/pragmas.html#maxCapacity.t,Natural	template maxCapacity(capacity: Natural)		35

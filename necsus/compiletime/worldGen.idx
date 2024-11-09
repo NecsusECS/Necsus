@@ -1,9 +1,9 @@
 nimTitle	worldGen	necsus/compiletime/worldGen.html	module src/necsus/compiletime/worldGen		0
 nim	createAppStateType	necsus/compiletime/worldGen.html#createAppStateType,CodeGenInfo	proc createAppStateType(genInfo: CodeGenInfo): NimNode		26
 nim	createAppReturn	necsus/compiletime/worldGen.html#createAppReturn,CodeGenInfo,NimNode	proc createAppReturn(genInfo: CodeGenInfo; errorLocation: NimNode): NimNode		67
-nim	createAppStateInit	necsus/compiletime/worldGen.html#createAppStateInit,CodeGenInfo	proc createAppStateInit(genInfo: CodeGenInfo): NimNode		101
-nim	createAppStateInstance	necsus/compiletime/worldGen.html#createAppStateInstance,CodeGenInfo	proc createAppStateInstance(genInfo: CodeGenInfo): NimNode		145
-nim	createAppStateDestructor	necsus/compiletime/worldGen.html#createAppStateDestructor,CodeGenInfo	proc createAppStateDestructor(genInfo: CodeGenInfo): NimNode		154
-nim	createSendProcs	necsus/compiletime/worldGen.html#createSendProcs,CodeGenInfo	proc createSendProcs(details: CodeGenInfo): NimNode		205
-nim	createConverterProcs	necsus/compiletime/worldGen.html#createConverterProcs,CodeGenInfo	proc createConverterProcs(details: CodeGenInfo): NimNode		246
-nim	createArchetypeIdSyms	necsus/compiletime/worldGen.html#createArchetypeIdSyms,CodeGenInfo	proc createArchetypeIdSyms(details: CodeGenInfo): NimNode		255
+nim	createAppStateInit	necsus/compiletime/worldGen.html#createAppStateInit,CodeGenInfo	proc createAppStateInit(genInfo: CodeGenInfo): NimNode		107
+nim	createAppStateInstance	necsus/compiletime/worldGen.html#createAppStateInstance,CodeGenInfo	proc createAppStateInstance(genInfo: CodeGenInfo): NimNode		151
+nim	createAppStateDestructor	necsus/compiletime/worldGen.html#createAppStateDestructor,CodeGenInfo	proc createAppStateDestructor(genInfo: CodeGenInfo): NimNode		160
+nim	createSendProcs	necsus/compiletime/worldGen.html#createSendProcs,CodeGenInfo	proc createSendProcs(details: CodeGenInfo): NimNode		211
+nim	createConverterProcs	necsus/compiletime/worldGen.html#createConverterProcs,CodeGenInfo	proc createConverterProcs(details: CodeGenInfo): NimNode		252
+nim	createArchetypeIdSyms	necsus/compiletime/worldGen.html#createArchetypeIdSyms,CodeGenInfo	proc createArchetypeIdSyms(details: CodeGenInfo): NimNode		261
