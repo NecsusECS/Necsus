@@ -221,14 +221,27 @@ proc asTupleDir*(arch: Archetype[ComponentDef]): TupleDirective =
         args[i] = newDirectiveArg(comp, false, if comp.isAccessory: Optional else: Include)
     return newTupleDir(args)
 
+when NimMajor >= 2:
+    const capacityCache = CacheTable("NecsusCapacityCache")
+else:
+    var capacityCache {.compileTime.} = initTable[string, NimNode]()
+
 proc getCapacity(node: NimNode): Option[NimNode] =
     case node.kind
     of nnkSym:
-        let res = node.getImpl.getCapacity()
+        let hash = node.signatureHash
+        if hash in capacityCache:
+            let cached = capacityCache[hash]
+            return if cached.kind == nnkEmpty: none(NimNode) else: some(cached)
+
+        var res = node.getImpl.getCapacity()
         if res.isNone:
             let dealiased = node.resolveAlias()
             if dealiased.isSome:
-                return dealiased.get.getCapacity()
+                res = dealiased.get.getCapacity()
+
+        capacityCache[hash] = if res.isSome: res.get else: newEmptyNode()
+
         return res
     of nnkObjectTy, nnkTypeDef:
         for pragma in node.findPragma:
