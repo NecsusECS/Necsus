@@ -838,6 +838,35 @@ proc equip(items: FullQuery[(ItemName, Not[IsEquiped])], equip: Attach[(IsEquipe
 proc myApp() {.necsus([~createInventory, ~equip], newNecsusConf()).}
 ```
 
+#### Marking component capacity
+
+The `maxCapacity` pragma can be added to a component to limit how much memory Necsus allocates for any
+archetypes that contain that component. It's a way of telling Necsus that there will never be more than a given
+number of entities that have this component attached.
+
+```
+import necsus
+
+type
+    Enemy {.maxCapacity(50).} = object
+        ## Never more than 50 enemies at a time
+
+    EnemyKind = enum Knight
+
+    HitPoints = int
+
+proc createEnemies(
+    enemyCount: Query[(Enemy, )],
+    spawnEnemy: Spawn[(Enemy, EnemyKind, HitPoints)]
+) =
+    if enemyCount.len < 50:
+        spawnEnemy.with(Enemy(), Knight, 50)
+
+proc myApp() {.necsus([~createEnemies], newNecsusConf()).}
+```
+
+Note that if two components are both flagged with the `maxCapacity` pragma, Necsus will use the higher value.
+
 #### Custom runners
 
 The `runner` is the function used to execute the primary system loop. The default runner is fairly simple -- it

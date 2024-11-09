@@ -31,3 +31,6 @@ template accessory*() {.pragma.}
 
 template active*(states: varargs[typed]) {.pragma.}
     ## Indicates a value that must be true for a system to run
+
+template maxCapacity*(capacity: Natural) {.pragma.}
+    ## Indicates the maximum number of entities that might exist with a specific component

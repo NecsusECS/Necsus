@@ -7,6 +7,7 @@ proc isPragma*(found, expect: NimNode): bool =
     of nnkSym: return found == expect
     of nnkCall: return found[0].isPragma(expect)
     of nnkIdent: return false
+    of nnkExprColonExpr: return found[0].isPragma(expect)
     else: error("Unable to extract pragma from " & found.lispRepr, found)
 
 proc findPragma*(node: NimNode): NimNode =

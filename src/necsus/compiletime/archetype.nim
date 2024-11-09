@@ -1,5 +1,5 @@
 import std/[tables, sets, hashes, strutils, sequtils, macros, algorithm, macrocache, strformat, options]
-import componentDef, ../util/bits, ../runtime/world, directiveArg, tupleDirective
+import componentDef, ../util/[bits, typeReader], ../runtime/[world, pragmas], directiveArg, tupleDirective
 
 type
     Archetype*[T] = ref object
@@ -220,3 +220,30 @@ proc asTupleDir*(arch: Archetype[ComponentDef]): TupleDirective =
     for i, comp in arch.values:
         args[i] = newDirectiveArg(comp, false, if comp.isAccessory: Optional else: Include)
     return newTupleDir(args)
+
+proc getCapacity(node: NimNode): Option[uint] =
+    case node.kind
+    of nnkSym:
+        let res = node.getImpl.getCapacity()
+        if res.isNone:
+            let dealiased = node.resolveAlias()
+            if dealiased.isSome:
+                return dealiased.get.getCapacity()
+        return res
+    of nnkObjectTy, nnkTypeDef:
+        for pragma in node.findPragma:
+            if pragma.isPragma(bindSym("maxCapacity")):
+                return some(pragma[1].intVal.uint)
+    of nnkBracketExpr:
+        return node[0].getCapacity
+    else:
+        return none(uint)
+
+
+proc calculateSize*(arch: Archetype[ComponentDef]): Option[uint] =
+    ## Calculates the storage size required to store the components of an archetype
+    for comp in arch:
+        let capacity = comp.node.getCapacity
+        if capacity.isSome:
+            result = some(max(result.get(0), capacity.get()))
+

@@ -15,9 +15,9 @@ type
         mingy: bool
         stringy: string
 
-let entityCount = 1_000_000
+const entityCount = 1_000_000
 
-proc setup(spawn: Spawn[(Comflabulation, Direction, Position)]) =
+proc setup(spawn: Spawn[(Comflabulation, Direction, Position)]) {.startupSys.} =
     spawn.with(Comflabulation(), Direction(), Position())
     benchmark "Creating " & $entityCount & " entities", entityCount:
         for i in 1..entityCount:

@@ -83,11 +83,15 @@ proc createArchetypeState(genInfo: CodeGenInfo): NimNode =
         let ident = archetype.ident
         let storageType = archetype.asStorageTuple
         let archetypeRef = archetype.idSymbol
+
+        let calculatedSize = archetype.calculateSize
+        let size = if calculatedSize.isSome:
+            calculatedSize.get.newLit
+        else:
+            quote: `appStateIdent`.config.componentSize
+
         result.add quote do:
-            `appStateIdent`.`ident` = newArchetypeStore[`storageType`](
-                `archetypeRef`,
-                `appStateIdent`.config.componentSize
-            )
+            `appStateIdent`.`ident` = newArchetypeStore[`storageType`](`archetypeRef`, `size`)
             if `appStateIdent`.`confIdent`.eagerAlloc:
                 ensureAlloced(`appStateIdent`.`ident`)
 

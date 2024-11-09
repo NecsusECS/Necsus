@@ -47,6 +47,9 @@ proc reserve*[V](blockstore: var BlockStore[V]): Entry[V] =
         index = blockstore.nextId
         blockstore.nextId += 1
 
+    if unlikely(index >= blockstore.data.len.uint):
+        raise newException(IndexDefect, "Storage capacity exceeded: " & $index)
+
     blockstore.len += 1
     result = addr blockstore.data[index]
     result.idx = index
