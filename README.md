@@ -844,7 +844,7 @@ The `maxCapacity` pragma can be added to a component to limit how much memory Ne
 archetypes that contain that component. It's a way of telling Necsus that there will never be more than a given
 number of entities that have this component attached.
 
-```
+```nim
 import necsus
 
 type
