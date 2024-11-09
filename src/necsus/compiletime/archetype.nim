@@ -221,7 +221,7 @@ proc asTupleDir*(arch: Archetype[ComponentDef]): TupleDirective =
         args[i] = newDirectiveArg(comp, false, if comp.isAccessory: Optional else: Include)
     return newTupleDir(args)
 
-proc getCapacity(node: NimNode): Option[uint] =
+proc getCapacity(node: NimNode): Option[NimNode] =
     case node.kind
     of nnkSym:
         let res = node.getImpl.getCapacity()
@@ -233,19 +233,23 @@ proc getCapacity(node: NimNode): Option[uint] =
     of nnkObjectTy, nnkTypeDef:
         for pragma in node.findPragma:
             if pragma.isPragma(bindSym("maxCapacity")):
-                return some(pragma[1].intVal.uint)
+                return some(pragma[1])
     of nnkBracketExpr:
         return node[0].getCapacity
     else:
-        return none(uint)
+        return none(NimNode)
 
 
-proc calculateSize*(arch: Archetype[ComponentDef]): Option[uint] =
+proc calculateSize*(arch: Archetype[ComponentDef]): Option[NimNode] =
     ## Calculates the storage size required to store the components of an archetype
     for comp in arch:
         let capacity = comp.node.getCapacity
         if capacity.isSome:
-            result = some(max(result.get(0), capacity.get()))
+            let newValue = newCall("uint", capacity.get)
+            if result.isSome:
+                result = some(newCall(bindSym("max"), result.get, newValue))
+            else:
+                result = some(newValue)
 
     when defined(requireMaxCapacity):
         if result.isNone:

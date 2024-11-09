@@ -86,7 +86,7 @@ proc createArchetypeState(genInfo: CodeGenInfo): NimNode =
 
         let calculatedSize = archetype.calculateSize
         let size = if calculatedSize.isSome:
-            calculatedSize.get.newLit
+            calculatedSize.get
         else:
             quote: `appStateIdent`.config.componentSize
 

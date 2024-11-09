@@ -1,9 +1,11 @@
 import unittest, necsus
 
+let WRAP_CAPACITY: uint8 = 5
+
 type
     A {.maxCapacity(2).} = object
     B = A
-    Wrap[T] {.maxCapacity(5).} = object
+    Wrap[T] {.maxCapacity(WRAP_CAPACITY).} = object
 
 proc spawnToLimit[C: tuple](spawn: Spawn[C], count: auto, value: C) =
     for _ in 0..<count:
