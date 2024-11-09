@@ -704,6 +704,8 @@ proc createEnemies(
 proc myApp() {.necsus([~createEnemies], newNecsusConf()).}
 </code></pre>
 <p>Note that if two components are both flagged with the <code>maxCapacity</code> pragma, Necsus will use the higher value.</p>
+<p>If you want to enforce that every archetype has an explicit capacity, you can set the <code>-d:requireMaxCapacity</code>
+build flag.</p>
 <h4>Custom runners</h4>
 <p>The <code>runner</code> is the function used to execute the primary system loop. The default runner is fairly simple -- it
 executes the loop systems repeatedly until the Shared <code>NecsusRun</code> variable flips over to <code>ExitLoop</code>. If you need more
