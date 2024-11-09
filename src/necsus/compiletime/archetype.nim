@@ -247,3 +247,9 @@ proc calculateSize*(arch: Archetype[ComponentDef]): Option[uint] =
         if capacity.isSome:
             result = some(max(result.get(0), capacity.get()))
 
+    when defined(requireMaxCapacity):
+        if result.isNone:
+            for comp in arch:
+                hint(fmt"{comp} does not have a maxCapacity pragma", comp.node)
+            error(fmt"Archetype must have at least one component with a maxCapacity defined: {arch}")
+

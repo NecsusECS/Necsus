@@ -867,6 +867,9 @@ proc myApp() {.necsus([~createEnemies], newNecsusConf()).}
 
 Note that if two components are both flagged with the `maxCapacity` pragma, Necsus will use the higher value.
 
+If you want to enforce that every archetype has an explicit capacity, you can set the `-d:requireMaxCapacity`
+build flag.
+
 #### Custom runners
 
 The `runner` is the function used to execute the primary system loop. The default runner is fairly simple -- it

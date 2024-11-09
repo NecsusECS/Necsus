@@ -82,7 +82,8 @@ jobs:
           necsusEntityTrace,
           necsusEventTrace,
           necsusQueryTrace,
-          necsusSaveTrace
+          necsusSaveTrace,
+          requireMaxCapacity
         ]
     steps:
     - uses: actions/checkout@v1
