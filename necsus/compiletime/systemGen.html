@@ -112,7 +112,7 @@
                          dir: T): NimNode">HookGenerator</a></li>
 <li><a class="reference" href="#NameChooser" title="NameChooser[T] = proc (context, name: NimNode; dir: T): string">NameChooser</a></li>
 <li><a class="reference" href="#NestedArgsExtractor" title="NestedArgsExtractor[T] = proc (dir: T): seq[RawNestedArg]">NestedArgsExtractor</a></li>
-<li><a class="reference" href="#RawNestedArg" title="RawNestedArg = tuple[name: NimNode, directive: NimNode]">RawNestedArg</a></li>
+<li><a class="reference" href="#RawNestedArg" title="RawNestedArg = tuple[context, name, directive: NimNode]">RawNestedArg</a></li>
 <li><a class="reference" href="#SystemArg" title="SystemArg = ref object
   source*: NimNode
   generator*: DirectiveGen
@@ -456,7 +456,7 @@
   </dd>
 </div>
 <div id="RawNestedArg">
-  <dt><pre><a href="systemGen.html#RawNestedArg"><span class="Identifier">RawNestedArg</span></a> <span class="Other">=</span> <span class="Keyword">tuple</span><span class="Other">[</span><span class="Identifier">name</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">,</span> <span class="Identifier">directive</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">]</span></pre></dt>
+  <dt><pre><a href="systemGen.html#RawNestedArg"><span class="Identifier">RawNestedArg</span></a> <span class="Other">=</span> <span class="Keyword">tuple</span><span class="Other">[</span><span class="Identifier">context</span><span class="Other">,</span> <span class="Identifier">name</span><span class="Other">,</span> <span class="Identifier">directive</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">]</span></pre></dt>
   <dd>
     
     A field to add to the world object
@@ -867,7 +867,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-11-09 16:00:49 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-11-11 16:43:46 UTC</small>
       </div>
     </div>
   </div>
