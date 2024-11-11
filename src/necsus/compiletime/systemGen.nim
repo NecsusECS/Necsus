@@ -24,7 +24,7 @@ type
     WorldField* = tuple[name: string, typ: NimNode]
         ## A field to add to the world object
 
-    RawNestedArg* = tuple[name: NimNode, directive: NimNode]
+    RawNestedArg* = tuple[context, name, directive: NimNode]
         ## A field to add to the world object
 
     NestedArgsExtractor*[T] = proc(dir: T): seq[RawNestedArg]

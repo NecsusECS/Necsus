@@ -127,9 +127,9 @@ template orElse[T](optional: Option[T], exec: untyped): T =
 
 proc parseArgType(context, argName, argType, original: NimNode): SystemArg
 
-proc parseNestedArgs(context: NimNode, nestedArgs: seq[RawNestedArg]): seq[SystemArg] =
+proc parseNestedArgs(nestedArgs: seq[RawNestedArg]): seq[SystemArg] =
     ## If a directive references other directives, we need to extract those
-    for (name, argType) in nestedArgs:
+    for (context, name, argType) in nestedArgs:
         result.add parseArgType(context, name, argType, argType)
 
 proc parseParametricArg(
@@ -149,7 +149,7 @@ proc parseParametricArg(
             originalName = argName.strVal,
             name = gen.chooseNameTuple(context, argName, tupleDir),
             directive = tupleDir,
-            nestedArgs = parseNestedArgs(context, nestedArgs)
+            nestedArgs = parseNestedArgs(nestedArgs)
         ))
     of DirectiveKind.Mono:
         let monoDir = newMonoDir(directiveParametrics[0])
@@ -160,7 +160,7 @@ proc parseParametricArg(
             originalName = argName.strVal,
             name = gen.chooseNameMono(context, argName, monoDir),
             directive = monoDir,
-            nestedArgs = parseNestedArgs(context, nestedArgs)
+            nestedArgs = parseNestedArgs(nestedArgs)
         ))
     of DirectiveKind.Dual:
         let dualDir = newDualDir(
@@ -174,7 +174,7 @@ proc parseParametricArg(
             originalName = argName.strVal,
             name = gen.chooseNameDual(context, argName, dualDir),
             directive = dualDir,
-            nestedArgs = parseNestedArgs(context, nestedArgs)
+            nestedArgs = parseNestedArgs(nestedArgs)
         ))
     of DirectiveKind.None:
         error("System argument does not support tuple parameters: " & $gen.kind)
