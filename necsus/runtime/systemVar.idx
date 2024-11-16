@@ -21,6 +21,7 @@ nim	unwrap	necsus/runtime/systemVar.html#unwrap,,T	proc unwrap[T](sysvar: Shared
 nim	`$`	necsus/runtime/systemVar.html#$,SystemVar[T]	proc `$`[T](sysvar: SystemVar[T]): string		84
 nim	items	necsus/runtime/systemVar.html#items.i,SystemVar[T]	iterator items[T](sysvar: var SystemVar[T]): var T		86
 nim	items	necsus/runtime/systemVar.html#items.i,SystemVar[T]_2	iterator items[T](sysvar: SystemVar[T]): lent T		90
+nim	`from`	necsus/runtime/systemVar.html#from.t,untyped,SystemVar[T]	template `from`[T](variable: untyped; source: SystemVar[T]): bool		94
 nimgrp	get	necsus/runtime/systemVar.html#get-procs-all	proc		58
 nimgrp	unwrap	necsus/runtime/systemVar.html#unwrap-procs-all	proc		76
 nimgrp	items	necsus/runtime/systemVar.html#items-iterators-all	iterator		86
