@@ -90,3 +90,8 @@ iterator items*[T](sysvar: var SystemVar[T]): var T =
 iterator items*[T](sysvar: SystemVar[T]): lent T =
     if sysvar.isSome:
         yield sysvar.extract.value.get()
+
+template `from`*[T](variable: untyped, source: SystemVar[T]): bool =
+    ## Reads a value from a `SystemVar`, assigning it to a value and returning true if it exists. This allows
+    ## you to check for the presence of a value and assign it to a variable in one step
+    source.isSome and (let variable: T = source.extract.value.unsafeGet; true)
