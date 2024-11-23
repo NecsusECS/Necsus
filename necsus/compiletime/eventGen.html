@@ -56,10 +56,10 @@
     <ul class="simple simple-toc-section">
       <li><a class="reference" href="#inboxGenerator" title="inboxGenerator {.compileTime.} = newGenerator(&quot;Inbox&quot;, {AfterActiveCheck},
     generateInbox, noArchetype, chooseInboxName, defaultSystemReturn,
-    inboxFields, inboxSystemArg, defaultNestedArgs)">inboxGenerator</a></li>
+    inboxFields, inboxSystemArg, defaultNestedArgs, defaultValidator)">inboxGenerator</a></li>
 <li><a class="reference" href="#outboxGenerator" title="outboxGenerator {.compileTime.} = newGenerator(&quot;Outbox&quot;, {Standard},
     generateOutbox, noArchetype, defaultName, defaultSystemReturn, outboxFields,
-    defaultSystemArg, defaultNestedArgs)">outboxGenerator</a></li>
+    defaultSystemArg, defaultNestedArgs, defaultValidator)">outboxGenerator</a></li>
 
     </ul>
   </details>
@@ -85,7 +85,7 @@
     <div id="inboxGenerator">
   <dt><pre><a href="eventGen.html#inboxGenerator"><span class="Identifier">inboxGenerator</span></a> {.<span class="Identifier">compileTime</span>.} <span class="Other">=</span> <span class="Identifier">newGenerator</span><span class="Other">(</span><span class="StringLit">&quot;Inbox&quot;</span><span class="Other">,</span> <span class="Other">{</span><span class="Identifier">AfterActiveCheck</span><span class="Other">}</span><span class="Other">,</span>
     <span class="Identifier">generateInbox</span><span class="Other">,</span> <span class="Identifier">noArchetype</span><span class="Other">,</span> <span class="Identifier">chooseInboxName</span><span class="Other">,</span> <span class="Identifier">defaultSystemReturn</span><span class="Other">,</span>
-    <span class="Identifier">inboxFields</span><span class="Other">,</span> <span class="Identifier">inboxSystemArg</span><span class="Other">,</span> <span class="Identifier">defaultNestedArgs</span><span class="Other">)</span></pre></dt>
+    <span class="Identifier">inboxFields</span><span class="Other">,</span> <span class="Identifier">inboxSystemArg</span><span class="Other">,</span> <span class="Identifier">defaultNestedArgs</span><span class="Other">,</span> <span class="Identifier">defaultValidator</span><span class="Other">)</span></pre></dt>
   <dd>
     
     
@@ -95,7 +95,7 @@
 <div id="outboxGenerator">
   <dt><pre><a href="eventGen.html#outboxGenerator"><span class="Identifier">outboxGenerator</span></a> {.<span class="Identifier">compileTime</span>.} <span class="Other">=</span> <span class="Identifier">newGenerator</span><span class="Other">(</span><span class="StringLit">&quot;Outbox&quot;</span><span class="Other">,</span> <span class="Other">{</span><span class="Identifier">Standard</span><span class="Other">}</span><span class="Other">,</span>
     <span class="Identifier">generateOutbox</span><span class="Other">,</span> <span class="Identifier">noArchetype</span><span class="Other">,</span> <span class="Identifier">defaultName</span><span class="Other">,</span> <span class="Identifier">defaultSystemReturn</span><span class="Other">,</span> <span class="Identifier">outboxFields</span><span class="Other">,</span>
-    <span class="Identifier">defaultSystemArg</span><span class="Other">,</span> <span class="Identifier">defaultNestedArgs</span><span class="Other">)</span></pre></dt>
+    <span class="Identifier">defaultSystemArg</span><span class="Other">,</span> <span class="Identifier">defaultNestedArgs</span><span class="Other">,</span> <span class="Identifier">defaultValidator</span><span class="Other">)</span></pre></dt>
   <dd>
     
     
@@ -112,7 +112,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-11-22 03:49:43 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-11-23 18:19:08 UTC</small>
       </div>
     </div>
   </div>

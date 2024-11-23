@@ -1217,14 +1217,16 @@
     name: string; dir: DualDirective): seq[WorldField] = defaultWorldField;
              systemArg: SystemArgExtractor[DualDirective] = defaultSystemArg;
     nestedArgs: NestedArgsExtractor[DualDirective] = defaultNestedArgs;
-             converters: ConvertExtractor[DualDirective] = defaultConverters): DirectiveGen" href="necsus/compiletime/systemGen.html#newGenerator%2Cstring%2Cset%5BGenerateHook%5D%2CHookGenerator%5BDualDirective%5D%2CBuildArchetype%5BDualDirective%5D%2CNameChooser%5BDualDirective%5D%2Cproc%28string%2CDualDirective%29%2CSystemArgExtractor%5BDualDirective%5D%2CNestedArgsExtractor%5BDualDirective%5D%2CConvertExtractor%5BDualDirective%5D">systemGen: proc newGenerator(ident: string; interest: set[GenerateHook];
+             converters: ConvertExtractor[DualDirective] = defaultConverters;
+             validate: SystemArgValidator = defaultValidator): DirectiveGen" href="necsus/compiletime/systemGen.html#newGenerator%2Cstring%2Cset%5BGenerateHook%5D%2CHookGenerator%5BDualDirective%5D%2CBuildArchetype%5BDualDirective%5D%2CNameChooser%5BDualDirective%5D%2Cproc%28string%2CDualDirective%29%2CSystemArgExtractor%5BDualDirective%5D%2CNestedArgsExtractor%5BDualDirective%5D%2CConvertExtractor%5BDualDirective%5D%2CSystemArgValidator">systemGen: proc newGenerator(ident: string; interest: set[GenerateHook];
              generate: HookGenerator[DualDirective];
              archetype: BuildArchetype[DualDirective] = noArchetype;
              chooseName: NameChooser[DualDirective] = defaultName; worldFields: proc (
     name: string; dir: DualDirective): seq[WorldField] = defaultWorldField;
              systemArg: SystemArgExtractor[DualDirective] = defaultSystemArg;
     nestedArgs: NestedArgsExtractor[DualDirective] = defaultNestedArgs;
-             converters: ConvertExtractor[DualDirective] = defaultConverters): DirectiveGen</a></li>
+             converters: ConvertExtractor[DualDirective] = defaultConverters;
+             validate: SystemArgValidator = defaultValidator): DirectiveGen</a></li>
           <li><a class="reference external"
           data-doc-search-tag="systemGen: proc newGenerator(ident: string; interest: set[GenerateHook];
              generate: HookGenerator[MonoDirective];
@@ -1233,14 +1235,16 @@
     args: DirectiveSet[SystemArg]; returns: MonoDirective): Option[NimNode] = defaultSystemReturn;
     worldFields: proc (name: string; dir: MonoDirective): seq[WorldField] = defaultWorldField;
              systemArg: SystemArgExtractor[MonoDirective] = defaultSystemArg;
-             nestedArgs: NestedArgsExtractor[MonoDirective] = defaultNestedArgs): DirectiveGen" href="necsus/compiletime/systemGen.html#newGenerator%2Cstring%2Cset%5BGenerateHook%5D%2CHookGenerator%5BMonoDirective%5D%2CBuildArchetype%5BMonoDirective%5D%2CNameChooser%5BMonoDirective%5D%2Cproc%28DirectiveSet%5BSystemArg%5D%2CMonoDirective%29%2Cproc%28string%2CMonoDirective%29%2CSystemArgExtractor%5BMonoDirective%5D%2CNestedArgsExtractor%5BMonoDirective%5D">systemGen: proc newGenerator(ident: string; interest: set[GenerateHook];
+    nestedArgs: NestedArgsExtractor[MonoDirective] = defaultNestedArgs;
+             validate: SystemArgValidator = defaultValidator): DirectiveGen" href="necsus/compiletime/systemGen.html#newGenerator%2Cstring%2Cset%5BGenerateHook%5D%2CHookGenerator%5BMonoDirective%5D%2CBuildArchetype%5BMonoDirective%5D%2CNameChooser%5BMonoDirective%5D%2Cproc%28DirectiveSet%5BSystemArg%5D%2CMonoDirective%29%2Cproc%28string%2CMonoDirective%29%2CSystemArgExtractor%5BMonoDirective%5D%2CNestedArgsExtractor%5BMonoDirective%5D%2CSystemArgValidator">systemGen: proc newGenerator(ident: string; interest: set[GenerateHook];
              generate: HookGenerator[MonoDirective];
              archetype: BuildArchetype[MonoDirective] = noArchetype;
              chooseName: NameChooser[MonoDirective] = defaultName; systemReturn: proc (
     args: DirectiveSet[SystemArg]; returns: MonoDirective): Option[NimNode] = defaultSystemReturn;
     worldFields: proc (name: string; dir: MonoDirective): seq[WorldField] = defaultWorldField;
              systemArg: SystemArgExtractor[MonoDirective] = defaultSystemArg;
-             nestedArgs: NestedArgsExtractor[MonoDirective] = defaultNestedArgs): DirectiveGen</a></li>
+    nestedArgs: NestedArgsExtractor[MonoDirective] = defaultNestedArgs;
+             validate: SystemArgValidator = defaultValidator): DirectiveGen</a></li>
           <li><a class="reference external"
           data-doc-search-tag="systemGen: proc newGenerator(ident: string; interest: set[GenerateHook];
              generate: HookGenerator[TupleDirective];
@@ -1249,22 +1253,26 @@
     name: string; dir: TupleDirective): seq[WorldField] = defaultWorldField;
              systemArg: SystemArgExtractor[TupleDirective] = defaultSystemArg;
     nestedArgs: NestedArgsExtractor[TupleDirective] = defaultNestedArgs;
-             converters: ConvertExtractor[TupleDirective] = defaultConverters): DirectiveGen" href="necsus/compiletime/systemGen.html#newGenerator%2Cstring%2Cset%5BGenerateHook%5D%2CHookGenerator%5BTupleDirective%5D%2CBuildArchetype%5BTupleDirective%5D%2CNameChooser%5BTupleDirective%5D%2Cproc%28string%2CTupleDirective%29%2CSystemArgExtractor%5BTupleDirective%5D%2CNestedArgsExtractor%5BTupleDirective%5D%2CConvertExtractor%5BTupleDirective%5D">systemGen: proc newGenerator(ident: string; interest: set[GenerateHook];
+             converters: ConvertExtractor[TupleDirective] = defaultConverters;
+             validate: SystemArgValidator = defaultValidator): DirectiveGen" href="necsus/compiletime/systemGen.html#newGenerator%2Cstring%2Cset%5BGenerateHook%5D%2CHookGenerator%5BTupleDirective%5D%2CBuildArchetype%5BTupleDirective%5D%2CNameChooser%5BTupleDirective%5D%2Cproc%28string%2CTupleDirective%29%2CSystemArgExtractor%5BTupleDirective%5D%2CNestedArgsExtractor%5BTupleDirective%5D%2CConvertExtractor%5BTupleDirective%5D%2CSystemArgValidator">systemGen: proc newGenerator(ident: string; interest: set[GenerateHook];
              generate: HookGenerator[TupleDirective];
              archetype: BuildArchetype[TupleDirective] = noArchetype;
              chooseName: NameChooser[TupleDirective] = defaultName; worldFields: proc (
     name: string; dir: TupleDirective): seq[WorldField] = defaultWorldField;
              systemArg: SystemArgExtractor[TupleDirective] = defaultSystemArg;
     nestedArgs: NestedArgsExtractor[TupleDirective] = defaultNestedArgs;
-             converters: ConvertExtractor[TupleDirective] = defaultConverters): DirectiveGen</a></li>
+             converters: ConvertExtractor[TupleDirective] = defaultConverters;
+             validate: SystemArgValidator = defaultValidator): DirectiveGen</a></li>
           <li><a class="reference external"
           data-doc-search-tag="systemGen: proc newGenerator(ident: string; interest: set[GenerateHook];
              generate: HookGenerator[void]; worldFields: proc (name: string): seq[
     WorldField] = defaultWorldFieldNone;
-             systemArg: SystemArgExtractor[void] = defaultSystemArgNone): DirectiveGen" href="necsus/compiletime/systemGen.html#newGenerator%2Cstring%2Cset%5BGenerateHook%5D%2CHookGenerator%5Bvoid%5D%2Cproc%28string%29%2CSystemArgExtractor%5Bvoid%5D">systemGen: proc newGenerator(ident: string; interest: set[GenerateHook];
+             systemArg: SystemArgExtractor[void] = defaultSystemArgNone;
+             validate: SystemArgValidator = defaultValidator): DirectiveGen" href="necsus/compiletime/systemGen.html#newGenerator%2Cstring%2Cset%5BGenerateHook%5D%2CHookGenerator%5Bvoid%5D%2Cproc%28string%29%2CSystemArgExtractor%5Bvoid%5D%2CSystemArgValidator">systemGen: proc newGenerator(ident: string; interest: set[GenerateHook];
              generate: HookGenerator[void]; worldFields: proc (name: string): seq[
     WorldField] = defaultWorldFieldNone;
-             systemArg: SystemArgExtractor[void] = defaultSystemArgNone): DirectiveGen</a></li>
+             systemArg: SystemArgExtractor[void] = defaultSystemArgNone;
+             validate: SystemArgValidator = defaultValidator): DirectiveGen</a></li>
           </ul></dd>
 <dt><a name="newMonoDir" href="#newMonoDir"><span>newMonoDir:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -1634,6 +1642,10 @@
 <li><a class="reference external"
           data-doc-search-tag="systemGen: type SystemArgExtractor" href="necsus/compiletime/systemGen.html#SystemArgExtractor">systemGen: type SystemArgExtractor</a></li>
           </ul></dd>
+<dt><a name="SystemArgValidator" href="#SystemArgValidator"><span>SystemArgValidator:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="systemGen: type SystemArgValidator" href="necsus/compiletime/systemGen.html#SystemArgValidator">systemGen: type SystemArgValidator</a></li>
+          </ul></dd>
 <dt><a name="SystemFlag" href="#SystemFlag"><span>SystemFlag:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="necsus: object SystemFlag" href="necsus.html#SystemFlag">necsus: object SystemFlag</a></li>
@@ -1704,7 +1716,7 @@
           </ul></dd>
 <dt><a name="UnsortedArchetype" href="#UnsortedArchetype"><span>UnsortedArchetype:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="archetype: object UnsortedArchetype" href="necsus/compiletime/archetype.html#UnsortedArchetype">archetype: object UnsortedArchetype</a></li>
+          data-doc-search-tag="archetype: type UnsortedArchetype" href="necsus/compiletime/archetype.html#UnsortedArchetype">archetype: type UnsortedArchetype</a></li>
           </ul></dd>
 <dt><a name="unwrap" href="#unwrap"><span>unwrap:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -1712,9 +1724,13 @@
           <li><a class="reference external"
           data-doc-search-tag="systemVar: proc unwrap[T](sysvar: SharedOrT[T] | LocalOrT[T]; otherwise: T): T" href="necsus/runtime/systemVar.html#unwrap%2C%2CT">systemVar: proc unwrap[T](sysvar: SharedOrT[T] | LocalOrT[T]; otherwise: T): T</a></li>
           </ul></dd>
+<dt><a name="validate" href="#validate"><span>validate:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="systemGen: proc validate(arg: SystemArg; context: NimNode)" href="necsus/compiletime/systemGen.html#validate%2CSystemArg%2CNimNode">systemGen: proc validate(arg: SystemArg; context: NimNode)</a></li>
+          </ul></dd>
 <dt><a name="validateSortOrder" href="#validateSortOrder"><span>validateSortOrder:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="archetype: proc validateSortOrder[T](values: openArray[T])" href="necsus/compiletime/archetype.html#validateSortOrder%2CopenArray%5BT%5D">archetype: proc validateSortOrder[T](values: openArray[T])</a></li>
+          data-doc-search-tag="archetype: proc validateSortOrder[T](target: NimNode; values: openArray[T])" href="necsus/compiletime/archetype.html#validateSortOrder%2CNimNode%2CopenArray%5BT%5D">archetype: proc validateSortOrder[T](target: NimNode; values: openArray[T])</a></li>
           </ul></dd>
 <dt><a name="value" href="#value"><span>value:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -1752,7 +1768,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-11-22 03:49:43 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-11-23 18:19:08 UTC</small>
       </div>
     </div>
   </div>

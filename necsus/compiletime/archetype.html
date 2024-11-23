@@ -57,7 +57,8 @@
       <li><a class="reference" href="#Archetype" title="Archetype[T] = ref object
   name*: string">Archetype</a></li>
 <li><a class="reference" href="#ArchetypeSet" title="ArchetypeSet[T] = ref object">ArchetypeSet</a></li>
-<li><a class="reference" href="#UnsortedArchetype" title="UnsortedArchetype = object of Defect">UnsortedArchetype</a></li>
+<li><a class="reference" href="#UnsortedArchetype" title="UnsortedArchetype = ref object of Defect
+  target*: NimNode">UnsortedArchetype</a></li>
 
     </ul>
   </details>
@@ -158,7 +159,7 @@
 
 </ul>
 <ul class="simple nested-toc-section">validateSortOrder
-  <li><a class="reference" href="#validateSortOrder%2CopenArray%5BT%5D" title="validateSortOrder[T](values: openArray[T])">validateSortOrder[T](values: openArray[T])</a></li>
+  <li><a class="reference" href="#validateSortOrder%2CNimNode%2CopenArray%5BT%5D" title="validateSortOrder[T](target: NimNode; values: openArray[T])">validateSortOrder[T](target: NimNode; values: openArray[T])</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">values
@@ -218,7 +219,8 @@
   </dd>
 </div>
 <div id="UnsortedArchetype">
-  <dt><pre><a href="archetype.html#UnsortedArchetype"><span class="Identifier">UnsortedArchetype</span></a> <span class="Other">=</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <span class="Identifier">Defect</span></pre></dt>
+  <dt><pre><a href="archetype.html#UnsortedArchetype"><span class="Identifier">UnsortedArchetype</span></a> <span class="Other">=</span> <span class="Keyword">ref</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <span class="Identifier">Defect</span>
+  <span class="Identifier">target</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">NimNode</span></pre></dt>
   <dd>
     
     Thrown when an archetype is out of sorted order
@@ -490,8 +492,8 @@
 
 </div>
 <div id="validateSortOrder-procs-all">
-  <div id="validateSortOrder,openArray[T]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#validateSortOrder%2CopenArray%5BT%5D"><span class="Identifier">validateSortOrder</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">values</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span></pre></dt>
+  <div id="validateSortOrder,NimNode,openArray[T]">
+  <dt><pre><span class="Keyword">proc</span> <a href="#validateSortOrder%2CNimNode%2CopenArray%5BT%5D"><span class="Identifier">validateSortOrder</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">target</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">;</span> <span class="Identifier">values</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span></pre></dt>
   <dd>
     
     Checks that components are listed in a consistent order
@@ -546,7 +548,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-11-22 03:49:43 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-11-23 18:19:08 UTC</small>
       </div>
     </div>
   </div>

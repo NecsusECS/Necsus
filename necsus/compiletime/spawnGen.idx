@@ -1,3 +1,3 @@
 nimTitle	spawnGen	necsus/compiletime/spawnGen.html	module src/necsus/compiletime/spawnGen		0
-nim	spawnGenerator	necsus/compiletime/spawnGen.html#spawnGenerator	let spawnGenerator		101
-nim	fullSpawnGenerator	necsus/compiletime/spawnGen.html#fullSpawnGenerator	let fullSpawnGenerator		110
+nim	spawnGenerator	necsus/compiletime/spawnGen.html#spawnGenerator	let spawnGenerator		106
+nim	fullSpawnGenerator	necsus/compiletime/spawnGen.html#fullSpawnGenerator	let fullSpawnGenerator		116
