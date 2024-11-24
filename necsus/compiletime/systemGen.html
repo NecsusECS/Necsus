@@ -66,7 +66,6 @@
 <li><a class="reference" href="#DirectiveGen" title="DirectiveGen = ref object
   ident*: string
   interest*: set[GenerateHook]
-  validate*: SystemArgValidator
   case kind*: DirectiveKind
   of DirectiveKind.Mono:
     generateMono*: HookGenerator[MonoDirective]
@@ -130,7 +129,6 @@
     dualDir*: DualDirective
   nestedArgs*: seq[SystemArg]">SystemArg</a></li>
 <li><a class="reference" href="#SystemArgExtractor" title="SystemArgExtractor[T] = proc (name: string; dir: T): NimNode">SystemArgExtractor</a></li>
-<li><a class="reference" href="#SystemArgValidator" title="SystemArgValidator = proc (source: NimNode; dir: SystemArg)">SystemArgValidator</a></li>
 <li><a class="reference" href="#WorldField" title="WorldField = tuple[name: string, typ: NimNode]">WorldField</a></li>
 
     </ul>
@@ -203,66 +201,58 @@
 
 </ul>
 <ul class="simple nested-toc-section">newGenerator
-  <li><a class="reference" href="#newGenerator%2Cstring%2Cset%5BGenerateHook%5D%2CHookGenerator%5BDualDirective%5D%2CBuildArchetype%5BDualDirective%5D%2CNameChooser%5BDualDirective%5D%2Cproc%28string%2CDualDirective%29%2CSystemArgExtractor%5BDualDirective%5D%2CNestedArgsExtractor%5BDualDirective%5D%2CConvertExtractor%5BDualDirective%5D%2CSystemArgValidator" title="newGenerator(ident: string; interest: set[GenerateHook];
+  <li><a class="reference" href="#newGenerator%2Cstring%2Cset%5BGenerateHook%5D%2CHookGenerator%5BDualDirective%5D%2CBuildArchetype%5BDualDirective%5D%2CNameChooser%5BDualDirective%5D%2Cproc%28string%2CDualDirective%29%2CSystemArgExtractor%5BDualDirective%5D%2CNestedArgsExtractor%5BDualDirective%5D%2CConvertExtractor%5BDualDirective%5D" title="newGenerator(ident: string; interest: set[GenerateHook];
              generate: HookGenerator[DualDirective];
              archetype: BuildArchetype[DualDirective] = noArchetype;
              chooseName: NameChooser[DualDirective] = defaultName; worldFields: proc (
     name: string; dir: DualDirective): seq[WorldField] = defaultWorldField;
              systemArg: SystemArgExtractor[DualDirective] = defaultSystemArg;
     nestedArgs: NestedArgsExtractor[DualDirective] = defaultNestedArgs;
-             converters: ConvertExtractor[DualDirective] = defaultConverters;
-             validate: SystemArgValidator = defaultValidator): DirectiveGen">newGenerator(ident: string; interest: set[GenerateHook];
+             converters: ConvertExtractor[DualDirective] = defaultConverters): DirectiveGen">newGenerator(ident: string; interest: set[GenerateHook];
              generate: HookGenerator[DualDirective];
              archetype: BuildArchetype[DualDirective] = noArchetype;
              chooseName: NameChooser[DualDirective] = defaultName; worldFields: proc (
     name: string; dir: DualDirective): seq[WorldField] = defaultWorldField;
              systemArg: SystemArgExtractor[DualDirective] = defaultSystemArg;
     nestedArgs: NestedArgsExtractor[DualDirective] = defaultNestedArgs;
-             converters: ConvertExtractor[DualDirective] = defaultConverters;
-             validate: SystemArgValidator = defaultValidator): DirectiveGen</a></li>
-<li><a class="reference" href="#newGenerator%2Cstring%2Cset%5BGenerateHook%5D%2CHookGenerator%5BMonoDirective%5D%2CBuildArchetype%5BMonoDirective%5D%2CNameChooser%5BMonoDirective%5D%2Cproc%28DirectiveSet%5BSystemArg%5D%2CMonoDirective%29%2Cproc%28string%2CMonoDirective%29%2CSystemArgExtractor%5BMonoDirective%5D%2CNestedArgsExtractor%5BMonoDirective%5D%2CSystemArgValidator" title="newGenerator(ident: string; interest: set[GenerateHook];
+             converters: ConvertExtractor[DualDirective] = defaultConverters): DirectiveGen</a></li>
+<li><a class="reference" href="#newGenerator%2Cstring%2Cset%5BGenerateHook%5D%2CHookGenerator%5BMonoDirective%5D%2CBuildArchetype%5BMonoDirective%5D%2CNameChooser%5BMonoDirective%5D%2Cproc%28DirectiveSet%5BSystemArg%5D%2CMonoDirective%29%2Cproc%28string%2CMonoDirective%29%2CSystemArgExtractor%5BMonoDirective%5D%2CNestedArgsExtractor%5BMonoDirective%5D" title="newGenerator(ident: string; interest: set[GenerateHook];
              generate: HookGenerator[MonoDirective];
              archetype: BuildArchetype[MonoDirective] = noArchetype;
              chooseName: NameChooser[MonoDirective] = defaultName; systemReturn: proc (
     args: DirectiveSet[SystemArg]; returns: MonoDirective): Option[NimNode] = defaultSystemReturn;
     worldFields: proc (name: string; dir: MonoDirective): seq[WorldField] = defaultWorldField;
              systemArg: SystemArgExtractor[MonoDirective] = defaultSystemArg;
-    nestedArgs: NestedArgsExtractor[MonoDirective] = defaultNestedArgs;
-             validate: SystemArgValidator = defaultValidator): DirectiveGen">newGenerator(ident: string; interest: set[GenerateHook];
+             nestedArgs: NestedArgsExtractor[MonoDirective] = defaultNestedArgs): DirectiveGen">newGenerator(ident: string; interest: set[GenerateHook];
              generate: HookGenerator[MonoDirective];
              archetype: BuildArchetype[MonoDirective] = noArchetype;
              chooseName: NameChooser[MonoDirective] = defaultName; systemReturn: proc (
     args: DirectiveSet[SystemArg]; returns: MonoDirective): Option[NimNode] = defaultSystemReturn;
     worldFields: proc (name: string; dir: MonoDirective): seq[WorldField] = defaultWorldField;
              systemArg: SystemArgExtractor[MonoDirective] = defaultSystemArg;
-    nestedArgs: NestedArgsExtractor[MonoDirective] = defaultNestedArgs;
-             validate: SystemArgValidator = defaultValidator): DirectiveGen</a></li>
-<li><a class="reference" href="#newGenerator%2Cstring%2Cset%5BGenerateHook%5D%2CHookGenerator%5BTupleDirective%5D%2CBuildArchetype%5BTupleDirective%5D%2CNameChooser%5BTupleDirective%5D%2Cproc%28string%2CTupleDirective%29%2CSystemArgExtractor%5BTupleDirective%5D%2CNestedArgsExtractor%5BTupleDirective%5D%2CConvertExtractor%5BTupleDirective%5D%2CSystemArgValidator" title="newGenerator(ident: string; interest: set[GenerateHook];
+             nestedArgs: NestedArgsExtractor[MonoDirective] = defaultNestedArgs): DirectiveGen</a></li>
+<li><a class="reference" href="#newGenerator%2Cstring%2Cset%5BGenerateHook%5D%2CHookGenerator%5BTupleDirective%5D%2CBuildArchetype%5BTupleDirective%5D%2CNameChooser%5BTupleDirective%5D%2Cproc%28string%2CTupleDirective%29%2CSystemArgExtractor%5BTupleDirective%5D%2CNestedArgsExtractor%5BTupleDirective%5D%2CConvertExtractor%5BTupleDirective%5D" title="newGenerator(ident: string; interest: set[GenerateHook];
              generate: HookGenerator[TupleDirective];
              archetype: BuildArchetype[TupleDirective] = noArchetype;
              chooseName: NameChooser[TupleDirective] = defaultName; worldFields: proc (
     name: string; dir: TupleDirective): seq[WorldField] = defaultWorldField;
              systemArg: SystemArgExtractor[TupleDirective] = defaultSystemArg;
     nestedArgs: NestedArgsExtractor[TupleDirective] = defaultNestedArgs;
-             converters: ConvertExtractor[TupleDirective] = defaultConverters;
-             validate: SystemArgValidator = defaultValidator): DirectiveGen">newGenerator(ident: string; interest: set[GenerateHook];
+             converters: ConvertExtractor[TupleDirective] = defaultConverters): DirectiveGen">newGenerator(ident: string; interest: set[GenerateHook];
              generate: HookGenerator[TupleDirective];
              archetype: BuildArchetype[TupleDirective] = noArchetype;
              chooseName: NameChooser[TupleDirective] = defaultName; worldFields: proc (
     name: string; dir: TupleDirective): seq[WorldField] = defaultWorldField;
              systemArg: SystemArgExtractor[TupleDirective] = defaultSystemArg;
     nestedArgs: NestedArgsExtractor[TupleDirective] = defaultNestedArgs;
-             converters: ConvertExtractor[TupleDirective] = defaultConverters;
-             validate: SystemArgValidator = defaultValidator): DirectiveGen</a></li>
-<li><a class="reference" href="#newGenerator%2Cstring%2Cset%5BGenerateHook%5D%2CHookGenerator%5Bvoid%5D%2Cproc%28string%29%2CSystemArgExtractor%5Bvoid%5D%2CSystemArgValidator" title="newGenerator(ident: string; interest: set[GenerateHook];
+             converters: ConvertExtractor[TupleDirective] = defaultConverters): DirectiveGen</a></li>
+<li><a class="reference" href="#newGenerator%2Cstring%2Cset%5BGenerateHook%5D%2CHookGenerator%5Bvoid%5D%2Cproc%28string%29%2CSystemArgExtractor%5Bvoid%5D" title="newGenerator(ident: string; interest: set[GenerateHook];
              generate: HookGenerator[void]; worldFields: proc (name: string): seq[
     WorldField] = defaultWorldFieldNone;
-             systemArg: SystemArgExtractor[void] = defaultSystemArgNone;
-             validate: SystemArgValidator = defaultValidator): DirectiveGen">newGenerator(ident: string; interest: set[GenerateHook];
+             systemArg: SystemArgExtractor[void] = defaultSystemArgNone): DirectiveGen">newGenerator(ident: string; interest: set[GenerateHook];
              generate: HookGenerator[void]; worldFields: proc (name: string): seq[
     WorldField] = defaultWorldFieldNone;
-             systemArg: SystemArgExtractor[void] = defaultSystemArgNone;
-             validate: SystemArgValidator = defaultValidator): DirectiveGen</a></li>
+             systemArg: SystemArgExtractor[void] = defaultSystemArgNone): DirectiveGen</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">newSystemArg
@@ -286,10 +276,6 @@
 <li><a class="reference" href="#systemArg%2CTable%5BDirectiveGen%2CDirectiveSet%5BSystemArg%5D%5D%2CSystemArg" title="systemArg(directives: Table[DirectiveGen, DirectiveSet[SystemArg]];
           arg: SystemArg): NimNode">systemArg(directives: Table[DirectiveGen, DirectiveSet[SystemArg]];
           arg: SystemArg): NimNode</a></li>
-
-</ul>
-<ul class="simple nested-toc-section">validate
-  <li><a class="reference" href="#validate%2CSystemArg%2CNimNode" title="validate(arg: SystemArg; context: NimNode)">validate(arg: SystemArg; context: NimNode)</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">worldFields
@@ -375,7 +361,6 @@
   <dt><pre><a href="systemGen.html#DirectiveGen"><span class="Identifier">DirectiveGen</span></a> <span class="Other">=</span> <span class="Keyword">ref</span> <span class="Keyword">object</span>
   <span class="Identifier">ident</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">string</span>
   <span class="Identifier">interest</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">set</span><span class="Other">[</span><a href="systemGen.html#GenerateHook"><span class="Identifier">GenerateHook</span></a><span class="Other">]</span>
-  <span class="Identifier">validate</span><span class="Operator">*</span><span class="Other">:</span> <a href="systemGen.html#SystemArgValidator"><span class="Identifier">SystemArgValidator</span></a>
   <span class="Keyword">case</span> <span class="Identifier">kind</span><span class="Operator">*</span><span class="Other">:</span> <a href="systemGen.html#DirectiveKind"><span class="Identifier">DirectiveKind</span></a>
   <span class="Keyword">of</span> <span class="Identifier">DirectiveKind</span><span class="Other">.</span><span class="Identifier">Mono</span><span class="Other">:</span>
     <span class="Identifier">generateMono</span><span class="Operator">*</span><span class="Other">:</span> <a href="systemGen.html#HookGenerator"><span class="Identifier">HookGenerator</span></a><span class="Other">[</span><a href="monoDirective.html#MonoDirective"><span class="Identifier">MonoDirective</span></a><span class="Other">]</span>
@@ -505,14 +490,6 @@
   <dd>
     
     The callback used for determining the value to pass when calling the system
-    
-  </dd>
-</div>
-<div id="SystemArgValidator">
-  <dt><pre><a href="systemGen.html#SystemArgValidator"><span class="Identifier">SystemArgValidator</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">source</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">;</span> <span class="Identifier">dir</span><span class="Other">:</span> <a href="systemGen.html#SystemArg"><span class="Identifier">SystemArg</span></a><span class="Other">)</span></pre></dt>
-  <dd>
-    
-    Allows a parser to validate a a system argument
     
   </dd>
 </div>
@@ -718,25 +695,24 @@
 
 </div>
 <div id="newGenerator-procs-all">
-  <div id="newGenerator,string,set[GenerateHook],HookGenerator[DualDirective],BuildArchetype[DualDirective],NameChooser[DualDirective],proc(string,DualDirective),SystemArgExtractor[DualDirective],NestedArgsExtractor[DualDirective],ConvertExtractor[DualDirective],SystemArgValidator">
-  <dt><pre><span class="Keyword">proc</span> <a href="#newGenerator%2Cstring%2Cset%5BGenerateHook%5D%2CHookGenerator%5BDualDirective%5D%2CBuildArchetype%5BDualDirective%5D%2CNameChooser%5BDualDirective%5D%2Cproc%28string%2CDualDirective%29%2CSystemArgExtractor%5BDualDirective%5D%2CNestedArgsExtractor%5BDualDirective%5D%2CConvertExtractor%5BDualDirective%5D%2CSystemArgValidator"><span class="Identifier">newGenerator</span></a><span class="Other">(</span><span class="Identifier">ident</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">interest</span><span class="Other">:</span> <span class="Identifier">set</span><span class="Other">[</span><a href="systemGen.html#GenerateHook"><span class="Identifier">GenerateHook</span></a><span class="Other">]</span><span class="Other">;</span>
+  <div id="newGenerator,string,set[GenerateHook],HookGenerator[DualDirective],BuildArchetype[DualDirective],NameChooser[DualDirective],proc(string,DualDirective),SystemArgExtractor[DualDirective],NestedArgsExtractor[DualDirective],ConvertExtractor[DualDirective]">
+  <dt><pre><span class="Keyword">proc</span> <a href="#newGenerator%2Cstring%2Cset%5BGenerateHook%5D%2CHookGenerator%5BDualDirective%5D%2CBuildArchetype%5BDualDirective%5D%2CNameChooser%5BDualDirective%5D%2Cproc%28string%2CDualDirective%29%2CSystemArgExtractor%5BDualDirective%5D%2CNestedArgsExtractor%5BDualDirective%5D%2CConvertExtractor%5BDualDirective%5D"><span class="Identifier">newGenerator</span></a><span class="Other">(</span><span class="Identifier">ident</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">interest</span><span class="Other">:</span> <span class="Identifier">set</span><span class="Other">[</span><a href="systemGen.html#GenerateHook"><span class="Identifier">GenerateHook</span></a><span class="Other">]</span><span class="Other">;</span>
                   <span class="Identifier">generate</span><span class="Other">:</span> <a href="systemGen.html#HookGenerator"><span class="Identifier">HookGenerator</span></a><span class="Other">[</span><a href="dualDirective.html#DualDirective"><span class="Identifier">DualDirective</span></a><span class="Other">]</span><span class="Other">;</span>
                   <span class="Identifier">archetype</span><span class="Other">:</span> <a href="systemGen.html#BuildArchetype"><span class="Identifier">BuildArchetype</span></a><span class="Other">[</span><a href="dualDirective.html#DualDirective"><span class="Identifier">DualDirective</span></a><span class="Other">]</span> <span class="Other">=</span> <span class="Identifier">noArchetype</span><span class="Other">;</span>
                   <span class="Identifier">chooseName</span><span class="Other">:</span> <a href="systemGen.html#NameChooser"><span class="Identifier">NameChooser</span></a><span class="Other">[</span><a href="dualDirective.html#DualDirective"><span class="Identifier">DualDirective</span></a><span class="Other">]</span> <span class="Other">=</span> <span class="Identifier">defaultName</span><span class="Other">;</span>
     <span class="Identifier">worldFields</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">name</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">dir</span><span class="Other">:</span> <a href="dualDirective.html#DualDirective"><span class="Identifier">DualDirective</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="systemGen.html#WorldField"><span class="Identifier">WorldField</span></a><span class="Other">]</span> <span class="Other">=</span> <span class="Identifier">defaultWorldField</span><span class="Other">;</span>
     <span class="Identifier">systemArg</span><span class="Other">:</span> <a href="systemGen.html#SystemArgExtractor"><span class="Identifier">SystemArgExtractor</span></a><span class="Other">[</span><a href="dualDirective.html#DualDirective"><span class="Identifier">DualDirective</span></a><span class="Other">]</span> <span class="Other">=</span> <span class="Identifier">defaultSystemArg</span><span class="Other">;</span> <span class="Identifier">nestedArgs</span><span class="Other">:</span> <a href="systemGen.html#NestedArgsExtractor"><span class="Identifier">NestedArgsExtractor</span></a><span class="Other">[</span>
     <a href="dualDirective.html#DualDirective"><span class="Identifier">DualDirective</span></a><span class="Other">]</span> <span class="Other">=</span> <span class="Identifier">defaultNestedArgs</span><span class="Other">;</span> <span class="Identifier">converters</span><span class="Other">:</span> <a href="systemGen.html#ConvertExtractor"><span class="Identifier">ConvertExtractor</span></a><span class="Other">[</span>
-    <a href="dualDirective.html#DualDirective"><span class="Identifier">DualDirective</span></a><span class="Other">]</span> <span class="Other">=</span> <span class="Identifier">defaultConverters</span><span class="Other">;</span>
-                  <span class="Identifier">validate</span><span class="Other">:</span> <a href="systemGen.html#SystemArgValidator"><span class="Identifier">SystemArgValidator</span></a> <span class="Other">=</span> <span class="Identifier">defaultValidator</span><span class="Other">)</span><span class="Other">:</span> <a href="systemGen.html#DirectiveGen"><span class="Identifier">DirectiveGen</span></a> {.
-    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+    <a href="dualDirective.html#DualDirective"><span class="Identifier">DualDirective</span></a><span class="Other">]</span> <span class="Other">=</span> <span class="Identifier">defaultConverters</span><span class="Other">)</span><span class="Other">:</span> <a href="systemGen.html#DirectiveGen"><span class="Identifier">DirectiveGen</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
     Create a tuple based generator
     
   </dd>
 </div>
-<div id="newGenerator,string,set[GenerateHook],HookGenerator[MonoDirective],BuildArchetype[MonoDirective],NameChooser[MonoDirective],proc(DirectiveSet[SystemArg],MonoDirective),proc(string,MonoDirective),SystemArgExtractor[MonoDirective],NestedArgsExtractor[MonoDirective],SystemArgValidator">
-  <dt><pre><span class="Keyword">proc</span> <a href="#newGenerator%2Cstring%2Cset%5BGenerateHook%5D%2CHookGenerator%5BMonoDirective%5D%2CBuildArchetype%5BMonoDirective%5D%2CNameChooser%5BMonoDirective%5D%2Cproc%28DirectiveSet%5BSystemArg%5D%2CMonoDirective%29%2Cproc%28string%2CMonoDirective%29%2CSystemArgExtractor%5BMonoDirective%5D%2CNestedArgsExtractor%5BMonoDirective%5D%2CSystemArgValidator"><span class="Identifier">newGenerator</span></a><span class="Other">(</span><span class="Identifier">ident</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">interest</span><span class="Other">:</span> <span class="Identifier">set</span><span class="Other">[</span><a href="systemGen.html#GenerateHook"><span class="Identifier">GenerateHook</span></a><span class="Other">]</span><span class="Other">;</span>
+<div id="newGenerator,string,set[GenerateHook],HookGenerator[MonoDirective],BuildArchetype[MonoDirective],NameChooser[MonoDirective],proc(DirectiveSet[SystemArg],MonoDirective),proc(string,MonoDirective),SystemArgExtractor[MonoDirective],NestedArgsExtractor[MonoDirective]">
+  <dt><pre><span class="Keyword">proc</span> <a href="#newGenerator%2Cstring%2Cset%5BGenerateHook%5D%2CHookGenerator%5BMonoDirective%5D%2CBuildArchetype%5BMonoDirective%5D%2CNameChooser%5BMonoDirective%5D%2Cproc%28DirectiveSet%5BSystemArg%5D%2CMonoDirective%29%2Cproc%28string%2CMonoDirective%29%2CSystemArgExtractor%5BMonoDirective%5D%2CNestedArgsExtractor%5BMonoDirective%5D"><span class="Identifier">newGenerator</span></a><span class="Other">(</span><span class="Identifier">ident</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">interest</span><span class="Other">:</span> <span class="Identifier">set</span><span class="Other">[</span><a href="systemGen.html#GenerateHook"><span class="Identifier">GenerateHook</span></a><span class="Other">]</span><span class="Other">;</span>
                   <span class="Identifier">generate</span><span class="Other">:</span> <a href="systemGen.html#HookGenerator"><span class="Identifier">HookGenerator</span></a><span class="Other">[</span><a href="monoDirective.html#MonoDirective"><span class="Identifier">MonoDirective</span></a><span class="Other">]</span><span class="Other">;</span>
                   <span class="Identifier">archetype</span><span class="Other">:</span> <a href="systemGen.html#BuildArchetype"><span class="Identifier">BuildArchetype</span></a><span class="Other">[</span><a href="monoDirective.html#MonoDirective"><span class="Identifier">MonoDirective</span></a><span class="Other">]</span> <span class="Other">=</span> <span class="Identifier">noArchetype</span><span class="Other">;</span>
                   <span class="Identifier">chooseName</span><span class="Other">:</span> <a href="systemGen.html#NameChooser"><span class="Identifier">NameChooser</span></a><span class="Other">[</span><a href="monoDirective.html#MonoDirective"><span class="Identifier">MonoDirective</span></a><span class="Other">]</span> <span class="Other">=</span> <span class="Identifier">defaultName</span><span class="Other">;</span>
@@ -744,38 +720,35 @@
     <span class="Identifier">NimNode</span><span class="Other">]</span> <span class="Other">=</span> <span class="Identifier">defaultSystemReturn</span><span class="Other">;</span> <span class="Identifier">worldFields</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">name</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span>
     <span class="Identifier">dir</span><span class="Other">:</span> <a href="monoDirective.html#MonoDirective"><span class="Identifier">MonoDirective</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="systemGen.html#WorldField"><span class="Identifier">WorldField</span></a><span class="Other">]</span> <span class="Other">=</span> <span class="Identifier">defaultWorldField</span><span class="Other">;</span> <span class="Identifier">systemArg</span><span class="Other">:</span> <a href="systemGen.html#SystemArgExtractor"><span class="Identifier">SystemArgExtractor</span></a><span class="Other">[</span>
     <a href="monoDirective.html#MonoDirective"><span class="Identifier">MonoDirective</span></a><span class="Other">]</span> <span class="Other">=</span> <span class="Identifier">defaultSystemArg</span><span class="Other">;</span> <span class="Identifier">nestedArgs</span><span class="Other">:</span> <a href="systemGen.html#NestedArgsExtractor"><span class="Identifier">NestedArgsExtractor</span></a><span class="Other">[</span>
-    <a href="monoDirective.html#MonoDirective"><span class="Identifier">MonoDirective</span></a><span class="Other">]</span> <span class="Other">=</span> <span class="Identifier">defaultNestedArgs</span><span class="Other">;</span>
-                  <span class="Identifier">validate</span><span class="Other">:</span> <a href="systemGen.html#SystemArgValidator"><span class="Identifier">SystemArgValidator</span></a> <span class="Other">=</span> <span class="Identifier">defaultValidator</span><span class="Other">)</span><span class="Other">:</span> <a href="systemGen.html#DirectiveGen"><span class="Identifier">DirectiveGen</span></a> {.
-    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+    <a href="monoDirective.html#MonoDirective"><span class="Identifier">MonoDirective</span></a><span class="Other">]</span> <span class="Other">=</span> <span class="Identifier">defaultNestedArgs</span><span class="Other">)</span><span class="Other">:</span> <a href="systemGen.html#DirectiveGen"><span class="Identifier">DirectiveGen</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
     Creates a mono based generator
     
   </dd>
 </div>
-<div id="newGenerator,string,set[GenerateHook],HookGenerator[TupleDirective],BuildArchetype[TupleDirective],NameChooser[TupleDirective],proc(string,TupleDirective),SystemArgExtractor[TupleDirective],NestedArgsExtractor[TupleDirective],ConvertExtractor[TupleDirective],SystemArgValidator">
-  <dt><pre><span class="Keyword">proc</span> <a href="#newGenerator%2Cstring%2Cset%5BGenerateHook%5D%2CHookGenerator%5BTupleDirective%5D%2CBuildArchetype%5BTupleDirective%5D%2CNameChooser%5BTupleDirective%5D%2Cproc%28string%2CTupleDirective%29%2CSystemArgExtractor%5BTupleDirective%5D%2CNestedArgsExtractor%5BTupleDirective%5D%2CConvertExtractor%5BTupleDirective%5D%2CSystemArgValidator"><span class="Identifier">newGenerator</span></a><span class="Other">(</span><span class="Identifier">ident</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">interest</span><span class="Other">:</span> <span class="Identifier">set</span><span class="Other">[</span><a href="systemGen.html#GenerateHook"><span class="Identifier">GenerateHook</span></a><span class="Other">]</span><span class="Other">;</span>
+<div id="newGenerator,string,set[GenerateHook],HookGenerator[TupleDirective],BuildArchetype[TupleDirective],NameChooser[TupleDirective],proc(string,TupleDirective),SystemArgExtractor[TupleDirective],NestedArgsExtractor[TupleDirective],ConvertExtractor[TupleDirective]">
+  <dt><pre><span class="Keyword">proc</span> <a href="#newGenerator%2Cstring%2Cset%5BGenerateHook%5D%2CHookGenerator%5BTupleDirective%5D%2CBuildArchetype%5BTupleDirective%5D%2CNameChooser%5BTupleDirective%5D%2Cproc%28string%2CTupleDirective%29%2CSystemArgExtractor%5BTupleDirective%5D%2CNestedArgsExtractor%5BTupleDirective%5D%2CConvertExtractor%5BTupleDirective%5D"><span class="Identifier">newGenerator</span></a><span class="Other">(</span><span class="Identifier">ident</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">interest</span><span class="Other">:</span> <span class="Identifier">set</span><span class="Other">[</span><a href="systemGen.html#GenerateHook"><span class="Identifier">GenerateHook</span></a><span class="Other">]</span><span class="Other">;</span>
                   <span class="Identifier">generate</span><span class="Other">:</span> <a href="systemGen.html#HookGenerator"><span class="Identifier">HookGenerator</span></a><span class="Other">[</span><a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a><span class="Other">]</span><span class="Other">;</span>
                   <span class="Identifier">archetype</span><span class="Other">:</span> <a href="systemGen.html#BuildArchetype"><span class="Identifier">BuildArchetype</span></a><span class="Other">[</span><a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a><span class="Other">]</span> <span class="Other">=</span> <span class="Identifier">noArchetype</span><span class="Other">;</span>
                   <span class="Identifier">chooseName</span><span class="Other">:</span> <a href="systemGen.html#NameChooser"><span class="Identifier">NameChooser</span></a><span class="Other">[</span><a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a><span class="Other">]</span> <span class="Other">=</span> <span class="Identifier">defaultName</span><span class="Other">;</span>
     <span class="Identifier">worldFields</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">name</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">dir</span><span class="Other">:</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="systemGen.html#WorldField"><span class="Identifier">WorldField</span></a><span class="Other">]</span> <span class="Other">=</span> <span class="Identifier">defaultWorldField</span><span class="Other">;</span>
     <span class="Identifier">systemArg</span><span class="Other">:</span> <a href="systemGen.html#SystemArgExtractor"><span class="Identifier">SystemArgExtractor</span></a><span class="Other">[</span><a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a><span class="Other">]</span> <span class="Other">=</span> <span class="Identifier">defaultSystemArg</span><span class="Other">;</span> <span class="Identifier">nestedArgs</span><span class="Other">:</span> <a href="systemGen.html#NestedArgsExtractor"><span class="Identifier">NestedArgsExtractor</span></a><span class="Other">[</span>
     <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a><span class="Other">]</span> <span class="Other">=</span> <span class="Identifier">defaultNestedArgs</span><span class="Other">;</span> <span class="Identifier">converters</span><span class="Other">:</span> <a href="systemGen.html#ConvertExtractor"><span class="Identifier">ConvertExtractor</span></a><span class="Other">[</span>
-    <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a><span class="Other">]</span> <span class="Other">=</span> <span class="Identifier">defaultConverters</span><span class="Other">;</span>
-                  <span class="Identifier">validate</span><span class="Other">:</span> <a href="systemGen.html#SystemArgValidator"><span class="Identifier">SystemArgValidator</span></a> <span class="Other">=</span> <span class="Identifier">defaultValidator</span><span class="Other">)</span><span class="Other">:</span> <a href="systemGen.html#DirectiveGen"><span class="Identifier">DirectiveGen</span></a> {.
-    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+    <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a><span class="Other">]</span> <span class="Other">=</span> <span class="Identifier">defaultConverters</span><span class="Other">)</span><span class="Other">:</span> <a href="systemGen.html#DirectiveGen"><span class="Identifier">DirectiveGen</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
     Create a tuple based generator
     
   </dd>
 </div>
-<div id="newGenerator,string,set[GenerateHook],HookGenerator[void],proc(string),SystemArgExtractor[void],SystemArgValidator">
-  <dt><pre><span class="Keyword">proc</span> <a href="#newGenerator%2Cstring%2Cset%5BGenerateHook%5D%2CHookGenerator%5Bvoid%5D%2Cproc%28string%29%2CSystemArgExtractor%5Bvoid%5D%2CSystemArgValidator"><span class="Identifier">newGenerator</span></a><span class="Other">(</span><span class="Identifier">ident</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">interest</span><span class="Other">:</span> <span class="Identifier">set</span><span class="Other">[</span><a href="systemGen.html#GenerateHook"><span class="Identifier">GenerateHook</span></a><span class="Other">]</span><span class="Other">;</span>
+<div id="newGenerator,string,set[GenerateHook],HookGenerator[void],proc(string),SystemArgExtractor[void]">
+  <dt><pre><span class="Keyword">proc</span> <a href="#newGenerator%2Cstring%2Cset%5BGenerateHook%5D%2CHookGenerator%5Bvoid%5D%2Cproc%28string%29%2CSystemArgExtractor%5Bvoid%5D"><span class="Identifier">newGenerator</span></a><span class="Other">(</span><span class="Identifier">ident</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">interest</span><span class="Other">:</span> <span class="Identifier">set</span><span class="Other">[</span><a href="systemGen.html#GenerateHook"><span class="Identifier">GenerateHook</span></a><span class="Other">]</span><span class="Other">;</span>
                   <span class="Identifier">generate</span><span class="Other">:</span> <a href="systemGen.html#HookGenerator"><span class="Identifier">HookGenerator</span></a><span class="Other">[</span><span class="Identifier">void</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">worldFields</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">name</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span>
     <a href="systemGen.html#WorldField"><span class="Identifier">WorldField</span></a><span class="Other">]</span> <span class="Other">=</span> <span class="Identifier">defaultWorldFieldNone</span><span class="Other">;</span>
-                  <span class="Identifier">systemArg</span><span class="Other">:</span> <a href="systemGen.html#SystemArgExtractor"><span class="Identifier">SystemArgExtractor</span></a><span class="Other">[</span><span class="Identifier">void</span><span class="Other">]</span> <span class="Other">=</span> <span class="Identifier">defaultSystemArgNone</span><span class="Other">;</span>
-                  <span class="Identifier">validate</span><span class="Other">:</span> <a href="systemGen.html#SystemArgValidator"><span class="Identifier">SystemArgValidator</span></a> <span class="Other">=</span> <span class="Identifier">defaultValidator</span><span class="Other">)</span><span class="Other">:</span> <a href="systemGen.html#DirectiveGen"><span class="Identifier">DirectiveGen</span></a> {.
+                  <span class="Identifier">systemArg</span><span class="Other">:</span> <a href="systemGen.html#SystemArgExtractor"><span class="Identifier">SystemArgExtractor</span></a><span class="Other">[</span><span class="Identifier">void</span><span class="Other">]</span> <span class="Other">=</span> <span class="Identifier">defaultSystemArgNone</span><span class="Other">)</span><span class="Other">:</span> <a href="systemGen.html#DirectiveGen"><span class="Identifier">DirectiveGen</span></a> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
@@ -843,18 +816,6 @@
 </div>
 
 </div>
-<div id="validate-procs-all">
-  <div id="validate,SystemArg,NimNode">
-  <dt><pre><span class="Keyword">proc</span> <a href="#validate%2CSystemArg%2CNimNode"><span class="Identifier">validate</span></a><span class="Other">(</span><span class="Identifier">arg</span><span class="Other">:</span> <a href="systemGen.html#SystemArg"><span class="Identifier">SystemArg</span></a><span class="Other">;</span> <span class="Identifier">context</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
-  <dd>
-    
-    Executes the validation logic for an arg
-    
-  </dd>
-</div>
-
-</div>
 <div id="worldFields-procs-all">
   <div id="worldFields,SystemArg,string">
   <dt><pre><span class="Keyword">proc</span> <a href="#worldFields%2CSystemArg%2Cstring"><span class="Identifier">worldFields</span></a><span class="Other">(</span><span class="Identifier">arg</span><span class="Other">:</span> <a href="systemGen.html#SystemArg"><span class="Identifier">SystemArg</span></a><span class="Other">;</span> <span class="Identifier">name</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="systemGen.html#WorldField"><span class="Identifier">WorldField</span></a><span class="Other">]</span> {.
@@ -906,7 +867,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-11-24 04:03:57 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-11-24 05:28:35 UTC</small>
       </div>
     </div>
   </div>

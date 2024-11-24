@@ -1,4 +1,4 @@
 nimTitle	tuples	necsus/runtime/tuples.html	module src/necsus/runtime/tuples		0
-nim	extend	necsus/runtime/tuples.html#extend.m,varargs[typed]	macro extend(tuples: varargs[typed]): typedesc		27
-nim	`as`	necsus/runtime/tuples.html#as,T,typedesc	proc `as`[T: tuple](value: T; typ: typedesc): T		38
-nim	join	necsus/runtime/tuples.html#join.m,varargs[typed]	macro join(exprs: varargs[typed]): untyped		55
+nim	extend	necsus/runtime/tuples.html#extend.m,varargs[typed]	macro extend(tuples: varargs[typed]): typedesc		20
+nim	`as`	necsus/runtime/tuples.html#as,T,typedesc	proc `as`[T: tuple](value: T; typ: typedesc): T		31
+nim	join	necsus/runtime/tuples.html#join.m,varargs[typed]	macro join(exprs: varargs[typed]): untyped		48
