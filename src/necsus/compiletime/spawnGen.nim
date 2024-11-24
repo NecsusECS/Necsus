@@ -37,7 +37,7 @@ else:
 
 proc convertSpawnValue(archetype: Archetype[ComponentDef], dir: TupleDirective, readFrom: NimNode): NimNode =
     ## Generates code for taking a tuple and converting it to the archetype in which it is being stored
-    if archetype.hasAccessories:
+    if archetype.hasAccessories or archetype.asTupleDir.comps != dir.comps:
         result = nnkTupleConstr.newTree()
         for component in archetype.values:
             if component in dir:
@@ -85,13 +85,10 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, dir: Tuple
         # Check for max capacity, as we can produce a better error by doing it here versus doing it later
         discard maxCapacity(arg.source, dir)
 
-        try:
-            let spawnProc = details.spawnProcName(dir)
-            let ident = name.ident
-            return quote do:
-                `appStateIdent`.`ident` = newSpawn(`appStatePtr`, `spawnProc`)
-        except UnsortedArchetype as e:
-            error(e.msg, arg.source)
+        let spawnProc = details.spawnProcName(dir)
+        let ident = name.ident
+        return quote do:
+            `appStateIdent`.`ident` = newSpawn(`appStatePtr`, `spawnProc`)
     else:
         discard
 

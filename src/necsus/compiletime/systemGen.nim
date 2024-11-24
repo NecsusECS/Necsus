@@ -292,14 +292,11 @@ proc generateName*(arg: SystemArg): string =
 
 proc buildArchetype*(builder: var ArchetypeBuilder[ComponentDef], systemArgs: seq[SystemArg], arg: SystemArg) =
     ## Generates the code for a specific hook
-    try:
-        case arg.kind
-        of DirectiveKind.Tuple: arg.generator.archetypeTuple(builder, systemArgs, arg.tupleDir)
-        of DirectiveKind.Mono: arg.generator.archetypeMono(builder, systemArgs, arg.monoDir)
-        of DirectiveKind.Dual: arg.generator.archetypeDual(builder, systemArgs, arg.dualDir)
-        of DirectiveKind.None: discard
-    except UnsortedArchetype as e:
-        error(e.msg, arg.source)
+    case arg.kind
+    of DirectiveKind.Tuple: arg.generator.archetypeTuple(builder, systemArgs, arg.tupleDir)
+    of DirectiveKind.Mono: arg.generator.archetypeMono(builder, systemArgs, arg.monoDir)
+    of DirectiveKind.Dual: arg.generator.archetypeDual(builder, systemArgs, arg.dualDir)
+    of DirectiveKind.None: discard
 
 proc generateForHook*(arg: SystemArg, details: GenerateContext, name: string): NimNode =
     ## Generates the code for a specific hook

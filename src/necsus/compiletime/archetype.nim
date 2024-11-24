@@ -16,9 +16,6 @@ type
         accessories: Bits
         archetypes: Table[Bits, Archetype[T]]
 
-    UnsortedArchetype* = object of Defect
-        ## Thrown when an archetype is out of sorted order
-
 proc generateName(values: openarray[string]): string = values.join("_")
 
 when NimMajor >= 2:
@@ -48,10 +45,7 @@ proc newArchetype*[T](values: openarray[T], accessories: Bits): Archetype[T] =
     var verified: seq[T]
     var previous: T
     for i, value in values:
-        if i > 0 and value < previous:
-            let correct = values.sorted().join(", ")
-            raise newException(UnsortedArchetype, "Archetype must be in sorted order. Correct order is: " & correct)
-        elif i == 0 or previous != value:
+        if i == 0 or previous != value:
             verified.add(value)
             allComps.incl(value.uniqueId)
 
