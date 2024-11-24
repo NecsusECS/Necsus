@@ -8,15 +8,14 @@ proc archetypes(builder: var ArchetypeBuilder[ComponentDef], systemArgs: seq[Sys
 proc worldFields(name: string, dir: TupleDirective): seq[WorldField] =
     @[ (name, nnkBracketExpr.newTree(bindSym("RawSpawn"), dir.asTupleType)) ]
 
-proc systemArg(spawnType: NimNode, name: string, dir: TupleDirective): NimNode =
+proc systemArg(spawnType: NimNode, name: string): NimNode =
     let sysIdent = name.ident
-    let tupleType = dir.asTupleType
     return quote do:
-        `spawnType`[`tupleType`](`appStateIdent`.`sysIdent`)
+        `appStateIdent`.`sysIdent`.`spawnType`
 
-proc spawnSystemArg(name: string, dir: TupleDirective): NimNode = systemArg(bindSym("Spawn"), name, dir)
+proc spawnSystemArg(name: string, dir: TupleDirective): NimNode = systemArg(bindSym("asSpawn"), name)
 
-proc fullSpawnSystemArg(name: string, dir: TupleDirective): NimNode = systemArg(bindSym("FullSpawn"), name, dir)
+proc fullSpawnSystemArg(name: string, dir: TupleDirective): NimNode = systemArg(bindSym("asFullSpawn"), name)
 
 when NimMajor >= 2:
     const spawnSymbols = CacheTable("NecsusSpawnSymbols")

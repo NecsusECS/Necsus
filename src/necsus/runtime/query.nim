@@ -36,6 +36,10 @@ type
         ## A query flag that indicates a component should be excluded from a query. Where `Comps` is
         ## the single component that should be excluded.
 
+proc asFullQuery*[Comps](rawQuery: RawQuery[Comps]): FullQuery[Comps] = FullQuery[Comps](rawQuery)
+
+proc asQuery*[Comps](rawQuery: RawQuery[Comps]): Query[Comps] = Query[Comps](rawQuery)
+
 proc newQuery*[Comps: tuple](
     appState: pointer,
     getLen: QueryGetLen,

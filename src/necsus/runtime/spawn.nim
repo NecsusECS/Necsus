@@ -14,6 +14,10 @@ type
         ## Describes a type that is able to create new entities. Where `C` is a tuple
         ## with all the components to initially attach to this entity. Returns the new EntityId
 
+proc asFullSpawn*[Comps](rawSpawn: RawSpawn[Comps]): FullSpawn[Comps] = FullSpawn[Comps](rawSpawn)
+
+proc asSpawn*[Comps](rawSpawn: RawSpawn[Comps]): Spawn[Comps] = Spawn[Comps](rawSpawn)
+
 proc newSpawn*[Comps: tuple](
     app: pointer,
     callback: proc(app: pointer, value: sink Comps): EntityId {.fastcall, raises: [], gcsafe.}

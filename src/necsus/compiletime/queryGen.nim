@@ -104,15 +104,14 @@ proc worldFields(name: string, dir: TupleDirective): seq[WorldField] =
     @[ (name, nnkBracketExpr.newTree(bindSym("RawQuery"), dir.asTupleType)) ]
 
 
-proc systemArg(queryType: NimNode, name: string, dir: TupleDirective): NimNode =
+proc systemArg(queryType: NimNode, name: string): NimNode =
     let nameIdent = name.ident
-    let tupleType = dir.args.asTupleType
     return quote:
-        `queryType`[`tupleType`](`appStateIdent`.`nameIdent`)
+        `appStateIdent`.`nameIdent`.`queryType`()
 
-proc querySystemArg(name: string, dir: TupleDirective): NimNode = systemArg(bindSym("Query"), name, dir)
+proc querySystemArg(name: string, dir: TupleDirective): NimNode = systemArg(bindSym("asQuery"), name)
 
-proc fullQuerySystemArg(name: string, dir: TupleDirective): NimNode = systemArg(bindSym("FullQuery"), name, dir)
+proc fullQuerySystemArg(name: string, dir: TupleDirective): NimNode = systemArg(bindSym("asFullQuery"), name)
 
 proc converters(ctx: GenerateContext, dir: TupleDirective): seq[ConverterDef] =
     for archetype in ctx.selectArchetypes(dir):
