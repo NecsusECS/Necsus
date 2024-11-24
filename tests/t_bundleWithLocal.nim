@@ -9,17 +9,25 @@ type
         foo: Local[string]
         bar: Local[string]
 
-proc assertion1*(a: Bundle[A], b: Bundle[B]) =
+    C[T] = object
+        data: Local[seq[T]]
+
+proc assertion1*(a: Bundle[A], b: Bundle[B], c1: Bundle[C[string]], c2: Bundle[C[string]]) =
     a.foo := "foo"
     a.bar := "bar"
     b.foo := "baz"
     b.bar := "qux"
 
-proc assertion2*(a: Bundle[A], b: Bundle[B]) =
-    check(a.foo.getOrRaise == "foo")
-    check(a.bar.getOrRaise == "bar")
-    check(b.foo.getOrRaise == "baz")
-    check(b.bar.getOrRaise == "qux")
+    c1.data := @[ "wakka" ]
+
+proc assertion2*(a: Bundle[A], b: Bundle[B], c1: Bundle[C[string]], c2: Bundle[C[string]]) =
+    check(a.foo == "foo")
+    check(a.bar == "bar")
+    check(b.foo == "baz")
+    check(b.bar == "qux")
+
+    check(c1.data == @[ "wakka" ])
+    check(c2.data == @[ "wakka" ])
 
 proc runner(tick: proc(): void) = tick()
 

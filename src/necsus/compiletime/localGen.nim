@@ -1,15 +1,10 @@
-import macros, systemGen, monoDirective, common
-import ../runtime/systemVar
+import macros, systemGen, monoDirective, common, std/strutils
+import ../runtime/systemVar, ../util/nimNode
 
 proc chooseLocalName(context, argName: NimNode, local: MonoDirective): string =
-    case argName.kind
-    of nnkSym:
-        return argName.signatureHash
-    of nnkIdent:
-        context.expectKind({ nnkSym })
-        return context.strVal & "_" & context.signatureHash & "_" & argName.strVal
-    else:
-        argName.expectKind({ nnkSym, nnkIdent })
+    var hash: string
+    hash.addSignature(context)
+    return context.symbols.join("_") & "_" & hash & "_" & argName.strVal
 
 proc worldFields(name: string, dir: MonoDirective): seq[WorldField] =
     @[ (name, nnkBracketExpr.newTree(bindSym("SystemVarData"), dir.argType)) ]
