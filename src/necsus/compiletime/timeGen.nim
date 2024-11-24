@@ -17,7 +17,7 @@ proc generateDelta(details: GenerateContext, arg: SystemArg, name: string): NimN
             proc `timeDeltaProc`(`appStateIdent`: pointer): BiggestFloat {.gcsafe, raises: [], fastcall, used.} =
                 let `appStatePtr` {.used.} = cast[ptr `appType`](`appStateIdent`)
                 return `appStatePtr`.`thisTime` - `appStatePtr`.`lastTime`
-    of Late:
+    of Standard:
         return quote:
             `appStateIdent`.`timeDelta` = newCallbackDir(`appStatePtr`, `timeDeltaProc`)
     of BeforeLoop:
@@ -31,7 +31,7 @@ proc generateDelta(details: GenerateContext, arg: SystemArg, name: string): NimN
 
 let deltaGenerator* {.compileTime.} = newGenerator(
     ident = "TimeDelta",
-    interest = { Late, BeforeLoop, LoopEnd, Outside },
+    interest = { Standard, BeforeLoop, LoopEnd, Outside },
     generate = generateDelta,
     worldFields = deltaFields,
 )
@@ -48,7 +48,7 @@ proc generateElapsed(details: GenerateContext, arg: SystemArg, name: string): Ni
             proc `timeElapsedProc`(`appStateIdent`: pointer): BiggestFloat {.gcsafe, raises: [], fastcall, used.} =
                 let `appStatePtr` = cast[ptr `appType`](`appStateIdent`)
                 return `appStatePtr`.`thisTime` - `appStatePtr`.`startTime`
-    of Late:
+    of Standard:
         return quote:
             `appStateIdent`.`thisTime` = `appStateIdent`.`startTime`
             `appStateIdent`.`timeElapsed` = newCallbackDir(`appStatePtr`, `timeElapsedProc`)
@@ -57,7 +57,7 @@ proc generateElapsed(details: GenerateContext, arg: SystemArg, name: string): Ni
 
 let elapsedGenerator* {.compileTime.} = newGenerator(
     ident = "TimeElapsed",
-    interest = { Late, Outside },
+    interest = { Standard, Outside },
     generate = generateElapsed,
     worldFields = elapsedFields,
 )
