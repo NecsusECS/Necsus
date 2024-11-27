@@ -84,6 +84,7 @@ proc parseArgKind(symbol: NimNode): Option[DirectiveGen] =
     of "EntityDebug": return some(entityDebugGenerator)
     of "Bundle": return some(bundleGenerator)
     of "Delete": return some(deleteGenerator)
+    of "DeleteAll": return some(deleteAllGenerator)
     of "TickId": return some(tickIdGenerator)
     of "Save": return some(saveGenerator)
     of "Restore": return some(restoreGenerator)

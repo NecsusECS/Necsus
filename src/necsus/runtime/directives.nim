@@ -23,6 +23,9 @@ type
     Delete* = CallbackDir[Arity1Proc[EntityId, void]]
         ## Deletes an entity and all associated components
 
+    DeleteAll*[C: tuple] = CallbackDir[Arity0Proc[void]]
+        ## Deletes all entities matching a query
+
     Attach*[C: tuple] = CallbackDir[Arity2Proc[EntityId, C, void]]
         ## Describes a type that is able to update existing entities new entities. Where `C` is
         ## a tuple with all the components to attach.

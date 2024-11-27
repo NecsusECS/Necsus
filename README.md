@@ -354,6 +354,23 @@ proc deletingSystem(query: FullQuery[(A, B)], delete: Delete) =
 proc myApp() {.necsus([~deletingSystem], newNecsusConf()).}
 ```
 
+#### DeleteAll
+
+The `DeleteAll` directive is a shortcut for deleting all entities that match a specific component pattern:
+
+```nim
+import necsus
+
+type
+    A = object
+    B = object
+
+proc deletingSystem(delete: DeleteAll[(A, Not[B])]) =
+    delete()
+
+proc myApp() {.necsus([~deletingSystem], newNecsusConf()).}
+```
+
 #### Lookup
 
 `Lookup` allows you to get components for an entity when you already have the entity ID. It returns an `Option`, which

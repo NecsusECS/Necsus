@@ -36,16 +36,11 @@ proc next*[Comps: tuple](store: var ArchetypeStore[Comps], iter: var BlockIter, 
     eid = row.entityId
     return addr row.components
 
-iterator items*[Comps: tuple](store: var ArchetypeStore[Comps]): ptr ArchRow[Comps] =
-    ## Iterates over the components in a view
+iterator entityIds*[Comps](store: var ArchetypeStore[Comps]): EntityId =
     var iter: BlockIter
-    var value: ptr ArchRow[Comps]
-    while true:
-        value = store.next(iter)
-        if value == nil:
-            break
-        else:
-            yield value
+    var eid: EntityId
+    while store.next(iter, eid) != nil:
+        yield eid
 
 func addLen*[Comps: tuple](store: var ArchetypeStore[Comps], len: var uint) =
     ## Accessor for the archetype of a store
