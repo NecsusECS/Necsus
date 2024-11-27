@@ -54,8 +54,11 @@
   <details open>
     <summary><a class="reference reference-toplevel" href="#9" id="59">Lets</a></summary>
     <ul class="simple simple-toc-section">
-      <li><a class="reference" href="#deleteGenerator" title="deleteGenerator {.compileTime.} = newGenerator(&quot;Delete&quot;, {Standard, Outside},
-    generate, worldFields, defaultSystemArgNone)">deleteGenerator</a></li>
+      <li><a class="reference" href="#deleteAllGenerator" title="deleteAllGenerator {.compileTime.} = newGenerator(&quot;DeleteAll&quot;,
+    {Standard, Outside}, generateDeleteAll, noArchetype, defaultName,
+    deleteAllFields, defaultSystemArg, deleteAllNestedArgs, defaultConverters)">deleteAllGenerator</a></li>
+<li><a class="reference" href="#deleteGenerator" title="deleteGenerator {.compileTime.} = newGenerator(&quot;Delete&quot;, {Standard, Outside},
+    generateDelete, deleteFields, defaultSystemArgNone)">deleteGenerator</a></li>
 
     </ul>
   </details>
@@ -72,15 +75,25 @@
     <div class="section" id="6">
   <h1><a class="toc-backref" href="#6">Imports</a></h1>
   <dl class="item">
-    <a class="reference external" href="archetype.html">archetype</a>, <a class="reference external" href="tools.html">tools</a>, <a class="reference external" href="systemGen.html">systemGen</a>, <a class="reference external" href="archetypeBuilder.html">archetypeBuilder</a>, <a class="reference external" href="common.html">common</a>, <a class="reference external" href="../runtime/archetypeStore.html">../runtime/archetypeStore</a>, <a class="reference external" href="../runtime/world.html">../runtime/world</a>, <a class="reference external" href="../runtime/directives.html">../runtime/directives</a>
+    <a class="reference external" href="archetype.html">archetype</a>, <a class="reference external" href="tools.html">tools</a>, <a class="reference external" href="systemGen.html">systemGen</a>, <a class="reference external" href="archetypeBuilder.html">archetypeBuilder</a>, <a class="reference external" href="common.html">common</a>, <a class="reference external" href="tupleDirective.html">tupleDirective</a>, <a class="reference external" href="../runtime/archetypeStore.html">../runtime/archetypeStore</a>, <a class="reference external" href="../runtime/world.html">../runtime/world</a>, <a class="reference external" href="../runtime/directives.html">../runtime/directives</a>
   </dl>
 </div>
 <div class="section" id="9">
   <h1><a class="toc-backref" href="#9">Lets</a></h1>
   <dl class="item">
-    <div id="deleteGenerator">
+    <div id="deleteAllGenerator">
+  <dt><pre><a href="deleteGen.html#deleteAllGenerator"><span class="Identifier">deleteAllGenerator</span></a> {.<span class="Identifier">compileTime</span>.} <span class="Other">=</span> <span class="Identifier">newGenerator</span><span class="Other">(</span><span class="StringLit">&quot;DeleteAll&quot;</span><span class="Other">,</span>
+    <span class="Other">{</span><span class="Identifier">Standard</span><span class="Other">,</span> <span class="Identifier">Outside</span><span class="Other">}</span><span class="Other">,</span> <span class="Identifier">generateDeleteAll</span><span class="Other">,</span> <span class="Identifier">noArchetype</span><span class="Other">,</span> <span class="Identifier">defaultName</span><span class="Other">,</span>
+    <span class="Identifier">deleteAllFields</span><span class="Other">,</span> <span class="Identifier">defaultSystemArg</span><span class="Other">,</span> <span class="Identifier">deleteAllNestedArgs</span><span class="Other">,</span> <span class="Identifier">defaultConverters</span><span class="Other">)</span></pre></dt>
+  <dd>
+    
+    
+    
+  </dd>
+</div>
+<div id="deleteGenerator">
   <dt><pre><a href="deleteGen.html#deleteGenerator"><span class="Identifier">deleteGenerator</span></a> {.<span class="Identifier">compileTime</span>.} <span class="Other">=</span> <span class="Identifier">newGenerator</span><span class="Other">(</span><span class="StringLit">&quot;Delete&quot;</span><span class="Other">,</span> <span class="Other">{</span><span class="Identifier">Standard</span><span class="Other">,</span> <span class="Identifier">Outside</span><span class="Other">}</span><span class="Other">,</span>
-    <span class="Identifier">generate</span><span class="Other">,</span> <span class="Identifier">worldFields</span><span class="Other">,</span> <span class="Identifier">defaultSystemArgNone</span><span class="Other">)</span></pre></dt>
+    <span class="Identifier">generateDelete</span><span class="Other">,</span> <span class="Identifier">deleteFields</span><span class="Other">,</span> <span class="Identifier">defaultSystemArgNone</span><span class="Other">)</span></pre></dt>
   <dd>
     
     
@@ -97,7 +110,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-11-24 21:28:32 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-11-27 05:04:53 UTC</small>
       </div>
     </div>
   </div>

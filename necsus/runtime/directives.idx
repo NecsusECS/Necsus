@@ -1,36 +1,37 @@
 nimTitle	directives	necsus/runtime/directives.html	module src/necsus/runtime/directives		0
 nim	Delete	necsus/runtime/directives.html#Delete	type Delete		23
-nim	Attach	necsus/runtime/directives.html#Attach	type Attach		26
-nim	Detach	necsus/runtime/directives.html#Detach	type Detach		30
-nim	Swap	necsus/runtime/directives.html#Swap	type Swap		34
-nim	Lookup	necsus/runtime/directives.html#Lookup	type Lookup		39
-nim	OutboxProc	necsus/runtime/directives.html#OutboxProc	type OutboxProc		43
-nim	Outbox	necsus/runtime/directives.html#Outbox	type Outbox		45
-nim	TimeDelta	necsus/runtime/directives.html#TimeDelta	type TimeDelta		48
-nim	TimeElapsed	necsus/runtime/directives.html#TimeElapsed	type TimeElapsed		51
-nim	TickId	necsus/runtime/directives.html#TickId	type TickId		54
-nim	EntityDebug	necsus/runtime/directives.html#EntityDebug	type EntityDebug		57
-nim	Bundle	necsus/runtime/directives.html#Bundle	type Bundle		60
-nim	Save	necsus/runtime/directives.html#Save	type Save		65
-nim	Restore	necsus/runtime/directives.html#Restore	type Restore		73
-nim	SystemInstance	necsus/runtime/directives.html#SystemInstance	type SystemInstance		76
-nim	EventSystemInstance	necsus/runtime/directives.html#EventSystemInstance	type EventSystemInstance		79
-nim	SaveSystemInstance	necsus/runtime/directives.html#SaveSystemInstance	type SaveSystemInstance		82
-nim	newCallbackDir	necsus/runtime/directives.html#newCallbackDir,pointer,T	proc newCallbackDir[T: proc](appState: pointer; callback: T): CallbackDir[T]		85
-nim	get	necsus/runtime/directives.html#get,Lookup[C],EntityId	proc get[C](lookup: Lookup[C]; entityId: EntityId): Option[C]		89
-nim	`()`	necsus/runtime/directives.html#(),Lookup[C],EntityId	proc `()`[C](lookup: Lookup[C]; entityId: EntityId): Option[C]		95
-nim	get	necsus/runtime/directives.html#get,CallbackDir[Arity0Proc[T]]	proc get[T](comp: CallbackDir[Arity0Proc[T]]): T		99
-nim	`()`	necsus/runtime/directives.html#(),CallbackDir[Arity0Proc[T]]	proc `()`[T](comp: CallbackDir[Arity0Proc[T]]): T		103
-nim	get	necsus/runtime/directives.html#get,CallbackDir[Arity1Proc[A,T]],A	proc get[A, T](comp: CallbackDir[Arity1Proc[A, T]]; a: A): T		107
-nim	exec	necsus/runtime/directives.html#exec,CallbackDir[Arity1Proc[A,void]],A	proc exec[A](comp: CallbackDir[Arity1Proc[A, void]]; a: A)		111
-nim	`()`	necsus/runtime/directives.html#(),CallbackDir[Arity1Proc[A,T]],A	proc `()`[A, T](comp: CallbackDir[Arity1Proc[A, T]]; a: A): T		115
-nim	get	necsus/runtime/directives.html#get,CallbackDir[Arity2Proc[A,B,T]],A,B	proc get[A, B, T](comp: CallbackDir[Arity2Proc[A, B, T]]; a: A; b: B): T		119
-nim	exec	necsus/runtime/directives.html#exec,CallbackDir[Arity2Proc[A,B,void]],A,B	proc exec[A, B](comp: CallbackDir[Arity2Proc[A, B, void]]; a: A; b: B)		123
-nim	`()`	necsus/runtime/directives.html#(),CallbackDir[Arity2Proc[A,B,T]],A,B	proc `()`[A, B, T](comp: CallbackDir[Arity2Proc[A, B, T]]; a: A; b: B): T		127
-nim	`()`	necsus/runtime/directives.html#(),Save	proc `()`(save: Save): string		131
-nim	`()`	necsus/runtime/directives.html#(),Restore,string	proc `()`(restore: Restore; value: string)		135
-nim	exec	necsus/runtime/directives.html#exec,Outbox[T],T	proc exec[T](outbox: Outbox[T]; message: T)		139
-nim	`()`	necsus/runtime/directives.html#(),Outbox[T],T	proc `()`[T](outbox: Outbox[T]; message: T)		143
-nimgrp	get	necsus/runtime/directives.html#get-procs-all	proc		89
-nimgrp	()	necsus/runtime/directives.html#()-procs-all	proc		95
-nimgrp	exec	necsus/runtime/directives.html#exec-procs-all	proc		111
+nim	DeleteAll	necsus/runtime/directives.html#DeleteAll	type DeleteAll		26
+nim	Attach	necsus/runtime/directives.html#Attach	type Attach		29
+nim	Detach	necsus/runtime/directives.html#Detach	type Detach		33
+nim	Swap	necsus/runtime/directives.html#Swap	type Swap		37
+nim	Lookup	necsus/runtime/directives.html#Lookup	type Lookup		42
+nim	OutboxProc	necsus/runtime/directives.html#OutboxProc	type OutboxProc		46
+nim	Outbox	necsus/runtime/directives.html#Outbox	type Outbox		48
+nim	TimeDelta	necsus/runtime/directives.html#TimeDelta	type TimeDelta		51
+nim	TimeElapsed	necsus/runtime/directives.html#TimeElapsed	type TimeElapsed		54
+nim	TickId	necsus/runtime/directives.html#TickId	type TickId		57
+nim	EntityDebug	necsus/runtime/directives.html#EntityDebug	type EntityDebug		60
+nim	Bundle	necsus/runtime/directives.html#Bundle	type Bundle		63
+nim	Save	necsus/runtime/directives.html#Save	type Save		68
+nim	Restore	necsus/runtime/directives.html#Restore	type Restore		76
+nim	SystemInstance	necsus/runtime/directives.html#SystemInstance	type SystemInstance		79
+nim	EventSystemInstance	necsus/runtime/directives.html#EventSystemInstance	type EventSystemInstance		82
+nim	SaveSystemInstance	necsus/runtime/directives.html#SaveSystemInstance	type SaveSystemInstance		85
+nim	newCallbackDir	necsus/runtime/directives.html#newCallbackDir,pointer,T	proc newCallbackDir[T: proc](appState: pointer; callback: T): CallbackDir[T]		88
+nim	get	necsus/runtime/directives.html#get,Lookup[C],EntityId	proc get[C](lookup: Lookup[C]; entityId: EntityId): Option[C]		92
+nim	`()`	necsus/runtime/directives.html#(),Lookup[C],EntityId	proc `()`[C](lookup: Lookup[C]; entityId: EntityId): Option[C]		98
+nim	get	necsus/runtime/directives.html#get,CallbackDir[Arity0Proc[T]]	proc get[T](comp: CallbackDir[Arity0Proc[T]]): T		102
+nim	`()`	necsus/runtime/directives.html#(),CallbackDir[Arity0Proc[T]]	proc `()`[T](comp: CallbackDir[Arity0Proc[T]]): T		106
+nim	get	necsus/runtime/directives.html#get,CallbackDir[Arity1Proc[A,T]],A	proc get[A, T](comp: CallbackDir[Arity1Proc[A, T]]; a: A): T		110
+nim	exec	necsus/runtime/directives.html#exec,CallbackDir[Arity1Proc[A,void]],A	proc exec[A](comp: CallbackDir[Arity1Proc[A, void]]; a: A)		114
+nim	`()`	necsus/runtime/directives.html#(),CallbackDir[Arity1Proc[A,T]],A	proc `()`[A, T](comp: CallbackDir[Arity1Proc[A, T]]; a: A): T		118
+nim	get	necsus/runtime/directives.html#get,CallbackDir[Arity2Proc[A,B,T]],A,B	proc get[A, B, T](comp: CallbackDir[Arity2Proc[A, B, T]]; a: A; b: B): T		122
+nim	exec	necsus/runtime/directives.html#exec,CallbackDir[Arity2Proc[A,B,void]],A,B	proc exec[A, B](comp: CallbackDir[Arity2Proc[A, B, void]]; a: A; b: B)		126
+nim	`()`	necsus/runtime/directives.html#(),CallbackDir[Arity2Proc[A,B,T]],A,B	proc `()`[A, B, T](comp: CallbackDir[Arity2Proc[A, B, T]]; a: A; b: B): T		130
+nim	`()`	necsus/runtime/directives.html#(),Save	proc `()`(save: Save): string		134
+nim	`()`	necsus/runtime/directives.html#(),Restore,string	proc `()`(restore: Restore; value: string)		138
+nim	exec	necsus/runtime/directives.html#exec,Outbox[T],T	proc exec[T](outbox: Outbox[T]; message: T)		142
+nim	`()`	necsus/runtime/directives.html#(),Outbox[T],T	proc `()`[T](outbox: Outbox[T]; message: T)		146
+nimgrp	get	necsus/runtime/directives.html#get-procs-all	proc		92
+nimgrp	()	necsus/runtime/directives.html#()-procs-all	proc		98
+nimgrp	exec	necsus/runtime/directives.html#exec-procs-all	proc		114

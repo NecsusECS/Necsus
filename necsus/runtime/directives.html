@@ -57,6 +57,7 @@
       <li><a class="reference" href="#Attach" title="Attach[C] = CallbackDir[Arity2Proc[EntityId, C, void]]">Attach</a></li>
 <li><a class="reference" href="#Bundle" title="Bundle[T] = ptr T">Bundle</a></li>
 <li><a class="reference" href="#Delete" title="Delete = CallbackDir[Arity1Proc[EntityId, void]]">Delete</a></li>
+<li><a class="reference" href="#DeleteAll" title="DeleteAll[C] = CallbackDir[Arity0Proc[void]]">DeleteAll</a></li>
 <li><a class="reference" href="#Detach" title="Detach[C] = CallbackDir[Arity1Proc[EntityId, void]]">Detach</a></li>
 <li><a class="reference" href="#EntityDebug" title="EntityDebug = CallbackDir[Arity1Proc[EntityId, string]]">EntityDebug</a></li>
 <li><a class="reference" href="#EventSystemInstance" title="EventSystemInstance[T] = proc (event: T): void {.closure.}">EventSystemInstance</a></li>
@@ -149,6 +150,14 @@
   <dd>
     
     Deletes an entity and all associated components
+    
+  </dd>
+</div>
+<div id="DeleteAll">
+  <dt><pre><a href="directives.html#DeleteAll"><span class="Identifier">DeleteAll</span></a><span class="Other">[</span><span class="Identifier">C</span><span class="Other">]</span> <span class="Other">=</span> <span class="Identifier">CallbackDir</span><span class="Other">[</span><span class="Identifier">Arity0Proc</span><span class="Other">[</span><span class="Identifier">void</span><span class="Other">]</span><span class="Other">]</span></pre></dt>
+  <dd>
+    
+    Deletes all entities matching a query
     
   </dd>
 </div>
@@ -415,7 +424,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-11-24 21:28:32 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-11-27 05:04:53 UTC</small>
       </div>
     </div>
   </div>
