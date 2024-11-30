@@ -1,4 +1,4 @@
-import ringbuffer, options
+import std/[deques, math, options]
 
 type
     EntryData[V] = object
@@ -12,7 +12,7 @@ type
         ## Stores a block of packed values
         nextId: uint
         hasRecycledValues: bool
-        recycle: RingBuffer[uint]
+        recycle: Deque[uint]
         data: seq[EntryData[V]]
         len: uint
 
@@ -22,7 +22,7 @@ type
 
 proc newBlockStore*[V](size: SomeInteger): BlockStore[V] =
     ## Instantiates a new BlockStore
-    BlockStore[V](recycle: newRingBuffer[uint](size), data: newSeq[EntryData[V]](size))
+    BlockStore[V](recycle: initDeque[uint](nextPowerOfTwo(size div 2)), data: newSeq[EntryData[V]](size))
 
 proc isFirst*(iter: BlockIter): bool = iter.index == 0
 
@@ -35,15 +35,12 @@ proc reserve*[V](blockstore: var BlockStore[V]): Entry[V] =
     ## Reserves a slot for a value
     var index: uint
 
-    if blockstore.hasRecycledValues:
-        let recycled = tryShift(blockstore.recycle)
-        if isSome(recycled):
-            index = unsafeGet(recycled)
-        else:
+    block indexBreak:
+        if blockstore.hasRecycledValues:
+            if blockstore.recycle.len > 0:
+                index = blockstore.recycle.popFirst()
+                break indexBreak
             blockstore.hasRecycledValues = false
-            index = blockstore.nextId
-            blockstore.nextId += 1
-    else:
         index = blockstore.nextId
         blockstore.nextId += 1
 
@@ -82,7 +79,7 @@ proc del*[V](store: var BlockStore[V], idx: uint): V =
         store.len -= 1
         let deleted = move(store.data[idx])
         result = deleted.value
-        store.recycle.tryPush(idx)
+        store.recycle.addLast(idx)
         store.hasRecycledValues = true
 
 proc `[]`*[V](store: BlockStore[V], idx: uint): var V =
