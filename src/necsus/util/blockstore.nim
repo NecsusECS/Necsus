@@ -1,4 +1,4 @@
-import std/[deques, math, options]
+import std/[deques, options]
 
 type
     EntryData[V] = object
