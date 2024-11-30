@@ -22,7 +22,7 @@ type
 
 proc newBlockStore*[V](size: SomeInteger): BlockStore[V] =
     ## Instantiates a new BlockStore
-    BlockStore[V](recycle: initDeque[uint](nextPowerOfTwo(size div 2)), data: newSeq[EntryData[V]](size))
+    BlockStore[V](recycle: initDeque[uint](size.int div 2), data: newSeq[EntryData[V]](size))
 
 proc isFirst*(iter: BlockIter): bool = iter.index == 0
 
