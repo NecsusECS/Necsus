@@ -1,9 +1,0 @@
-nimTitle	ringbuffer	necsus/util/ringbuffer.html	module src/necsus/util/ringbuffer		0
-nim	RingBuffer	necsus/util/ringbuffer.html#RingBuffer	object RingBuffer		4
-nim	newRingBuffer	necsus/util/ringbuffer.html#newRingBuffer,SomeInteger	proc newRingBuffer[T](minimumSize: SomeInteger): RingBuffer[T]		15
-nim	`$`	necsus/util/ringbuffer.html#$,RingBuffer[T]	proc `$`[T](ring: RingBuffer[T]): string		25
-nim	capacity	necsus/util/ringbuffer.html#capacity,RingBuffer[T]	proc capacity[T](ring: RingBuffer[T]): uint		36
-nim	tryPush	necsus/util/ringbuffer.html#tryPush.t,RingBuffer[T],T	template tryPush[T](ring: var RingBuffer[T]; value: T)		43
-nim	tryShift	necsus/util/ringbuffer.html#tryShift,RingBuffer[T]	proc tryShift[T](ring: var RingBuffer[T]): Option[T]		52
-nim	drain	necsus/util/ringbuffer.html#drain,RingBuffer[T]	proc drain[T](ring: var RingBuffer[T]): seq[T]		58
-nim	isEmpty	necsus/util/ringbuffer.html#isEmpty,RingBuffer[T]	proc isEmpty[T](ring: RingBuffer[T]): bool		67
