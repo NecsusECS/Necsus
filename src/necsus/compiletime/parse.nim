@@ -93,15 +93,26 @@ proc parseArgKind(symbol: NimNode): Option[DirectiveGen] =
 
 proc parseDirectiveArg(symbol: NimNode, isPointer: bool = false, kind: DirectiveArgKind = Include): DirectiveArg =
     case symbol.kind
-    of nnkSym, nnkTupleTy: return newDirectiveArg(newComponentDef(symbol), isPointer, kind)
+    of nnkSym, nnkTupleTy:
+        return newDirectiveArg(newComponentDef(symbol), isPointer, kind)
     of nnkBracketExpr:
         case symbol[0].strVal
-        of "Not": return parseDirectiveArg(symbol[1], isPointer, Exclude)
-        of "Option": return parseDirectiveArg(symbol[1], isPointer, Optional)
-        else: return newDirectiveArg(newComponentDef(symbol), isPointer, kind)
-    of nnkIdentDefs: return parseDirectiveArg(symbol[1], isPointer, kind)
-    of nnkPtrTy: return parseDirectiveArg(symbol[0], true, kind)
-    else: error(&"Unexpected directive kind ({symbol.kind}): {symbol.repr}", symbol)
+        of "Not":
+            return parseDirectiveArg(symbol[1], isPointer, Exclude)
+        of "Option":
+            return parseDirectiveArg(symbol[1], isPointer, Optional)
+        else:
+            return newDirectiveArg(newComponentDef(symbol), isPointer, kind)
+    of nnkIdentDefs:
+        return parseDirectiveArg(symbol[1], isPointer, kind)
+    of nnkPtrTy:
+        return parseDirectiveArg(symbol[0], true, kind)
+    of nnkCall:
+        if symbol[0].kind == nnkOpenSymChoice and symbol[0].repr == "[]":
+            return parseDirectiveArg(nnkBracketExpr.newTree(symbol[1..^1]), isPointer, kind)
+    else:
+        discard
+    error(&"Unexpected directive kind ({symbol.kind}): {symbol.repr}", symbol)
 
 proc parseDirectiveArgsFromTuple(tupleArg: NimNode): seq[DirectiveArg] =
     ## Parses the symbols out of a tuple definition
