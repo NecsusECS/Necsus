@@ -61,7 +61,7 @@ proc createRestoreProc(genInfo: CodeGenInfo): NimNode =
         let log = emitSaveTrace("Restoring from ", streamIdent, " as ", decoded)
         quote:
             var `decoded`: `saveTypeName`
-            fromJson(`decoded`, parseJson(`streamIdent`))
+            fromJson(`decoded`, parseJson(`streamIdent`), Joptions(allowMissingKeys: true))
             `log`
             `invocations`
 
