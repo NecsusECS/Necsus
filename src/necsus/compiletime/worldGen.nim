@@ -180,7 +180,7 @@ proc createAppStateDestructor*(genInfo: CodeGenInfo): NimNode =
             `destroys`
 
 proc mailboxIndex(details: CodeGenInfo): Table[MonoDirective, seq[(ParsedSystem, NimNode)]] =
-    ## Creates a table of all inboxes keyd on the type of message they receive
+    ## Creates a table of all inboxes keyed on the type of message they receive
     result = initTable[MonoDirective, seq[(ParsedSystem, NimNode)]](64)
     for system in details.systems:
         for arg in system.allArgs:
@@ -192,6 +192,12 @@ proc mailboxIndex(details: CodeGenInfo): Table[MonoDirective, seq[(ParsedSystem,
             elif arg.generator == outboxGenerator:
                 # Store any outboxes to ensure the public send procs get created
                 discard result.mgetOrPut(arg.monoDir, newSeq[(ParsedSystem, NimNode)]())
+
+        if system.phase == EventCallback:
+            system.prefixArgs[0].expectKind(nnkIdentDefs)
+            let directive = newMonoDir(system.prefixArgs[0][1])
+            result.mgetOrPut(directive, newSeq[(ParsedSystem, NimNode)]())
+                .add((system, newEmptyNode()))
 
 let event {.compileTime.} = ident("event")
 
@@ -225,7 +231,8 @@ proc createSendProcs*(details: CodeGenInfo): NimNode =
 
         if not isFastCompileMode(fastEvents):
             for (system, inboxIdent) in inboxes:
-                body.add details.genAddToInbox(system, eventType, inboxIdent, seen)
+                if inboxIdent.kind != nnkEmpty:
+                    body.add details.genAddToInbox(system, eventType, inboxIdent, seen)
 
             for system in details.systems:
                 case system.phase
