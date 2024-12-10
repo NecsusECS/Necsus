@@ -193,7 +193,7 @@ proc mailboxIndex(details: CodeGenInfo): Table[MonoDirective, seq[(ParsedSystem,
                 # Store any outboxes to ensure the public send procs get created
                 discard result.mgetOrPut(arg.monoDir, newSeq[(ParsedSystem, NimNode)]())
 
-        if system.phase == EventCallback:
+        if system.phase in { EventCallback, IndirectEventCallback }:
             system.prefixArgs[0].expectKind(nnkIdentDefs)
             let directive = newMonoDir(system.prefixArgs[0][1])
             result.mgetOrPut(directive, newSeq[(ParsedSystem, NimNode)]())
