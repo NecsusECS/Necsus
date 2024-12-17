@@ -38,10 +38,12 @@ proc createMarshalType(genInfo: CodeGenInfo, typeName: NimNode, includeRestore: 
     if includeRestore:
         genInfo.systems.filterIt(it.phase == RestoreCallback).mapIt(it.restoreSysType).collectMarshalTypes(dedupe, records)
 
-    return nnkTypeDef.newTree(
-        typeName,
-        newEmptyNode(),
-        nnkObjectTy.newTree(newEmptyNode(), newEmptyNode(), records)
+    return nnkTypeSection.newTree(
+        nnkTypeDef.newTree(
+            typeName,
+            newEmptyNode(),
+            nnkObjectTy.newTree(newEmptyNode(), newEmptyNode(), records)
+        )
     )
 
 let streamIdent {.compileTime.} = "stream".ident
@@ -118,10 +120,8 @@ proc createSaveProc(genInfo: CodeGenInfo): NimNode =
 proc createMarshalProcs*(genInfo: CodeGenInfo): NimNode =
     ## Generates procs needed for saving and restoring game state
     return newStmtList(
-        nnkTypeSection.newTree(
-            createMarshalType(genInfo, genInfo.saveTypeName, false),
-            createMarshalType(genInfo, genInfo.restoreTypeName, true),
-        ),
+        createMarshalType(genInfo, genInfo.saveTypeName, false),
+        createMarshalType(genInfo, genInfo.restoreTypeName, true),
         createSaveProc(genInfo),
         createRestoreProc(genInfo)
     )
