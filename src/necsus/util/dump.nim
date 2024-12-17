@@ -9,7 +9,7 @@ proc modulePath(node: NimNode): string =
         result.removePrefix("/")
         result.removeSuffix(".nim")
 
-proc getModule(node: NimNode): string =
+proc getModule(node: NimNode): string {.warning[Deprecated]:off.} =
     ## Returns the module path for a nim node
     case node.kind
     of nnkTypeDef, nnkPragmaExpr, nnkProcDef, nnkIdentDefs:
