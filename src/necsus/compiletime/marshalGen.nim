@@ -1,6 +1,8 @@
 import macros, codeGenInfo, common, parse, tickGen, tools, std/[sequtils, tables, json, jsonutils, sets]
 
-proc saveTypeName(genInfo: CodeGenInfo): NimNode = ident(genInfo.app.name & "Marshal")
+proc saveTypeName(genInfo: CodeGenInfo): NimNode = ident(genInfo.app.name & "SaveMarshal")
+
+proc restoreTypeName(genInfo: CodeGenInfo): NimNode = ident(genInfo.app.name & "RestoreMarshal")
 
 proc restoreSysType(sys: ParsedSystem): NimNode =
     ## Returns the type that a restoreSys accepts for restoration
@@ -9,6 +11,7 @@ proc restoreSysType(sys: ParsedSystem): NimNode =
 proc collectMarshalTypes(topics: openArray[NimNode], dedupe: var HashSet[string], records: var NimNode) =
     var seen = initTable[string, NimNode]()
     for topicType in topics:
+        topicType.expectKind(nnkSym)
         let topicName = topicType.strVal
         if topicName in seen:
             hint("Conflicting marhasling definition", seen[topicName])
@@ -22,7 +25,7 @@ proc collectMarshalTypes(topics: openArray[NimNode], dedupe: var HashSet[string]
                 dedupe.incl(topicName)
                 records.add(nnkIdentDefs.newTree(topicName.ident, topicType, newEmptyNode()))
 
-proc createSaveType(genInfo: CodeGenInfo): NimNode =
+proc createMarshalType(genInfo: CodeGenInfo, typeName: NimNode, includeRestore: bool): NimNode =
     ## Generates the type definition needed to serialize an app
     if isFastCompileMode(fastMarshal):
         return newEmptyNode()
@@ -31,14 +34,14 @@ proc createSaveType(genInfo: CodeGenInfo): NimNode =
     var dedupe = initHashSet[string]()
 
     genInfo.systems.filterIt(it.phase == SaveCallback).mapIt(it.returns).collectMarshalTypes(dedupe, records)
-    genInfo.systems.filterIt(it.phase == RestoreCallback).mapIt(it.restoreSysType).collectMarshalTypes(dedupe, records)
 
-    return nnkTypeSection.newTree(
-        nnkTypeDef.newTree(
-            genInfo.saveTypeName,
-            newEmptyNode(),
-            nnkObjectTy.newTree(newEmptyNode(), newEmptyNode(), records)
-        )
+    if includeRestore:
+        genInfo.systems.filterIt(it.phase == RestoreCallback).mapIt(it.restoreSysType).collectMarshalTypes(dedupe, records)
+
+    return nnkTypeDef.newTree(
+        typeName,
+        newEmptyNode(),
+        nnkObjectTy.newTree(newEmptyNode(), newEmptyNode(), records)
     )
 
 let streamIdent {.compileTime.} = "stream".ident
@@ -51,7 +54,7 @@ proc createRestoreProc(genInfo: CodeGenInfo): NimNode =
     let body = if isFastCompileMode(fastMarshal):
         newStmtList()
     else:
-        let saveTypeName = genInfo.saveTypeName
+        let restoreTypeName = genInfo.restoreTypeName
 
         var invocations = newStmtList()
         for restore in genInfo.systems.filterIt(it.phase == RestoreCallback):
@@ -60,7 +63,7 @@ proc createRestoreProc(genInfo: CodeGenInfo): NimNode =
 
         let log = emitSaveTrace("Restoring from ", streamIdent, " as ", decoded)
         quote:
-            var `decoded`: `saveTypeName`
+            var `decoded`: `restoreTypeName`
             fromJson(`decoded`, parseJson(`streamIdent`), Joptions(allowMissingKeys: true))
             `log`
             `invocations`
@@ -114,4 +117,11 @@ proc createSaveProc(genInfo: CodeGenInfo): NimNode =
 
 proc createMarshalProcs*(genInfo: CodeGenInfo): NimNode =
     ## Generates procs needed for saving and restoring game state
-    return newStmtList(createSaveType(genInfo), createSaveProc(genInfo), createRestoreProc(genInfo))
+    return newStmtList(
+        nnkTypeSection.newTree(
+            createMarshalType(genInfo, genInfo.saveTypeName, false),
+            createMarshalType(genInfo, genInfo.restoreTypeName, true),
+        ),
+        createSaveProc(genInfo),
+        createRestoreProc(genInfo)
+    )
