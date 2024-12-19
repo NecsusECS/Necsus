@@ -103,11 +103,13 @@ macro runSystemOnce*(systemDef: typed): untyped =
 
     let appStateType = codeGenInfo.appStateTypeName
 
-    return newStmtList(
+    result = newStmtList(
         codeGenInfo.createArchetypeIdSyms(),
         codeGenInfo.createAppStateType(),
         codeGenInfo.createAppStateDestructor(),
         codeGenInfo.createConverterProcs(),
+        codeGenInfo.createMarshalProcs(),
+        codeGenInfo.createSendProcs(),
         codeGenInfo.generateForHook(GenerateHook.Outside),
         defineConf,
         codeGenInfo.createAppStateInit(),
@@ -118,3 +120,6 @@ macro runSystemOnce*(systemDef: typed): untyped =
                 let `systemIdent` = `systemDef`
                 `call`
     )
+
+    if defined(dump):
+        result.dumpGeneratedCode(app, @[ system ])
