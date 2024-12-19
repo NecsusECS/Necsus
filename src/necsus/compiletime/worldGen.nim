@@ -15,10 +15,11 @@ proc fields(genInfo: CodeGenInfo): seq[(NimNode, NimNode)] =
             let typ = nnkBracketExpr.newTree(bindSym("seq"), system.callbackSysType)
             result.add (system.callbackSysMailboxName, typ)
 
-    for archetype in genInfo.archetypes:
-        let storageType = archetype.asStorageTuple
-        let typ = nnkBracketExpr.newTree(bindSym("ArchetypeStore"), storageType)
-        result.add (archetype.ident, typ)
+    if not isFastCompileMode(fastFields):
+        for archetype in genInfo.archetypes:
+            let storageType = archetype.asStorageTuple
+            let typ = nnkBracketExpr.newTree(bindSym("ArchetypeStore"), storageType)
+            result.add (archetype.ident, typ)
 
     for (name, typ) in genInfo.worldFields:
         result.add (name.ident, typ)
@@ -245,16 +246,20 @@ proc createSendProcs*(details: CodeGenInfo): NimNode =
                 else:
                     discard
 
-        if body.len == 0:
-            body.add(nnkDiscardStmt.newTree(newEmptyNode()))
+            if body.len == 0:
+                body.add(nnkDiscardStmt.newTree(newEmptyNode()))
 
-        result.add quote do:
-            proc `internalName`(`appStateIdent`: pointer, `event`: `eventType`) {.used, fastcall.} =
-                let `appStateIdent` {.used.} = cast[ptr `appStateType`](`appStateIdent`)
-                `body`
+            result.add quote do:
+                proc `internalName`(`appStateIdent`: pointer, `event`: `eventType`) {.used, fastcall.} =
+                    let `appStateIdent` {.used.} = cast[ptr `appStateType`](`appStateIdent`)
+                    `body`
 
-            proc `externalName`(`appStateIdent`: var `appStateType`, `event`: `eventType`) {.used, fastcall.} =
-                `internalName`(addr `appStateIdent`, `event`)
+                proc `externalName`(`appStateIdent`: var `appStateType`, `event`: `eventType`) {.used, fastcall.} =
+                    `internalName`(addr `appStateIdent`, `event`)
+        else:
+            result.add quote do:
+                proc `externalName`(`appStateIdent`: var `appStateType`, `event`: `eventType`) {.used, fastcall.} =
+                    discard
 
 proc createConverterProcs*(details: CodeGenInfo): NimNode =
     ## Creates a list of procs for converting from one tuple type to another

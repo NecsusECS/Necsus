@@ -42,6 +42,9 @@ proc buildArchetypeLookup(
 
 proc generateEntityDebug(details: GenerateContext, arg: SystemArg, name: string): NimNode =
     ## Generates the code for debugging the state of an entity
+    if isFastCompileMode(fastDebugGen):
+        return newEmptyNode()
+
     let debugProc = details.globalName(name)
 
     case details.hook

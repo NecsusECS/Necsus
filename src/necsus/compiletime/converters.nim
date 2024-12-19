@@ -99,7 +99,7 @@ else:
 proc buildConverter*(convert: ConverterDef): NimNode =
     ## Builds a single converter proc
     let sig = convert.signature
-    if sig in built:
+    if sig in built or isFastCompileMode(fastConverters):
         return newStmtList()
 
     let name = convert.name
@@ -110,10 +110,8 @@ proc buildConverter*(convert: ConverterDef): NimNode =
             convert.adding.asTupleType
     let outputTuple = convert.output.asTupleType
 
-    let body = if isFastCompileMode(fastConverters):
-        newStmtList()
-    else:
-        let copier = copyTuple(convert.input, convert.adding, convert.output)
+    let copier = copyTuple(convert.input, convert.adding, convert.output)
+    let body =
         if convert.sinkParams:
             quote:
                 `copier`

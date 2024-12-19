@@ -78,6 +78,10 @@ proc buildSpawnProc(details: GenerateContext, dir: TupleDirective): NimNode =
     spawnProcs[sig] = true.newLit
 
 proc generate(details: GenerateContext, arg: SystemArg, name: string, dir: TupleDirective): NimNode =
+
+    if isFastCompileMode(fastSpawnGen):
+        return newEmptyNode()
+
     case details.hook
     of Outside:
         return details.buildSpawnProc(dir)

@@ -100,9 +100,6 @@ proc attachDetachProcBody(
 ): tuple[procBody: NimNode, convertProcs: NimNode] =
     ## Generates the logic needed to attach and detach components from an existing entity
 
-    if isFastCompileMode(fastAttachDetach):
-        return (newStmtList(), newStmtList())
-
     result.convertProcs = newStmtList()
 
     let toRemove = asBits(detachComps, optDetachComps)
@@ -158,6 +155,10 @@ proc attachFields(name: string, dir: TupleDirective): seq[WorldField] =
 
 proc generateAttach(details: GenerateContext, arg: SystemArg, name: string, attach: TupleDirective): NimNode =
     ## Generates the code for instantiating queries
+
+    if isFastCompileMode(fastAttachDetach):
+        return newEmptyNode()
+
     let attachProc = details.globalName(name)
     let componentTuple = attach.args.asTupleType
 
@@ -207,6 +208,9 @@ proc detachFields(name: string, dir: TupleDirective): seq[WorldField] =
 proc generateDetach(details: GenerateContext, arg: SystemArg, name: string, detach: TupleDirective): NimNode =
     ## Generates the code for instantiating queries
 
+    if isFastCompileMode(fastAttachDetach):
+        return newEmptyNode()
+
     let detachProc = details.globalName(name)
 
     case details.hook
@@ -237,6 +241,10 @@ let detachGenerator* {.compileTime.} = newGenerator(
 
 proc generateSwap(details: GenerateContext, arg: SystemArg, name: string, dir: DualDirective): NimNode =
     ## Generates the code for instantiating queries
+
+    if isFastCompileMode(fastAttachDetach):
+        return newEmptyNode()
+
     let swapProc = details.globalName(name)
     let componentTuple = dir.first.asTupleType
 

@@ -5,6 +5,10 @@ proc worldFields(name: string, dir: MonoDirective): seq[WorldField] =
      @[ (name, nnkBracketExpr.newTree(bindSym("SystemVarData"), dir.argType)) ]
 
 proc generateShared(details: GenerateContext, arg: SystemArg, name: string, dir: MonoDirective): NimNode =
+
+    if isFastCompileMode(fastSharedGen):
+        return newEmptyNode()
+
     result = newStmtList()
     case details.hook
     of Standard:

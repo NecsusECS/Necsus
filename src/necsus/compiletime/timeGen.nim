@@ -8,6 +8,10 @@ proc deltaFields(name: string): seq[WorldField] =
     @[ (name, bindSym("TimeDelta")), (lastTime.strVal, bindSym("BiggestFloat")) ]
 
 proc generateDelta(details: GenerateContext, arg: SystemArg, name: string): NimNode =
+
+    if isFastCompileMode(fastTime):
+        return newEmptyNode()
+
     let timeDelta = name.ident
     let timeDeltaProc = details.globalName(name)
     case details.hook
@@ -39,6 +43,10 @@ let deltaGenerator* {.compileTime.} = newGenerator(
 proc elapsedFields(name: string): seq[WorldField] = @[ (name, bindSym("TimeElapsed")) ]
 
 proc generateElapsed(details: GenerateContext, arg: SystemArg, name: string): NimNode =
+
+    if isFastCompileMode(fastTime):
+        return newEmptyNode()
+
     let timeElapsed = name.ident
     let timeElapsedProc = details.globalName(name)
     case details.hook

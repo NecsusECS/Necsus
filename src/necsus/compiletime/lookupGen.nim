@@ -35,6 +35,8 @@ proc converters(ctx: GenerateContext, dir: TupleDirective): seq[ConverterDef] =
 
 proc generate(details: GenerateContext, arg: SystemArg, name: string, lookup: TupleDirective): NimNode =
     ## Generates the code for instantiating queries
+    if isFastCompileMode(fastLookup):
+        return newEmptyNode()
 
     let lookupProc = details.globalName(name)
     let tupleType = lookup.args.toSeq.asTupleType
@@ -44,17 +46,16 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, lookup: Tu
         let appStateTypeName = details.appStateTypeName
 
         var cases: NimNode = newEmptyNode()
-        if not isFastCompileMode(fastLookup):
-            if details.archetypes.len > 0:
-                cases = nnkCaseStmt.newTree(newDotExpr(entityIndex, ident("archetype")))
+        if details.archetypes.len > 0:
+            cases = nnkCaseStmt.newTree(newDotExpr(entityIndex, ident("archetype")))
 
-                # Create a case statement where each branch is one of the archetypes
-                for (ofBranch, archetype) in archetypeCases(details):
-                    if archetype.matches(lookup.filter):
-                        cases.add(nnkOfBranch.newTree(ofBranch, details.buildArchetypeLookup(lookup, archetype)))
+            # Create a case statement where each branch is one of the archetypes
+            for (ofBranch, archetype) in archetypeCases(details):
+                if archetype.matches(lookup.filter):
+                    cases.add(nnkOfBranch.newTree(ofBranch, details.buildArchetypeLookup(lookup, archetype)))
 
-                # Add a fall through 'else' branch for any archetypes that don't fit this lookup
-                cases.add(nnkElse.newTree(nnkReturnStmt.newTree(newLit(false))))
+            # Add a fall through 'else' branch for any archetypes that don't fit this lookup
+            cases.add(nnkElse.newTree(nnkReturnStmt.newTree(newLit(false))))
 
         return quote:
             proc `lookupProc`(

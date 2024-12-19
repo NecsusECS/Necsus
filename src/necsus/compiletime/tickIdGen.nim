@@ -12,6 +12,10 @@ proc sysArg(name: string): NimNode =
         `appStateIdent`.`getTickId`
 
 proc generate(details: GenerateContext, arg: SystemArg, name: string): NimNode =
+
+    if isFastCompileMode(fastTickId):
+        return newEmptyNode()
+
     let tickGenProc = details.globalName(name)
     case details.hook
     of Outside:

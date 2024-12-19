@@ -75,6 +75,9 @@ proc deleteAllBody(details: GenerateContext, dir: TupleDirective): NimNode =
 
 proc generateDeleteAll(details: GenerateContext, arg: SystemArg, name: string, dir: TupleDirective): NimNode =
 
+    if isFastCompileMode(fastDeleteGen):
+        return newEmptyNode()
+
     let deleteAllImpl = details.globalName(name)
 
     case details.hook
