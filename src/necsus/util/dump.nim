@@ -11,6 +11,9 @@ proc modulePath(node: NimNode): string =
 
 proc getModule(node: NimNode): string =
     ## Returns the module path for a nim node
+    when NimMajor >= 2:
+        {.push warning[Deprecated]:off.}
+
     case node.kind
     of nnkTypeDef, nnkPragmaExpr, nnkProcDef, nnkIdentDefs:
         return node[0].getModule()
@@ -34,6 +37,9 @@ proc getModule(node: NimNode): string =
                 return parent & "/" & owner.strVal
     else:
         return ""
+
+    when NimMajor >= 2:
+        {.pop.}
 
 proc collectImports(node: NimNode, into: var HashSet[string]) =
     case node.kind
