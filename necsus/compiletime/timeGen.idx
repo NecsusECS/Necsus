@@ -1,3 +1,3 @@
 nimTitle	timeGen	necsus/compiletime/timeGen.html	module src/necsus/compiletime/timeGen		0
-nim	deltaGenerator	necsus/compiletime/timeGen.html#deltaGenerator	let deltaGenerator		32
-nim	elapsedGenerator	necsus/compiletime/timeGen.html#elapsedGenerator	let elapsedGenerator		58
+nim	deltaGenerator	necsus/compiletime/timeGen.html#deltaGenerator	let deltaGenerator		36
+nim	elapsedGenerator	necsus/compiletime/timeGen.html#elapsedGenerator	let elapsedGenerator		66

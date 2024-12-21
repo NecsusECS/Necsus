@@ -1,4 +1,4 @@
 nimTitle	attachDetachGen	necsus/compiletime/attachDetachGen.html	module src/necsus/compiletime/attachDetachGen		0
-nim	attachGenerator	necsus/compiletime/attachDetachGen.html#attachGenerator	let attachGenerator		185
-nim	detachGenerator	necsus/compiletime/attachDetachGen.html#detachGenerator	let detachGenerator		230
-nim	swapGenerator	necsus/compiletime/attachDetachGen.html#swapGenerator	let swapGenerator		274
+nim	attachGenerator	necsus/compiletime/attachDetachGen.html#attachGenerator	let attachGenerator		186
+nim	detachGenerator	necsus/compiletime/attachDetachGen.html#detachGenerator	let detachGenerator		234
+nim	swapGenerator	necsus/compiletime/attachDetachGen.html#swapGenerator	let swapGenerator		282
