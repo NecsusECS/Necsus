@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>src/necsus/compiletime/saveGen</title>
+<title>src/necsus/compiletime/sendGen</title>
 
 <!-- Favicon -->
 <link rel="shortcut icon" href="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AAAAAAUAAAAF////AP///wD///8A////AP///wD///8A////AP///wD///8A////AAAAAAIAAABbAAAAlQAAAKIAAACbAAAAmwAAAKIAAACVAAAAWwAAAAL///8A////AP///wD///8A////AAAAABQAAADAAAAAYwAAAA3///8A////AP///wD///8AAAAADQAAAGMAAADAAAAAFP///wD///8A////AP///wAAAACdAAAAOv///wD///8A////AP///wD///8A////AP///wD///8AAAAAOgAAAJ3///8A////AP///wAAAAAnAAAAcP///wAAAAAoAAAASv///wD///8A////AP///wAAAABKAAAAKP///wAAAABwAAAAJ////wD///8AAAAAgQAAABwAAACIAAAAkAAAAJMAAACtAAAAFQAAABUAAACtAAAAkwAAAJAAAACIAAAAHAAAAIH///8A////AAAAAKQAAACrAAAAaP///wD///8AAAAARQAAANIAAADSAAAARf///wD///8AAAAAaAAAAKsAAACk////AAAAADMAAACcAAAAnQAAABj///8A////AP///wAAAAAYAAAAGP///wD///8A////AAAAABgAAACdAAAAnAAAADMAAAB1AAAAwwAAAP8AAADpAAAAsQAAAE4AAAAb////AP///wAAAAAbAAAATgAAALEAAADpAAAA/wAAAMMAAAB1AAAAtwAAAOkAAAD/AAAA/wAAAP8AAADvAAAA3gAAAN4AAADeAAAA3gAAAO8AAAD/AAAA/wAAAP8AAADpAAAAtwAAAGUAAAA/AAAA3wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAADfAAAAPwAAAGX///8A////AAAAAEgAAADtAAAAvwAAAL0AAADGAAAA7wAAAO8AAADGAAAAvQAAAL8AAADtAAAASP///wD///8A////AP///wD///8AAAAAO////wD///8A////AAAAAIcAAACH////AP///wD///8AAAAAO////wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A//8AAP//AAD4HwAA7/cAAN/7AAD//wAAoYUAAJ55AACf+QAAh+EAAAAAAADAAwAA4AcAAP5/AAD//wAA//8AAA=="/>
@@ -20,7 +20,7 @@
 <body>
   <div class="document" id="documentId">
     <div class="container">
-      <h1 class="title">src/necsus/compiletime/saveGen</h1>
+      <h1 class="title">src/necsus/compiletime/sendGen</h1>
       <div class="row">
   <div class="three columns">
     <div class="theme-select-wrapper">
@@ -52,10 +52,16 @@
 </li>
 <li>
   <details open>
-    <summary><a class="reference reference-toplevel" href="#9" id="59">Lets</a></summary>
+    <summary><a class="reference reference-toplevel" href="#12" id="62">Procs</a></summary>
     <ul class="simple simple-toc-section">
-      <li><a class="reference" href="#saveGenerator" title="saveGenerator {.compileTime.} = newGenerator(&quot;Save&quot;, {Late, Outside}, generate,
-    worldFields, defaultSystemArgNone)">saveGenerator</a></li>
+      <ul class="simple nested-toc-section">createSendProcs
+  <li><a class="reference" href="#createSendProcs%2CCodeGenInfo" title="createSendProcs(details: CodeGenInfo): NimNode">createSendProcs(details: CodeGenInfo): NimNode</a></li>
+
+</ul>
+<ul class="simple nested-toc-section">initIndirectEventInboxes
+  <li><a class="reference" href="#initIndirectEventInboxes%2CCodeGenInfo" title="initIndirectEventInboxes(details: CodeGenInfo): NimNode">initIndirectEventInboxes(details: CodeGenInfo): NimNode</a></li>
+
+</ul>
 
     </ul>
   </details>
@@ -72,20 +78,35 @@
     <div class="section" id="6">
   <h1><a class="toc-backref" href="#6">Imports</a></h1>
   <dl class="item">
-    <a class="reference external" href="systemGen.html">systemGen</a>, <a class="reference external" href="common.html">common</a>, <a class="reference external" href="../runtime/directives.html">../runtime/directives</a>
+    <a class="reference external" href="tools.html">tools</a>, <a class="reference external" href="codeGenInfo.html">codeGenInfo</a>, <a class="reference external" href="common.html">common</a>, <a class="reference external" href="systemGen.html">systemGen</a>, <a class="reference external" href="tickGen.html">tickGen</a>, <a class="reference external" href="parse.html">parse</a>, <a class="reference external" href="eventGen.html">eventGen</a>, <a class="reference external" href="monoDirective.html">monoDirective</a>, <a class="reference external" href="../runtime/world.html">../runtime/world</a>
   </dl>
 </div>
-<div class="section" id="9">
-  <h1><a class="toc-backref" href="#9">Lets</a></h1>
+<div class="section" id="12">
+  <h1><a class="toc-backref" href="#12">Procs</a></h1>
   <dl class="item">
-    <div id="saveGenerator">
-  <dt><pre><a href="saveGen.html#saveGenerator"><span class="Identifier">saveGenerator</span></a> {.<span class="Identifier">compileTime</span>.} <span class="Other">=</span> <span class="Identifier">newGenerator</span><span class="Other">(</span><span class="StringLit">&quot;Save&quot;</span><span class="Other">,</span> <span class="Other">{</span><span class="Identifier">Late</span><span class="Other">,</span> <span class="Identifier">Outside</span><span class="Other">}</span><span class="Other">,</span> <span class="Identifier">generate</span><span class="Other">,</span>
-    <span class="Identifier">worldFields</span><span class="Other">,</span> <span class="Identifier">defaultSystemArgNone</span><span class="Other">)</span></pre></dt>
+    <div id="createSendProcs-procs-all">
+  <div id="createSendProcs,CodeGenInfo">
+  <dt><pre><span class="Keyword">proc</span> <a href="#createSendProcs%2CCodeGenInfo"><span class="Identifier">createSendProcs</span></a><span class="Other">(</span><span class="Identifier">details</span><span class="Other">:</span> <a href="codeGenInfo.html#CodeGenInfo"><span class="Identifier">CodeGenInfo</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
-    
+    Generates a set of procs needed to send messages
     
   </dd>
+</div>
+
+</div>
+<div id="initIndirectEventInboxes-procs-all">
+  <div id="initIndirectEventInboxes,CodeGenInfo">
+  <dt><pre><span class="Keyword">proc</span> <a href="#initIndirectEventInboxes%2CCodeGenInfo"><span class="Identifier">initIndirectEventInboxes</span></a><span class="Other">(</span><span class="Identifier">details</span><span class="Other">:</span> <a href="codeGenInfo.html#CodeGenInfo"><span class="Identifier">CodeGenInfo</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Generates the code for initializing indirect inboxes
+    
+  </dd>
+</div>
+
 </div>
 
   </dl>
@@ -97,7 +118,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-12-27 16:56:51 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2024-12-27 16:56:52 UTC</small>
       </div>
     </div>
   </div>

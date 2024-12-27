@@ -1,0 +1,3 @@
+nimTitle	sendGen	necsus/compiletime/sendGen.html	module src/necsus/compiletime/sendGen		0
+nim	initIndirectEventInboxes	necsus/compiletime/sendGen.html#initIndirectEventInboxes,CodeGenInfo	proc initIndirectEventInboxes(details: CodeGenInfo): NimNode		40
+nim	createSendProcs	necsus/compiletime/sendGen.html#createSendProcs,CodeGenInfo	proc createSendProcs(details: CodeGenInfo): NimNode		47
