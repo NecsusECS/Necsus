@@ -1,6 +1,6 @@
 import std/[macros, options, tables, sequtils, sets]
 import codeGenInfo, archetype, common, systemGen, converters
-import tickGen, parse, monoDirective
+import tickGen, parse, monoDirective, sendGen
 import ../runtime/[world, archetypeStore, necsusConf], ../util/profile
 
 proc fields(genInfo: CodeGenInfo): seq[(NimNode, NimNode)] =
@@ -113,6 +113,7 @@ proc createAppStateInit*(genInfo: CodeGenInfo): NimNode =
     else:
         let createConfig = genInfo.config
         let stdInit = genInfo.generateForHook(GenerateHook.Standard)
+        let inboxInit = genInfo.initIndirectEventInboxes()
         let lateInit = genInfo.generateForHook(GenerateHook.Late)
         let initializers = genInfo.initializeSystems()
         let startups = genInfo.callSystems({StartupPhase})
@@ -131,6 +132,7 @@ proc createAppStateInit*(genInfo: CodeGenInfo): NimNode =
             `profilers`
             `appStateIdent`.`confIdent`.log("Beginning startup sys execution")
             `stdInit`
+            `inboxInit`
             `lateInit`
             `initializers`
             `startups`

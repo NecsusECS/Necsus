@@ -22,13 +22,16 @@ proc inboxSystemArg(name: string, dir: MonoDirective): NimNode =
     return quote:
         Inbox[`eventType`](addr `appStateIdent`.`storageIdent`)
 
+proc initInbox*(name, typ: NimNode): NimNode =
+    ## Creates the code for initializing an inbox
+    return quote:
+        `appStateIdent`.`name` = newSeqOfCap[`typ`](`appStateIdent`.config.inboxSize)
+
 proc generateInbox(details: GenerateContext, arg: SystemArg, name: string, inbox: MonoDirective): NimNode =
     let eventStore = name.ident
     case details.hook
     of Standard:
-        let typ = inbox.argType
-        return quote:
-            `appStateIdent`.`eventStore` = newSeqOfCap[`typ`](`appStateIdent`.config.inboxSize)
+        return eventStore.initInbox(inbox.argType)
     of AfterActiveCheck:
         return quote:
             setLen(`appStateIdent`.`eventStore`, 0)

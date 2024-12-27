@@ -37,6 +37,13 @@ proc genAddToInbox(
     else:
         return newStmtList()
 
+proc initIndirectEventInboxes*(details: CodeGenInfo): NimNode =
+    ## Generates the code for initializing indirect inboxes
+    result = newStmtList()
+    for system in details.systems:
+        if system.phase == IndirectEventCallback:
+            result.add(system.callbackSysMailboxName.initInbox(system.callbackSysType))
+
 proc createSendProcs*(details: CodeGenInfo): NimNode =
     ## Generates a set of procs needed to send messages
     result = newStmtList()
