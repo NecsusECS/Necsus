@@ -1,11 +1,6 @@
 import std/[macros, strutils, tables, sequtils]
 import monoDirective, common, systemGen
-import ../runtime/[inbox, directives], ../util/nimNode
-
-proc eventStorageIdent(event: MonoDirective | NimNode): NimNode =
-    ## Returns the name of the identifier that holds the storage for an event
-    when event is NimNode: ident(event.symbols.join("_") & "_storage")
-    elif event is MonoDirective: eventStorageIdent(event.argType)
+import ../runtime/[inbox, directives]
 
 proc getSignature(node: NimNode): string =
     case node.kind
