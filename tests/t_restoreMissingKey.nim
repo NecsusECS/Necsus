@@ -1,4 +1,4 @@
-import unittest, necsus, sequtils, std/options
+import unittest, necsus, std/options
 
 type
     RestoreMe1 = string
