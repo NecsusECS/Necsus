@@ -23,9 +23,13 @@ proc inboxSystemArg(name: string, dir: MonoDirective): NimNode =
         Inbox[`eventType`](addr `appStateIdent`.`storageIdent`)
 
 proc generateInbox(details: GenerateContext, arg: SystemArg, name: string, inbox: MonoDirective): NimNode =
+    let eventStore = name.ident
     case details.hook
+    of Standard:
+        let typ = inbox.argType
+        return quote:
+            `appStateIdent`.`eventStore` = newSeqOfCap[`typ`](`appStateIdent`.config.inboxSize)
     of AfterActiveCheck:
-        let eventStore = name.ident
         return quote:
             setLen(`appStateIdent`.`eventStore`, 0)
     else:
@@ -33,7 +37,7 @@ proc generateInbox(details: GenerateContext, arg: SystemArg, name: string, inbox
 
 let inboxGenerator* {.compileTime.} = newGenerator(
     ident = "Inbox",
-    interest = { AfterActiveCheck },
+    interest = { Standard, AfterActiveCheck },
     chooseName = chooseInboxName,
     generate = generateInbox,
     worldFields = inboxFields,
