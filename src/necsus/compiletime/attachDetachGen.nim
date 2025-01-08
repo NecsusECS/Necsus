@@ -173,7 +173,7 @@ proc generateAttach(details: GenerateContext, arg: SystemArg, name: string, atta
                 `appStatePtr`: pointer,
                 `entityId`: EntityId,
                 `newComps`: `componentTuple`
-            ) {.gcsafe, raises: [ValueError], fastcall, used.} =
+            ) {.gcsafe, raises: [ValueError], nimcall, used.} =
                 let `appStateIdent` {.used.} = cast[ptr `appStateTypeName`](`appStatePtr`)
                 `body`
     of Standard:
@@ -220,7 +220,7 @@ proc generateDetach(details: GenerateContext, arg: SystemArg, name: string, deta
         let (body, convertProcs) = details.attachDetachProcBody("Detaching", @[], detachComps, optDetachComps)
         return quote:
             `convertProcs`
-            proc `detachProc`(`appStateIdent`: pointer, `entityId`: EntityId) {.used, fastcall, raises: [ValueError].} =
+            proc `detachProc`(`appStateIdent`: pointer, `entityId`: EntityId) {.used, nimcall, raises: [ValueError].} =
                 let `appStateIdent` {.used.} = cast[ptr `appStateTypeName`](`appStateIdent`)
                 `body`
 
@@ -259,7 +259,7 @@ proc generateSwap(details: GenerateContext, arg: SystemArg, name: string, dir: D
                 `appStatePtr`: pointer,
                 `entityId`: EntityId,
                 `newComps`: `componentTuple`
-            ) {.gcsafe, raises: [ValueError], fastcall, used.} =
+            ) {.gcsafe, raises: [ValueError], nimcall, used.} =
                 let `appStateIdent` {.used.} = cast[ptr `appStateTypeName`](`appStatePtr`)
                 `body`
     of Standard:

@@ -43,7 +43,7 @@ proc generateDelete(details: GenerateContext, arg: SystemArg, name: string): Nim
                 `cases`
 
         return quote do:
-            proc `deleteProcName`(`appStateIdent`: pointer, `entity`: EntityId) {.gcsafe, raises: [], fastcall, used.} =
+            proc `deleteProcName`(`appStateIdent`: pointer, `entity`: EntityId) {.gcsafe, raises: [], nimcall, used.} =
                 let `appStateIdent` {.used.} = cast[ptr `appStateTypeName`](`appStateIdent`)
                 `body`
     of Standard:
@@ -85,7 +85,7 @@ proc generateDeleteAll(details: GenerateContext, arg: SystemArg, name: string, d
         let appStateTypeName = details.appStateTypeName
         let body = details.deleteAllBody(dir)
         return quote:
-            proc `deleteAllImpl`(`appStatePtr`: pointer) {.gcsafe, raises: [ValueError], fastcall.} =
+            proc `deleteAllImpl`(`appStatePtr`: pointer) {.gcsafe, raises: [ValueError], nimcall.} =
                 let `appStateIdent` {.used.} = cast[ptr `appStateTypeName`](`appStatePtr`)
                 `body`
     of Standard:

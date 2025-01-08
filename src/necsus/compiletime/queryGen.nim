@@ -43,7 +43,7 @@ proc buildAddLen(query: TupleDirective, archetype: Archetype[ComponentDef]): Nim
             let symbol = genSym(nskProc, "filter")
             let rowType = archetype.asStorageTuple
             return quote:
-                proc `symbol`(`row`: var `rowType`): bool {.fastcall, gcsafe, raises: [].} =
+                proc `symbol`(`row`: var `rowType`): bool {.nimcall, gcsafe, raises: [].} =
                     return `predicate`
 
                 addLen(`appStateIdent`.`archetypeIdent`, result, `symbol`)
@@ -136,7 +136,7 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, dir: Tuple
 
         return quote do:
 
-            proc `getLen`(appStatePtr: pointer): uint {.fastcall.} =
+            proc `getLen`(appStatePtr: pointer): uint {.nimcall.} =
                 let `appStateIdent` {.used.} = cast[ptr `appStateTypeName`](appStatePtr)
                 result = 0
                 `lenCalculation`
@@ -147,7 +147,7 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, dir: Tuple
                 `iter`: var BlockIter,
                 `eid`: var EntityId,
                 `slot`: var `queryTuple`,
-            ): bool {.gcsafe, raises: [], fastcall.} =
+            ): bool {.gcsafe, raises: [], nimcall.} =
                 let `appStateIdent` {.used.} = cast[ptr `appStateTypeName`](`appStatePtr`)
                 `trace`
                 `iteratorBody`
@@ -176,4 +176,3 @@ let fullQueryGenerator* {.compileTime.} = newGenerator(
     systemArg = fullQuerySystemArg,
     converters = converters,
 )
-

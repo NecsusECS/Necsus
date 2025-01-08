@@ -21,7 +21,7 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string): NimNode =
     of Outside:
         let appType = details.appStateTypeName
         return quote:
-            proc `tickGenProc`(`appStateIdent`: pointer): BiggestUInt {.gcsafe, raises: [], fastcall, used.} =
+            proc `tickGenProc`(`appStateIdent`: pointer): BiggestUInt {.gcsafe, raises: [], nimcall, used.} =
                 let `appStatePtr` = cast[ptr `appType`](`appStateIdent`)
                 return `appStatePtr`.`tickId`
     of Standard:

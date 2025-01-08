@@ -4,7 +4,7 @@ type
     RawSpawn*[C: tuple] = ref object
         ## A callback for populating a component with values
         app: pointer
-        callback: proc(app: pointer, value: sink C): EntityId {.fastcall, raises: [], gcsafe.}
+        callback: proc(app: pointer, value: sink C): EntityId {.nimcall, raises: [], gcsafe.}
 
     Spawn*[C: tuple] = distinct RawSpawn[C]
         ## Describes a type that is able to create new entities. Where `C` is a tuple
@@ -20,7 +20,7 @@ proc asSpawn*[Comps](rawSpawn: RawSpawn[Comps]): Spawn[Comps] = Spawn[Comps](raw
 
 proc newSpawn*[Comps: tuple](
     app: pointer,
-    callback: proc(app: pointer, value: sink Comps): EntityId {.fastcall, raises: [], gcsafe.}
+    callback: proc(app: pointer, value: sink Comps): EntityId {.nimcall, raises: [], gcsafe.}
 ): RawSpawn[Comps] =
     return RawSpawn[Comps](app: app, callback: callback)
 

@@ -66,7 +66,7 @@ proc generateEntityDebug(details: GenerateContext, arg: SystemArg, name: string)
             proc `debugProc`(
                 `appStatePtr`: pointer,
                 `entityId`: EntityId
-            ): string {.fastcall, gcsafe, raises: [Exception].} =
+            ): string {.nimcall, gcsafe, raises: [Exception].} =
                 let `appStateIdent` {.used.} = cast[ptr `appType`](`appStatePtr`)
                 let `entityIndex` {.used.} = `appStateIdent`.`worldIdent`[`entityId`]
                 `cases`

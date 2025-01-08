@@ -62,7 +62,7 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, lookup: Tu
                 `appStateIdent`: pointer,
                 `entityId`: EntityId,
                 `output`: var `tupleType`,
-            ): bool {.fastcall, gcsafe, raises: [], used.} =
+            ): bool {.nimcall, gcsafe, raises: [], used.} =
                 var `appStateIdent` = cast[ptr `appStateTypeName`](`appStateIdent`)
                 let `entityIndex` {.used.} = `appStateIdent`.`worldIdent`[`entityId`]
                 `cases`

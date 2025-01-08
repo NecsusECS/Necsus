@@ -50,7 +50,7 @@ func addLen*[Comps: tuple](store: var ArchetypeStore[Comps], len: var uint) =
 proc addLen*[Comps: tuple](
     store: var ArchetypeStore[Comps],
     len: var uint,
-    predicate: proc(row: var Comps): bool {.fastcall, gcsafe, raises: [].},
+    predicate: proc(row: var Comps): bool {.nimcall, gcsafe, raises: [].},
 ) =
     ## Reads the length of an archetype store, using a predicate to determine whether to count a row
     if likely(store.compStore != nil):
@@ -101,7 +101,7 @@ proc moveEntity*[FromArch: tuple, NewComps: tuple, ToArch: tuple](
     fromArch: var ArchetypeStore[FromArch],
     toArch: var ArchetypeStore[ToArch],
     newValues: sink NewComps,
-    combine: proc (existing: sink FromArch, newValues: sink NewComps, output: var ToArch): bool {.gcsafe, raises: [], fastcall.}
+    combine: proc (existing: sink FromArch, newValues: sink NewComps, output: var ToArch): bool {.gcsafe, raises: [], nimcall.}
 ) {.gcsafe, raises: [ValueError].} =
     ## Moves the components for an entity from one archetype to another
     assert(unlikely(fromArch.compStore != nil))

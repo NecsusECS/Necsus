@@ -11,9 +11,9 @@ type
         iter: var BlockIter,
         eid: var EntityId,
         slot: var Comps,
-    ): bool {.gcsafe, raises: [], fastcall.}
+    ): bool {.gcsafe, raises: [], nimcall.}
 
-    QueryGetLen = proc(appState: pointer): uint {.gcsafe, raises: [], fastcall.}
+    QueryGetLen = proc(appState: pointer): uint {.gcsafe, raises: [], nimcall.}
 
     RawQuery*[Comps] = ref object
         ## Allows systems to query for entities with specific components. Where `Comps` is a tuple of

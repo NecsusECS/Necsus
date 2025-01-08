@@ -79,13 +79,13 @@ proc createSendProcs*(details: CodeGenInfo): NimNode =
                 body.add(nnkDiscardStmt.newTree(newEmptyNode()))
 
             result.add quote do:
-                proc `internalName`(`appStateIdent`: pointer, `event`: `eventType`) {.used, fastcall.} =
+                proc `internalName`(`appStateIdent`: pointer, `event`: `eventType`) {.used, nimcall.} =
                     let `appStateIdent` {.used.} = cast[ptr `appStateType`](`appStateIdent`)
                     `body`
 
-                proc `externalName`(`appStateIdent`: var `appStateType`, `event`: `eventType`) {.used, fastcall.} =
+                proc `externalName`(`appStateIdent`: var `appStateType`, `event`: `eventType`) {.used, nimcall.} =
                     `internalName`(addr `appStateIdent`, `event`)
         else:
             result.add quote do:
-                proc `externalName`(`appStateIdent`: var `appStateType`, `event`: `eventType`) {.used, fastcall.} =
+                proc `externalName`(`appStateIdent`: var `appStateType`, `event`: `eventType`) {.used, nimcall.} =
                     discard
