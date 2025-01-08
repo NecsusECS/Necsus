@@ -127,7 +127,7 @@ proc buildConverter*(convert: ConverterDef): NimNode =
             `input`: `paramKeyword` `inputTuple`,
             `adding`: `paramKeyword` `existingTuple`,
             `output`: var `outputTuple`
-        ): bool {.gcsafe, raises: [], fastcall, used.} =
+        ): bool {.gcsafe, raises: [], nimcall, used.} =
             `body`
 
     built[sig] = result

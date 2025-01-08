@@ -18,7 +18,7 @@ proc generateDelta(details: GenerateContext, arg: SystemArg, name: string): NimN
     of Outside:
         let appType = details.appStateTypeName
         return quote:
-            proc `timeDeltaProc`(`appStateIdent`: pointer): BiggestFloat {.gcsafe, raises: [], fastcall, used.} =
+            proc `timeDeltaProc`(`appStateIdent`: pointer): BiggestFloat {.gcsafe, raises: [], nimcall, used.} =
                 let `appStatePtr` {.used.} = cast[ptr `appType`](`appStateIdent`)
                 return `appStatePtr`.`thisTime` - `appStatePtr`.`lastTime`
     of Standard:
@@ -53,7 +53,7 @@ proc generateElapsed(details: GenerateContext, arg: SystemArg, name: string): Ni
     of Outside:
         let appType = details.appStateTypeName
         return quote:
-            proc `timeElapsedProc`(`appStateIdent`: pointer): BiggestFloat {.gcsafe, raises: [], fastcall, used.} =
+            proc `timeElapsedProc`(`appStateIdent`: pointer): BiggestFloat {.gcsafe, raises: [], nimcall, used.} =
                 let `appStatePtr` = cast[ptr `appType`](`appStateIdent`)
                 return `appStatePtr`.`thisTime` - `appStatePtr`.`startTime`
     of Standard:

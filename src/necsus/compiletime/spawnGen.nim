@@ -67,7 +67,7 @@ proc buildSpawnProc(details: GenerateContext, dir: TupleDirective): NimNode =
         proc `spawnProc`(
             appStatePtr: pointer,
             `value`: sink `tupleTyp`
-        ): EntityId {.fastcall, raises: [], gcsafe.} =
+        ): EntityId {.nimcall, raises: [], gcsafe.} =
             let `appStateIdent` = cast[ptr `appState`](appStatePtr)
             var newEntity = `appStateIdent`.world.newEntity
             var slot = newSlot(`appStateIdent`.`archIdent`, newEntity.entityId)

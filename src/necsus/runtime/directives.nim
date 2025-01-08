@@ -11,13 +11,13 @@ type
         appState: pointer
         callback: T
 
-    Arity0Proc[T] = proc(app: pointer): T {.gcsafe, raises: [ValueError], fastcall.}
+    Arity0Proc[T] = proc(app: pointer): T {.gcsafe, raises: [ValueError], nimcall.}
         ## A directive callback that just returns a value to our customers
 
-    Arity1Proc[A, T] = proc(app: pointer, arg: A): T {.gcsafe, raises: [ValueError, Exception], fastcall.}
+    Arity1Proc[A, T] = proc(app: pointer, arg: A): T {.gcsafe, raises: [ValueError, Exception], nimcall.}
         ## A directive callback that accepts 1 parameter and returns
 
-    Arity2Proc[A, B, T] = proc(app: pointer, a: A, b: B): T {.gcsafe, raises: [ValueError], fastcall.}
+    Arity2Proc[A, B, T] = proc(app: pointer, a: A, b: B): T {.gcsafe, raises: [ValueError], nimcall.}
         ## A directive callback that accepts 2 parameters and returns
 
     Delete* = CallbackDir[Arity1Proc[EntityId, void]]
@@ -37,13 +37,13 @@ type
     Swap*[A: tuple, B: tuple] = CallbackDir[Arity2Proc[EntityId, A, void]]
         ## A directive that adds components in `A` and removes components in `B`
 
-    LookupProc[C: tuple] = proc(app: pointer, entityId: EntityId, components: var C): bool {.fastcall, gcsafe, raises: [].}
+    LookupProc[C: tuple] = proc(app: pointer, entityId: EntityId, components: var C): bool {.nimcall, gcsafe, raises: [].}
 
     Lookup*[C: tuple] = CallbackDir[LookupProc[C]]
         ## Looks up entity details based on its entity ID. Where `C` is a tuple with all the
         ## components to fetch
 
-    OutboxProc*[T] = proc (app: pointer, message: T): void {.fastcall.}
+    OutboxProc*[T] = proc (app: pointer, message: T): void {.nimcall.}
 
     Outbox*[T] = CallbackDir[OutboxProc[T]]
         ## Sends an event. Where `T` is the message being sent
@@ -63,7 +63,7 @@ type
     Bundle*[T] = ptr T
         ## A group of directives bundled together in an object
 
-    SaveProc = proc(app: pointer): string {.raises: [IOError, OSError, ValueError, Exception], fastcall.}
+    SaveProc = proc(app: pointer): string {.raises: [IOError, OSError, ValueError, Exception], nimcall.}
 
     Save* = CallbackDir[SaveProc]
         ## Generates a saved game state as a json value
@@ -71,7 +71,7 @@ type
     RestoreProc = proc(
         app: pointer,
         json: string
-    ) {.fastcall, gcsafe, raises: [IOError, OSError, JsonParsingError, ValueError, Exception].}
+    ) {.nimcall, gcsafe, raises: [IOError, OSError, JsonParsingError, ValueError, Exception].}
 
     Restore* = CallbackDir[RestoreProc]
         ## Executes all 'restore' systems using the given json as input data
