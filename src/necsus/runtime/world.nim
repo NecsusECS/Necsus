@@ -1,4 +1,4 @@
-import entityId, ../util/blockstore
+import entityId, ../util/blockstore, std/deques
 
 type
     ArchetypeId* = distinct BiggestInt
@@ -8,40 +8,48 @@ type
         archetype*: ArchetypeId
         archetypeIndex*: uint
 
-    NewEntity* = distinct Entry[EntityIndex]
+    NewEntity* = distinct ptr EntityIndex
 
-    World* = distinct BlockStore[EntityIndex]
+    World* = object
         ## Contains the data describing the entire world
+        nextEntityId: uint
+        entityIds: Deque[EntityId]
+        index: seq[EntityIndex]
 
-proc newWorld*(initialSize: SomeInteger): World = World(newBlockStore[EntityIndex](initialSize))
+proc newWorld*(initialSize: SomeInteger): World =
     ## Creates a new world
+    World(entityIds: initDeque[EntityId](initialSize div 10), index: newSeq[EntityIndex](initialSize))
 
-proc entityIndex(world: var World): var BlockStore[EntityIndex] {.inline.} = BlockStore[EntityIndex](world)
-
-proc entityIndex(world: World): BlockStore[EntityIndex] {.inline.} = BlockStore[EntityIndex](world)
+proc getNewEntityId*(world: var World): EntityId {.inline.} =
+    if world.entityIds.len > 0:
+        result = world.entityIds.popFirst().incGen
+    else:
+        result = EntityId(world.nextEntityId)
+        inc world.nextEntityId
 
 proc newEntity*(world: var World): NewEntity =
     ## Constructs a new entity and invokes
-    let entity = world.entityIndex.reserve
-    entity.value.entityId = EntityId(entity.index)
-    return NewEntity(entity)
+    let eid = world.getNewEntityId()
+    let entry = addr world.index[eid.toInt]
+    entry.entityId = eid
+    return NewEntity(entry)
 
 proc entityId*(newEntity: NewEntity): EntityId =
     ## Returns the entity ID of a newly created entity
-    EntityId(Entry[EntityIndex](newEntity).index)
+    (ptr EntityIndex)(newEntity).entityId
 
-proc setArchetypeDetails*(newEntity: NewEntity, archetype: ArchetypeId, index: uint) =
+proc setArchetypeDetails*(entry: NewEntity, archetype: ArchetypeId, index: uint) =
     ## Stores the archetype details about an entity
-    let entry = Entry[EntityIndex](newEntity)
-    entry.value.archetype = archetype
-    entry.value.archetypeIndex = index
-    entry.commit
+    let entry = (ptr EntityIndex)(entry)
+    entry.archetype = archetype
+    entry.archetypeIndex = index
 
 proc `[]`*(world: World, entityId: EntityId): ptr EntityIndex =
     ## Look up entity information based on an entity ID
-    addr world.entityIndex[entityId.uint]
+    unsafeAddr world.index[entityId.toInt]
 
 proc del*(world: var World, entityId: EntityId): EntityIndex =
     ## Deletes an entity and returns the archetype and index that also needs to be deleted
-    result = world.entityIndex[entityId.uint]
-    discard world.entityIndex.del(entityId.uint)
+    result = world.index[entityId.toInt]
+    world.index[entityId.toInt] = default(EntityIndex)
+    world.entityIds.addLast(entityId)
