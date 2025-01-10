@@ -65,6 +65,8 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string, lookup: Tu
             ): bool {.nimcall, gcsafe, raises: [], used.} =
                 var `appStateIdent` = cast[ptr `appStateTypeName`](`appStateIdent`)
                 let `entityIndex` {.used.} = `appStateIdent`.`worldIdent`[`entityId`]
+                if unlikely(`entityIndex` == nil):
+                    return false
                 `cases`
 
     of GenerateHook.Standard:
