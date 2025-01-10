@@ -1,4 +1,4 @@
-import tables, macros
+import std/[tables, macros, options]
 import archetype, tools, systemGen, archetypeBuilder, common, tupleDirective
 import ../runtime/[archetypeStore, world, directives]
 
@@ -38,9 +38,11 @@ proc generateDelete(details: GenerateContext, arg: SystemArg, name: string): Nim
             let log = emitEntityTrace("Deleting ", entity)
 
             quote:
-                let `entityIndex` = del(`appStateIdent`.`worldIdent`, `entity`)
-                `log`
-                `cases`
+                let deleted = del(`appStateIdent`.`worldIdent`, `entity`)
+                if likely(isSome(deleted)):
+                    let `entityIndex` = unsafeGet(deleted)
+                    `log`
+                    `cases`
 
         return quote do:
             proc `deleteProcName`(`appStateIdent`: pointer, `entity`: EntityId) {.gcsafe, raises: [], nimcall, used.} =

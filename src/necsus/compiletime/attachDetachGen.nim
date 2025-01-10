@@ -139,6 +139,8 @@ proc attachDetachProcBody(
 
     result.procBody = quote do:
         var `entityIndex` {.used.} = `appStateIdent`.`worldIdent`[`entityId`]
+        if unlikely(`entityIndex` == nil):
+            return
         `cases`
 
 proc isAttachable(gen: DirectiveGen): bool =

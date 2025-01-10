@@ -69,7 +69,11 @@ proc generateEntityDebug(details: GenerateContext, arg: SystemArg, name: string)
             ): string {.nimcall, gcsafe, raises: [Exception].} =
                 let `appStateIdent` {.used.} = cast[ptr `appType`](`appStatePtr`)
                 let `entityIndex` {.used.} = `appStateIdent`.`worldIdent`[`entityId`]
-                `cases`
+
+                if unlikely(`entityIndex` == nil):
+                    return "No such entity: " & $`entityId`
+                else:
+                    `cases`
 
     of GenerateHook.Standard:
         let procName = ident(name)

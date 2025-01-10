@@ -1,4 +1,4 @@
-import entityId, ../util/blockstore, std/deques
+import entityId, ../util/blockstore, std/[deques, options]
 
 type
     ArchetypeId* = distinct BiggestInt
@@ -46,10 +46,14 @@ proc setArchetypeDetails*(entry: NewEntity, archetype: ArchetypeId, index: uint)
 
 proc `[]`*(world: World, entityId: EntityId): ptr EntityIndex =
     ## Look up entity information based on an entity ID
-    unsafeAddr world.index[entityId.toInt]
+    result = unsafeAddr world.index[entityId.toInt]
+    if unlikely(result.entityId != entityId):
+        result = nil
 
-proc del*(world: var World, entityId: EntityId): EntityIndex =
+proc del*(world: var World, entityId: EntityId): Option[EntityIndex] =
     ## Deletes an entity and returns the archetype and index that also needs to be deleted
-    result = world.index[entityId.toInt]
-    world.index[entityId.toInt] = default(EntityIndex)
-    world.entityIds.addLast(entityId)
+    let entry = world.index[entityId.toInt]
+    if likely(entry.entityId == entityId):
+        world.index[entityId.toInt] = default(EntityIndex)
+        world.entityIds.addLast(entityId)
+        return some(entry)
