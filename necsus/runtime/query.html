@@ -61,7 +61,7 @@
 <li><a class="reference" href="#QueryItem" title="QueryItem[Comps] = tuple[entityId: EntityId, components: Comps]">QueryItem</a></li>
 <li><a class="reference" href="#QueryNext" title="QueryNext[Comps] = proc (appStatePtr: pointer; state: var uint;
                          iter: var BlockIter; eid: var EntityId; slot: var Comps): bool {.
-    gcsafe, raises: [], fastcall.}">QueryNext</a></li>
+    gcsafe, raises: [], nimcall.}">QueryNext</a></li>
 <li><a class="reference" href="#RawQuery" title="RawQuery[Comps] = ref object">RawQuery</a></li>
 
     </ul>
@@ -174,7 +174,7 @@
 <div id="QueryNext">
   <dt><pre><a href="query.html#QueryNext"><span class="Identifier">QueryNext</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">appStatePtr</span><span class="Other">:</span> <span class="Identifier">pointer</span><span class="Other">;</span> <span class="Identifier">state</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">uint</span><span class="Other">;</span>
                          <span class="Identifier">iter</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="../util/blockstore.html#BlockIter"><span class="Identifier">BlockIter</span></a><span class="Other">;</span> <span class="Identifier">eid</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">;</span> <span class="Identifier">slot</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">Comps</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.
-    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> </span><span class="Identifier">fastcall</span>.}</pre></dt>
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> </span><span class="Identifier">nimcall</span>.}</pre></dt>
   <dd>
     
     
@@ -289,7 +289,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-12-27 16:56:51 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2025-01-12 18:18:38 UTC</small>
       </div>
     </div>
   </div>

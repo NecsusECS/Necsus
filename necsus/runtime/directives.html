@@ -63,7 +63,7 @@
 <li><a class="reference" href="#EventSystemInstance" title="EventSystemInstance[T] = proc (event: T): void {.closure.}">EventSystemInstance</a></li>
 <li><a class="reference" href="#Lookup" title="Lookup[C] = CallbackDir[LookupProc[C]]">Lookup</a></li>
 <li><a class="reference" href="#Outbox" title="Outbox[T] = CallbackDir[OutboxProc[T]]">Outbox</a></li>
-<li><a class="reference" href="#OutboxProc" title="OutboxProc[T] = proc (app: pointer; message: T): void {.fastcall.}">OutboxProc</a></li>
+<li><a class="reference" href="#OutboxProc" title="OutboxProc[T] = proc (app: pointer; message: T): void {.nimcall.}">OutboxProc</a></li>
 <li><a class="reference" href="#Restore" title="Restore = CallbackDir[RestoreProc]">Restore</a></li>
 <li><a class="reference" href="#Save" title="Save = CallbackDir[SaveProc]">Save</a></li>
 <li><a class="reference" href="#SaveSystemInstance" title="SaveSystemInstance[T] = proc (): T {.closure.}">SaveSystemInstance</a></li>
@@ -202,7 +202,7 @@
   </dd>
 </div>
 <div id="OutboxProc">
-  <dt><pre><a href="directives.html#OutboxProc"><span class="Identifier">OutboxProc</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">app</span><span class="Other">:</span> <span class="Identifier">pointer</span><span class="Other">;</span> <span class="Identifier">message</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">void</span> {.<span class="Identifier">fastcall</span>.}</pre></dt>
+  <dt><pre><a href="directives.html#OutboxProc"><span class="Identifier">OutboxProc</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">app</span><span class="Other">:</span> <span class="Identifier">pointer</span><span class="Other">;</span> <span class="Identifier">message</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">void</span> {.<span class="Identifier">nimcall</span>.}</pre></dt>
   <dd>
     
     
@@ -424,7 +424,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-12-27 16:56:51 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2025-01-12 18:18:38 UTC</small>
       </div>
     </div>
   </div>

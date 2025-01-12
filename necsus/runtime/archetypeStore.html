@@ -77,8 +77,8 @@
 <ul class="simple nested-toc-section">addLen
   <li><a class="reference" href="#addLen%2CArchetypeStore%5BComps%3A%20tuple%5D%2Cuint" title="addLen[Comps: tuple](store: var ArchetypeStore[Comps]; len: var uint)">addLen[Comps: tuple](store: var ArchetypeStore[Comps]; len: var uint)</a></li>
 <li><a class="reference" href="#addLen%2CArchetypeStore%5BComps%3A%20tuple%5D%2Cuint%2Cproc%28Comps%29" title="addLen[Comps: tuple](store: var ArchetypeStore[Comps]; len: var uint; predicate: proc (
-    row: var Comps): bool {.fastcall, gcsafe, raises: [].})">addLen[Comps: tuple](store: var ArchetypeStore[Comps]; len: var uint; predicate: proc (
-    row: var Comps): bool {.fastcall, gcsafe, raises: [].})</a></li>
+    row: var Comps): bool {.nimcall, gcsafe, raises: [].})">addLen[Comps: tuple](store: var ArchetypeStore[Comps]; len: var uint; predicate: proc (
+    row: var Comps): bool {.nimcall, gcsafe, raises: [].})</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">del
@@ -106,11 +106,11 @@
     entityIndex: ptr EntityIndex; fromArch: var ArchetypeStore[FromArch];
     toArch: var ArchetypeStore[ToArch]; newValues: sink NewComps; combine: proc (
     existing: sink FromArch; newValues: sink NewComps; output: var ToArch): bool {.
-    gcsafe, raises: [], fastcall.})">moveEntity[FromArch: tuple; NewComps: tuple; ToArch: tuple](world: var World;
+    gcsafe, raises: [], nimcall.})">moveEntity[FromArch: tuple; NewComps: tuple; ToArch: tuple](world: var World;
     entityIndex: ptr EntityIndex; fromArch: var ArchetypeStore[FromArch];
     toArch: var ArchetypeStore[ToArch]; newValues: sink NewComps; combine: proc (
     existing: sink FromArch; newValues: sink NewComps; output: var ToArch): bool {.
-    gcsafe, raises: [], fastcall.})</a></li>
+    gcsafe, raises: [], nimcall.})</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">newArchetypeStore
@@ -237,7 +237,7 @@
 </div>
 <div id="addLen,ArchetypeStore[Comps: tuple],uint,proc(Comps)">
   <dt><pre><span class="Keyword">proc</span> <a href="#addLen%2CArchetypeStore%5BComps%3A%20tuple%5D%2Cuint%2Cproc%28Comps%29"><span class="Identifier">addLen</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">len</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">uint</span><span class="Other">;</span>
-    <span class="Identifier">predicate</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">row</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">Comps</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span class="Identifier">fastcall</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}<span class="Other">)</span></pre></dt>
+    <span class="Identifier">predicate</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">row</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">Comps</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span class="Identifier">nimcall</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}<span class="Other">)</span></pre></dt>
   <dd>
     
     Reads the length of an archetype store, using a predicate to determine whether to count a row
@@ -308,7 +308,7 @@
     <span class="Identifier">fromArch</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">FromArch</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">toArch</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">ToArch</span><span class="Other">]</span><span class="Other">;</span>
     <span class="Identifier">newValues</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">NewComps</span><span class="Other">;</span> <span class="Identifier">combine</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">existing</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">FromArch</span><span class="Other">;</span>
     <span class="Identifier">newValues</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">NewComps</span><span class="Other">;</span> <span class="Identifier">output</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">ToArch</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
-    </span><span class="Identifier">fastcall</span>.}<span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">]</span></span>.}</pre></dt>
+    </span><span class="Identifier">nimcall</span>.}<span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
     Moves the components for an entity from one archetype to another
@@ -403,7 +403,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-12-27 16:56:51 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2025-01-12 18:18:38 UTC</small>
       </div>
     </div>
   </div>

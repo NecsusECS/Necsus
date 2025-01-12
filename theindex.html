@@ -183,8 +183,8 @@
           data-doc-search-tag="archetypeStore: proc addLen[Comps: tuple](store: var ArchetypeStore[Comps]; len: var uint)" href="necsus/runtime/archetypeStore.html#addLen%2CArchetypeStore%5BComps%3A%20tuple%5D%2Cuint">archetypeStore: proc addLen[Comps: tuple](store: var ArchetypeStore[Comps]; len: var uint)</a></li>
           <li><a class="reference external"
           data-doc-search-tag="archetypeStore: proc addLen[Comps: tuple](store: var ArchetypeStore[Comps]; len: var uint; predicate: proc (
-    row: var Comps): bool {.fastcall, gcsafe, raises: [].})" href="necsus/runtime/archetypeStore.html#addLen%2CArchetypeStore%5BComps%3A%20tuple%5D%2Cuint%2Cproc%28Comps%29">archetypeStore: proc addLen[Comps: tuple](store: var ArchetypeStore[Comps]; len: var uint; predicate: proc (
-    row: var Comps): bool {.fastcall, gcsafe, raises: [].})</a></li>
+    row: var Comps): bool {.nimcall, gcsafe, raises: [].})" href="necsus/runtime/archetypeStore.html#addLen%2CArchetypeStore%5BComps%3A%20tuple%5D%2Cuint%2Cproc%28Comps%29">archetypeStore: proc addLen[Comps: tuple](store: var ArchetypeStore[Comps]; len: var uint; predicate: proc (
+    row: var Comps): bool {.nimcall, gcsafe, raises: [].})</a></li>
           </ul></dd>
 <dt><a name="addSignature" href="#addSignature"><span>addSignature:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -542,7 +542,7 @@
 <li><a class="reference external"
           data-doc-search-tag="archetypeStore: proc del(store: var ArchetypeStore; index: uint)" href="necsus/runtime/archetypeStore.html#del%2CArchetypeStore%2Cuint">archetypeStore: proc del(store: var ArchetypeStore; index: uint)</a></li>
           <li><a class="reference external"
-          data-doc-search-tag="world: proc del(world: var World; entityId: EntityId): EntityIndex" href="necsus/runtime/world.html#del%2CWorld%2CEntityId">world: proc del(world: var World; entityId: EntityId): EntityIndex</a></li>
+          data-doc-search-tag="world: proc del(world: var World; entityId: EntityId): Option[EntityIndex]" href="necsus/runtime/world.html#del%2CWorld%2CEntityId">world: proc del(world: var World; entityId: EntityId): Option[EntityIndex]</a></li>
           <li><a class="reference external"
           data-doc-search-tag="blockstore: proc del[V](store: var BlockStore[V]; idx: uint): V" href="necsus/util/blockstore.html#del%2CBlockStore%5BV%5D%2Cuint">blockstore: proc del[V](store: var BlockStore[V]; idx: uint): V</a></li>
           </ul></dd>
@@ -800,6 +800,10 @@
 <li><a class="reference external"
           data-doc-search-tag="archetypeStore: proc getComps[Comps: tuple](store: var ArchetypeStore[Comps]; index: uint): ptr Comps" href="necsus/runtime/archetypeStore.html#getComps%2CArchetypeStore%5BComps%3A%20tuple%5D%2Cuint">archetypeStore: proc getComps[Comps: tuple](store: var ArchetypeStore[Comps]; index: uint): ptr Comps</a></li>
           </ul></dd>
+<dt><a name="getNewEntityId" href="#getNewEntityId"><span>getNewEntityId:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="world: proc getNewEntityId(world: var World): EntityId" href="necsus/runtime/world.html#getNewEntityId%2CWorld">world: proc getNewEntityId(world: var World): EntityId</a></li>
+          </ul></dd>
 <dt><a name="getOrPut" href="#getOrPut"><span>getOrPut:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="systemVar: proc getOrPut[T](sysvar: SystemVar[T]): var T" href="necsus/runtime/systemVar.html#getOrPut%2CSystemVar%5BT%5D">systemVar: proc getOrPut[T](sysvar: SystemVar[T]): var T</a></li>
@@ -877,6 +881,10 @@
 <dt><a name="inboxGenerator" href="#inboxGenerator"><span>inboxGenerator:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="eventGen: let inboxGenerator" href="necsus/compiletime/eventGen.html#inboxGenerator">eventGen: let inboxGenerator</a></li>
+          </ul></dd>
+<dt><a name="incGen" href="#incGen"><span>incGen:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="entityId: proc incGen(entityId: EntityId): EntityId" href="necsus/runtime/entityId.html#incGen%2CEntityId">entityId: proc incGen(entityId: EntityId): EntityId</a></li>
           </ul></dd>
 <dt><a name="incl" href="#incl"><span>incl:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -1086,11 +1094,11 @@
     entityIndex: ptr EntityIndex; fromArch: var ArchetypeStore[FromArch];
     toArch: var ArchetypeStore[ToArch]; newValues: sink NewComps; combine: proc (
     existing: sink FromArch; newValues: sink NewComps; output: var ToArch): bool {.
-    gcsafe, raises: [], fastcall.})" href="necsus/runtime/archetypeStore.html#moveEntity%2CWorld%2Cptr.EntityIndex%2CArchetypeStore%5BFromArch%3A%20tuple%5D%2CArchetypeStore%5BToArch%3A%20tuple%5D%2CsinkNewComps%2Cproc%28sinkFromArch%2CsinkNewComps%2CToArch%29">archetypeStore: proc moveEntity[FromArch: tuple; NewComps: tuple; ToArch: tuple](world: var World;
+    gcsafe, raises: [], nimcall.})" href="necsus/runtime/archetypeStore.html#moveEntity%2CWorld%2Cptr.EntityIndex%2CArchetypeStore%5BFromArch%3A%20tuple%5D%2CArchetypeStore%5BToArch%3A%20tuple%5D%2CsinkNewComps%2Cproc%28sinkFromArch%2CsinkNewComps%2CToArch%29">archetypeStore: proc moveEntity[FromArch: tuple; NewComps: tuple; ToArch: tuple](world: var World;
     entityIndex: ptr EntityIndex; fromArch: var ArchetypeStore[FromArch];
     toArch: var ArchetypeStore[ToArch]; newValues: sink NewComps; combine: proc (
     existing: sink FromArch; newValues: sink NewComps; output: var ToArch): bool {.
-    gcsafe, raises: [], fastcall.})</a></li>
+    gcsafe, raises: [], nimcall.})</a></li>
           </ul></dd>
 <dt><a name="name" href="#name"><span>name:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -1327,9 +1335,9 @@
 <dt><a name="newSpawn" href="#newSpawn"><span>newSpawn:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="spawn: proc newSpawn[Comps: tuple](app: pointer; callback: proc (app: pointer;
-    value: sink Comps): EntityId {.fastcall, raises: [], gcsafe.}): RawSpawn[
+    value: sink Comps): EntityId {.nimcall, raises: [], gcsafe.}): RawSpawn[
     Comps]" href="necsus/runtime/spawn.html#newSpawn%2Cpointer%2Cproc%28pointer%2CsinkComps%29">spawn: proc newSpawn[Comps: tuple](app: pointer; callback: proc (app: pointer;
-    value: sink Comps): EntityId {.fastcall, raises: [], gcsafe.}): RawSpawn[
+    value: sink Comps): EntityId {.nimcall, raises: [], gcsafe.}): RawSpawn[
     Comps]</a></li>
           </ul></dd>
 <dt><a name="newSystemArg" href="#newSystemArg"><span>newSystemArg:</span></a></dt><dd><ul class="simple">
@@ -1554,7 +1562,7 @@
           </ul></dd>
 <dt><a name="setArchetypeDetails" href="#setArchetypeDetails"><span>setArchetypeDetails:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="world: proc setArchetypeDetails(newEntity: NewEntity; archetype: ArchetypeId; index: uint)" href="necsus/runtime/world.html#setArchetypeDetails%2CNewEntity%2CArchetypeId%2Cuint">world: proc setArchetypeDetails(newEntity: NewEntity; archetype: ArchetypeId; index: uint)</a></li>
+          data-doc-search-tag="world: proc setArchetypeDetails(entry: NewEntity; archetype: ArchetypeId; index: uint)" href="necsus/runtime/world.html#setArchetypeDetails%2CNewEntity%2CArchetypeId%2Cuint">world: proc setArchetypeDetails(entry: NewEntity; archetype: ArchetypeId; index: uint)</a></li>
           </ul></dd>
 <dt><a name="setComp" href="#setComp"><span>setComp:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -1734,7 +1742,7 @@
           </ul></dd>
 <dt><a name="World" href="#World"><span>World:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="world: type World" href="necsus/runtime/world.html#World">world: type World</a></li>
+          data-doc-search-tag="world: object World" href="necsus/runtime/world.html#World">world: object World</a></li>
           </ul></dd>
 <dt><a name="WorldField" href="#WorldField"><span>WorldField:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -1754,7 +1762,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-12-27 16:56:52 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2025-01-12 18:18:39 UTC</small>
       </div>
     </div>
   </div>

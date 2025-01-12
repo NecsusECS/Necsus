@@ -59,8 +59,8 @@
   entityId*: EntityId
   archetype*: ArchetypeId
   archetypeIndex*: uint">EntityIndex</a></li>
-<li><a class="reference" href="#NewEntity" title="NewEntity = distinct Entry[EntityIndex]">NewEntity</a></li>
-<li><a class="reference" href="#World" title="World = distinct BlockStore[EntityIndex]">World</a></li>
+<li><a class="reference" href="#NewEntity" title="NewEntity = distinct ptr EntityIndex">NewEntity</a></li>
+<li><a class="reference" href="#World" title="World = object">World</a></li>
 
     </ul>
   </details>
@@ -74,11 +74,15 @@
 
 </ul>
 <ul class="simple nested-toc-section">del
-  <li><a class="reference" href="#del%2CWorld%2CEntityId" title="del(world: var World; entityId: EntityId): EntityIndex">del(world: var World; entityId: EntityId): EntityIndex</a></li>
+  <li><a class="reference" href="#del%2CWorld%2CEntityId" title="del(world: var World; entityId: EntityId): Option[EntityIndex]">del(world: var World; entityId: EntityId): Option[EntityIndex]</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">entityId
   <li><a class="reference" href="#entityId%2CNewEntity" title="entityId(newEntity: NewEntity): EntityId">entityId(newEntity: NewEntity): EntityId</a></li>
+
+</ul>
+<ul class="simple nested-toc-section">getNewEntityId
+  <li><a class="reference" href="#getNewEntityId%2CWorld" title="getNewEntityId(world: var World): EntityId">getNewEntityId(world: var World): EntityId</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">newEntity
@@ -90,7 +94,7 @@
 
 </ul>
 <ul class="simple nested-toc-section">setArchetypeDetails
-  <li><a class="reference" href="#setArchetypeDetails%2CNewEntity%2CArchetypeId%2Cuint" title="setArchetypeDetails(newEntity: NewEntity; archetype: ArchetypeId; index: uint)">setArchetypeDetails(newEntity: NewEntity; archetype: ArchetypeId; index: uint)</a></li>
+  <li><a class="reference" href="#setArchetypeDetails%2CNewEntity%2CArchetypeId%2Cuint" title="setArchetypeDetails(entry: NewEntity; archetype: ArchetypeId; index: uint)">setArchetypeDetails(entry: NewEntity; archetype: ArchetypeId; index: uint)</a></li>
 
 </ul>
 
@@ -135,7 +139,7 @@
   </dd>
 </div>
 <div id="NewEntity">
-  <dt><pre><a href="world.html#NewEntity"><span class="Identifier">NewEntity</span></a> <span class="Other">=</span> <span class="Keyword">distinct</span> <a href="../util/blockstore.html#Entry"><span class="Identifier">Entry</span></a><span class="Other">[</span><a href="world.html#EntityIndex"><span class="Identifier">EntityIndex</span></a><span class="Other">]</span></pre></dt>
+  <dt><pre><a href="world.html#NewEntity"><span class="Identifier">NewEntity</span></a> <span class="Other">=</span> <span class="Keyword">distinct</span> <span class="Keyword">ptr</span> <a href="world.html#EntityIndex"><span class="Identifier">EntityIndex</span></a></pre></dt>
   <dd>
     
     
@@ -143,7 +147,7 @@
   </dd>
 </div>
 <div id="World">
-  <dt><pre><a href="world.html#World"><span class="Identifier">World</span></a> <span class="Other">=</span> <span class="Keyword">distinct</span> <a href="../util/blockstore.html#BlockStore"><span class="Identifier">BlockStore</span></a><span class="Other">[</span><a href="world.html#EntityIndex"><span class="Identifier">EntityIndex</span></a><span class="Other">]</span></pre></dt>
+  <dt><pre><a href="world.html#World"><span class="Identifier">World</span></a> <span class="Other">=</span> <span class="Keyword">object</span></pre></dt>
   <dd>
     
     Contains the data describing the entire world
@@ -170,8 +174,8 @@
 </div>
 <div id="del-procs-all">
   <div id="del,World,EntityId">
-  <dt><pre><span class="Keyword">proc</span> <a href="#del%2CWorld%2CEntityId"><span class="Identifier">del</span></a><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">entityId</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span><span class="Other">:</span> <a href="world.html#EntityIndex"><span class="Identifier">EntityIndex</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#del%2CWorld%2CEntityId"><span class="Identifier">del</span></a><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">entityId</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Option</span><span class="Other">[</span><a href="world.html#EntityIndex"><span class="Identifier">EntityIndex</span></a><span class="Other">]</span> {.
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
     Deletes an entity and returns the archetype and index that also needs to be deleted
@@ -187,6 +191,18 @@
   <dd>
     
     Returns the entity ID of a newly created entity
+    
+  </dd>
+</div>
+
+</div>
+<div id="getNewEntityId-procs-all">
+  <div id="getNewEntityId,World">
+  <dt><pre><span class="Keyword">proc</span> <a href="#getNewEntityId%2CWorld"><span class="Identifier">getNewEntityId</span></a><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">)</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a> {.<span class="Identifier">inline</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    
     
   </dd>
 </div>
@@ -216,8 +232,8 @@
 </div>
 <div id="setArchetypeDetails-procs-all">
   <div id="setArchetypeDetails,NewEntity,ArchetypeId,uint">
-  <dt><pre><span class="Keyword">proc</span> <a href="#setArchetypeDetails%2CNewEntity%2CArchetypeId%2Cuint"><span class="Identifier">setArchetypeDetails</span></a><span class="Other">(</span><span class="Identifier">newEntity</span><span class="Other">:</span> <a href="world.html#NewEntity"><span class="Identifier">NewEntity</span></a><span class="Other">;</span> <span class="Identifier">archetype</span><span class="Other">:</span> <a href="world.html#ArchetypeId"><span class="Identifier">ArchetypeId</span></a><span class="Other">;</span>
-                         <span class="Identifier">index</span><span class="Other">:</span> <span class="Identifier">uint</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#setArchetypeDetails%2CNewEntity%2CArchetypeId%2Cuint"><span class="Identifier">setArchetypeDetails</span></a><span class="Other">(</span><span class="Identifier">entry</span><span class="Other">:</span> <a href="world.html#NewEntity"><span class="Identifier">NewEntity</span></a><span class="Other">;</span> <span class="Identifier">archetype</span><span class="Other">:</span> <a href="world.html#ArchetypeId"><span class="Identifier">ArchetypeId</span></a><span class="Other">;</span> <span class="Identifier">index</span><span class="Other">:</span> <span class="Identifier">uint</span><span class="Other">)</span> {.
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
     Stores the archetype details about an entity
@@ -236,7 +252,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2024-12-27 16:56:51 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2025-01-12 18:18:38 UTC</small>
       </div>
     </div>
   </div>

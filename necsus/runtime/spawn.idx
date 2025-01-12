@@ -4,7 +4,7 @@ nim	Spawn	necsus/runtime/spawn.html#Spawn	type Spawn		9
 nim	FullSpawn	necsus/runtime/spawn.html#FullSpawn	type FullSpawn		13
 nim	asFullSpawn	necsus/runtime/spawn.html#asFullSpawn,RawSpawn[Comps]	proc asFullSpawn[Comps](rawSpawn: RawSpawn[Comps]): FullSpawn[Comps]		17
 nim	asSpawn	necsus/runtime/spawn.html#asSpawn,RawSpawn[Comps]	proc asSpawn[Comps](rawSpawn: RawSpawn[Comps]): Spawn[Comps]		19
-nim	newSpawn	necsus/runtime/spawn.html#newSpawn,pointer,proc(pointer,sinkComps)	proc newSpawn[Comps: tuple](app: pointer; callback: proc (app: pointer;\n    value: sink Comps): EntityId {.fastcall, raises: [], gcsafe.}): RawSpawn[\n    Comps]		21
+nim	newSpawn	necsus/runtime/spawn.html#newSpawn,pointer,proc(pointer,sinkComps)	proc newSpawn[Comps: tuple](app: pointer; callback: proc (app: pointer;\n    value: sink Comps): EntityId {.nimcall, raises: [], gcsafe.}): RawSpawn[\n    Comps]		21
 nim	beginSpawn	necsus/runtime/spawn.html#beginSpawn,World,ptr.ArchetypeStore[Comps: tuple]	proc beginSpawn[Comps: tuple](world: var World; store: ptr ArchetypeStore[Comps]): NewArchSlot[\n    Comps]		27
 nim	set	necsus/runtime/spawn.html#set,Spawn[C: tuple],sinkC	proc set[C: tuple](spawn: Spawn[C]; values: sink C)		43
 nim	set	necsus/runtime/spawn.html#set,FullSpawn[C: tuple],sinkC	proc set[C: tuple](spawn: FullSpawn[C]; values: sink C): EntityId		47
