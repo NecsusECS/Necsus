@@ -1,5 +1,47 @@
 # Changelog
 
+## 0.12.0
+
+### Backwards Incompatible Changes
+
+* No known backwards incompatible changes
+
+### New Features
+
+* Remove archetype sorting restriction
+* Add generations to entity IDs to prevent entity confusion when entity IDs are recycled
+* Add `DeleteAll` directive
+* Add `from` for `SystemVar`
+* Support `Local` directives in bundles
+* Add `maxCapacity` pragma
+* Add `requireMaxCapacity` build flag
+* Add `necsusSystemTrace` flag
+* Improve log message for necsusEntityTrace
+* Use system IDs for profiling
+
+### Performance improvements
+
+* Remove closure iterators from queries
+* Lazy archetype alloc by default
+* Pre-initialize event inboxes
+* Fast compile mode improvements
+* Faster archetype iteration
+
+### Bug Fixes
+
+* Allow missing keys while parsing
+* Allow open symbols in directive parsing
+* Support all directives for `runSystemOnce`
+* Handle missing entities
+* Fix instantiation order of time values
+* Fix index error for `Not` queries with accessories
+* Fix infinite loop in `-d:dump`
+* Fix bundle privateAccess error for built systems
+* Fix conflicting `eventsys` mailbox names
+* Don't send messages to inactive systems
+- Generate `sendProc` for `IndirectEventCallback` systems
+- Add missing necsus imports `-d:dump`
+
 ## 0.11.2
 
 ### Bug Fixes
