@@ -1,6 +1,6 @@
 # Package
 
-version = "0.11.2"
+version = "0.12.0"
 author = "Nycto"
 description = "Entity Component System"
 license = "MIT"
