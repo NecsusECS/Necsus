@@ -2,6 +2,37 @@ import std/[macros, tables, sets]
 import tools, codeGenInfo, common, systemGen, tickGen, parse, eventGen, monoDirective
 import ../runtime/[world]
 
+proc addEventDirectives(arg: NimNode, into: var seq[MonoDirective]) =
+    ## Recursively adds event directives to the given sequence
+    case arg.kind
+    of nnkInfix:
+        if arg[0].strVal == "or":
+            for child in arg[1..^1]:
+                child.addEventDirectives(into)
+            return
+    else:
+        into.add(newMonoDir(arg))
+        return
+
+    error("Unsupported event type: " & arg.repr, arg)
+
+proc eventCallbackDirectives(system: ParsedSystem): seq[MonoDirective] =
+    ## Yields the events that can be handled by an event callback system
+    system.prefixArgs[0].expectKind(nnkIdentDefs)
+    system.callbackSysType.addEventDirectives(result)
+
+proc eventCallbackAccepts(systemType, eventType: NimNode): bool =
+    ## Returns whether a given system type accepts a specific event
+    echo "Comparing ", systemType.repr, " with ", eventType.repr
+    case systemType.kind
+    of nnkInfix:
+        if systemType[0].strVal == "or":
+            for child in systemType[1..^1]:
+                if child.eventCallbackAccepts(eventType):
+                    return true
+    else:
+        return systemType == eventType
+
 proc mailboxIndex(details: CodeGenInfo): Table[MonoDirective, seq[(ParsedSystem, NimNode)]] =
     ## Creates a table of all inboxes keyed on the type of message they receive
     result = initTable[MonoDirective, seq[(ParsedSystem, NimNode)]](64)
@@ -18,9 +49,9 @@ proc mailboxIndex(details: CodeGenInfo): Table[MonoDirective, seq[(ParsedSystem,
 
         if system.phase in { EventCallback, IndirectEventCallback }:
             system.prefixArgs[0].expectKind(nnkIdentDefs)
-            let directive = newMonoDir(system.prefixArgs[0][1])
-            result.mgetOrPut(directive, newSeq[(ParsedSystem, NimNode)]())
-                .add((system, newEmptyNode()))
+            for directive in system.eventCallbackDirectives():
+                result.mgetOrPut(directive, newSeq[(ParsedSystem, NimNode)]())
+                    .add((system, newEmptyNode()))
 
 let event {.compileTime.} = ident("event")
 
@@ -67,10 +98,10 @@ proc createSendProcs*(details: CodeGenInfo): NimNode =
             for system in details.systems:
                 case system.phase
                 of EventCallback:
-                    if eventType == system.callbackSysType:
+                    if system.callbackSysType.eventCallbackAccepts(eventType):
                         body.add(details.invokeSystem(system, {EventCallback}, [ event ]))
                 of IndirectEventCallback:
-                    if eventType == system.callbackSysType:
+                    if system.callbackSysType.eventCallbackAccepts(eventType):
                         body.add details.genAddToInbox(system, eventType, system.callbackSysMailboxName, seen)
                 else:
                     discard
