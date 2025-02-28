@@ -534,8 +534,14 @@ proc receive(event: SomeEvent) {.eventSys.} =
 proc myApp() {.necsus([~publish, ~receive], newNecsusConf()).}
 ```
 
-It's worth noting that event systems are executed immediately when an event is triggered. They will be directly invoked
-by the `Outbox`, within the call stack of the system that triggers the event.
+A few notes about event systems:
+
+* They executed immediately when an event is triggered. They will be directly invoked by the `Outbox`, within the call
+  stack of the system that triggers the event. The only exception to this is if those event system also have
+  `Outbox` parameters. Because that can trigger infinite loops, Necsus removes the inlining and rewrites them as
+  if they were regular systems with an `Inbox` directive.
+* You can use union types for the event type, which allows them to handle multiple kinds of events. For example,
+  `proc receive(event: Foo or Bar) {.eventSys.}`
 
 #### Bundles
 
