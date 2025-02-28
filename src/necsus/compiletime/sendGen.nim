@@ -23,7 +23,6 @@ proc eventCallbackDirectives(system: ParsedSystem): seq[MonoDirective] =
 
 proc eventCallbackAccepts(systemType, eventType: NimNode): bool =
     ## Returns whether a given system type accepts a specific event
-    echo "Comparing ", systemType.repr, " with ", eventType.repr
     case systemType.kind
     of nnkInfix:
         if systemType[0].strVal == "or":
