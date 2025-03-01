@@ -24,6 +24,13 @@ iterator archetypeCases*(details: GenerateContext): tuple[ofBranch: NimNode, arc
     for archetype in details.archetypes:
         yield (archetype.idSymbol, archetype)
 
+iterator both*(a, b: auto): auto =
+    ## Yields values from one iterator then another
+    for item in a:
+        yield item
+    for item in b:
+        yield item
+
 proc joinStrs*(args: varargs[NimNode]): NimNode =
     ## Joins a set of stringable nim nodes into a string
     if args.len == 0:

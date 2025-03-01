@@ -12,16 +12,19 @@ proc createArchUpdate(
     title: string,
     attachComps: seq[ComponentDef],
     detachComps: seq[ComponentDef],
+    optDetachComps: seq[ComponentDef],
     archetype: Archetype[ComponentDef]
 ): NimNode =
     ## Creates code for updating archetype information in place
 
     let attachStr = attachComps.mapIt(it.readableName).join(", ")
     let detachStr = detachComps.mapIt(it.readableName).join(", ")
+    let optDetachStr = optDetachComps.mapIt(it.readableName).join(", ")
     result = newStmtList(emitEntityTrace(
         fmt"{title} for ",
         entityId,
-        fmt"; from {archetype.readableName}, attaching [{attachStr}], detaching [{detachStr}], "
+        fmt"; from {archetype.readableName}; ",
+        fmt"attaching [{attachStr}], detaching [{detachStr}], optionally detaching [{optDetachStr}] "
     ))
 
     let archIdent = archetype.ident
@@ -41,7 +44,7 @@ proc createArchUpdate(
         result.add quote do:
             `existing`[`storageIndex`] = `newValue`
 
-    for component in detachComps:
+    for component in both(detachComps, optDetachComps):
         let storageIndex = archetype.indexOf(component)
         let typ = component.node
         result.add quote do:
@@ -107,10 +110,12 @@ proc attachDetachProcBody(
     # Generate a cases statement to do the work for each kind of archetype
     var cases: NimNode = newEmptyNode()
 
+    let totalDetaches = detachComps.len + optDetachComps.len
+
     if details.archetypes.len > 0:
         cases = nnkCaseStmt.newTree(newDotExpr(entityIndex, ident("archetype")))
         for (ofBranch, fromArch) in archetypeCases(details):
-            if detachComps.len == 0 or fromArch.containsAllOf(detachComps):
+            if totalDetaches == 0 or fromArch.containsAllOf(detachComps) or fromArch.containsAnyOf(optDetachComps):
                 let toArch = details.archetypeFor(fromArch.removeAndAdd(toRemove, attachComps))
                 if toArch.isNil:
                     discard
@@ -123,7 +128,7 @@ proc attachDetachProcBody(
                 elif toArch.containsAllOf(attachComps):
                     cases.add(
                         nnkOfBranch.newTree(ofBranch,
-                            details.createArchUpdate(title, attachComps, detachComps, toArch)))
+                            details.createArchUpdate(title, attachComps, detachComps, optDetachComps, toArch)))
 
         let errMsg = newLit(
             fmt"{title} failed. Attach: {attachComps}, Detach: {detachComps}, Optional Detach: {optDetachComps}")

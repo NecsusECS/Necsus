@@ -104,6 +104,13 @@ proc indexOf*[T](archetype: Archetype[T], value: T): int =
     result = archetype.values.binarySearch(value)
     assert(result != -1, $value & " is not in archetype " & $archetype)
 
+proc containsAnyOf*[T](archetype: Archetype[T], others: openarray[T]): bool =
+    ## Whether an archetype contains any the given values
+    for other in others:
+        if other in archetype:
+            return true
+    return false
+
 proc containsAllOf*[T](archetype: Archetype[T], others: openarray[T]): bool =
     ## Whether an archetype contains all the given values
     for other in others:
