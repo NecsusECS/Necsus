@@ -45,10 +45,11 @@ proc createArchUpdate(
             `existing`[`storageIndex`] = `newValue`
 
     for component in both(detachComps, optDetachComps):
-        let storageIndex = archetype.indexOf(component)
-        let typ = component.node
-        result.add quote do:
-            `existing`[`storageIndex`] = none[`typ`]()
+        if component in archetype:
+            let storageIndex = archetype.indexOf(component)
+            let typ = component.node
+            result.add quote do:
+                `existing`[`storageIndex`] = none[`typ`]()
 
 proc newCompsTupleType(newCompValues: seq[ComponentDef]): NimNode =
     ## Creates the type definition to use for a tuple that represents new values passed into a convert proc
