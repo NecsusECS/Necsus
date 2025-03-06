@@ -443,8 +443,15 @@ proc receive(event: SomeEvent) {.eventSys.} =
 
 proc myApp() {.necsus([~publish, ~receive], newNecsusConf()).}
 </code></pre>
-<p>It's worth noting that event systems are executed immediately when an event is triggered. They will be directly invoked
-by the <code>Outbox</code>, within the call stack of the system that triggers the event.</p>
+<p>A few notes about event systems:</p>
+<ul>
+<li>They executed immediately when an event is triggered. They will be directly invoked by the <code>Outbox</code>, within the call
+stack of the system that triggers the event. The only exception to this is if those event system also have
+<code>Outbox</code> parameters. Because that can trigger infinite loops, Necsus removes the inlining and rewrites them as
+if they were regular systems with an <code>Inbox</code> directive.</li>
+<li>You can use union types for the event type, which allows them to handle multiple kinds of events. For example,
+<code>proc receive(event: Foo or Bar) {.eventSys.}</code></li>
+</ul>
 <h4>Bundles</h4>
 <p><code>Bundle</code>s are a way of grouping multiple directives into a single object to make them easier to pass around. They
 are useful when you want to encapsulate a set of logic that needs to operate on multiple directives.</p>
