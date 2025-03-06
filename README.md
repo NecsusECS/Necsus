@@ -79,6 +79,10 @@ app()
 * [Particle Demo](https://github.com/NecsusECS/NecsusParticleDemo)
 * [Asteroids](https://github.com/NecsusECS/NecsusAsteroids)
 
+### Games built with Necsus
+
+* [The Long Arc](https://elephantstarballoon.itch.io/the-long-arc)
+
 ## API Documentation
 
 API Documentation is available here:
