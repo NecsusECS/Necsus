@@ -288,19 +288,18 @@ proc choosePhase(typeNode: NimNode): SystemPhase =
     let eventSysPragma = bindSym("eventSys")
 
     for child in typeNode.findPragma:
-        if child.kind == nnkSym:
-            if child.isPragma(startupPragma):
-                return StartupPhase
-            elif child.isPragma(loopSysPragma):
-                return LoopPhase
-            elif child.isPragma(teardownSysPragma):
-                return TeardownPhase
-            elif child.isPragma(saveSysPragma):
-                return SaveCallback
-            elif child.isPragma(restoreSysPragma):
-                return RestoreCallback
-            elif child.isPragma(eventSysPragma):
-                return EventCallback
+        if child.isPragma(startupPragma):
+            return StartupPhase
+        elif child.isPragma(loopSysPragma):
+            return LoopPhase
+        elif child.isPragma(teardownSysPragma):
+            return TeardownPhase
+        elif child.isPragma(saveSysPragma):
+            return SaveCallback
+        elif child.isPragma(restoreSysPragma):
+            return RestoreCallback
+        elif child.isPragma(eventSysPragma):
+            return EventCallback
     return LoopPhase
 
 proc hasInstancedReturnType(node: NimNode): bool =
