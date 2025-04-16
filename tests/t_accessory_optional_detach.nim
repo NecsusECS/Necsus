@@ -1,33 +1,33 @@
 import necsus, std/[sequtils, unittest, options]
 
 type
-    Person = object
+  Person = object
 
-    Name = string
+  Name = string
 
-    Age {.accessory.} = int
+  Age {.accessory.} = int
 
-    Unrelated = object
+  Unrelated = object
 
 proc setup(
     spawnWithAge: FullSpawn[(Name, Person, Age)],
     spawnNoAge: FullSpawn[(Name, Person)],
-    detach: Detach[(Option[Age], )],
-    spawnUnrelated: FullSpawn[(Unrelated, )]
+    detach: Detach[(Option[Age],)],
+    spawnUnrelated: FullSpawn[(Unrelated,)],
 ) =
-    spawnWithAge.with("Jack", Person(), 50).detach()
-    spawnNoAge.with("Jill", Person()).detach()
+  spawnWithAge.with("Jack", Person(), 50).detach()
+  spawnNoAge.with("Jill", Person()).detach()
 
-    spawnUnrelated.with(Unrelated()).detach()
+  spawnUnrelated.with(Unrelated()).detach()
 
-proc assertion(noAge: Query[(Name, Not[Age])], aged: Query[(Age, )]) =
-    check(noAge.mapIt(it[0]) == @["Jack", "Jill"])
-    check(aged.len == 0)
+proc assertion(noAge: Query[(Name, Not[Age])], aged: Query[(Age,)]) =
+  check(noAge.mapIt(it[0]) == @["Jack", "Jill"])
+  check(aged.len == 0)
 
 proc runner(tick: proc(): void) =
-    tick()
+  tick()
 
 proc myApp() {.necsus(runner, [~setup, ~assertion], conf = newNecsusConf()).}
 
 test "Optionally detaching an accessory component":
-    myApp()
+  myApp()

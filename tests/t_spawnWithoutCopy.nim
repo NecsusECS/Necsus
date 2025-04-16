@@ -1,20 +1,20 @@
 import necsus/util/tools
 
 when isSinkMemoryCorruptionFixed():
-    import unittest, necsus
+  import unittest, necsus
 
-    type
-        Thingy = object
-            value: int
+  type Thingy = object
+    value: int
 
-    proc `=copy`(target: var Thingy, source: Thingy) {.error.}
+  proc `=copy`(target: var Thingy, source: Thingy) {.error.}
 
-    proc spawner(spawn: Spawn[(Thingy, )]) =
-        spawn.with(Thingy())
+  proc spawner(spawn: Spawn[(Thingy,)]) =
+    spawn.with(Thingy())
 
-    proc runner(tick: proc(): void) = tick()
+  proc runner(tick: proc(): void) =
+    tick()
 
-    proc myApp() {.necsus(runner, [~spawner], newNecsusConf()).}
+  proc myApp() {.necsus(runner, [~spawner], newNecsusConf()).}
 
-    test "Spawning a value should not require a copy":
-        myApp()
+  test "Spawning a value should not require a copy":
+    myApp()

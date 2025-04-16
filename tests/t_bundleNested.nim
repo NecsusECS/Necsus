@@ -1,27 +1,26 @@
 import unittest, necsus
 
 type
-    A = object
-        spawn: Spawn[(string, )]
-        query: Query[(string, )]
+  A = object
+    spawn: Spawn[(string,)]
+    query: Query[(string,)]
 
-    B = object
-        a: Bundle[A]
+  B = object
+    a: Bundle[A]
 
-    C = object
-        b: Bundle[B]
+  C = object
+    b: Bundle[B]
 
 proc setup*(bundle: Bundle[C]) =
-    discard
+  discard
 
 proc assertion*(bundle: Bundle[C]) =
-    discard
+  discard
 
 proc runner(tick: proc(): void) =
-    tick()
+  tick()
 
 proc myApp() {.necsus(runner, [~setup, ~assertion], conf = newNecsusConf()).}
 
 test "Bundles nested inside other bundles":
-    myApp()
-
+  myApp()

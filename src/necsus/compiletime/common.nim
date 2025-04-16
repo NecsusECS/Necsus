@@ -22,7 +22,7 @@ let thisTime* {.compileTime.} = ident("thisTime")
 let startTime* {.compileTime.} = ident("startTime")
 
 template isFastCompileMode*(title: untyped): bool =
-    ## Returns whether the compiler should elide complicated function content
-    ## that tends to slow down compilation. This is useful, for example, to speed
-    ## up IDE integration
-    (defined(nimsuggest) or defined(nimcheck)) and not defined(title)
+  ## Returns whether the compiler should elide complicated function content
+  ## that tends to slow down compilation. This is useful, for example, to speed
+  ## up IDE integration
+  (defined(nimsuggest) or defined(nimcheck)) and not defined(title)

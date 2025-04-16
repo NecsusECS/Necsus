@@ -5,38 +5,40 @@ let tickId {.compileTime.} = ident("tickId")
 let getTickId {.compileTime.} = ident("getTickId")
 
 proc fields(name: string): seq[WorldField] =
-    @[ (tickId.strVal, ident("uint32")), (getTickId.strVal, bindSym("TickId")) ]
+  @[(tickId.strVal, ident("uint32")), (getTickId.strVal, bindSym("TickId"))]
 
 proc sysArg(name: string): NimNode =
-    return quote:
-        `appStateIdent`.`getTickId`
+  return quote:
+    `appStateIdent`.`getTickId`
 
 proc generate(details: GenerateContext, arg: SystemArg, name: string): NimNode =
+  if isFastCompileMode(fastTickId):
+    return newEmptyNode()
 
-    if isFastCompileMode(fastTickId):
-        return newEmptyNode()
+  let tickGenProc = details.globalName(name)
+  case details.hook
+  of Outside:
+    let appType = details.appStateTypeName
+    return quote:
+      proc `tickGenProc`(
+          `appStateIdent`: pointer
+      ): BiggestUInt {.gcsafe, raises: [], nimcall, used.} =
+        let `appStatePtr` = cast[ptr `appType`](`appStateIdent`)
+        return `appStatePtr`.`tickId`
 
-    let tickGenProc = details.globalName(name)
-    case details.hook
-    of Outside:
-        let appType = details.appStateTypeName
-        return quote:
-            proc `tickGenProc`(`appStateIdent`: pointer): BiggestUInt {.gcsafe, raises: [], nimcall, used.} =
-                let `appStatePtr` = cast[ptr `appType`](`appStateIdent`)
-                return `appStatePtr`.`tickId`
-    of Standard:
-        return quote:
-            `appStateIdent`.`getTickId` = newCallbackDir(`appStatePtr`, `tickGenProc`)
-    of LoopStart:
-        return quote:
-            `appStateIdent`.`tickId` += 1
-    else:
-        return newEmptyNode()
+  of Standard:
+    return quote:
+      `appStateIdent`.`getTickId` = newCallbackDir(`appStatePtr`, `tickGenProc`)
+  of LoopStart:
+    return quote:
+      `appStateIdent`.`tickId` += 1
+  else:
+    return newEmptyNode()
 
 let tickIdGenerator* {.compileTime.} = newGenerator(
-    ident = "TickId",
-    interest = { LoopStart, Standard, Outside },
-    generate = generate,
-    worldFields = fields,
-    systemArg = sysArg,
+  ident = "TickId",
+  interest = {LoopStart, Standard, Outside},
+  generate = generate,
+  worldFields = fields,
+  systemArg = sysArg,
 )

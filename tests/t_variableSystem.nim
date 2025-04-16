@@ -2,17 +2,18 @@ import unittest, necsus, options
 
 type A = object
 
-const create = proc (spawn: Spawn[(A, )]) =
-    spawn.with(A())
-    spawn.with(A())
-    spawn.with(A())
+const create = proc(spawn: Spawn[(A,)]) =
+  spawn.with(A())
+  spawn.with(A())
+  spawn.with(A())
 
-const check = proc (query: Query[(A, )]) =
-    check(query.len == 3)
+const check = proc(query: Query[(A,)]) =
+  check(query.len == 3)
 
-proc runner(tick: proc(): void) = tick()
+proc runner(tick: proc(): void) =
+  tick()
 
 proc variableApp() {.necsus(runner, [~create, ~check], newNecsusConf()).}
 
 test "Allow systems to be create from variables":
-    variableApp()
+  variableApp()

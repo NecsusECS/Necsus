@@ -5,25 +5,25 @@ var ranTick = false
 var ranTeardown = false
 
 proc setup() =
-    ranSetup = true
+  ranSetup = true
 
 proc tick() =
-    ranTick = true
+  ranTick = true
 
 proc teardown() =
-    ranTeardown = true
+  ranTeardown = true
 
 proc runner(tick: proc(): void) =
-    tick()
+  tick()
 
 proc myApp() {.necsus(runner, [~setup, ~tick, ~teardown], conf = newNecsusConf()).}
 
 test "System phases should be executed when an app is run manually":
-    block:
-        var app: myAppState
-        app.initMyApp()
-        app.tick()
+  block:
+    var app: myAppState
+    app.initMyApp()
+    app.tick()
 
-    check(ranSetup)
-    check(ranTick)
-    check(ranTeardown)
+  check(ranSetup)
+  check(ranTick)
+  check(ranTeardown)

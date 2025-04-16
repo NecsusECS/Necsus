@@ -1,22 +1,22 @@
 import necsus, unittest, sequtils
 
 type
-    A* = object
-    B* = object
-    C* = object
+  A* = object
+  B* = object
+  C* = object
 
-    Grouping* = object
-        create: FullSpawn[(A, B)]
-        attach*: Attach[(C, )]
+  Grouping* = object
+    create: FullSpawn[(A, B)]
+    attach*: Attach[(C,)]
 
 proc setup*(bundle: Bundle[Grouping]) =
-    let eid = bundle.create.with(A(), B())
-    bundle.attach.exec(eid, (C(), ))
+  let eid = bundle.create.with(A(), B())
+  bundle.attach.exec(eid, (C(),))
 
 proc loop*(bundle: Bundle[Grouping], query: Query[(A, B, C)]) =
-    setup(bundle)
-    check(toSeq(query.items).len == 2)
+  setup(bundle)
+  check(toSeq(query.items).len == 2)
 
 proc teardown*(bundle: Bundle[Grouping], query: Query[(A, B, C)]) =
-    setup(bundle)
-    check(toSeq(query.items).len == 3)
+  setup(bundle)
+  check(toSeq(query.items).len == 3)
