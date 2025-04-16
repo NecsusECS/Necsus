@@ -1,22 +1,22 @@
 nimTitle	bits	necsus/util/bits.html	module src/necsus/util/bits		0
 nim	Bits	necsus/util/bits.html#Bits	type Bits		6
-nim	BitsFilter	necsus/util/bits.html#BitsFilter	type BitsFilter		11
-nim	incl	necsus/util/bits.html#incl,Bits,uint16	proc incl(bitset: var Bits; value: uint16)		22
-nim	newBits	necsus/util/bits.html#newBits,varargs[uint16]	proc newBits(values: varargs[uint16]): Bits		36
-nim	items	necsus/util/bits.html#items.i,Bits	iterator items(bitset: Bits): uint16		42
-nim	`$`	necsus/util/bits.html#$,Bits	proc `$`(bitset: Bits): string		51
-nim	hash	necsus/util/bits.html#hash,Bits	proc hash(bitset: Bits): Hash		62
-nim	contains	necsus/util/bits.html#contains,Bits,uint16	proc contains(bitset: Bits; value: uint16): bool		70
-nim	card	necsus/util/bits.html#card,Bits	proc card(bitset: Bits): int		78
-nim	`==`	necsus/util/bits.html#==,Bits,Bits	proc `==`(a, b: Bits): bool		94
-nim	`+=`	necsus/util/bits.html#+=,Bits,Bits	proc `+=`(a: var Bits; b: Bits)		104
-nim	`+`	necsus/util/bits.html#+,Bits,Bits	proc `+`(a, b: Bits): Bits		110
-nim	`-`	necsus/util/bits.html#-,Bits,Bits	proc `-`(a, b: Bits): Bits		116
-nim	`<=`	necsus/util/bits.html#<=,Bits,Bits	proc `<=`(a, b: Bits): bool		127
-nim	`>`	necsus/util/bits.html#>,Bits,Bits	proc `>`(a, b: Bits): bool		136
-nim	`<`	necsus/util/bits.html#<,Bits,Bits	proc `<`(a, b: Bits): bool		139
-nim	anyIntersect	necsus/util/bits.html#anyIntersect,Bits,Bits	proc anyIntersect(a, b: Bits): bool		148
-nim	newFilter	necsus/util/bits.html#newFilter,Bits,Bits	proc newFilter(mustContain, mustExclude: Bits): BitsFilter		155
-nim	matches	necsus/util/bits.html#matches,BitsFilter,Bits,Bits	proc matches(filter: BitsFilter; all: Bits; optional: Bits = newBits()): bool		159
+nim	BitsFilter	necsus/util/bits.html#BitsFilter	type BitsFilter		10
+nim	incl	necsus/util/bits.html#incl,Bits,uint16	proc incl(bitset: var Bits; value: uint16)		21
+nim	newBits	necsus/util/bits.html#newBits,varargs[uint16]	proc newBits(values: varargs[uint16]): Bits		35
+nim	items	necsus/util/bits.html#items.i,Bits	iterator items(bitset: Bits): uint16		41
+nim	`$`	necsus/util/bits.html#$,Bits	proc `$`(bitset: Bits): string		50
+nim	hash	necsus/util/bits.html#hash,Bits	proc hash(bitset: Bits): Hash		61
+nim	contains	necsus/util/bits.html#contains,Bits,uint16	proc contains(bitset: Bits; value: uint16): bool		69
+nim	card	necsus/util/bits.html#card,Bits	proc card(bitset: Bits): int		77
+nim	`==`	necsus/util/bits.html#==,Bits,Bits	proc `==`(a, b: Bits): bool		93
+nim	`+=`	necsus/util/bits.html#+=,Bits,Bits	proc `+=`(a: var Bits; b: Bits)		103
+nim	`+`	necsus/util/bits.html#+,Bits,Bits	proc `+`(a, b: Bits): Bits		109
+nim	`-`	necsus/util/bits.html#-,Bits,Bits	proc `-`(a, b: Bits): Bits		115
+nim	`<=`	necsus/util/bits.html#<=,Bits,Bits	proc `<=`(a, b: Bits): bool		126
+nim	`>`	necsus/util/bits.html#>,Bits,Bits	proc `>`(a, b: Bits): bool		135
+nim	`<`	necsus/util/bits.html#<,Bits,Bits	proc `<`(a, b: Bits): bool		138
+nim	anyIntersect	necsus/util/bits.html#anyIntersect,Bits,Bits	proc anyIntersect(a, b: Bits): bool		147
+nim	newFilter	necsus/util/bits.html#newFilter,Bits,Bits	proc newFilter(mustContain, mustExclude: Bits): BitsFilter		154
+nim	matches	necsus/util/bits.html#matches,BitsFilter,Bits,Bits	proc matches(filter: BitsFilter; all: Bits; optional: Bits = newBits()): bool		158
 nim	hash	necsus/util/bits.html#hash,BitsFilter	proc hash(filter: BitsFilter): Hash		163
-nimgrp	hash	necsus/util/bits.html#hash-procs-all	proc		62
+nimgrp	hash	necsus/util/bits.html#hash-procs-all	proc		61

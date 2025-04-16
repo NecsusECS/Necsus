@@ -7,8 +7,8 @@ nim	FullQuery	necsus/runtime/query.html#FullQuery	type FullQuery		29
 nim	AnyQuery	necsus/runtime/query.html#AnyQuery	type AnyQuery		33
 nim	Not	necsus/runtime/query.html#Not	type Not		35
 nim	asFullQuery	necsus/runtime/query.html#asFullQuery,RawQuery[Comps]	proc asFullQuery[Comps](rawQuery: RawQuery[Comps]): FullQuery[Comps]		39
-nim	asQuery	necsus/runtime/query.html#asQuery,RawQuery[Comps]	proc asQuery[Comps](rawQuery: RawQuery[Comps]): Query[Comps]		41
-nim	newQuery	necsus/runtime/query.html#newQuery,pointer,QueryGetLen,QueryNext[Comps: tuple]	proc newQuery[Comps: tuple](appState: pointer; getLen: QueryGetLen;\n                       getNext: QueryNext[Comps]): RawQuery[Comps]		43
+nim	asQuery	necsus/runtime/query.html#asQuery,RawQuery[Comps]	proc asQuery[Comps](rawQuery: RawQuery[Comps]): Query[Comps]		42
+nim	newQuery	necsus/runtime/query.html#newQuery,pointer,QueryGetLen,QueryNext[Comps: tuple]	proc newQuery[Comps: tuple](appState: pointer; getLen: QueryGetLen;\n                       getNext: QueryNext[Comps]): RawQuery[Comps]		45
 nim	pairs	necsus/runtime/query.html#pairs.i,FullQuery[Comps: tuple]	iterator pairs[Comps: tuple](query: FullQuery[Comps]): QueryItem[Comps]		50
 nim	items	necsus/runtime/query.html#items.i,AnyQuery[Comps: tuple]	iterator items[Comps: tuple](query: AnyQuery[Comps]): Comps		60
 nim	len	necsus/runtime/query.html#len,AnyQuery[Comps: tuple]	proc len[Comps: tuple](query: AnyQuery[Comps]): uint		70

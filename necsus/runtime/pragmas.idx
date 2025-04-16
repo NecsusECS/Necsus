@@ -1,12 +1,12 @@
 nimTitle	pragmas	necsus/runtime/pragmas.html	module src/necsus/runtime/pragmas		0
-nim	depends	necsus/runtime/pragmas.html#depends.t,varargs[typed]	template depends(dependencies: varargs[typed])		2
-nim	startupSys	necsus/runtime/pragmas.html#startupSys.t	template startupSys()		5
-nim	teardownSys	necsus/runtime/pragmas.html#teardownSys.t	template teardownSys()		8
-nim	loopSys	necsus/runtime/pragmas.html#loopSys.t	template loopSys()		11
-nim	saveSys	necsus/runtime/pragmas.html#saveSys.t	template saveSys()		14
-nim	restoreSys	necsus/runtime/pragmas.html#restoreSys.t	template restoreSys()		17
-nim	eventSys	necsus/runtime/pragmas.html#eventSys.t	template eventSys()		20
-nim	instanced	necsus/runtime/pragmas.html#instanced.t	template instanced()		23
-nim	accessory	necsus/runtime/pragmas.html#accessory.t	template accessory()		28
-nim	active	necsus/runtime/pragmas.html#active.t,varargs[typed]	template active(states: varargs[typed])		32
-nim	maxCapacity	necsus/runtime/pragmas.html#maxCapacity.t,Natural	template maxCapacity(capacity: Natural)		35
+nim	depends	necsus/runtime/pragmas.html#depends.t,varargs[typed]	template depends(dependencies: varargs[typed])		1
+nim	startupSys	necsus/runtime/pragmas.html#startupSys.t	template startupSys()		4
+nim	teardownSys	necsus/runtime/pragmas.html#teardownSys.t	template teardownSys()		7
+nim	loopSys	necsus/runtime/pragmas.html#loopSys.t	template loopSys()		10
+nim	saveSys	necsus/runtime/pragmas.html#saveSys.t	template saveSys()		13
+nim	restoreSys	necsus/runtime/pragmas.html#restoreSys.t	template restoreSys()		15
+nim	eventSys	necsus/runtime/pragmas.html#eventSys.t	template eventSys()		17
+nim	instanced	necsus/runtime/pragmas.html#instanced.t	template instanced()		20
+nim	accessory	necsus/runtime/pragmas.html#accessory.t	template accessory()		25
+nim	active	necsus/runtime/pragmas.html#active.t,varargs[typed]	template active(states: varargs[typed])		29
+nim	maxCapacity	necsus/runtime/pragmas.html#maxCapacity.t,Natural	template maxCapacity(capacity: Natural)		32

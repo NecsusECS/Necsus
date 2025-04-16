@@ -4,10 +4,10 @@ nim	newArchetypeBuilder	necsus/compiletime/archetypeBuilder.html#newArchetypeBui
 nim	hash	necsus/compiletime/archetypeBuilder.html#hash,BuilderAction	proc hash(action: BuilderAction): Hash		46
 nim	`==`	necsus/compiletime/archetypeBuilder.html#==,BuilderAction,BuilderAction	proc `==`(a, b: BuilderAction): bool		54
 nim	filter	necsus/compiletime/archetypeBuilder.html#filter,ArchetypeBuilder[T],openArray[T],openArray[T]	proc filter[T](builder: var ArchetypeBuilder[T]; mustContain: openArray[T];\n          mustExclude: openArray[T]): BitsFilter		76
-nim	define	necsus/compiletime/archetypeBuilder.html#define,ArchetypeBuilder[T],openArray[T]	proc define[T](builder: var ArchetypeBuilder[T]; values: openArray[T])		79
-nim	attachable	necsus/compiletime/archetypeBuilder.html#attachable,ArchetypeBuilder[T],openArray[T],BitsFilter	proc attachable[T](builder: var ArchetypeBuilder[T]; values: openArray[T];\n              filter: BitsFilter)		85
-nim	detachable	necsus/compiletime/archetypeBuilder.html#detachable,ArchetypeBuilder[T],openArray[T],openArray[T]	proc detachable[T](builder: var ArchetypeBuilder[T]; values: openArray[T];\n              optional: openArray[T] = [])		91
-nim	accessory	necsus/compiletime/archetypeBuilder.html#accessory,ArchetypeBuilder[T],T	proc accessory[T](builder: var ArchetypeBuilder[T]; value: T)		101
-nim	attachDetach	necsus/compiletime/archetypeBuilder.html#attachDetach,ArchetypeBuilder[T],openArray[T],openArray[T],openArray[T],BitsFilter	proc attachDetach[T](builder: var ArchetypeBuilder[T]; attach: openArray[T];\n                detach: openArray[T]; optDetach: openArray[T] = [];\n                filter: BitsFilter = builder.filter([], []))		105
-nim	allComponents	necsus/compiletime/archetypeBuilder.html#allComponents.i,ArchetypeBuilder[T]	iterator allComponents[T](builder: ArchetypeBuilder[T]): T		123
-nim	build	necsus/compiletime/archetypeBuilder.html#build,ArchetypeBuilder[T]	proc build[T](builder: ArchetypeBuilder[T]): ArchetypeSet[T]		159
+nim	define	necsus/compiletime/archetypeBuilder.html#define,ArchetypeBuilder[T],openArray[T]	proc define[T](builder: var ArchetypeBuilder[T]; values: openArray[T])		83
+nim	attachable	necsus/compiletime/archetypeBuilder.html#attachable,ArchetypeBuilder[T],openArray[T],BitsFilter	proc attachable[T](builder: var ArchetypeBuilder[T]; values: openArray[T];\n              filter: BitsFilter)		89
+nim	detachable	necsus/compiletime/archetypeBuilder.html#detachable,ArchetypeBuilder[T],openArray[T],openArray[T]	proc detachable[T](builder: var ArchetypeBuilder[T]; values: openArray[T];\n              optional: openArray[T] = [])		99
+nim	accessory	necsus/compiletime/archetypeBuilder.html#accessory,ArchetypeBuilder[T],T	proc accessory[T](builder: var ArchetypeBuilder[T]; value: T)		111
+nim	attachDetach	necsus/compiletime/archetypeBuilder.html#attachDetach,ArchetypeBuilder[T],openArray[T],openArray[T],openArray[T],BitsFilter	proc attachDetach[T](builder: var ArchetypeBuilder[T]; attach: openArray[T];\n                detach: openArray[T]; optDetach: openArray[T] = [];\n                filter: BitsFilter = builder.filter([], []))		115
+nim	allComponents	necsus/compiletime/archetypeBuilder.html#allComponents.i,ArchetypeBuilder[T]	iterator allComponents[T](builder: ArchetypeBuilder[T]): T		137
+nim	build	necsus/compiletime/archetypeBuilder.html#build,ArchetypeBuilder[T]	proc build[T](builder: ArchetypeBuilder[T]): ArchetypeSet[T]		172

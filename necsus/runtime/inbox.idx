@@ -1,4 +1,4 @@
 nimTitle	inbox	necsus/runtime/inbox.html	module src/necsus/runtime/inbox		0
 nim	Inbox	necsus/runtime/inbox.html#Inbox	type Inbox		4
-nim	items	necsus/runtime/inbox.html#items.i,Inbox[T]	iterator items[T](inbox: Inbox[T]): lent T		7
-nim	len	necsus/runtime/inbox.html#len,Inbox[T]	proc len[T](inbox: Inbox[T]): uint		12
+nim	items	necsus/runtime/inbox.html#items.i,Inbox[T]	iterator items[T](inbox: Inbox[T]): lent T		6
+nim	len	necsus/runtime/inbox.html#len,Inbox[T]	proc len[T](inbox: Inbox[T]): uint		11

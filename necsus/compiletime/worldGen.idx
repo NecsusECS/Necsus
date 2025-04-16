@@ -1,8 +1,8 @@
 nimTitle	worldGen	necsus/compiletime/worldGen.html	module src/necsus/compiletime/worldGen		0
 nim	createAppStateType	necsus/compiletime/worldGen.html#createAppStateType,CodeGenInfo	proc createAppStateType(genInfo: CodeGenInfo): NimNode		27
 nim	createAppReturn	necsus/compiletime/worldGen.html#createAppReturn,CodeGenInfo,NimNode	proc createAppReturn(genInfo: CodeGenInfo; errorLocation: NimNode): NimNode		68
-nim	createAppStateInit	necsus/compiletime/worldGen.html#createAppStateInit,CodeGenInfo	proc createAppStateInit(genInfo: CodeGenInfo): NimNode		108
-nim	createAppStateInstance	necsus/compiletime/worldGen.html#createAppStateInstance,CodeGenInfo	proc createAppStateInstance(genInfo: CodeGenInfo): NimNode		154
-nim	createAppStateDestructor	necsus/compiletime/worldGen.html#createAppStateDestructor,CodeGenInfo	proc createAppStateDestructor(genInfo: CodeGenInfo): NimNode		163
-nim	createConverterProcs	necsus/compiletime/worldGen.html#createConverterProcs,CodeGenInfo	proc createConverterProcs(details: CodeGenInfo): NimNode		185
-nim	createArchetypeIdSyms	necsus/compiletime/worldGen.html#createArchetypeIdSyms,CodeGenInfo	proc createArchetypeIdSyms(details: CodeGenInfo): NimNode		194
+nim	createAppStateInit	necsus/compiletime/worldGen.html#createAppStateInit,CodeGenInfo	proc createAppStateInit(genInfo: CodeGenInfo): NimNode		110
+nim	createAppStateInstance	necsus/compiletime/worldGen.html#createAppStateInstance,CodeGenInfo	proc createAppStateInstance(genInfo: CodeGenInfo): NimNode		158
+nim	createAppStateDestructor	necsus/compiletime/worldGen.html#createAppStateDestructor,CodeGenInfo	proc createAppStateDestructor(genInfo: CodeGenInfo): NimNode		167
+nim	createConverterProcs	necsus/compiletime/worldGen.html#createConverterProcs,CodeGenInfo	proc createConverterProcs(details: CodeGenInfo): NimNode		187
+nim	createArchetypeIdSyms	necsus/compiletime/worldGen.html#createArchetypeIdSyms,CodeGenInfo	proc createArchetypeIdSyms(details: CodeGenInfo): NimNode		196

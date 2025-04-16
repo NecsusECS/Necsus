@@ -1,29 +1,29 @@
 nimTitle	parse	necsus/compiletime/parse.html	module src/necsus/compiletime/parse		0
-nim	StartupPhase	necsus/compiletime/parse.html#StartupPhase	SystemPhase.StartupPhase		8
-nim	LoopPhase	necsus/compiletime/parse.html#LoopPhase	SystemPhase.LoopPhase		8
-nim	TeardownPhase	necsus/compiletime/parse.html#TeardownPhase	SystemPhase.TeardownPhase		8
-nim	SaveCallback	necsus/compiletime/parse.html#SaveCallback	SystemPhase.SaveCallback		8
-nim	RestoreCallback	necsus/compiletime/parse.html#RestoreCallback	SystemPhase.RestoreCallback		8
-nim	EventCallback	necsus/compiletime/parse.html#EventCallback	SystemPhase.EventCallback		8
-nim	IndirectEventCallback	necsus/compiletime/parse.html#IndirectEventCallback	SystemPhase.IndirectEventCallback		8
-nim	SystemPhase	necsus/compiletime/parse.html#SystemPhase	enum SystemPhase		8
-nim	ActiveCheck	necsus/compiletime/parse.html#ActiveCheck	type ActiveCheck		18
-nim	ParsedSystem	necsus/compiletime/parse.html#ParsedSystem	type ParsedSystem		23
+nim	StartupPhase	necsus/compiletime/parse.html#StartupPhase	SystemPhase.StartupPhase		9
+nim	LoopPhase	necsus/compiletime/parse.html#LoopPhase	SystemPhase.LoopPhase		9
+nim	TeardownPhase	necsus/compiletime/parse.html#TeardownPhase	SystemPhase.TeardownPhase		9
+nim	SaveCallback	necsus/compiletime/parse.html#SaveCallback	SystemPhase.SaveCallback		9
+nim	RestoreCallback	necsus/compiletime/parse.html#RestoreCallback	SystemPhase.RestoreCallback		9
+nim	EventCallback	necsus/compiletime/parse.html#EventCallback	SystemPhase.EventCallback		9
+nim	IndirectEventCallback	necsus/compiletime/parse.html#IndirectEventCallback	SystemPhase.IndirectEventCallback		9
+nim	SystemPhase	necsus/compiletime/parse.html#SystemPhase	enum SystemPhase		9
+nim	ActiveCheck	necsus/compiletime/parse.html#ActiveCheck	type ActiveCheck		19
+nim	ParsedSystem	necsus/compiletime/parse.html#ParsedSystem	type ParsedSystem		24
 nim	ParsedApp	necsus/compiletime/parse.html#ParsedApp	type ParsedApp		35
-nim	`$`	necsus/compiletime/parse.html#$,ActiveCheck	proc `$`(check: ActiveCheck): string		42
-nim	`$`	necsus/compiletime/parse.html#$,ParsedSystem	proc `$`(system: ParsedSystem): string		45
-nim	kind	necsus/compiletime/parse.html#kind,SystemArg	proc kind(arg: SystemArg): auto		56
-nim	allArgs	necsus/compiletime/parse.html#allArgs.i,ParsedSystem	iterator allArgs(system: ParsedSystem): SystemArg		58
-nim	parseSystemDef	necsus/compiletime/parse.html#parseSystemDef,NimNode,NimNode	proc parseSystemDef(ident: NimNode; impl: NimNode): ParsedSystem		395
-nim	parseSystemList	necsus/compiletime/parse.html#parseSystemList,NimNode	proc parseSystemList(systems: NimNode): seq[ParsedSystem]		467
-nim	components	necsus/compiletime/parse.html#components.i,SystemArg	iterator components(arg: SystemArg): ComponentDef		472
-nim	components	necsus/compiletime/parse.html#components.i,openArray[ParsedSystem]	iterator components(systems: openArray[ParsedSystem]): ComponentDef		482
-nim	args	necsus/compiletime/parse.html#args.i,openArray[ParsedSystem]	iterator args(systems: openArray[ParsedSystem]): SystemArg		489
-nim	components	necsus/compiletime/parse.html#components.i,ParsedApp	iterator components(app: ParsedApp): ComponentDef		495
-nim	parseApp	necsus/compiletime/parse.html#parseApp,NimNode,NimNode	proc parseApp(appProc: NimNode; runner: NimNode): ParsedApp		511
-nim	newEmptyApp	necsus/compiletime/parse.html#newEmptyApp,string	proc newEmptyApp(name: string): ParsedApp		532
-nim	instancedInfo	necsus/compiletime/parse.html#instancedInfo,ParsedSystem	proc instancedInfo(system: ParsedSystem): Option[\n    tuple[fieldName: NimNode, typ: NimNode]]		536
-nim	callbackSysMailboxName	necsus/compiletime/parse.html#callbackSysMailboxName,ParsedSystem	proc callbackSysMailboxName(system: ParsedSystem): NimNode		543
-nim	callbackSysType	necsus/compiletime/parse.html#callbackSysType,ParsedSystem	proc callbackSysType(system: ParsedSystem): NimNode		547
-nimgrp	$	necsus/compiletime/parse.html#$-procs-all	proc		42
-nimgrp	components	necsus/compiletime/parse.html#components-iterators-all	iterator		472
+nim	`$`	necsus/compiletime/parse.html#$,ActiveCheck	proc `$`(check: ActiveCheck): string		41
+nim	`$`	necsus/compiletime/parse.html#$,ParsedSystem	proc `$`(system: ParsedSystem): string		44
+nim	kind	necsus/compiletime/parse.html#kind,SystemArg	proc kind(arg: SystemArg): auto		60
+nim	allArgs	necsus/compiletime/parse.html#allArgs.i,ParsedSystem	iterator allArgs(system: ParsedSystem): SystemArg		63
+nim	parseSystemDef	necsus/compiletime/parse.html#parseSystemDef,NimNode,NimNode	proc parseSystemDef(ident: NimNode; impl: NimNode): ParsedSystem		455
+nim	parseSystemList	necsus/compiletime/parse.html#parseSystemList,NimNode	proc parseSystemList(systems: NimNode): seq[ParsedSystem]		530
+nim	components	necsus/compiletime/parse.html#components.i,SystemArg	iterator components(arg: SystemArg): ComponentDef		535
+nim	components	necsus/compiletime/parse.html#components.i,openArray[ParsedSystem]	iterator components(systems: openArray[ParsedSystem]): ComponentDef		547
+nim	args	necsus/compiletime/parse.html#args.i,openArray[ParsedSystem]	iterator args(systems: openArray[ParsedSystem]): SystemArg		554
+nim	components	necsus/compiletime/parse.html#components.i,ParsedApp	iterator components(app: ParsedApp): ComponentDef		560
+nim	parseApp	necsus/compiletime/parse.html#parseApp,NimNode,NimNode	proc parseApp(appProc: NimNode; runner: NimNode): ParsedApp		576
+nim	newEmptyApp	necsus/compiletime/parse.html#newEmptyApp,string	proc newEmptyApp(name: string): ParsedApp		602
+nim	instancedInfo	necsus/compiletime/parse.html#instancedInfo,ParsedSystem	proc instancedInfo(system: ParsedSystem): Option[\n    tuple[fieldName: NimNode, typ: NimNode]]		606
+nim	callbackSysMailboxName	necsus/compiletime/parse.html#callbackSysMailboxName,ParsedSystem	proc callbackSysMailboxName(system: ParsedSystem): NimNode		616
+nim	callbackSysType	necsus/compiletime/parse.html#callbackSysType,ParsedSystem	proc callbackSysType(system: ParsedSystem): NimNode		620
+nimgrp	$	necsus/compiletime/parse.html#$-procs-all	proc		41
+nimgrp	components	necsus/compiletime/parse.html#components-iterators-all	iterator		535

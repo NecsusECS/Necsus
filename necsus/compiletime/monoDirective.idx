@@ -1,7 +1,7 @@
 nimTitle	monoDirective	necsus/compiletime/monoDirective.html	module src/necsus/compiletime/monoDirective		0
-nim	MonoDirective	necsus/compiletime/monoDirective.html#MonoDirective	type MonoDirective		4
-nim	newMonoDir	necsus/compiletime/monoDirective.html#newMonoDir,NimNode	proc newMonoDir(argType: NimNode): MonoDirective		9
-nim	hash	necsus/compiletime/monoDirective.html#hash,MonoDirective	proc hash(directive: MonoDirective): Hash		15
-nim	`==`	necsus/compiletime/monoDirective.html#==,MonoDirective,MonoDirective	proc `==`(a, b: MonoDirective): bool		17
+nim	MonoDirective	necsus/compiletime/monoDirective.html#MonoDirective	type MonoDirective		3
+nim	newMonoDir	necsus/compiletime/monoDirective.html#newMonoDir,NimNode	proc newMonoDir(argType: NimNode): MonoDirective		7
+nim	hash	necsus/compiletime/monoDirective.html#hash,MonoDirective	proc hash(directive: MonoDirective): Hash		13
+nim	`==`	necsus/compiletime/monoDirective.html#==,MonoDirective,MonoDirective	proc `==`(a, b: MonoDirective): bool		16
 nim	`$`	necsus/compiletime/monoDirective.html#$,MonoDirective	proc `$`(dir: MonoDirective): string		19
-nim	signature	necsus/compiletime/monoDirective.html#signature,MonoDirective	proc signature(dir: MonoDirective): string		21
+nim	signature	necsus/compiletime/monoDirective.html#signature,MonoDirective	proc signature(dir: MonoDirective): string		22

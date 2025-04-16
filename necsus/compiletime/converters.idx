@@ -1,5 +1,5 @@
 nimTitle	converters	necsus/compiletime/converters.html	module src/necsus/compiletime/converters		0
 nim	TupleAdapter	necsus/compiletime/converters.html#TupleAdapter	type TupleAdapter		9
 nim	newAdapter	necsus/compiletime/converters.html#newAdapter,Archetype[ComponentDef],openArray[ComponentDef],,NimNode,NimNode	proc newAdapter(fromArch: Archetype[ComponentDef]; newVals: openArray[ComponentDef];\n           produce: DirectiveArg | ComponentDef; addingSource: NimNode = adding;\n           existingSource: NimNode = input): TupleAdapter		15
-nim	build	necsus/compiletime/converters.html#build,TupleAdapter	proc build(adapter: TupleAdapter): NimNode		48
-nim	buildConverter	necsus/compiletime/converters.html#buildConverter,ConverterDef	proc buildConverter(convert: ConverterDef): NimNode		99
+nim	build	necsus/compiletime/converters.html#build,TupleAdapter	proc build(adapter: TupleAdapter): NimNode		52
+nim	buildConverter	necsus/compiletime/converters.html#buildConverter,ConverterDef	proc buildConverter(convert: ConverterDef): NimNode		106

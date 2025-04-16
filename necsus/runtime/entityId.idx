@@ -1,7 +1,7 @@
 nimTitle	entityId	necsus/runtime/entityId.html	module src/necsus/runtime/entityId		0
-nim	EntityId	necsus/runtime/entityId.html#EntityId	type EntityId		4
-nim	`==`	necsus/runtime/entityId.html#==,EntityId,EntityId	proc `==`(a, b: EntityId): bool		15
-nim	toInt	necsus/runtime/entityId.html#toInt,EntityId	proc toInt(entityId: EntityId): uint		19
-nim	hash	necsus/runtime/entityId.html#hash,EntityId	proc hash(entityId: EntityId): Hash		22
-nim	incGen	necsus/runtime/entityId.html#incGen,EntityId	proc incGen(entityId: EntityId): EntityId		29
-nim	`$`	necsus/runtime/entityId.html#$,EntityId	proc `$`(entityId: EntityId): string		34
+nim	EntityId	necsus/runtime/entityId.html#EntityId	type EntityId		3
+nim	`==`	necsus/runtime/entityId.html#==,EntityId,EntityId	proc `==`(a, b: EntityId): bool		13
+nim	toInt	necsus/runtime/entityId.html#toInt,EntityId	proc toInt(entityId: EntityId): uint		17
+nim	hash	necsus/runtime/entityId.html#hash,EntityId	proc hash(entityId: EntityId): Hash		20
+nim	incGen	necsus/runtime/entityId.html#incGen,EntityId	proc incGen(entityId: EntityId): EntityId		27
+nim	`$`	necsus/runtime/entityId.html#$,EntityId	proc `$`(entityId: EntityId): string		32
