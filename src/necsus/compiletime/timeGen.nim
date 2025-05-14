@@ -55,15 +55,15 @@ proc generateElapsed(details: GenerateContext, arg: SystemArg, name: string): Ni
     let appType = details.appStateTypeName
     return quote:
       proc `timeElapsedProc`(
-          `appStateIdent`: pointer
+          `appStatePtr`: ptr `appType`
       ): BiggestFloat {.gcsafe, raises: [], nimcall, used.} =
-        let `appStatePtr` = cast[ptr `appType`](`appStateIdent`)
         return `appStatePtr`.`thisTime` - `appStatePtr`.`startTime`
 
   of Standard:
     return quote:
       `appStateIdent`.`thisTime` = `appStateIdent`.`startTime`
-      `appStateIdent`.`timeElapsed` = newCallbackDir(`appStatePtr`, `timeElapsedProc`)
+      `appStateIdent`.`timeElapsed` = proc(): BiggestFloat =
+        return `timeElapsedProc`(`appStatePtr`)
   else:
     return newEmptyNode()
 
