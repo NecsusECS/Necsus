@@ -36,7 +36,7 @@ type
     ## Detaches a set of components from an entity. Where `C` is a tuple describing all
     ## the components to detach
 
-  Swap*[A: tuple, B: tuple] = CallbackDir[Arity2Proc[EntityId, A, void]]
+  Swap*[A: tuple, B: tuple] = proc(eid: EntityId, newComps: A) {.gcsafe, closure.}
     ## A directive that adds components in `A` and removes components in `B`
 
   LookupProc[C: tuple] = proc(app: pointer, entityId: EntityId, components: var C): bool {.
