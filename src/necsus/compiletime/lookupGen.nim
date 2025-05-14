@@ -1,4 +1,4 @@
-import macros, sequtils, tables
+import std/[macros, sequtils, tables, options]
 import tupleDirective, tools, common, archetype, componentDef, systemGen
 import ../runtime/[world, archetypeStore, directives]
 
@@ -62,9 +62,10 @@ proc generate(
 
     return quote:
       proc `lookupProc`(
-          `appStateIdent`: pointer, `entityId`: EntityId, `output`: var `tupleType`
+          `appStateIdent`: ptr `appStateTypeName`,
+          `entityId`: EntityId,
+          `output`: var `tupleType`,
       ): bool {.nimcall, gcsafe, raises: [], used.} =
-        var `appStateIdent` = cast[ptr `appStateTypeName`](`appStateIdent`)
         let `entityIndex` {.used.} = `appStateIdent`.`worldIdent`[`entityId`]
         if unlikely(`entityIndex` == nil):
           return false
@@ -73,7 +74,10 @@ proc generate(
   of GenerateHook.Standard:
     let procName = ident(name)
     return quote:
-      `appStateIdent`.`procName` = newCallbackDir(`appStatePtr`, `lookupProc`)
+      `appStateIdent`.`procName` = proc(`entityId`: EntityId): Option[`tupleType`] =
+        var output: `tupleType`
+        if `lookupProc`(`appStatePtr`, `entityId`, output):
+          return some(output)
   else:
     return newEmptyNode()
 

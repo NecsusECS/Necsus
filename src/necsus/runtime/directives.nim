@@ -39,11 +39,7 @@ type
   Swap*[A: tuple, B: tuple] = proc(eid: EntityId, newComps: A) {.gcsafe, closure.}
     ## A directive that adds components in `A` and removes components in `B`
 
-  LookupProc[C: tuple] = proc(app: pointer, entityId: EntityId, components: var C): bool {.
-    nimcall, gcsafe, raises: []
-  .}
-
-  Lookup*[C: tuple] = CallbackDir[LookupProc[C]]
+  Lookup*[C: tuple] = proc(entityId: EntityId): Option[C] {.closure, gcsafe, raises: [].}
     ## Looks up entity details based on its entity ID. Where `C` is a tuple with all the
     ## components to fetch
 
@@ -90,16 +86,6 @@ type
 proc newCallbackDir*[T: proc](appState: pointer, callback: T): CallbackDir[T] =
   ## Instantiates a directive that uses a callback
   return CallbackDir[T](appState: appState, callback: callback)
-
-proc get*[C](lookup: Lookup[C], entityId: EntityId): Option[C] =
-  ## Executes a lookup
-  var output: C
-  if lookup.callback(lookup.appState, entityId, output):
-    return some(output)
-
-proc `()`*[C](lookup: Lookup[C], entityId: EntityId): Option[C] =
-  ## Executes a lookup
-  lookup.get(entityId)
 
 proc get*[T](comp: CallbackDir[Arity0Proc[T]]): T =
   ## Fetch a value out of a directive
