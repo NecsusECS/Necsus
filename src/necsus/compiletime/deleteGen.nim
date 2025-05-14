@@ -48,15 +48,15 @@ proc generateDelete(details: GenerateContext, arg: SystemArg, name: string): Nim
 
     return quote:
       proc `deleteProcName`(
-          `appStateIdent`: pointer, `entity`: EntityId
+          `appStateIdent`: ptr `appStateTypeName`, `entity`: EntityId
       ) {.gcsafe, raises: [], nimcall, used.} =
-        let `appStateIdent` {.used.} = cast[ptr `appStateTypeName`](`appStateIdent`)
         `body`
 
   of Standard:
     let deleteProc = name.ident
     return quote:
-      `appStateIdent`.`deleteProc` = newCallbackDir(`appStatePtr`, `deleteProcName`)
+      `appStateIdent`.`deleteProc` = proc(`entity`: EntityId) {.gcsafe, raises: [].} =
+        `deleteProcName`(`appStatePtr`, `entity`)
   else:
     return newEmptyNode()
 

@@ -22,7 +22,7 @@ type
     proc(app: pointer, a: A, b: B): T {.gcsafe, raises: [ValueError], nimcall.}
     ## A directive callback that accepts 2 parameters and returns
 
-  Delete* = CallbackDir[Arity1Proc[EntityId, void]]
+  Delete* = proc(eid: EntityId) {.gcsafe, raises: [ValueError], closure.}
     ## Deletes an entity and all associated components
 
   DeleteAll*[C: tuple] = CallbackDir[Arity0Proc[void]]
