@@ -62,11 +62,7 @@ type
   Save* = proc(): string {.raises: [IOError, OSError, ValueError, Exception], closure.}
     ## Generates a saved game state as a json value
 
-  RestoreProc = proc(app: pointer, json: string) {.
-    nimcall, gcsafe, raises: [IOError, OSError, JsonParsingError, ValueError, Exception]
-  .}
-
-  Restore* = CallbackDir[RestoreProc]
+  Restore* = proc(json: string) {.closure, gcsafe, raises: [IOError, OSError, JsonParsingError, ValueError, Exception].}
     ## Executes all 'restore' systems using the given json as input data
 
   SystemInstance* = proc(): void {.closure.}
@@ -113,7 +109,3 @@ proc exec*[A, B](comp: CallbackDir[Arity2Proc[A, B, void]], a: A, b: B) =
 proc `()`*[A, B, T](comp: CallbackDir[Arity2Proc[A, B, T]], a: A, b: B): T =
   ## Fetch a value out of a directive
   comp.get(a, b)
-
-proc `()`*(restore: Restore, value: string) =
-  ## Executes a restore operation
-  restore.callback(restore.appState, value)
