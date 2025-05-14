@@ -28,7 +28,7 @@ type
   DeleteAll*[C: tuple] = proc() {.closure, gcsafe.}
     ## Deletes all entities matching a query
 
-  Attach*[C: tuple] = CallbackDir[Arity2Proc[EntityId, C, void]]
+  Attach*[C: tuple] = proc(eid: EntityId, components: C) {.gcsafe, closure.}
     ## Describes a type that is able to update existing entities new entities. Where `C` is
     ## a tuple with all the components to attach.
 

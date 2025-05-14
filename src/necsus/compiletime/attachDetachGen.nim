@@ -204,15 +204,17 @@ proc generateAttach(
     return quote:
       `convertProcs`
       proc `attachProc`(
-          `appStatePtr`: pointer, `entityId`: EntityId, `newComps`: `componentTuple`
+          `appStateIdent`: ptr `appStateTypeName`, `entityId`: EntityId, `newComps`: `componentTuple`
       ) {.gcsafe, raises: [ValueError], nimcall, used.} =
-        let `appStateIdent` {.used.} = cast[ptr `appStateTypeName`](`appStatePtr`)
         `body`
 
   of Standard:
     let procName = ident(name)
     return quote:
-      `appStateIdent`.`procName` = newCallbackDir(`appStatePtr`, `attachProc`)
+      `appStateIdent`.`procName` = proc(
+          `entityId`: EntityId, `newComps`: `componentTuple`
+      ) =
+        `attachProc`(`appStatePtr`, `entityId`, `newComps`)
   else:
     return newEmptyNode()
 
