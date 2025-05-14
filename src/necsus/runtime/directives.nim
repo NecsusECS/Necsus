@@ -52,7 +52,7 @@ type
   TimeElapsed* = proc(): BiggestFloat {.closure, gcsafe.}
     ## The total amount of time spent in an app
 
-  TickId* = CallbackDir[Arity0Proc[BiggestUInt]] ## An auto-incrementing ID for each tick
+  TickId* = proc(): BiggestUInt {.closure, gcsafe.} ## An auto-incrementing ID for each tick
 
   EntityDebug* = CallbackDir[Arity1Proc[EntityId, string]]
     ## Looks up an entity and returns debug data about it

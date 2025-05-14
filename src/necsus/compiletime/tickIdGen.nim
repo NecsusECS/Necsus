@@ -15,20 +15,11 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string): NimNode =
   if isFastCompileMode(fastTickId):
     return newEmptyNode()
 
-  let tickGenProc = details.globalName(name)
   case details.hook
-  of Outside:
-    let appType = details.appStateTypeName
-    return quote:
-      proc `tickGenProc`(
-          `appStateIdent`: pointer
-      ): BiggestUInt {.gcsafe, raises: [], nimcall, used.} =
-        let `appStatePtr` = cast[ptr `appType`](`appStateIdent`)
-        return `appStatePtr`.`tickId`
-
   of Standard:
     return quote:
-      `appStateIdent`.`getTickId` = newCallbackDir(`appStatePtr`, `tickGenProc`)
+      `appStateIdent`.`getTickId` = proc(): BiggestUInt =
+        `appStatePtr`.`tickId`
   of LoopStart:
     return quote:
       `appStateIdent`.`tickId` += 1
@@ -37,7 +28,7 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string): NimNode =
 
 let tickIdGenerator* {.compileTime.} = newGenerator(
   ident = "TickId",
-  interest = {LoopStart, Standard, Outside},
+  interest = {LoopStart, Standard},
   generate = generate,
   worldFields = fields,
   systemArg = sysArg,
