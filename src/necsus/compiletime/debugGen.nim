@@ -67,9 +67,8 @@ proc generateEntityDebug(
 
     return quote:
       proc `debugProc`(
-          `appStatePtr`: pointer, `entityId`: EntityId
+          `appStateIdent`: ptr `appType`, `entityId`: EntityId
       ): string {.nimcall, gcsafe, raises: [Exception].} =
-        let `appStateIdent` {.used.} = cast[ptr `appType`](`appStatePtr`)
         let `entityIndex` {.used.} = `appStateIdent`.`worldIdent`[`entityId`]
 
         if unlikely(`entityIndex` == nil):
@@ -80,7 +79,10 @@ proc generateEntityDebug(
   of GenerateHook.Standard:
     let procName = ident(name)
     return quote:
-      `appStateIdent`.`procName` = newCallbackDir(`appStatePtr`, `debugProc`)
+      `appStateIdent`.`procName` = proc(
+          `entityId`: EntityId
+      ): string {.closure, gcsafe, raises: [Exception].} =
+        return `debugProc`(`appStatePtr`, `entityId`)
   else:
     return newEmptyNode()
 

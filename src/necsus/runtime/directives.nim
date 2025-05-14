@@ -54,7 +54,7 @@ type
 
   TickId* = proc(): BiggestUInt {.closure, gcsafe.} ## An auto-incrementing ID for each tick
 
-  EntityDebug* = CallbackDir[Arity1Proc[EntityId, string]]
+  EntityDebug* = proc(eid: EntityId): string {.gcsafe, closure, raises: [Exception].}
     ## Looks up an entity and returns debug data about it
 
   Bundle*[T] = ptr T ## A group of directives bundled together in an object
