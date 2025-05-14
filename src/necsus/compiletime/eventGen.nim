@@ -62,8 +62,10 @@ proc generateOutbox(
   of Standard:
     let procName = name.ident
     let sendProc = outbox.sendEventProcName.internal
+    let messageType = outbox.argType
     return quote:
-      `appStateIdent`.`procName` = newCallbackDir(`appStatePtr`, `sendProc`)
+      `appStateIdent`.`procName` = proc(message: `messageType`) {.closure, gcsafe.} =
+        `sendProc`(`appStatePtr`, message)
   else:
     return newEmptyNode()
 

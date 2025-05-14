@@ -43,9 +43,7 @@ type
     ## Looks up entity details based on its entity ID. Where `C` is a tuple with all the
     ## components to fetch
 
-  OutboxProc*[T] = proc(app: pointer, message: T): void {.nimcall.}
-
-  Outbox*[T] = CallbackDir[OutboxProc[T]]
+  Outbox*[T] = proc(message: T) {.closure, gcsafe.}
     ## Sends an event. Where `T` is the message being sent
 
   TimeDelta* = CallbackDir[Arity0Proc[BiggestFloat]]
@@ -126,11 +124,3 @@ proc `()`*(save: Save): string =
 proc `()`*(restore: Restore, value: string) =
   ## Executes a restore operation
   restore.callback(restore.appState, value)
-
-proc exec*[T](outbox: Outbox[T], message: T) {.inline.} =
-  ## Sends a message through an outbox
-  outbox.callback(outbox.appState, message)
-
-proc `()`*[T](outbox: Outbox[T], message: T) =
-  ## Sends a message through an outbox
-  outbox.exec(message)
