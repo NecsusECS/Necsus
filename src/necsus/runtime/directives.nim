@@ -25,7 +25,7 @@ type
   Delete* = proc(eid: EntityId) {.gcsafe, raises: [ValueError], closure.}
     ## Deletes an entity and all associated components
 
-  DeleteAll*[C: tuple] = CallbackDir[Arity0Proc[void]]
+  DeleteAll*[C: tuple] = proc() {.closure, gcsafe.}
     ## Deletes all entities matching a query
 
   Attach*[C: tuple] = CallbackDir[Arity2Proc[EntityId, C, void]]

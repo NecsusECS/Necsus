@@ -78,7 +78,7 @@ proc deleteAllBody(details: GenerateContext, dir: TupleDirective): NimNode =
       let archetypeIdent = archetype.ident
       result.add quote do:
         for eid in entityIds(`appStateIdent`.`archetypeIdent`):
-          `deleteProcName`(`appStatePtr`, eid)
+          `deleteProcName`(`appStateIdent`, eid)
 
 proc generateDeleteAll(
     details: GenerateContext, arg: SystemArg, name: string, dir: TupleDirective
@@ -94,15 +94,15 @@ proc generateDeleteAll(
     let body = details.deleteAllBody(dir)
     return quote:
       proc `deleteAllImpl`(
-          `appStatePtr`: pointer
-      ) {.gcsafe, raises: [ValueError], nimcall.} =
-        let `appStateIdent` {.used.} = cast[ptr `appStateTypeName`](`appStatePtr`)
+          `appStateIdent`: ptr `appStateTypeName`
+      ) {.gcsafe, nimcall.} =
         `body`
 
   of Standard:
     let ident = name.ident
     return quote:
-      `appStateIdent`.`ident` = newCallbackDir(`appStatePtr`, `deleteAllImpl`)
+      `appStateIdent`.`ident` = proc() =
+        `deleteAllImpl`(`appStatePtr`)
   else:
     return newEmptyNode()
 
