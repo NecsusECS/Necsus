@@ -204,7 +204,9 @@ proc generateAttach(
     return quote:
       `convertProcs`
       proc `attachProc`(
-          `appStateIdent`: ptr `appStateTypeName`, `entityId`: EntityId, `newComps`: `componentTuple`
+          `appStateIdent`: ptr `appStateTypeName`,
+          `entityId`: EntityId,
+          `newComps`: `componentTuple`,
       ) {.gcsafe, raises: [ValueError], nimcall, used.} =
         `body`
 
@@ -265,15 +267,15 @@ proc generateDetach(
     return quote:
       `convertProcs`
       proc `detachProc`(
-          `appStateIdent`: pointer, `entityId`: EntityId
-      ) {.used, nimcall, raises: [ValueError].} =
-        let `appStateIdent` {.used.} = cast[ptr `appStateTypeName`](`appStateIdent`)
+          `appStateIdent`: ptr `appStateTypeName`, `entityId`: EntityId
+      ) {.used, nimcall.} =
         `body`
 
   of GenerateHook.Standard:
     let procName = ident(name)
     return quote:
-      `appStateIdent`.`procName` = newCallbackDir(`appStatePtr`, `detachProc`)
+      `appStateIdent`.`procName` = proc(`entityId`: EntityId) =
+        `detachProc`(`appStatePtr`, `entityId`)
   else:
     return newEmptyNode()
 
