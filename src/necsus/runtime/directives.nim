@@ -46,7 +46,7 @@ type
   Outbox*[T] = proc(message: T) {.closure, gcsafe.}
     ## Sends an event. Where `T` is the message being sent
 
-  TimeDelta* = CallbackDir[Arity0Proc[BiggestFloat]]
+  TimeDelta* = proc(): BiggestFloat {.closure, gcsafe.}
     ## Tracks the amount of time since the last execution of a system
 
   TimeElapsed* = CallbackDir[Arity0Proc[BiggestFloat]]

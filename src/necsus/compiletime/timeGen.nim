@@ -17,14 +17,14 @@ proc generateDelta(details: GenerateContext, arg: SystemArg, name: string): NimN
     let appType = details.appStateTypeName
     return quote:
       proc `timeDeltaProc`(
-          `appStateIdent`: pointer
+          `appStatePtr`: ptr `appType`
       ): BiggestFloat {.gcsafe, raises: [], nimcall, used.} =
-        let `appStatePtr` {.used.} = cast[ptr `appType`](`appStateIdent`)
         return `appStatePtr`.`thisTime` - `appStatePtr`.`lastTime`
 
   of Standard:
     return quote:
-      `appStateIdent`.`timeDelta` = newCallbackDir(`appStatePtr`, `timeDeltaProc`)
+      `appStateIdent`.`timeDelta` = proc(): BiggestFloat =
+        return `timeDeltaProc`(`appStatePtr`)
   of BeforeLoop:
     return quote:
       `appStateIdent`.`lastTime` = `appStateIdent`.`startTime`
