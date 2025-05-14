@@ -1,27 +1,6 @@
-import entityId, std/[json, options], macros
-
-static:
-  when not (compiles do:
-    proc `()`[T](arg: T) = discard):
-    error("Necsus must be compiled with --experimental:callOperator enabled")
+import entityId, std/[json, options]
 
 type
-  CallbackDir[T] = ref object
-    ## A directive that uses a callback for interacting with a system
-    appState: pointer
-    callback: T
-
-  Arity0Proc[T] = proc(app: pointer): T {.gcsafe, raises: [ValueError], nimcall.}
-    ## A directive callback that just returns a value to our customers
-
-  Arity1Proc[A, T] =
-    proc(app: pointer, arg: A): T {.gcsafe, raises: [ValueError, Exception], nimcall.}
-    ## A directive callback that accepts 1 parameter and returns
-
-  Arity2Proc[A, B, T] =
-    proc(app: pointer, a: A, b: B): T {.gcsafe, raises: [ValueError], nimcall.}
-    ## A directive callback that accepts 2 parameters and returns
-
   Delete* = proc(eid: EntityId) {.gcsafe, raises: [ValueError], closure.}
     ## Deletes an entity and all associated components
 
@@ -39,7 +18,8 @@ type
   Swap*[A: tuple, B: tuple] = proc(eid: EntityId, newComps: A) {.gcsafe, closure.}
     ## A directive that adds components in `A` and removes components in `B`
 
-  Lookup*[C: tuple] = proc(entityId: EntityId): Option[C] {.closure, gcsafe, raises: [].}
+  Lookup*[C: tuple] =
+    proc(entityId: EntityId): Option[C] {.closure, gcsafe, raises: [].}
     ## Looks up entity details based on its entity ID. Where `C` is a tuple with all the
     ## components to fetch
 
@@ -52,7 +32,8 @@ type
   TimeElapsed* = proc(): BiggestFloat {.closure, gcsafe.}
     ## The total amount of time spent in an app
 
-  TickId* = proc(): BiggestUInt {.closure, gcsafe.} ## An auto-incrementing ID for each tick
+  TickId* = proc(): BiggestUInt {.closure, gcsafe.}
+    ## An auto-incrementing ID for each tick
 
   EntityDebug* = proc(eid: EntityId): string {.gcsafe, closure, raises: [Exception].}
     ## Looks up an entity and returns debug data about it
@@ -62,8 +43,9 @@ type
   Save* = proc(): string {.raises: [IOError, OSError, ValueError, Exception], closure.}
     ## Generates a saved game state as a json value
 
-  Restore* = proc(json: string) {.closure, gcsafe, raises: [IOError, OSError, JsonParsingError, ValueError, Exception].}
-    ## Executes all 'restore' systems using the given json as input data
+  Restore* = proc(json: string) {.
+    closure, gcsafe, raises: [IOError, OSError, JsonParsingError, ValueError, Exception]
+  .} ## Executes all 'restore' systems using the given json as input data
 
   SystemInstance* = proc(): void {.closure.}
     ## A callback used to invoke a specific system
@@ -73,39 +55,3 @@ type
 
   SaveSystemInstance*[T] = proc(): T {.closure.}
     ## Marks the return type for an instanced save system
-
-proc newCallbackDir*[T: proc](appState: pointer, callback: T): CallbackDir[T] =
-  ## Instantiates a directive that uses a callback
-  return CallbackDir[T](appState: appState, callback: callback)
-
-proc get*[T](comp: CallbackDir[Arity0Proc[T]]): T =
-  ## Fetch a value out of a directive
-  comp.callback(comp.appState)
-
-proc `()`*[T](comp: CallbackDir[Arity0Proc[T]]): T =
-  ## Fetch a value out of a directive
-  comp.get()
-
-proc get*[A, T](comp: CallbackDir[Arity1Proc[A, T]], a: A): T =
-  ## Fetch a value out of a directive
-  comp.callback(comp.appState, a)
-
-proc exec*[A](comp: CallbackDir[Arity1Proc[A, void]], a: A) =
-  ## Execute a directive
-  comp.callback(comp.appState, a)
-
-proc `()`*[A, T](comp: CallbackDir[Arity1Proc[A, T]], a: A): T =
-  ## Fetch a value out of a directive
-  comp.get(a)
-
-proc get*[A, B, T](comp: CallbackDir[Arity2Proc[A, B, T]], a: A, b: B): T =
-  ## Fetch a value out of a directive
-  comp.callback(comp.appState, a, b)
-
-proc exec*[A, B](comp: CallbackDir[Arity2Proc[A, B, void]], a: A, b: B) =
-  ## Execute a directive
-  comp.callback(comp.appState, a, b)
-
-proc `()`*[A, B, T](comp: CallbackDir[Arity2Proc[A, B, T]], a: A, b: B): T =
-  ## Fetch a value out of a directive
-  comp.get(a, b)
