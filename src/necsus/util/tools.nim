@@ -4,7 +4,12 @@ proc isSinkMemoryCorruptionFixed*(): bool =
   ## Returns whether the current version of Nim has a fixed implementation of
   ## the 'sink' parameter that doesn't cause memory corruption.
   ## See https://github.com/nim-lang/Nim/issues/23907
-  return false
+  return (NimMajor, NimMinor) >= (2, 2)
+
+proc isSpawnSinkEnabled*(): bool =
+  ## Enables sink parameters for Spawn directives. This is disabled while
+  ## debugging memory corruption.
+  false
 
 proc stringify*[T](value: T): string {.raises: [], gcsafe.} =
   ## Converts a value to a string as best as it can

@@ -35,7 +35,7 @@ proc beginSpawn*[Comps: tuple](
   result = store.newSlot(newEntity.entityId)
   newEntity.setArchetypeDetails(store.archetype, result.index)
 
-when isSinkMemoryCorruptionFixed():
+when isSpawnSinkEnabled():
   proc set[C: tuple](
       spawn: RawSpawn[C], values: sink C
   ): EntityId {.raises: [], inline.} =

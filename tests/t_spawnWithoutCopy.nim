@@ -1,6 +1,6 @@
 import necsus/util/tools
 
-when isSinkMemoryCorruptionFixed():
+when isSpawnSinkEnabled():
   import unittest, necsus
 
   type Thingy = object
