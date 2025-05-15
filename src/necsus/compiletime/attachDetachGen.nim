@@ -328,7 +328,7 @@ proc generateSwap(
       proc `swapProc`(
           `appStateIdent`: ptr `appStateTypeName`,
           `entityId`: EntityId,
-          `newComps`: `componentTuple`,
+          `newComps`: sink `componentTuple`,
       ) {.gcsafe, nimcall, used.} =
         `body`
 
@@ -336,7 +336,7 @@ proc generateSwap(
     let procName = ident(name)
     return quote:
       `appStateIdent`.`procName` = proc(
-          `entityId`: EntityId, `newComps`: `componentTuple`
+          `entityId`: EntityId, `newComps`: sink `componentTuple`
       ) =
         `swapProc`(`appStatePtr`, `entityId`, `newComps`)
   else:
