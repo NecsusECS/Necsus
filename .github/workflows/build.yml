@@ -1,51 +1,50 @@
 name: Build
 on: [push, pull_request]
 jobs:
-
   test:
     runs-on: ubuntu-latest
     container: nimlang/choosenim
     strategy:
       matrix:
-        nim: [ 2.0.10, 1.6.14 ]
+        nim: [2.0.10, 1.6.14]
     steps:
-    - uses: actions/checkout@v1
-    - name: Choose Nim
-      run: choosenim update -y ${{ matrix.nim }}
-    - name: Safe git directory
-      run: git config --global --add safe.directory "$(pwd)"
-    - name: Test
-      run: nimble test -y
+      - uses: actions/checkout@v1
+      - name: Choose Nim
+        run: choosenim update -y ${{ matrix.nim }}
+      - name: Safe git directory
+        run: git config --global --add safe.directory "$(pwd)"
+      - name: Test
+        run: nimble test -y
 
   benchmark:
     runs-on: ubuntu-latest
     container: nimlang/choosenim
     strategy:
       matrix:
-        nim: [ 2.0.10, 1.6.14 ]
+        nim: [2.0.10, 1.6.14]
     steps:
-    - uses: actions/checkout@v1
-    - name: Choose Nim
-      run: choosenim update -y ${{ matrix.nim }}
-    - name: Safe git directory
-      run: git config --global --add safe.directory "$(pwd)"
-    - name: Benchmark
-      run: nimble -y -d:release benchmark
+      - uses: actions/checkout@v1
+      - name: Choose Nim
+        run: choosenim update -y ${{ matrix.nim }}
+      - name: Safe git directory
+        run: git config --global --add safe.directory "$(pwd)"
+      - name: Benchmark
+        run: nimble -y -d:release benchmark
 
   readme:
     runs-on: ubuntu-latest
     container: nimlang/choosenim
     strategy:
       matrix:
-        nim: [ 2.0.10, 1.6.14 ]
+        nim: [2.0.10, 1.6.14]
     steps:
-    - uses: actions/checkout@v1
-    - name: Choose Nim
-      run: choosenim update -y ${{ matrix.nim }}
-    - name: Safe git directory
-      run: git config --global --add safe.directory "$(pwd)"
-    - name: Build readme code
-      run: nimble readme
+      - uses: actions/checkout@v1
+      - name: Choose Nim
+        run: choosenim update -y ${{ matrix.nim }}
+      - name: Safe git directory
+        run: git config --global --add safe.directory "$(pwd)"
+      - name: Build readme code
+        run: nimble readme
 
   example-projects:
     runs-on: ubuntu-latest
@@ -53,19 +52,19 @@ jobs:
     strategy:
       matrix:
         project: [NecsusECS/NecsusAsteroids, NecsusECS/NecsusParticleDemo]
-        nim: [ 2.0.10, 1.6.14 ]
+        nim: [2.0.10, 1.6.14]
     steps:
-    - uses: actions/checkout@v1
-    - name: Choose Nim
-      run: choosenim update -y ${{ matrix.nim }}
-    - name: Safe git directory
-      run: git config --global --add safe.directory "$(pwd)"
-    - name: Local override
-      run: nimble develop
-    - name: Checkout
-      run: git clone https://github.com/${{ matrix.project }}.git project
-    - name: Build
-      run: cd project && nimble build -y
+      - uses: actions/checkout@v1
+      - name: Choose Nim
+        run: choosenim update -y ${{ matrix.nim }}
+      - name: Safe git directory
+        run: git config --global --add safe.directory "$(pwd)"
+      - name: Local override
+        run: nimble develop
+      - name: Checkout
+        run: git clone https://github.com/${{ matrix.project }}.git project
+      - name: Build
+        run: cd project && nimble build -y
 
   flags:
     ## Confirm the tests are able to run in profiling mode
@@ -73,25 +72,26 @@ jobs:
     container: nimlang/choosenim
     strategy:
       matrix:
-        nim: [ 2.0.10 ]
-        flag: [
-          profile,
-          dump,
-          archetypes,
-          necsusSystemTrace,
-          necsusEntityTrace,
-          necsusEventTrace,
-          necsusQueryTrace,
-          necsusSaveTrace
-        ]
+        nim: [2.0.10]
+        flag:
+          [
+            profile,
+            dump,
+            archetypes,
+            necsusSystemTrace,
+            necsusEntityTrace,
+            necsusEventTrace,
+            necsusQueryTrace,
+            necsusSaveTrace,
+          ]
     steps:
-    - uses: actions/checkout@v1
-    - name: Choose Nim
-      run: choosenim update -y ${{ matrix.nim }}
-    - name: Safe git directory
-      run: git config --global --add safe.directory "$(pwd)"
-    - name: Test
-      run: nimble -d:${{ matrix.flag }} test
+      - uses: actions/checkout@v1
+      - name: Choose Nim
+        run: choosenim update -y ${{ matrix.nim }}
+      - name: Safe git directory
+        run: git config --global --add safe.directory "$(pwd)"
+      - name: Test
+        run: nimble -d:${{ matrix.flag }} test
 
   fast-compile:
     ## Confirm all the tests compile when running in a 'fast compile' mode
@@ -99,14 +99,14 @@ jobs:
     container: nimlang/choosenim
     strategy:
       matrix:
-        nim: [ 2.0.10, 1.6.14 ]
+        nim: [2.0.10, 1.6.14]
     steps:
-    - uses: actions/checkout@v1
-    - name: Choose Nim
-      run: choosenim update -y ${{ matrix.nim }}
-    - name: Safe git directory
-      run: git config --global --add safe.directory "$(pwd)"
-    - name: Nim suggest
-      run: find tests -name "t_*.nim" | xargs -n1 sh -c 'nim c -d:nimsuggest $0 || exit 255'
-    - name: Nim check
-      run: find tests -name "t_*.nim" | xargs -n1 sh -c 'nim check $0 || exit 255'
+      - uses: actions/checkout@v1
+      - name: Choose Nim
+        run: choosenim update -y ${{ matrix.nim }}
+      - name: Safe git directory
+        run: git config --global --add safe.directory "$(pwd)"
+      - name: Nim suggest
+        run: find tests -name "t_*.nim" | xargs -n1 sh -c 'nim c -d:nimsuggest $0 || exit 255'
+      - name: Nim check
+        run: find tests -name "t_*.nim" | xargs -n1 sh -c 'nim check $0 || exit 255'
