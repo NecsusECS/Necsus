@@ -3,7 +3,7 @@ import
   tools, tupleDirective, dualDirective, common, queryGen, lookupGen, spawnGen,
   directiveArg
 import archetype, componentDef, systemGen, archetypeBuilder, converters
-import ../runtime/[world, archetypeStore, directives], ../util/bits
+import ../runtime/[world, archetypeStore, directives], ../util/[bits, tools]
 
 let entityIndex {.compileTime.} = ident("entityIndex")
 let newComps {.compileTime.} = ident("newComps")
@@ -201,22 +201,40 @@ proc generateAttach(
       details.attachDetachProcBody("Attaching", attach.comps, @[], @[])
 
     let appStateTypeName = details.appStateTypeName
-    return quote:
-      `convertProcs`
-      proc `attachProc`(
-          `appStateIdent`: ptr `appStateTypeName`,
-          `entityId`: EntityId,
-          `newComps`: `componentTuple`,
-      ) {.gcsafe, raises: [ValueError], nimcall, used.} =
-        `body`
+    when isSinkMemoryCorruptionFixed():
+      return quote:
+        `convertProcs`
+        proc `attachProc`(
+            `appStateIdent`: ptr `appStateTypeName`,
+            `entityId`: EntityId,
+            `newComps`: sink `componentTuple`,
+        ) {.gcsafe, raises: [ValueError], nimcall, used.} =
+          `body`
+
+    else:
+      return quote:
+        `convertProcs`
+        proc `attachProc`(
+            `appStateIdent`: ptr `appStateTypeName`,
+            `entityId`: EntityId,
+            `newComps`: `componentTuple`,
+        ) {.gcsafe, raises: [ValueError], nimcall, used.} =
+          `body`
 
   of Standard:
     let procName = ident(name)
-    return quote:
-      `appStateIdent`.`procName` = proc(
-          `entityId`: EntityId, `newComps`: `componentTuple`
-      ) =
-        `attachProc`(`appStatePtr`, `entityId`, `newComps`)
+    when isSinkMemoryCorruptionFixed():
+      return quote:
+        `appStateIdent`.`procName` = proc(
+            `entityId`: EntityId, `newComps`: sink `componentTuple`
+        ) =
+          `attachProc`(`appStatePtr`, `entityId`, `newComps`)
+    else:
+      return quote:
+        `appStateIdent`.`procName` = proc(
+            `entityId`: EntityId, `newComps`: `componentTuple`
+        ) =
+          `attachProc`(`appStatePtr`, `entityId`, `newComps`)
   else:
     return newEmptyNode()
 

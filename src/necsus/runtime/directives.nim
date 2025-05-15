@@ -1,4 +1,4 @@
-import entityId, std/[json, options]
+import entityId, std/[json, options], ../util/tools
 
 type
   Delete* = proc(eid: EntityId) {.gcsafe, raises: [ValueError], closure.}
@@ -6,10 +6,6 @@ type
 
   DeleteAll*[C: tuple] = proc() {.closure, gcsafe.}
     ## Deletes all entities matching a query
-
-  Attach*[C: tuple] = proc(eid: EntityId, components: C) {.gcsafe, closure.}
-    ## Describes a type that is able to update existing entities new entities. Where `C` is
-    ## a tuple with all the components to attach.
 
   Detach*[C: tuple] = proc(eid: EntityId) {.gcsafe, closure.}
     ## Detaches a set of components from an entity. Where `C` is a tuple describing all
@@ -55,3 +51,13 @@ type
 
   SaveSystemInstance*[T] = proc(): T {.closure.}
     ## Marks the return type for an instanced save system
+
+when isSinkMemoryCorruptionFixed():
+  type Attach*[C: tuple] = proc(eid: EntityId, components: sink C) {.gcsafe, closure.}
+    ## Describes a type that is able to update existing entities new entities. Where `C` is
+    ## a tuple with all the components to attach.
+
+else:
+  type Attach*[C: tuple] = proc(eid: EntityId, components: C) {.gcsafe, closure.}
+    ## Describes a type that is able to update existing entities new entities. Where `C` is
+    ## a tuple with all the components to attach.
