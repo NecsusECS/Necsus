@@ -9,6 +9,7 @@ proc isSinkMemoryCorruptionFixed*(): bool =
 proc isSpawnSinkEnabled*(): bool =
   ## Enables sink parameters for Spawn directives. This is disabled while
   ## debugging memory corruption.
+  ## See https://github.com/nim-lang/Nim/issues/23907
   false
 
 proc stringify*[T](value: T): string {.raises: [], gcsafe.} =
