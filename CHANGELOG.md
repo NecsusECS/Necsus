@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.13.0
+
+### Backwards Incompatible Changes
+
+* Directives have been changed from functors back to procs. For most projects,
+  this should be a transparent change. However, if you were depending on directives
+  being `objects` you will need to update your code to use the `procs` instead.
+
+### Bug Fixes
+
+* Resolved error when detaching a component not present in the archetype
+* Fixed issue with optionally detaching accessories
+
+### New Features
+
+* Added support for *union types* in event declarations
+* Allow `Attach` and `Swap` to operate on objects that don't support copies (Nim >= 2.3)
+
 ## 0.12.0
 
 ### Backwards Incompatible Changes
