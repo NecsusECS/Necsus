@@ -1,4 +1,6 @@
-when (NimMajor, NimMinor) >= (2, 2):
+import necsus/util/tools
+
+when isSinkMemoryCorruptionFixed():
   import unittest, necsus, sequtils
 
   type

@@ -10,7 +10,7 @@ proc isSpawnSinkEnabled*(): bool =
   ## Enables sink parameters for Spawn directives. This is disabled while
   ## debugging memory corruption.
   ## See https://github.com/nim-lang/Nim/issues/23907
-  false
+  return (NimMajor, NimMinor) >= (2, 3)
 
 proc stringify*[T](value: T): string {.raises: [], gcsafe.} =
   ## Converts a value to a string as best as it can
