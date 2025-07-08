@@ -1,4 +1,5 @@
 nimTitle	tools	necsus/util/tools.html	module src/necsus/util/tools		0
 nim	isSinkMemoryCorruptionFixed	necsus/util/tools.html#isSinkMemoryCorruptionFixed	proc isSinkMemoryCorruptionFixed(): bool		3
-nim	stringify	necsus/util/tools.html#stringify,T	proc stringify[T](value: T): string		9
-nim	optionPtr	necsus/util/tools.html#optionPtr.t,Option[T]	template optionPtr[T](opt: Option[T]): Option[ptr T]		21
+nim	isSpawnSinkEnabled	necsus/util/tools.html#isSpawnSinkEnabled	proc isSpawnSinkEnabled(): bool		9
+nim	stringify	necsus/util/tools.html#stringify,T	proc stringify[T](value: T): string		15
+nim	optionPtr	necsus/util/tools.html#optionPtr.t,Option[T]	template optionPtr[T](opt: Option[T]): Option[ptr T]		27

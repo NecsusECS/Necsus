@@ -1,4 +1,4 @@
 nimTitle	eventGen	necsus/compiletime/eventGen.html	module src/necsus/compiletime/eventGen		0
 nim	initInbox	necsus/compiletime/eventGen.html#initInbox,NimNode,NimNode	proc initInbox(name, typ: NimNode): NimNode		28
 nim	inboxGenerator	necsus/compiletime/eventGen.html#inboxGenerator	let inboxGenerator		46
-nim	outboxGenerator	necsus/compiletime/eventGen.html#outboxGenerator	let outboxGenerator		70
+nim	outboxGenerator	necsus/compiletime/eventGen.html#outboxGenerator	let outboxGenerator		72

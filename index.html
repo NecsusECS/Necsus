@@ -472,7 +472,7 @@ type
 
 proc useBundle(bundle: Bundle[MyBundle]) =
     let eid = bundle.spawn.with(A())
-    bundle.attach.exec(eid, (B(), ))
+    bundle.attach(eid, (B(), ))
 
 proc myApp() {.necsus([~useBundle], newNecsusConf()).}
 </code></pre>
