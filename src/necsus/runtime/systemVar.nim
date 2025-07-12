@@ -41,7 +41,9 @@ proc `:=`*[T](sysvar: SystemVar[T], value: sink T) {.inline.} =
 
 proc getOrRaise*[T](sysvar: SystemVar[T]): var T {.inline.} =
   ## Returns the value in a system variable
-  sysvar.extract.value.get()
+  if  sysvar.extract.value.isSome:
+    return sysvar.extract.value.get()
+  raise newException(UnpackDefect, "System variable " & $T & " is empty")
 
 template getOrPut*[T](sysvar: SystemVar[T], build: typed): var T =
   ## Returns the value in a system variable
