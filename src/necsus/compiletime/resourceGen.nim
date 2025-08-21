@@ -1,7 +1,7 @@
 import macros, systemGen, monoDirective, common
 
 proc worldFields(name: string, dir: MonoDirective): seq[WorldField] =
-  @[(name, dir.argType)]
+  @[(name, nnkRefTy.newTree(dir.argType))]
 
 proc generateResource(
     details: GenerateContext, arg: SystemArg, name: string, dir: MonoDirective
@@ -21,22 +21,22 @@ proc generateResource(
         filled = true
         let inputIdent = inputName.ident
         result.add quote do:
-          `appStateIdent`.`varIdent` = `inputIdent`
+          new(`appStateIdent`.`varIdent`)
+          `appStateIdent`.`varIdent`[] = `inputIdent`
 
     if not filled:
-      warning(
-        "Resource of type " & dir.argType.repr & " used here",
-        dir.argType
-      )
+      warning("Resource of type " & dir.argType.repr & " used here", dir.argType)
       error(
         "Resource of type " & dir.argType.repr & " must be passed in as an app argument",
-        details.appProc
+        details.appProc,
       )
   else:
     discard
 
 proc systemArg(name: string, dir: MonoDirective): NimNode =
-  return newDotExpr(appStateIdent, name.ident)
+  let varIdent = ident(name)
+  return quote:
+    `appStateIdent`.`varIdent`[]
 
 let resourceGenerator* {.compileTime.} = newGenerator(
   ident = "Resource",
