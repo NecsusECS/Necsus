@@ -500,6 +500,26 @@ proc printCount(count: Shared[int]) =
 proc myApp() {.necsus([~updateCount, ~printCount], newNecsusConf()).}
 ```
 
+#### Resource
+
+`Resources` are a way to share values across multiple systems. They differ from `Shared` and
+`Local` variables in that they are not optional -- a `Resource` must be initialized when creating
+the app itself. This cuts down on the amount of boilerplate code needed to use a value.
+
+```nim
+import necsus
+
+proc updateCount(count: Resource[ref int]) =
+    count[] = count[] + 1
+
+proc printCount(count: Resource[ref int]) =
+    echo "Total executions so far: ", count[]
+
+proc myApp(
+  count: ref int = new(int)
+) {.necsus([~updateCount, ~printCount], newNecsusConf()).}
+```
+
 #### Inbox/Outbox (aka Events)
 
 `Inbox` and `Outbox` represent the eventing system in Necsus. Events are published using the `Outbox` and read using

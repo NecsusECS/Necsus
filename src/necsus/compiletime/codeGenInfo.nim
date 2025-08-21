@@ -77,6 +77,7 @@ proc appStateInit*(genInfo: CodeGenInfo): NimNode =
 proc newGenerateContext*(codeGen: CodeGenInfo, hook: GenerateHook): GenerateContext =
   ## Create a GenerateContext for a hook
   return GenerateContext(
+    appProc: codeGen.app.appProc,
     hook: hook,
     inputs: codeGen.app.inputs,
     directives: codeGen.directives,

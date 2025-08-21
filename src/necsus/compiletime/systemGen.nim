@@ -18,6 +18,7 @@ type
 
   GenerateContext* = ref object
     ## Information passed in while performing code gen for a generator
+    appProc*: NimNode
     hook*: GenerateHook
     directives*: Table[DirectiveGen, DirectiveSet[SystemArg]]
     inputs*: AppInputs

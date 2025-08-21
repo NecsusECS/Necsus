@@ -1,6 +1,11 @@
 import entityId, std/[json, options], ../util/tools
 
 type
+  Resource*[T] = T
+    ## A resource is a value that is shared across multiple entities. Resources are
+    ## typically used to store global state or configuration data. They are expected
+    ## to be initialized when the entire app is started.
+
   Delete* = proc(eid: EntityId) {.gcsafe, raises: [ValueError], closure.}
     ## Deletes an entity and all associated components
 

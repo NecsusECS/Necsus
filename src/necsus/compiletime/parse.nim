@@ -2,7 +2,7 @@ import std/[macros, sequtils, strformat, options, strutils, macrocache]
 import
   componentDef, tupleDirective, monoDirective, dualDirective, systemGen, directiveArg
 import ../runtime/[pragmas, directives], ../util/typeReader
-import spawnGen, queryGen, deleteGen, attachDetachGen, sharedGen, tickIdGen
+import spawnGen, queryGen, deleteGen, attachDetachGen, sharedGen, tickIdGen, resourceGen
 import localGen, lookupGen, eventGen, timeGen, debugGen, bundleGen, saveGen, restoreGen
 
 type
@@ -33,6 +33,7 @@ type
     returns*: NimNode
 
   ParsedApp* = ref object ## Parsed information about the application proc itself
+    appProc*: NimNode
     name*: string
     runnerArgs*: seq[SystemArg]
     inputs*: AppInputs
@@ -115,6 +116,8 @@ proc parseArgKind(symbol: NimNode): Option[DirectiveGen] =
     return some(restoreGenerator)
   of "Swap":
     return some(swapGenerator)
+  of "Resource":
+    return some(resourceGenerator)
   else:
     return none(DirectiveGen)
 
@@ -578,6 +581,7 @@ proc parseApp*(appProc: NimNode, runner: NimNode): ParsedApp =
   let returnNode = appProc.params[0]
 
   result = ParsedApp(
+    appProc: appProc,
     name: appProc.name.strVal,
     inputs: @[],
     runnerArgs: parseRunner(runner),
@@ -594,7 +598,7 @@ proc parseApp*(appProc: NimNode, runner: NimNode): ParsedApp =
       discard
     of nnkIdentDefs:
       param[0].expectKind(nnkIdent)
-      param[1].expectKind(nnkIdent)
+      param[1].expectKind({nnkIdent, nnkRefTy})
       result.inputs.add((param[0].strVal, newMonoDir(param[1])))
     else:
       param.expectKind({nnkEmpty, nnkIdentDefs})
