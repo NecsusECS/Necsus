@@ -1,7 +1,31 @@
 import macros, systemGen, monoDirective, common
 
+proc requiresRef(node: NimNode): bool =
+  ## Returns whether a node type needs to be wrapped in a ref
+  case node.kind
+  of nnkRefTy:
+    return false
+  of nnkBracketExpr:
+    case node[0].typeKind
+    of ntyTypeDesc:
+      return requiresRef(node[1])
+    of ntyRef:
+      return false
+    else:
+      return true
+  of nnkSym:
+    let typ = node.getType
+    return if typ.kind == nnkSym: true else: typ.requiresRef
+  else:
+    return true
+
 proc worldFields(name: string, dir: MonoDirective): seq[WorldField] =
-  @[(name, nnkRefTy.newTree(dir.argType))]
+  let typ =
+    if dir.argType.requiresRef:
+      nnkRefTy.newTree(dir.argType)
+    else:
+      dir.argType
+  return @[(name, typ)]
 
 proc generateResource(
     details: GenerateContext, arg: SystemArg, name: string, dir: MonoDirective
@@ -20,9 +44,13 @@ proc generateResource(
       if dir == inputDir:
         filled = true
         let inputIdent = inputName.ident
-        result.add quote do:
-          new(`appStateIdent`.`varIdent`)
-          `appStateIdent`.`varIdent`[] = `inputIdent`
+        if dir.argType.requiresRef:
+          result.add quote do:
+            new(`appStateIdent`.`varIdent`)
+            `appStateIdent`.`varIdent`[] = `inputIdent`
+        else:
+          result.add quote do:
+            `appStateIdent`.`varIdent` = `inputIdent`
 
     if not filled:
       warning("Resource of type " & dir.argType.repr & " used here", dir.argType)
@@ -35,8 +63,11 @@ proc generateResource(
 
 proc systemArg(name: string, dir: MonoDirective): NimNode =
   let varIdent = ident(name)
-  return quote:
-    `appStateIdent`.`varIdent`[]
+  result = newDotExpr(appStateIdent, varIdent)
+  if dir.argType.requiresRef:
+    result = quote:
+      `result`[]
+  echo result.repr
 
 let resourceGenerator* {.compileTime.} = newGenerator(
   ident = "Resource",
