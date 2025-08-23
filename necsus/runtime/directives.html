@@ -64,6 +64,7 @@
 <li><a class="reference" href="#EventSystemInstance" title="EventSystemInstance[T] = proc (event: T): void {.closure.}">EventSystemInstance</a></li>
 <li><a class="reference" href="#Lookup" title="Lookup[C] = proc (entityId: EntityId): Option[C] {.closure, gcsafe, raises: [].}">Lookup</a></li>
 <li><a class="reference" href="#Outbox" title="Outbox[T] = proc (message: T) {.closure, gcsafe.}">Outbox</a></li>
+<li><a class="reference" href="#Resource" title="Resource[T] = T">Resource</a></li>
 <li><a class="reference" href="#Restore" title="Restore = proc (json: string) {.closure, gcsafe, raises: [IOError, OSError,
     JsonParsingError, ValueError, Exception].}">Restore</a></li>
 <li><a class="reference" href="#Save" title="Save = proc (): string {.raises: [IOError, OSError, ValueError, Exception],
@@ -169,6 +170,14 @@
     
   </dd>
 </div>
+<div id="Resource">
+  <dt><pre><a href="directives.html#Resource"><span class="Identifier">Resource</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Other">=</span> <span class="Identifier">T</span></pre></dt>
+  <dd>
+    
+    A resource is a value that is shared across multiple entities. Resources are typically used to store global state or configuration data. They are expected to be initialized when the entire app is started.
+    
+  </dd>
+</div>
 <div id="Restore">
   <dt><pre><a href="directives.html#Restore"><span class="Identifier">Restore</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">json</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span> {.<span class="Identifier">closure</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">IOError</span><span class="Other">,</span> <span class="Identifier">OSError</span><span class="Other">,</span>
     <span class="Identifier">JsonParsingError</span><span class="Other">,</span> <span class="Identifier">ValueError</span><span class="Other">,</span> <span class="Identifier">Exception</span><span class="Other">]</span></span>.}</pre></dt>
@@ -245,7 +254,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2025-07-12 15:27:26 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2025-08-23 17:00:32 UTC</small>
       </div>
     </div>
   </div>

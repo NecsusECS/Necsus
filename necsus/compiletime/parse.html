@@ -58,6 +58,7 @@
   value*: NimNode
   arg*: SystemArg">ActiveCheck</a></li>
 <li><a class="reference" href="#ParsedApp" title="ParsedApp = ref object
+  appProc*: NimNode
   name*: string
   runnerArgs*: seq[SystemArg]
   inputs*: AppInputs
@@ -159,7 +160,7 @@
     <div class="section" id="6">
   <h1><a class="toc-backref" href="#6">Imports</a></h1>
   <dl class="item">
-    <a class="reference external" href="componentDef.html">componentDef</a>, <a class="reference external" href="tupleDirective.html">tupleDirective</a>, <a class="reference external" href="monoDirective.html">monoDirective</a>, <a class="reference external" href="dualDirective.html">dualDirective</a>, <a class="reference external" href="systemGen.html">systemGen</a>, <a class="reference external" href="directiveArg.html">directiveArg</a>, <a class="reference external" href="../runtime/pragmas.html">../runtime/pragmas</a>, <a class="reference external" href="../runtime/directives.html">../runtime/directives</a>, <a class="reference external" href="../util/typeReader.html">../util/typeReader</a>, <a class="reference external" href="spawnGen.html">spawnGen</a>, <a class="reference external" href="queryGen.html">queryGen</a>, <a class="reference external" href="deleteGen.html">deleteGen</a>, <a class="reference external" href="attachDetachGen.html">attachDetachGen</a>, <a class="reference external" href="sharedGen.html">sharedGen</a>, <a class="reference external" href="tickIdGen.html">tickIdGen</a>, <a class="reference external" href="localGen.html">localGen</a>, <a class="reference external" href="lookupGen.html">lookupGen</a>, <a class="reference external" href="eventGen.html">eventGen</a>, <a class="reference external" href="timeGen.html">timeGen</a>, <a class="reference external" href="debugGen.html">debugGen</a>, <a class="reference external" href="bundleGen.html">bundleGen</a>, <a class="reference external" href="saveGen.html">saveGen</a>, <a class="reference external" href="restoreGen.html">restoreGen</a>
+    <a class="reference external" href="componentDef.html">componentDef</a>, <a class="reference external" href="tupleDirective.html">tupleDirective</a>, <a class="reference external" href="monoDirective.html">monoDirective</a>, <a class="reference external" href="dualDirective.html">dualDirective</a>, <a class="reference external" href="systemGen.html">systemGen</a>, <a class="reference external" href="directiveArg.html">directiveArg</a>, <a class="reference external" href="../runtime/pragmas.html">../runtime/pragmas</a>, <a class="reference external" href="../runtime/directives.html">../runtime/directives</a>, <a class="reference external" href="../util/typeReader.html">../util/typeReader</a>, <a class="reference external" href="spawnGen.html">spawnGen</a>, <a class="reference external" href="queryGen.html">queryGen</a>, <a class="reference external" href="deleteGen.html">deleteGen</a>, <a class="reference external" href="attachDetachGen.html">attachDetachGen</a>, <a class="reference external" href="sharedGen.html">sharedGen</a>, <a class="reference external" href="tickIdGen.html">tickIdGen</a>, <a class="reference external" href="resourceGen.html">resourceGen</a>, <a class="reference external" href="localGen.html">localGen</a>, <a class="reference external" href="lookupGen.html">lookupGen</a>, <a class="reference external" href="eventGen.html">eventGen</a>, <a class="reference external" href="timeGen.html">timeGen</a>, <a class="reference external" href="debugGen.html">debugGen</a>, <a class="reference external" href="bundleGen.html">bundleGen</a>, <a class="reference external" href="saveGen.html">saveGen</a>, <a class="reference external" href="restoreGen.html">restoreGen</a>
   </dl>
 </div>
 <div class="section" id="7">
@@ -177,6 +178,7 @@
 </div>
 <div id="ParsedApp">
   <dt><pre><a href="parse.html#ParsedApp"><span class="Identifier">ParsedApp</span></a> <span class="Other">=</span> <span class="Keyword">ref</span> <span class="Keyword">object</span>
+  <span class="Identifier">appProc</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">NimNode</span>
   <span class="Identifier">name</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">string</span>
   <span class="Identifier">runnerArgs</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="systemGen.html#SystemArg"><span class="Identifier">SystemArg</span></a><span class="Other">]</span>
   <span class="Identifier">inputs</span><span class="Operator">*</span><span class="Other">:</span> <a href="systemGen.html#AppInputs"><span class="Identifier">AppInputs</span></a>
@@ -402,7 +404,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2025-07-12 15:27:27 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2025-08-23 17:00:32 UTC</small>
       </div>
     </div>
   </div>

@@ -9,50 +9,50 @@ nim	LoopEnd	necsus/compiletime/systemGen.html#LoopEnd	GenerateHook.LoopEnd		6
 nim	GenerateHook	necsus/compiletime/systemGen.html#GenerateHook	enum GenerateHook		6
 nim	AppInputs	necsus/compiletime/systemGen.html#AppInputs	type AppInputs		16
 nim	GenerateContext	necsus/compiletime/systemGen.html#GenerateContext	type GenerateContext		19
-nim	DirectiveKind	necsus/compiletime/systemGen.html#DirectiveKind	enum DirectiveKind		27
-nim	WorldField	necsus/compiletime/systemGen.html#WorldField	tuple WorldField		33
-nim	RawNestedArg	necsus/compiletime/systemGen.html#RawNestedArg	tuple RawNestedArg		35
-nim	NestedArgsExtractor	necsus/compiletime/systemGen.html#NestedArgsExtractor	type NestedArgsExtractor		38
-nim	HookGenerator	necsus/compiletime/systemGen.html#HookGenerator	type HookGenerator		41
-nim	NameChooser	necsus/compiletime/systemGen.html#NameChooser	type NameChooser		45
-nim	SystemArgExtractor	necsus/compiletime/systemGen.html#SystemArgExtractor	type SystemArgExtractor		48
-nim	ConverterDef	necsus/compiletime/systemGen.html#ConverterDef	type ConverterDef		51
-nim	ConvertExtractor	necsus/compiletime/systemGen.html#ConvertExtractor	type ConvertExtractor		59
-nim	BuildArchetype	necsus/compiletime/systemGen.html#BuildArchetype	type BuildArchetype		62
-nim	DirectiveGen	necsus/compiletime/systemGen.html#DirectiveGen	type DirectiveGen		66
-nim	SystemArg	necsus/compiletime/systemGen.html#SystemArg	type SystemArg		101
-nim	newConverter	necsus/compiletime/systemGen.html#newConverter,Archetype[ComponentDef],seq[ComponentDef],Archetype[ComponentDef],bool	proc newConverter(input: Archetype[ComponentDef]; adding: seq[ComponentDef];\n             output: Archetype[ComponentDef]; sinkParams: bool): ConverterDef		118
-nim	newConverter	necsus/compiletime/systemGen.html#newConverter,Archetype[ComponentDef],TupleDirective	proc newConverter(input: Archetype[ComponentDef]; output: TupleDirective): ConverterDef		128
-nim	newGenerator	necsus/compiletime/systemGen.html#newGenerator,string,set[GenerateHook],HookGenerator[TupleDirective],BuildArchetype[TupleDirective],NameChooser[TupleDirective],proc(string,TupleDirective),SystemArgExtractor[TupleDirective],NestedArgsExtractor[TupleDirective],ConvertExtractor[TupleDirective]	proc newGenerator(ident: string; interest: set[GenerateHook];\n             generate: HookGenerator[TupleDirective];\n             archetype: BuildArchetype[TupleDirective] = noArchetype;\n             chooseName: NameChooser[TupleDirective] = defaultName; worldFields: proc (\n    name: string; dir: TupleDirective): seq[WorldField] = defaultWorldField;\n             systemArg: SystemArgExtractor[TupleDirective] = defaultSystemArg;\n    nestedArgs: NestedArgsExtractor[TupleDirective] = defaultNestedArgs;\n             converters: ConvertExtractor[TupleDirective] = defaultConverters): DirectiveGen		163
-nim	newGenerator	necsus/compiletime/systemGen.html#newGenerator,string,set[GenerateHook],HookGenerator[MonoDirective],BuildArchetype[MonoDirective],NameChooser[MonoDirective],proc(DirectiveSet[SystemArg],MonoDirective),proc(string,MonoDirective),SystemArgExtractor[MonoDirective],NestedArgsExtractor[MonoDirective]	proc newGenerator(ident: string; interest: set[GenerateHook];\n             generate: HookGenerator[MonoDirective];\n             archetype: BuildArchetype[MonoDirective] = noArchetype;\n             chooseName: NameChooser[MonoDirective] = defaultName; systemReturn: proc (\n    args: DirectiveSet[SystemArg]; returns: MonoDirective): Option[NimNode] = defaultSystemReturn;\n    worldFields: proc (name: string; dir: MonoDirective): seq[WorldField] = defaultWorldField;\n             systemArg: SystemArgExtractor[MonoDirective] = defaultSystemArg;\n             nestedArgs: NestedArgsExtractor[MonoDirective] = defaultNestedArgs): DirectiveGen		194
-nim	newGenerator	necsus/compiletime/systemGen.html#newGenerator,string,set[GenerateHook],HookGenerator[void],proc(string),SystemArgExtractor[void]	proc newGenerator(ident: string; interest: set[GenerateHook];\n             generate: HookGenerator[void]; worldFields: proc (name: string): seq[\n    WorldField] = defaultWorldFieldNone;\n             systemArg: SystemArgExtractor[void] = defaultSystemArgNone): DirectiveGen		227
-nim	newGenerator	necsus/compiletime/systemGen.html#newGenerator,string,set[GenerateHook],HookGenerator[DualDirective],BuildArchetype[DualDirective],NameChooser[DualDirective],proc(string,DualDirective),SystemArgExtractor[DualDirective],NestedArgsExtractor[DualDirective],ConvertExtractor[DualDirective]	proc newGenerator(ident: string; interest: set[GenerateHook];\n             generate: HookGenerator[DualDirective];\n             archetype: BuildArchetype[DualDirective] = noArchetype;\n             chooseName: NameChooser[DualDirective] = defaultName; worldFields: proc (\n    name: string; dir: DualDirective): seq[WorldField] = defaultWorldField;\n             systemArg: SystemArgExtractor[DualDirective] = defaultSystemArg;\n    nestedArgs: NestedArgsExtractor[DualDirective] = defaultNestedArgs;\n             converters: ConvertExtractor[DualDirective] = defaultConverters): DirectiveGen		243
-nim	`==`	necsus/compiletime/systemGen.html#==,DirectiveGen,DirectiveGen	proc `==`(a, b: DirectiveGen): bool		270
-nim	hash	necsus/compiletime/systemGen.html#hash,DirectiveGen	proc hash(gen: DirectiveGen): Hash		273
-nim	newSystemArg	necsus/compiletime/systemGen.html#newSystemArg,NimNode,DirectiveGen,string,string,seq[SystemArg],T	proc newSystemArg[T: TupleDirective | MonoDirective | DualDirective | void](\n    source: NimNode; generator: DirectiveGen; originalName: string;\n    name: string; nestedArgs: seq[SystemArg] = @[]; directive: T): SystemArg		276
-nim	`$`	necsus/compiletime/systemGen.html#$,SystemArg	proc `$`(arg: SystemArg): string		309
-nim	`==`	necsus/compiletime/systemGen.html#==,SystemArg,SystemArg	proc `==`(a, b: SystemArg): bool		323
-nim	hash	necsus/compiletime/systemGen.html#hash,SystemArg	proc hash(arg: SystemArg): Hash		338
-nim	generateName	necsus/compiletime/systemGen.html#generateName,SystemArg	proc generateName(arg: SystemArg): string		341
-nim	buildArchetype	necsus/compiletime/systemGen.html#buildArchetype,ArchetypeBuilder[ComponentDef],seq[SystemArg],SystemArg	proc buildArchetype(builder: var ArchetypeBuilder[ComponentDef];\n               systemArgs: seq[SystemArg]; arg: SystemArg)		346
-nim	generateForHook	necsus/compiletime/systemGen.html#generateForHook,SystemArg,GenerateContext,string	proc generateForHook(arg: SystemArg; details: GenerateContext; name: string): NimNode		362
-nim	worldFields	necsus/compiletime/systemGen.html#worldFields,SystemArg,string	proc worldFields(arg: SystemArg; name: string): seq[WorldField]		374
-nim	converters	necsus/compiletime/systemGen.html#converters,GenerateContext,SystemArg	proc converters(ctx: GenerateContext; arg: SystemArg): seq[ConverterDef]		386
-nim	nameOf	necsus/compiletime/systemGen.html#nameOf,GenerateContext,SystemArg	proc nameOf(ctx: GenerateContext; arg: SystemArg): string		408
-nim	systemArg	necsus/compiletime/systemGen.html#systemArg,Table[DirectiveGen,DirectiveSet[SystemArg]],SystemArg	proc systemArg(directives: Table[DirectiveGen, DirectiveSet[SystemArg]];\n          arg: SystemArg): NimNode		412
-nim	systemArg	necsus/compiletime/systemGen.html#systemArg,GenerateContext,SystemArg	proc systemArg(ctx: GenerateContext; arg: SystemArg): NimNode		418
-nim	globalStr	necsus/compiletime/systemGen.html#globalStr,GenerateContext,string	proc globalStr(ctx: GenerateContext; name: string): string		422
-nim	globalName	necsus/compiletime/systemGen.html#globalName,GenerateContext,string	proc globalName(ctx: GenerateContext; name: string): NimNode		426
-nim	allArgs	necsus/compiletime/systemGen.html#allArgs.i,openArray[SystemArg]	iterator allArgs(args: openArray[SystemArg]): SystemArg		435
-nim	archetypeFor	necsus/compiletime/systemGen.html#archetypeFor,GenerateContext,openArray[ComponentDef]	proc archetypeFor(ctx: GenerateContext; components: openArray[ComponentDef]): Archetype[\n    ComponentDef]		445
-nim	archetypeFor	necsus/compiletime/systemGen.html#archetypeFor,GenerateContext,TupleDirective	proc archetypeFor(ctx: GenerateContext; dir: TupleDirective): Archetype[ComponentDef]		451
-nim	sendEventProcName	necsus/compiletime/systemGen.html#sendEventProcName,MonoDirective	proc sendEventProcName(directive: MonoDirective): tuple[internal, external: NimNode]		461
-nim	nodes	necsus/compiletime/systemGen.html#nodes.i,SystemArg	iterator nodes(arg: SystemArg): NimNode		469
-nim	signature	necsus/compiletime/systemGen.html#signature,ConverterDef	proc signature(conv: ConverterDef): string		489
-nim	name	necsus/compiletime/systemGen.html#name,ConverterDef	proc name(convert: ConverterDef): NimNode		510
-nimgrp	archetypefor	necsus/compiletime/systemGen.html#archetypeFor-procs-all	proc		445
-nimgrp	systemarg	necsus/compiletime/systemGen.html#systemArg-procs-all	proc		412
-nimgrp	newconverter	necsus/compiletime/systemGen.html#newConverter-procs-all	proc		118
-nimgrp	==	necsus/compiletime/systemGen.html#==-procs-all	proc		270
-nimgrp	hash	necsus/compiletime/systemGen.html#hash-procs-all	proc		273
-nimgrp	newgenerator	necsus/compiletime/systemGen.html#newGenerator-procs-all	proc		163
+nim	DirectiveKind	necsus/compiletime/systemGen.html#DirectiveKind	enum DirectiveKind		28
+nim	WorldField	necsus/compiletime/systemGen.html#WorldField	tuple WorldField		34
+nim	RawNestedArg	necsus/compiletime/systemGen.html#RawNestedArg	tuple RawNestedArg		36
+nim	NestedArgsExtractor	necsus/compiletime/systemGen.html#NestedArgsExtractor	type NestedArgsExtractor		39
+nim	HookGenerator	necsus/compiletime/systemGen.html#HookGenerator	type HookGenerator		42
+nim	NameChooser	necsus/compiletime/systemGen.html#NameChooser	type NameChooser		46
+nim	SystemArgExtractor	necsus/compiletime/systemGen.html#SystemArgExtractor	type SystemArgExtractor		49
+nim	ConverterDef	necsus/compiletime/systemGen.html#ConverterDef	type ConverterDef		52
+nim	ConvertExtractor	necsus/compiletime/systemGen.html#ConvertExtractor	type ConvertExtractor		60
+nim	BuildArchetype	necsus/compiletime/systemGen.html#BuildArchetype	type BuildArchetype		63
+nim	DirectiveGen	necsus/compiletime/systemGen.html#DirectiveGen	type DirectiveGen		67
+nim	SystemArg	necsus/compiletime/systemGen.html#SystemArg	type SystemArg		102
+nim	newConverter	necsus/compiletime/systemGen.html#newConverter,Archetype[ComponentDef],seq[ComponentDef],Archetype[ComponentDef],bool	proc newConverter(input: Archetype[ComponentDef]; adding: seq[ComponentDef];\n             output: Archetype[ComponentDef]; sinkParams: bool): ConverterDef		119
+nim	newConverter	necsus/compiletime/systemGen.html#newConverter,Archetype[ComponentDef],TupleDirective	proc newConverter(input: Archetype[ComponentDef]; output: TupleDirective): ConverterDef		129
+nim	newGenerator	necsus/compiletime/systemGen.html#newGenerator,string,set[GenerateHook],HookGenerator[TupleDirective],BuildArchetype[TupleDirective],NameChooser[TupleDirective],proc(string,TupleDirective),SystemArgExtractor[TupleDirective],NestedArgsExtractor[TupleDirective],ConvertExtractor[TupleDirective]	proc newGenerator(ident: string; interest: set[GenerateHook];\n             generate: HookGenerator[TupleDirective];\n             archetype: BuildArchetype[TupleDirective] = noArchetype;\n             chooseName: NameChooser[TupleDirective] = defaultName; worldFields: proc (\n    name: string; dir: TupleDirective): seq[WorldField] = defaultWorldField;\n             systemArg: SystemArgExtractor[TupleDirective] = defaultSystemArg;\n    nestedArgs: NestedArgsExtractor[TupleDirective] = defaultNestedArgs;\n             converters: ConvertExtractor[TupleDirective] = defaultConverters): DirectiveGen		164
+nim	newGenerator	necsus/compiletime/systemGen.html#newGenerator,string,set[GenerateHook],HookGenerator[MonoDirective],BuildArchetype[MonoDirective],NameChooser[MonoDirective],proc(DirectiveSet[SystemArg],MonoDirective),proc(string,MonoDirective),SystemArgExtractor[MonoDirective],NestedArgsExtractor[MonoDirective]	proc newGenerator(ident: string; interest: set[GenerateHook];\n             generate: HookGenerator[MonoDirective];\n             archetype: BuildArchetype[MonoDirective] = noArchetype;\n             chooseName: NameChooser[MonoDirective] = defaultName; systemReturn: proc (\n    args: DirectiveSet[SystemArg]; returns: MonoDirective): Option[NimNode] = defaultSystemReturn;\n    worldFields: proc (name: string; dir: MonoDirective): seq[WorldField] = defaultWorldField;\n             systemArg: SystemArgExtractor[MonoDirective] = defaultSystemArg;\n             nestedArgs: NestedArgsExtractor[MonoDirective] = defaultNestedArgs): DirectiveGen		195
+nim	newGenerator	necsus/compiletime/systemGen.html#newGenerator,string,set[GenerateHook],HookGenerator[void],proc(string),SystemArgExtractor[void]	proc newGenerator(ident: string; interest: set[GenerateHook];\n             generate: HookGenerator[void]; worldFields: proc (name: string): seq[\n    WorldField] = defaultWorldFieldNone;\n             systemArg: SystemArgExtractor[void] = defaultSystemArgNone): DirectiveGen		228
+nim	newGenerator	necsus/compiletime/systemGen.html#newGenerator,string,set[GenerateHook],HookGenerator[DualDirective],BuildArchetype[DualDirective],NameChooser[DualDirective],proc(string,DualDirective),SystemArgExtractor[DualDirective],NestedArgsExtractor[DualDirective],ConvertExtractor[DualDirective]	proc newGenerator(ident: string; interest: set[GenerateHook];\n             generate: HookGenerator[DualDirective];\n             archetype: BuildArchetype[DualDirective] = noArchetype;\n             chooseName: NameChooser[DualDirective] = defaultName; worldFields: proc (\n    name: string; dir: DualDirective): seq[WorldField] = defaultWorldField;\n             systemArg: SystemArgExtractor[DualDirective] = defaultSystemArg;\n    nestedArgs: NestedArgsExtractor[DualDirective] = defaultNestedArgs;\n             converters: ConvertExtractor[DualDirective] = defaultConverters): DirectiveGen		244
+nim	`==`	necsus/compiletime/systemGen.html#==,DirectiveGen,DirectiveGen	proc `==`(a, b: DirectiveGen): bool		271
+nim	hash	necsus/compiletime/systemGen.html#hash,DirectiveGen	proc hash(gen: DirectiveGen): Hash		274
+nim	newSystemArg	necsus/compiletime/systemGen.html#newSystemArg,NimNode,DirectiveGen,string,string,seq[SystemArg],T	proc newSystemArg[T: TupleDirective | MonoDirective | DualDirective | void](\n    source: NimNode; generator: DirectiveGen; originalName: string;\n    name: string; nestedArgs: seq[SystemArg] = @[]; directive: T): SystemArg		277
+nim	`$`	necsus/compiletime/systemGen.html#$,SystemArg	proc `$`(arg: SystemArg): string		310
+nim	`==`	necsus/compiletime/systemGen.html#==,SystemArg,SystemArg	proc `==`(a, b: SystemArg): bool		324
+nim	hash	necsus/compiletime/systemGen.html#hash,SystemArg	proc hash(arg: SystemArg): Hash		339
+nim	generateName	necsus/compiletime/systemGen.html#generateName,SystemArg	proc generateName(arg: SystemArg): string		342
+nim	buildArchetype	necsus/compiletime/systemGen.html#buildArchetype,ArchetypeBuilder[ComponentDef],seq[SystemArg],SystemArg	proc buildArchetype(builder: var ArchetypeBuilder[ComponentDef];\n               systemArgs: seq[SystemArg]; arg: SystemArg)		347
+nim	generateForHook	necsus/compiletime/systemGen.html#generateForHook,SystemArg,GenerateContext,string	proc generateForHook(arg: SystemArg; details: GenerateContext; name: string): NimNode		363
+nim	worldFields	necsus/compiletime/systemGen.html#worldFields,SystemArg,string	proc worldFields(arg: SystemArg; name: string): seq[WorldField]		375
+nim	converters	necsus/compiletime/systemGen.html#converters,GenerateContext,SystemArg	proc converters(ctx: GenerateContext; arg: SystemArg): seq[ConverterDef]		387
+nim	nameOf	necsus/compiletime/systemGen.html#nameOf,GenerateContext,SystemArg	proc nameOf(ctx: GenerateContext; arg: SystemArg): string		409
+nim	systemArg	necsus/compiletime/systemGen.html#systemArg,Table[DirectiveGen,DirectiveSet[SystemArg]],SystemArg	proc systemArg(directives: Table[DirectiveGen, DirectiveSet[SystemArg]];\n          arg: SystemArg): NimNode		413
+nim	systemArg	necsus/compiletime/systemGen.html#systemArg,GenerateContext,SystemArg	proc systemArg(ctx: GenerateContext; arg: SystemArg): NimNode		419
+nim	globalStr	necsus/compiletime/systemGen.html#globalStr,GenerateContext,string	proc globalStr(ctx: GenerateContext; name: string): string		423
+nim	globalName	necsus/compiletime/systemGen.html#globalName,GenerateContext,string	proc globalName(ctx: GenerateContext; name: string): NimNode		427
+nim	allArgs	necsus/compiletime/systemGen.html#allArgs.i,openArray[SystemArg]	iterator allArgs(args: openArray[SystemArg]): SystemArg		436
+nim	archetypeFor	necsus/compiletime/systemGen.html#archetypeFor,GenerateContext,openArray[ComponentDef]	proc archetypeFor(ctx: GenerateContext; components: openArray[ComponentDef]): Archetype[\n    ComponentDef]		446
+nim	archetypeFor	necsus/compiletime/systemGen.html#archetypeFor,GenerateContext,TupleDirective	proc archetypeFor(ctx: GenerateContext; dir: TupleDirective): Archetype[ComponentDef]		452
+nim	sendEventProcName	necsus/compiletime/systemGen.html#sendEventProcName,MonoDirective	proc sendEventProcName(directive: MonoDirective): tuple[internal, external: NimNode]		462
+nim	nodes	necsus/compiletime/systemGen.html#nodes.i,SystemArg	iterator nodes(arg: SystemArg): NimNode		470
+nim	signature	necsus/compiletime/systemGen.html#signature,ConverterDef	proc signature(conv: ConverterDef): string		490
+nim	name	necsus/compiletime/systemGen.html#name,ConverterDef	proc name(convert: ConverterDef): NimNode		511
+nimgrp	archetypefor	necsus/compiletime/systemGen.html#archetypeFor-procs-all	proc		446
+nimgrp	systemarg	necsus/compiletime/systemGen.html#systemArg-procs-all	proc		413
+nimgrp	newconverter	necsus/compiletime/systemGen.html#newConverter-procs-all	proc		119
+nimgrp	==	necsus/compiletime/systemGen.html#==-procs-all	proc		271
+nimgrp	hash	necsus/compiletime/systemGen.html#hash-procs-all	proc		274
+nimgrp	newgenerator	necsus/compiletime/systemGen.html#newGenerator-procs-all	proc		164

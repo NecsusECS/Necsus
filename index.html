@@ -416,6 +416,22 @@ proc printCount(count: Shared[int]) =
 
 proc myApp() {.necsus([~updateCount, ~printCount], newNecsusConf()).}
 </code></pre>
+<h4>Resource</h4>
+<p><code>Resources</code> are a way to share values across multiple systems. They differ from <code>Shared</code> and
+<code>Local</code> variables in that they are not optional -- a <code>Resource</code> must be initialized when creating
+the app itself. This cuts down on the amount of boilerplate code needed to use a value.</p>
+<pre><code class="language-nim">import necsus
+
+proc updateCount(count: Resource[ref int]) =
+    count[] = count[] + 1
+
+proc printCount(count: Resource[ref int]) =
+    echo &quot;Total executions so far: &quot;, count[]
+
+proc myApp(
+  count: ref int = new(int)
+) {.necsus([~updateCount, ~printCount], newNecsusConf()).}
+</code></pre>
 <h4>Inbox/Outbox (aka Events)</h4>
 <p><code>Inbox</code> and <code>Outbox</code> represent the eventing system in Necsus. Events are published using the <code>Outbox</code> and read using
 the <code>Inbox</code>. Any <code>Inbox</code> or <code>Outbox</code> with the same type will share the same underlying mailbox.</p>

@@ -6,10 +6,10 @@ nim	newCodeGenInfo	necsus/compiletime/codeGenInfo.html#newCodeGenInfo,NimNode,Pa
 nim	appStateTypeName	necsus/compiletime/codeGenInfo.html#appStateTypeName,CodeGenInfo	proc appStateTypeName(genInfo: CodeGenInfo): NimNode		69
 nim	appStateInit	necsus/compiletime/codeGenInfo.html#appStateInit,CodeGenInfo	proc appStateInit(genInfo: CodeGenInfo): NimNode		73
 nim	newGenerateContext	necsus/compiletime/codeGenInfo.html#newGenerateContext,CodeGenInfo,GenerateHook	proc newGenerateContext(codeGen: CodeGenInfo; hook: GenerateHook): GenerateContext		77
-nim	nameOf	necsus/compiletime/codeGenInfo.html#nameOf,CodeGenInfo,SystemArg	proc nameOf(genInfo: CodeGenInfo; arg: SystemArg): string		87
-nim	generateForHook	necsus/compiletime/codeGenInfo.html#generateForHook,CodeGenInfo,ParsedSystem,GenerateHook	proc generateForHook(codeGen: CodeGenInfo; system: ParsedSystem; hook: GenerateHook): NimNode		91
-nim	generateForHook	necsus/compiletime/codeGenInfo.html#generateForHook,CodeGenInfo,GenerateHook	proc generateForHook(codeGen: CodeGenInfo; hook: GenerateHook): NimNode		103
-nim	worldFields	necsus/compiletime/codeGenInfo.html#worldFields,CodeGenInfo	proc worldFields(codeGen: CodeGenInfo): seq[WorldField]		114
-nim	systemArg	necsus/compiletime/codeGenInfo.html#systemArg,CodeGenInfo,SystemArg	proc systemArg(genInfo: CodeGenInfo; arg: SystemArg): NimNode		120
-nim	allArgs	necsus/compiletime/codeGenInfo.html#allArgs.i,CodeGenInfo	iterator allArgs(genInfo: CodeGenInfo): SystemArg		124
-nimgrp	generateforhook	necsus/compiletime/codeGenInfo.html#generateForHook-procs-all	proc		91
+nim	nameOf	necsus/compiletime/codeGenInfo.html#nameOf,CodeGenInfo,SystemArg	proc nameOf(genInfo: CodeGenInfo; arg: SystemArg): string		88
+nim	generateForHook	necsus/compiletime/codeGenInfo.html#generateForHook,CodeGenInfo,ParsedSystem,GenerateHook	proc generateForHook(codeGen: CodeGenInfo; system: ParsedSystem; hook: GenerateHook): NimNode		92
+nim	generateForHook	necsus/compiletime/codeGenInfo.html#generateForHook,CodeGenInfo,GenerateHook	proc generateForHook(codeGen: CodeGenInfo; hook: GenerateHook): NimNode		104
+nim	worldFields	necsus/compiletime/codeGenInfo.html#worldFields,CodeGenInfo	proc worldFields(codeGen: CodeGenInfo): seq[WorldField]		115
+nim	systemArg	necsus/compiletime/codeGenInfo.html#systemArg,CodeGenInfo,SystemArg	proc systemArg(genInfo: CodeGenInfo; arg: SystemArg): NimNode		121
+nim	allArgs	necsus/compiletime/codeGenInfo.html#allArgs.i,CodeGenInfo	iterator allArgs(genInfo: CodeGenInfo): SystemArg		125
+nimgrp	generateforhook	necsus/compiletime/codeGenInfo.html#generateForHook-procs-all	proc		92
