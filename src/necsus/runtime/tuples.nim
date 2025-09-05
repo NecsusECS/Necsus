@@ -4,18 +4,19 @@ proc getTupleSubtypes(typ: NimNode): seq[NimNode] =
   let resolved = typ.resolveTo({nnkTupleConstr, nnkTupleTy, nnkCall}).get(typ)
   case resolved.kind
   of nnkTupleConstr:
-    result = resolved.children.toSeq
+    return resolved.children.toSeq
   of nnkTupleTy:
+    var output = newSeq[NimNode]()
     for child in resolved:
       child.expectKind(nnkIdentDefs)
-      result.add(child[1])
+      output.add(child[1])
+    return output
   of nnkCall:
     if resolved[0].strval == "extend":
-      result = resolved[1].getTupleSubtypes() & resolved[2].getTupleSubtypes()
-    else:
-      error("Unable to resolve tuple type for " & resolved.repr, resolved)
+      return resolved[1].getTupleSubtypes() & resolved[2].getTupleSubtypes()
   else:
-    resolved.expectKind({nnkTupleConstr, nnkTupleTy, nnkSym})
+    discard
+  error("Unable to resolve tuple type for " & resolved.repr, typ)
 
 macro extend*(tuples: varargs[typed]): typedesc =
   ## Combines tuples type definitions to create a new tuple type
