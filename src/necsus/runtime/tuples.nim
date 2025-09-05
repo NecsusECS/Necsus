@@ -14,20 +14,22 @@ proc getTupleSubtypes(typ: NimNode): seq[NimNode] =
   of nnkCall:
     if resolved[0].strval == "extend":
       return resolved[1].getTupleSubtypes() & resolved[2].getTupleSubtypes()
+  of nnkSym:
+    return typ.getType.getTupleSubtypes()
   else:
     discard
   error("Unable to resolve tuple type for " & resolved.repr, typ)
 
-macro extend*(tuples: varargs[typed]): typedesc =
+macro extend*(a, b: typedesc): typedesc =
   ## Combines tuples type definitions to create a new tuple type
   var subtypes: seq[NimNode]
-  for tup in tuples:
-    subtypes.add(tup.getTupleSubtypes())
+  subtypes.add(a.getTupleSubtypes())
+  subtypes.add(b.getTupleSubtypes())
 
   subtypes.sort(nimNode.cmp)
 
   result = nnkTupleConstr.newTree(subtypes)
-  result.copyLineInfo(tuples[0])
+  result.copyLineInfo(a)
 
 proc `as`*[T: tuple](value: T, typ: typedesc): T =
   ## Casts a value to a type and returns it. Used for joining tuples

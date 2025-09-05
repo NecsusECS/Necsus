@@ -72,10 +72,15 @@ proc replaceGenerics(typeDecl: NimNode, symLookup: Table[string, NimNode]): NimN
 proc resolveBracketGeneric*(typeDef: NimNode): NimNode =
   ## Replaces a generic alias with the underlying type it represents
   typeDef.expectKind({nnkBracketExpr})
-  let declaration = typeDef[0].getImpl
-  declaration.expectKind(nnkTypeDef)
-  let genericTable = declaration[1].asGenericTable(typeDef[1 ..^ 1])
-  return declaration[2].replaceGenerics(genericTable)
+  if typeDef.typeKind == ntyTuple:
+    return nnkTupleConstr.newTree(typeDef[1 ..^ 1])
+  elif typeDef[0].kind == nnkSym and typeDef[0].strVal == "typeDesc":
+    return typeDef[1]
+  else:
+    let declaration = typeDef[0].getImpl
+    declaration.expectKind(nnkTypeDef)
+    let genericTable = declaration[1].asGenericTable(typeDef[1 ..^ 1])
+    return declaration[2].replaceGenerics(genericTable)
 
 proc resolveTo*(typeDef: NimNode, expectKind: set[NimNodeKind]): Option[NimNode] =
   ## Resolves the system parsable type of an identifier

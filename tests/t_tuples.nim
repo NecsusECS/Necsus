@@ -20,6 +20,9 @@ type
   WithCD = extend(AB, (C, D))
   WithEF = extend(WithCD, (E, F))
 
+  Wrapped*[T: tuple] = object
+    value: extend((A, B), T)
+
 let ace: ACE = ("foo", 3.14, E())
 let bdf: BDF = (123, true, @[1])
 let abcdef: ABCDEF = ("foo", 123, 3.14, true, E(), @[1])
@@ -31,7 +34,7 @@ suite "Tuple tools":
     check(extend(ACE, (B, D, F)) is ABCDEF)
     check(extend((A, C, E), (B, D, F)) is ABCDEF)
 
-    check(extend(AB, (C, D), (E, F)) is ABCDEF)
+    check(extend(AB, (C, D)).extend((E, F)) is ABCDEF)
 
   test "Tuples with labels should be extendable":
     check(extend(tuple[a: A, c: C, e: E], BDF) is ABCDEF)
@@ -67,3 +70,8 @@ suite "Tuple tools":
     let joined = join((X(), E()), (Z(), Y()), ("foo",) as (A,), (123,) as (B,))
 
     check(joined == ("foo", 123, E(), X(), Y(), Z()))
+
+  test "Extend with generic types":
+    var value: Wrapped[(C, D)]
+    checkpoint $typeof(value.value)
+    check(value.value is (A, B, D, C))
