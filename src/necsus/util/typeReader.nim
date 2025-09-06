@@ -1,4 +1,4 @@
-import macros, options, tables
+import std/[macros, options, tables, sequtils]
 
 proc isPragma*(found, expect: NimNode): bool =
   ## Determines whether a NimNode represents the given pragma
@@ -118,3 +118,24 @@ proc findSym*(node: NimNode): NimNode =
     return node[0].findSym
   else:
     error("Could not extract a symbol from " & node.lispRepr, node)
+
+proc getTupleSubtypes*(typ: NimNode): seq[NimNode] =
+  ## Returns the subtypes of a tuple type
+  let resolved = typ.resolveTo({nnkTupleConstr, nnkTupleTy, nnkCall}).get(typ)
+  case resolved.kind
+  of nnkTupleConstr:
+    return resolved.children.toSeq
+  of nnkTupleTy:
+    var output = newSeq[NimNode]()
+    for child in resolved:
+      child.expectKind(nnkIdentDefs)
+      output.add(child[1])
+    return output
+  of nnkCall:
+    if eqIdent(resolved[0], "extend"):
+      return resolved[1].getTupleSubtypes() & resolved[2].getTupleSubtypes()
+  of nnkSym:
+    return typ.getType.getTupleSubtypes()
+  else:
+    discard
+  error("Unable to resolve tuple type for " & resolved.repr, typ)
