@@ -1,15 +1,14 @@
-import std/[macros, algorithm], ../util/[typeReader, nimNode]
+import std/[macros], ../util/[typeReader]
 
 macro extend*(a, b: typedesc): typedesc =
   ## Combines tuples type definitions to create a new tuple type
-  var subtypes: seq[NimNode]
-  subtypes.add(a.getTupleSubtypes())
-  subtypes.add(b.getTupleSubtypes())
-
-  subtypes.sort(nimNode.cmp)
-
-  result = nnkTupleConstr.newTree(subtypes)
+  result = nnkTupleConstr.newTree()
   result.copyLineInfo(a)
+
+  for typ in a.getTupleSubtypes():
+    result.add(typ)
+  for typ in b.getTupleSubtypes():
+    result.add(typ)
 
 proc `as`*[T: tuple](value: T, typ: typedesc): T =
   ## Casts a value to a type and returns it. Used for joining tuples
@@ -46,9 +45,6 @@ macro join*(exprs: varargs[typed]): untyped =
     let tupleSubs = tupleType.getTupleSubtypes()
     for i, child in tupleSubs:
       children.add((thisVar, i, child))
-
-  children.sort do(a, b: (NimNode, int, NimNode)) -> int:
-    return nimNode.cmp(a[2], b[2])
 
   var output = nnkTupleConstr.newTree()
   for (source, idx, _) in children:
