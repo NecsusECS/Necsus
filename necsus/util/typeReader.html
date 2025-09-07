@@ -63,6 +63,10 @@
   <li><a class="reference" href="#findSym%2CNimNode" title="findSym(node: NimNode): NimNode">findSym(node: NimNode): NimNode</a></li>
 
 </ul>
+<ul class="simple nested-toc-section">getTupleSubtypes
+  <li><a class="reference" href="#getTupleSubtypes%2CNimNode" title="getTupleSubtypes(typ: NimNode): seq[NimNode]">getTupleSubtypes(typ: NimNode): seq[NimNode]</a></li>
+
+</ul>
 <ul class="simple nested-toc-section">hasPragma
   <li><a class="reference" href="#hasPragma%2CNimNode%2CNimNode" title="hasPragma(node, pragma: NimNode): bool">hasPragma(node, pragma: NimNode): bool</a></li>
 
@@ -128,6 +132,18 @@
   <dd>
     
     Unwraps the symbol from a node
+    
+  </dd>
+</div>
+
+</div>
+<div id="getTupleSubtypes-procs-all">
+  <div id="getTupleSubtypes,NimNode">
+  <dt><pre><span class="Keyword">proc</span> <a href="#getTupleSubtypes%2CNimNode"><span class="Identifier">getTupleSubtypes</span></a><span class="Other">(</span><span class="Identifier">typ</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">NimNode</span><span class="Other">]</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Returns the subtypes of a tuple type
     
   </dd>
 </div>
@@ -201,7 +217,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2025-08-23 17:00:32 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2025-09-07 19:04:31 UTC</small>
       </div>
     </div>
   </div>
