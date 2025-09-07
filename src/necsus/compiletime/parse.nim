@@ -142,6 +142,8 @@ proc parseDirectiveArg(
   of nnkCall:
     if symbol[0].kind == nnkOpenSymChoice and symbol[0].repr == "[]":
       return parseDirectiveArg(nnkBracketExpr.newTree(symbol[1 ..^ 1]), isPointer, kind)
+  of nnkTypeOfExpr:
+    return parseDirectiveArg(symbol[0].getTypeInst, isPointer, kind)
   else:
     discard
   error(&"Unexpected directive kind ({symbol.kind}): {symbol.repr}", symbol)
