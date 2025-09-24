@@ -18,7 +18,7 @@ proc symbols*(node: NimNode): seq[string] =
   of nnkRefTy:
     return concat(@["ref"], node[0].symbols)
   else:
-    error(&"Unable to generate a component symbol from node ({node.kind}): {node.repr}")
+    error(&"Unable to generate a component symbol from node ({node.kind}): {node.repr}", node)
 
 proc hash*(node: NimNode): Hash =
   ## Generates a unique hash for a NimNode
@@ -36,7 +36,7 @@ proc hash*(node: NimNode): Hash =
   of nnkRefTy:
     return hash(node[0])
   else:
-    error(&"Unable to generate a hash from node ({node.kind}): {node.repr}")
+    error(&"Unable to generate a hash from node ({node.kind}): {node.repr}", node)
 
 proc cmp*(a: NimNode, b: NimNode): int =
   ## Compare two nim nodes for sorting
