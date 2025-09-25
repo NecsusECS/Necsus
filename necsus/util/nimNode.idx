@@ -1,5 +1,5 @@
 nimTitle	nimNode	necsus/util/nimNode.html	module src/necsus/util/nimNode		0
 nim	symbols	necsus/util/nimNode.html#symbols,NimNode	proc symbols(node: NimNode): seq[string]		3
-nim	hash	necsus/util/nimNode.html#hash,NimNode	proc hash(node: NimNode): Hash		23
-nim	cmp	necsus/util/nimNode.html#cmp,NimNode,NimNode	proc cmp(a: NimNode; b: NimNode): int		41
-nim	addSignature	necsus/util/nimNode.html#addSignature,string,NimNode	proc addSignature(onto: var string; comp: NimNode)		65
+nim	hash	necsus/util/nimNode.html#hash,NimNode	proc hash(node: NimNode): Hash		25
+nim	cmp	necsus/util/nimNode.html#cmp,NimNode,NimNode	proc cmp(a: NimNode; b: NimNode): int		48
+nim	addSignature	necsus/util/nimNode.html#addSignature,string,NimNode	proc addSignature(onto: var string; comp: NimNode)		72
