@@ -228,8 +228,23 @@ proc parseFlagSystemArg(name: NimNode, directiveSymbol: NimNode): Option[SystemA
       newSystemArg[void](directiveSymbol, gen, name.strVal, directiveSymbol.strVal)
     )
 
+proc normalize(node: NimNode): NimNode =
+  ## Normalizes a node to iron out any equivalent nodes that can be
+  ## represented in different ways
+  if node.kind == nnkCall and node[0].eqIdent("[]"):
+    result = nnkBracketExpr.newTree()
+    result.copyLineInfo(node)
+    for child in node[1 ..^ 1]:
+      result.add(child.normalize)
+  else:
+    result = node.copyNimNode()
+    if node.len > 0:
+      for child in node:
+        result.add(child.normalize)
+
 proc parseArgType(context, argName, argType, original: NimNode): SystemArg =
   ## Parses the type of a system argument
+  let argType = argType.normalize
 
   var parsed: Option[SystemArg]
   case argType.kind

@@ -94,8 +94,12 @@ proc resolveTo*(typeDef: NimNode, expectKind: set[NimNodeKind]): Option[NimNode]
     return typeDef.getImpl.resolveTo(expectKind)
   of nnkTypeDef:
     return typeDef[2].resolveTo(expectKind)
+  of nnkCall:
+    if typeDef[0].eqIdent("[]"):
+      return nnkBracketExpr.newTree(typeDef[1 ..^ 1]).resolveTo(expectKind)
   else:
-    return none[NimNode]()
+    discard
+  return none[NimNode]()
 
 proc resolveAlias*(typeDef: NimNode): Option[NimNode] =
   ## Attempts to resolve any aliases until a concrete type is reached

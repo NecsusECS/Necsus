@@ -5,13 +5,15 @@ proc symbols*(node: NimNode): seq[string] =
   case node.kind
   of nnkSym, nnkIdent, nnkStrLit .. nnkTripleStrLit:
     return @[node.strVal]
+  of nnkOpenSymChoice:
+    return node[0].symbols
   of nnkCharLit .. nnkUInt64Lit:
     return @[$node.intVal]
   of nnkFloatLit .. nnkFloat64Lit:
     return @[$node.floatVal]
   of nnkNilLit:
     return @["nil"]
-  of nnkBracketExpr, nnkTupleTy, nnkTupleConstr:
+  of nnkBracketExpr, nnkTupleTy, nnkTupleConstr, nnkCall:
     return node.toSeq.mapIt(it.symbols).foldl(concat(a, b))
   of nnkIdentDefs:
     return concat(node[0].symbols, node[1].symbols)
@@ -25,14 +27,19 @@ proc hash*(node: NimNode): Hash =
   case node.kind
   of nnkSym, nnkIdent, nnkStrLit .. nnkTripleStrLit:
     return hash(node.strVal)
+  of nnkOpenSymChoice:
+    return hash(node[0])
   of nnkCharLit .. nnkUInt64Lit:
     return hash(node.intVal)
   of nnkFloatLit .. nnkFloat64Lit:
     return hash(node.floatVal)
   of nnkNilLit, nnkEmpty:
     return hash(0)
-  of nnkBracketExpr, nnkTupleTy, nnkIdentDefs, nnkTupleConstr:
-    return node.toSeq.mapIt(hash(it)).foldl(a !& b, hash(node.kind))
+  of nnkBracketExpr, nnkTupleTy, nnkIdentDefs, nnkTupleConstr, nnkCall:
+    var output: Hash
+    for child in node:
+      output = output !& hash(child.kind) !& hash(child)
+    return output
   of nnkRefTy:
     return hash(node[0])
   else:
@@ -67,7 +74,9 @@ proc addSignature*(onto: var string, comp: NimNode) =
   case comp.kind
   of nnkSym:
     onto &= comp.signatureHash
-  of nnkBracketExpr, nnkTupleConstr, nnkTupleTy:
+  of nnkOpenSymChoice:
+    onto.addSignature(comp[0])
+  of nnkBracketExpr, nnkTupleConstr, nnkTupleTy, nnkCall:
     for child in comp.children:
       onto.addSignature(child)
   of nnkIdentDefs:
