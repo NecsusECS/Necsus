@@ -18,7 +18,10 @@ template buildTestSystems*(systemName: untyped, T: typedesc[enum]) =
   proc sendTwo(trigger: Outbox[OpenSymbol[T]]) =
     trigger((C, 3))
 
-  proc systemName(values: Inbox[OpenSymbol[T]]) {.depends(sendOne, sendTwo).} =
+  proc receive(value: OpenSymbol[T], eventSysCalled: Shared[bool]) {.eventSys.} =
+    eventSysCalled := true
+
+  proc systemName(values: Inbox[OpenSymbol[T]]) {.depends(sendOne, sendTwo, receive).} =
     check(values.toSeq == @[(A, 1), (B, 2), (C, 3)])
 
 buildTestSystems(testSystem, SomeEnum)
@@ -29,8 +32,9 @@ proc buildSend[T](): auto =
 
 let externalSend = buildSend[SomeEnum]()
 
-proc runner(tick: proc(): void) =
+proc runner(eventSysCalled: Shared[bool], tick: proc(): void) =
   tick()
+  check eventSysCalled.get()
 
 proc myApp() {.necsus(runner, [~externalSend, ~testSystem], newNecsusConf()).}
 

@@ -406,11 +406,11 @@ proc getPrefixArgs(
       if args.len <= 0:
         error("Expecting at least one parameter for system", system)
       else:
-        result = @[args[0]]
+        result = @[args[0].normalize]
         args = args[1 ..^ 1]
     else:
       instancing.get.expectKind(nnkProcTy)
-      result = @[instancing.get.params[1]]
+      result = @[instancing.get.params[1].normalize]
   of StartupPhase, LoopPhase, TeardownPhase, SaveCallback:
     discard
 
