@@ -7,5 +7,5 @@ nim	`~`	necsus.html#~,proc	proc `~`(system: proc): SystemFlag		30
 nim	gameLoop	necsus.html#gameLoop,Shared[NecsusRun],proc)	proc gameLoop(exit: Shared[NecsusRun]; tick: proc (): void)		34
 nim	necsus	necsus.html#necsus.m,,openArray[SystemFlag],NecsusConf,untyped	macro necsus(runner: typed{sym}; systems: openArray[SystemFlag]; conf: NecsusConf;\n       pragmaProc: untyped)		74
 nim	necsus	necsus.html#necsus.m,openArray[SystemFlag],NecsusConf,untyped	macro necsus(systems: openArray[SystemFlag]; conf: NecsusConf; pragmaProc: untyped)		83
-nim	runSystemOnce	necsus.html#runSystemOnce.m,typed	macro runSystemOnce(systemDef: typed): untyped		87
+nim	runSystemOnce	necsus.html#runSystemOnce.m,typed	macro runSystemOnce(systemDef: typed): untyped		99
 nimgrp	necsus	necsus.html#necsus-macros-all	macro		74
