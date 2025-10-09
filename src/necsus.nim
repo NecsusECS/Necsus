@@ -12,7 +12,7 @@ import
 import necsus/compiletime/[parse, systemGen, codeGenInfo, worldGen, archetype]
 import necsus/compiletime/[tickGen, common, marshalGen, sendGen]
 import necsus/util/dump
-import sequtils, macros, options
+import std/[sequtils, macros, options]
 
 export
   entityId, query, query.items, necsusConf, systemVar, inbox, directives, spawn,
@@ -84,6 +84,23 @@ macro necsus*(systems: openarray[SystemFlag], conf: NecsusConf, pragmaProc: unty
   ## Creates an ECS world
   buildApp(bindSym("gameLoop"), systems, conf, pragmaProc)
 
+when NimMajor >= 2:
+  import std/macrocache
+  const runSystemOnceNames = CacheTable"runSystemOnceAppNames"
+else:
+  import std/tables
+  var runSystemOnceNames {.compileTime.} = initTable[string, NimNode]()
+
+proc createRunSystemOnceName(line, column: int): string =
+  ## Creates a globally unique name for a runSystemOnce app
+  let baseName = "App_" & $line & "_" & $column
+  result = baseName
+  var suffix = 1
+  while result in runSystemOnceNames:
+    result = baseName & "_" & $suffix
+    inc suffix
+  runSystemOnceNames[result] = true.newLit
+
 macro runSystemOnce*(systemDef: typed): untyped =
   ## Creates a single system and immediately executes it with a specific set of directives
 
@@ -95,8 +112,9 @@ macro runSystemOnce*(systemDef: typed): untyped =
     let `necsusConfIdent` = newNecsusConf()
 
   let app = newEmptyApp(
-    "App_" & $lineInfoObj(systemDef).line & "_" & $lineInfoObj(systemDef).column
+    createRunSystemOnceName(lineInfoObj(systemDef).line, lineInfoObj(systemDef).column)
   )
+
   let codeGenInfo = newCodeGenInfo(necsusConfIdent, app, @[system])
   let initIdent = codeGenInfo.appStateInit
 
