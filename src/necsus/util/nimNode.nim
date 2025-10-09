@@ -20,7 +20,10 @@ proc symbols*(node: NimNode): seq[string] =
   of nnkRefTy:
     return concat(@["ref"], node[0].symbols)
   else:
-    error(&"Unable to generate a component symbol from node ({node.kind}): {node.repr}", node)
+    error(
+      &"Unable to generate a component symbol from node ({node.kind}): {node.repr}",
+      node,
+    )
 
 proc hash*(node: NimNode): Hash =
   ## Generates a unique hash for a NimNode
@@ -83,3 +86,15 @@ proc addSignature*(onto: var string, comp: NimNode) =
     onto.addSignature(comp[1])
   else:
     comp.expectKind({nnkSym})
+
+proc extractStr*(node: NimNode): string =
+  ## Pulls the strVal from a NimNode
+  case node.kind
+  of nnkSym, nnkIdent:
+    return node.strVal
+  of nnkOpenSymChoice:
+    return node[0].strVal
+  of nnkPragmaExpr:
+    return node[0].extractStr
+  else:
+    error(&"Unable to extract strVal from node ({node.kind}): {node.lispRepr}", node)

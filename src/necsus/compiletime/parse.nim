@@ -1,7 +1,7 @@
 import std/[macros, sequtils, strformat, options, strutils, macrocache]
 import
   componentDef, tupleDirective, monoDirective, dualDirective, systemGen, directiveArg
-import ../runtime/[pragmas, directives], ../util/typeReader
+import ../runtime/[pragmas, directives], ../util/[typeReader, nimNode]
 import spawnGen, queryGen, deleteGen, attachDetachGen, sharedGen, tickIdGen, resourceGen
 import localGen, lookupGen, eventGen, timeGen, debugGen, bundleGen, saveGen, restoreGen
 
@@ -178,7 +178,7 @@ proc parseParametricArg(
       newSystemArg[TupleDirective](
         source = directiveSymbol,
         generator = gen,
-        originalName = argName.strVal,
+        originalName = argName.extractStr,
         name = gen.chooseNameTuple(context, argName, tupleDir),
         directive = tupleDir,
         nestedArgs = parseNestedArgs(nestedArgs),
@@ -191,7 +191,7 @@ proc parseParametricArg(
       newSystemArg[MonoDirective](
         source = directiveSymbol,
         generator = gen,
-        originalName = argName.strVal,
+        originalName = argName.extractStr,
         name = gen.chooseNameMono(context, argName, monoDir),
         directive = monoDir,
         nestedArgs = parseNestedArgs(nestedArgs),
@@ -207,7 +207,7 @@ proc parseParametricArg(
       newSystemArg[DualDirective](
         source = directiveSymbol,
         generator = gen,
-        originalName = argName.strVal,
+        originalName = argName.extractStr,
         name = gen.chooseNameDual(context, argName, dualDir),
         directive = dualDir,
         nestedArgs = parseNestedArgs(nestedArgs),
@@ -225,7 +225,7 @@ proc parseFlagSystemArg(name: NimNode, directiveSymbol: NimNode): Option[SystemA
     error("System argument is not flag based: " & $gen.kind)
   of DirectiveKind.None:
     return some(
-      newSystemArg[void](directiveSymbol, gen, name.strVal, directiveSymbol.strVal)
+      newSystemArg[void](directiveSymbol, gen, name.extractStr, directiveSymbol.strVal)
     )
 
 proc normalize(node: NimNode): NimNode =
