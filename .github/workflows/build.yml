@@ -9,12 +9,10 @@ jobs:
         nim: [2.0.10, 1.6.14, 2.2.2, devel]
     steps:
       - uses: actions/checkout@v1
-      - name: Choose Nim
-        run: choosenim update -y ${{ matrix.nim }}
-      - name: Safe git directory
-        run: git config --global --add safe.directory "$(pwd)"
-      - name: Test
-        run: nimble test -y
+      - run: choosenim update -y ${{ matrix.nim }}
+      - run: git config --global --add safe.directory "$(pwd)"
+      - run: nim --version
+      - run: nimble test -y
 
   benchmark:
     runs-on: ubuntu-latest
@@ -24,12 +22,10 @@ jobs:
         nim: [2.0.10, 1.6.14, 2.2.2, devel]
     steps:
       - uses: actions/checkout@v1
-      - name: Choose Nim
-        run: choosenim update -y ${{ matrix.nim }}
-      - name: Safe git directory
-        run: git config --global --add safe.directory "$(pwd)"
-      - name: Benchmark
-        run: nimble -y -d:release benchmark
+      - run: choosenim update -y ${{ matrix.nim }}
+      - run: git config --global --add safe.directory "$(pwd)"
+      - run: nim --version
+      - run: nimble -y -d:release benchmark
 
   readme:
     runs-on: ubuntu-latest
@@ -39,12 +35,10 @@ jobs:
         nim: [2.0.10, 1.6.14, 2.2.2, devel]
     steps:
       - uses: actions/checkout@v1
-      - name: Choose Nim
-        run: choosenim update -y ${{ matrix.nim }}
-      - name: Safe git directory
-        run: git config --global --add safe.directory "$(pwd)"
-      - name: Build readme code
-        run: nimble readme
+      - run: choosenim update -y ${{ matrix.nim }}
+      - run: git config --global --add safe.directory "$(pwd)"
+      - run: nim --version
+      - run: nimble readme
 
   example-projects:
     runs-on: ubuntu-latest
@@ -86,12 +80,10 @@ jobs:
           ]
     steps:
       - uses: actions/checkout@v1
-      - name: Choose Nim
-        run: choosenim update -y ${{ matrix.nim }}
-      - name: Safe git directory
-        run: git config --global --add safe.directory "$(pwd)"
-      - name: Test
-        run: nimble -d:${{ matrix.flag }} test
+      - run: choosenim update -y ${{ matrix.nim }}
+      - run: git config --global --add safe.directory "$(pwd)"
+      - run: nim --version
+      - run: nimble -d:${{ matrix.flag }} test
 
   fast-compile:
     ## Confirm all the tests compile when running in a 'fast compile' mode
@@ -102,10 +94,9 @@ jobs:
         nim: [2.0.10, 1.6.14]
     steps:
       - uses: actions/checkout@v1
-      - name: Choose Nim
-        run: choosenim update -y ${{ matrix.nim }}
-      - name: Safe git directory
-        run: git config --global --add safe.directory "$(pwd)"
+      - run: choosenim update -y ${{ matrix.nim }}
+      - run: git config --global --add safe.directory "$(pwd)"
+      - run: nim --version
       - name: Nim suggest
         run: find tests -name "t_*.nim" | xargs -n1 sh -c 'nim c -d:nimsuggest $0 || exit 255'
       - name: Nim check
