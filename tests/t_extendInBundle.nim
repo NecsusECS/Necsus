@@ -1,7 +1,6 @@
 import necsus, std/unittest
 
 when (NIM_MAJOR, NIM_MINOR) >= (2, 3):
-
   type
     A = object
     B = object
