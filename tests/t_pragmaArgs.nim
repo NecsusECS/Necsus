@@ -1,10 +1,12 @@
 import unittest, necsus
 
 proc sampleSystem(
-  a {.inject.}: TimeDelta,
-  b {.inject.}: Shared[string],
-  c {.inject.}: Lookup[(int, )],
-  swap {.inject.}: Swap[(int, ), (string, )]
+    a {.inject.}: TimeDelta,
+    b {.inject.}: Shared[string],
+    c {.inject.}: Lookup[(int,)],
+    swap {.inject.}: Swap[(int,), (string,)],
+    send {.inject.}: Outbox[float],
+    receive {.inject.}: Inbox[float],
 ) =
   discard
 

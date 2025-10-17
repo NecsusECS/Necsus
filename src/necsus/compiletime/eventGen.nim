@@ -2,16 +2,18 @@ import std/[macros, strutils, tables, sequtils]
 import monoDirective, common, systemGen
 import ../runtime/[inbox, directives]
 
-proc getSignature(node: NimNode): string =
+proc getSignature(node: NimNode, original: NimNode = node): string =
   case node.kind
   of nnkIdent:
     return node.strVal
   of nnkSym:
-    return node.signatureHash
+    return node.signatureHash()
   of nnkBracketExpr:
-    return node.children.toSeq.mapIt(it.getSignature).join()
+    return node.children.toSeq.mapIt(it.getSignature(original)).join()
+  of nnkPragmaExpr:
+    return node[0].getSignature(original)
   else:
-    node.expectKind({nnkSym})
+    error("Unable to generate signature for node: " & original.lispRepr, original)
 
 proc chooseInboxName(context, argName: NimNode, local: MonoDirective): string =
   context.getSignature & argName.getSignature
