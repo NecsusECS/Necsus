@@ -67,7 +67,6 @@ proc systemArg(name: string, dir: MonoDirective): NimNode =
   if dir.argType.requiresRef:
     result = quote:
       `result`[]
-  echo result.repr
 
 let resourceGenerator* {.compileTime.} = newGenerator(
   ident = "Resource",
