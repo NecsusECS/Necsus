@@ -673,6 +673,29 @@ proc debuggingSystem(query: FullQuery[(A, )], debug: EntityDebug) =
 proc myApp() {.necsus([~debuggingSystem], newNecsusConf()).}
 ```
 
+#### RegisterSystem
+
+`RegisterSystem` is a directive that allows a startup system to dynamically register
+a closure that will be executed on every loop tick. This is useful when you need to
+capture state during startup and share it between multiple other systems.
+
+```nim
+import necsus
+
+proc testSystem(updater: RegisterSystem, checker: RegisterSystem) {.startupSys.} =
+    var value = 0
+
+    updater do() -> void:
+        value += 1
+
+    checker do() -> void:
+        value += 2
+
+proc myApp() {.necsus([~testSystem], newNecsusConf()).}
+```
+
+Registered systems execute **in place** among the other loop systems — their position in the loop matches where the declaring system appears in the system list. If the `active()` pragma is applied to the declaring system, the registered closure will only run when the active state condition is met.
+
 ### Extended System Usage
 
 Beyond the basics of declaring systems and using directives, there are a few more advanced system use cases
