@@ -1,2 +1,2 @@
 switch("path", "$projectDir/../src")
-switch("experimental", "callOperator")
+switch("passC", "-Wno-error=incompatible-pointer-types")
