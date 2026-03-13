@@ -1,5 +1,6 @@
 import std/[macros, tables, sets]
 import tools, codeGenInfo, common, systemGen, tickGen, parse, eventGen, monoDirective
+import registerEventSystemGen
 import ../runtime/[world]
 
 proc addEventDirectives(arg: NimNode, into: var seq[MonoDirective]) =
@@ -45,6 +46,9 @@ proc mailboxIndex(
         )
       elif arg.generator == outboxGenerator:
         # Store any outboxes to ensure the public send procs get created
+        discard result.mgetOrPut(arg.monoDir, newSeq[(ParsedSystem, NimNode)]())
+      elif arg.generator == registerEventSystemGenerator:
+        # Ensure a send proc is created for the event type
         discard result.mgetOrPut(arg.monoDir, newSeq[(ParsedSystem, NimNode)]())
 
     if system.phase in {EventCallback, IndirectEventCallback}:
@@ -108,6 +112,14 @@ proc createSendProcs*(details: CodeGenInfo): NimNode =
             )
         else:
           discard
+
+      for system in details.systems:
+        for arg in system.allArgs:
+          if arg.generator == registerEventSystemGenerator and arg.monoDir == directive:
+            let fieldName = details.nameOf(arg).ident
+            let invokeCallback = quote:
+              `appStateIdent`.`fieldName`(`event`)
+            body.add(invokeCallback.addActiveChecks(details, system.checks, EventCallback))
 
       if body.len == 0:
         body.add(nnkDiscardStmt.newTree(newEmptyNode()))

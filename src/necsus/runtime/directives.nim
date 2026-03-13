@@ -63,6 +63,9 @@ type
   RegisterSystem* = proc(system: DynamicSystem) {.closure.}
     ## Registers a dynamic system
 
+  RegisterEventSystem*[E] = proc(system: proc(event: E): void {.closure.}) {.closure.}
+    ## Registers a dynamic event system callback for events of type E
+
 when isSinkMemoryCorruptionFixed():
   type Attach*[C: tuple] = proc(eid: EntityId, components: sink C) {.gcsafe, closure.}
     ## Describes a type that is able to update existing entities new entities. Where `C` is

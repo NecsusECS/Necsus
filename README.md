@@ -694,7 +694,32 @@ proc testSystem(updater: RegisterSystem, checker: RegisterSystem) {.startupSys.}
 proc myApp() {.necsus([~testSystem], newNecsusConf()).}
 ```
 
-Registered systems execute **in place** among the other loop systems — their position in the loop matches where the declaring system appears in the system list. If the `active()` pragma is applied to the declaring system, the registered closure will only run when the active state condition is met.
+#### RegisterEventSystem
+
+`RegisterEventSystem[E]` is a directive that allows a startup system to dynamically register
+a closure that will be called whenever an event of type `E` is sent via `Outbox[E]`. This is
+useful when you need to capture state during startup and respond to events through a closure.
+
+```nim
+import necsus
+
+type MyEvent = object
+    value: int
+
+proc startup(register: RegisterEventSystem[MyEvent]) {.startupSys.} =
+    var count = 0
+    register do(event: MyEvent) -> void:
+        count += event.value
+
+proc sender(outbox: Outbox[MyEvent]) =
+    outbox(MyEvent(value: 1))
+
+proc myApp() {.necsus([~startup, ~sender], newNecsusConf()).}
+```
+
+The registered callback is invoked inline when an event is sent, the same as
+an `{.eventSys.}` system. If the `active()` pragma is applied to the declaring
+system, the callback will only run when the active state condition is met.
 
 ### Extended System Usage
 

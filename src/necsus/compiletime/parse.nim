@@ -4,7 +4,7 @@ import
 import ../runtime/[pragmas, directives], ../util/[typeReader, nimNode]
 import spawnGen, queryGen, deleteGen, attachDetachGen, sharedGen, tickIdGen, resourceGen
 import localGen, lookupGen, eventGen, timeGen, debugGen, bundleGen, saveGen, restoreGen
-import registerSystemGen
+import registerSystemGen, registerEventSystemGen
 
 type
   SystemPhase* = enum
@@ -121,6 +121,8 @@ proc parseArgKind(symbol: NimNode): Option[DirectiveGen] =
     return some(resourceGenerator)
   of "RegisterSystem":
     return some(registerSystemGenerator)
+  of "RegisterEventSystem":
+    return some(registerEventSystemGenerator)
   else:
     return none(DirectiveGen)
 
