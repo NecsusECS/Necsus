@@ -20,7 +20,7 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string): NimNode =
     return quote:
       `appStateIdent`.`nameIdent` = proc(): void =
         discard
-  of LoopStart:
+  of LoopInPlace:
     return quote:
       `appStateIdent`.`nameIdent`()
   else:
@@ -28,7 +28,7 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string): NimNode =
 
 let registerSystemGenerator* {.compileTime.} = newGenerator(
   ident = "RegisterSystem",
-  interest = {Standard, LoopStart},
+  interest = {Standard, LoopInPlace},
   generate = generate,
   worldFields = fields,
   systemArg = sysArg,

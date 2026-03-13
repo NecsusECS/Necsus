@@ -115,6 +115,10 @@ proc callSystems*(codeGenInfo: CodeGenInfo, phases: set[SystemPhase]): NimNode =
     var invokeSystem = codeGenInfo.invokeSystem(system, phases)
     if invokeSystem.kind != nnkEmpty:
       result.add(invokeSystem)
+    elif LoopPhase in phases:
+      let loopInPlace = codeGenInfo.generateForHook(system, LoopInPlace)
+      if loopInPlace.len > 0:
+        result.add(loopInPlace)
 
 proc createTickProc*(genInfo: CodeGenInfo): NimNode =
   ## Creates a function that executes the next tick

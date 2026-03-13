@@ -10,6 +10,7 @@ type
     Late
     BeforeLoop
     LoopStart
+    LoopInPlace
     AfterActiveCheck
     LoopEnd
 
