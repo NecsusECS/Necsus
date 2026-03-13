@@ -63,6 +63,30 @@ proc wrapInSystemLog(invoke: NimNode, system: ParsedSystem): NimNode =
       if `appStateIdent`.`mailboxName`.len > 0:
         `result`
 
+proc wrapInSystemLog(invoke: NimNode, name: string): NimNode =
+  if not defined(necsusSystemTrace):
+    return invoke
+  let startMessage = emitLog("Starting system: " & name)
+  let endMessage = emitLog("System done: " & name)
+  return quote:
+    try:
+      `startMessage`
+      `invoke`
+    finally:
+      `endMessage`
+
+proc applyChecks(
+    invocation: NimNode,
+    codeGenInfo: CodeGenInfo,
+    system: ParsedSystem,
+    phase: SystemPhase,
+): NimNode =
+  ## Wraps an invocation with active checks and generates post-check hooks
+  newStmtList(
+    invocation.addActiveChecks(codeGenInfo, system.checks, phase),
+    codeGenInfo.generateForHook(system, AfterActiveCheck),
+  )
+
 proc singleInvokeSystem(
     codeGenInfo: CodeGenInfo, system: ParsedSystem, prefixArgs: openArray[NimNode]
 ): NimNode =
@@ -103,10 +127,7 @@ proc invokeSystem*(
   result = result.wrapInProfiler(system.id, codeGenInfo).wrapInSystemLog(system)
 
   if system.phase != SaveCallback:
-    result = newStmtList(
-      result.addActiveChecks(codeGenInfo, system.checks, system.phase),
-      codeGenInfo.generateForHook(system, AfterActiveCheck),
-    )
+    result = result.applyChecks(codeGenInfo, system, system.phase)
 
 proc callSystems*(codeGenInfo: CodeGenInfo, phases: set[SystemPhase]): NimNode =
   ## Generates the code for invoke a list of systems
@@ -118,7 +139,13 @@ proc callSystems*(codeGenInfo: CodeGenInfo, phases: set[SystemPhase]): NimNode =
     elif LoopPhase in phases:
       let loopInPlace = codeGenInfo.generateForHook(system, LoopInPlace)
       if loopInPlace.len > 0:
-        result.add(loopInPlace)
+        let name = "RegisterSystem: " & system.symbol.strVal
+        result.add(
+          loopInPlace
+            .wrapInProfiler(system.id, codeGenInfo)
+            .wrapInSystemLog(name)
+            .applyChecks(codeGenInfo, system, LoopPhase)
+        )
 
 proc createTickProc*(genInfo: CodeGenInfo): NimNode =
   ## Creates a function that executes the next tick
