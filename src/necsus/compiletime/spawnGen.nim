@@ -1,4 +1,4 @@
-import std/[macros, sets, macrocache, options]
+import std/[macros, sets, options]
 import
   tools, tupleDirective, archetype, archetypeBuilder, componentDef, common, systemGen
 import ../runtime/[spawn, archetypeStore, world]
@@ -25,6 +25,7 @@ proc fullSpawnSystemArg(name: string, dir: TupleDirective): NimNode =
   systemArg(bindSym("asFullSpawn"), name)
 
 when NimMajor >= 2:
+  import std/macrocache
   const spawnSymbols = CacheTable("NecsusSpawnSymbols")
 else:
   import std/tables

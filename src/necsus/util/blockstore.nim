@@ -13,13 +13,13 @@ type
     hasRecycledValues: bool
     recycle: Deque[uint]
     data: seq[EntryData[V]]
-    len: uint
+    len: Natural
 
   BlockIter* = object
     index: uint
     isDone: bool
 
-proc newBlockStore*[V](size: SomeInteger): BlockStore[V] =
+proc newBlockStore*[V](size: Natural): BlockStore[V] =
   ## Instantiates a new BlockStore
   BlockStore[V](
     recycle: initDeque[uint](size.int div 2), data: newSeq[EntryData[V]](size)
@@ -31,7 +31,7 @@ proc isFirst*(iter: BlockIter): bool =
 proc isDone*(iter: BlockIter): bool {.inline.} =
   iter.isDone
 
-func len*[V](blockstore: var BlockStore[V]): uint =
+func len*[V](blockstore: var BlockStore[V]): Natural =
   ## Returns the length of this blockstore
   blockstore.len
 

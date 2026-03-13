@@ -13,7 +13,7 @@ type
     slot: var Comps,
   ): bool {.gcsafe, raises: [], nimcall.}
 
-  QueryGetLen = proc(appState: pointer): uint {.gcsafe, raises: [], nimcall.}
+  QueryGetLen = proc(appState: pointer): Natural {.gcsafe, raises: [], nimcall.}
 
   RawQuery*[Comps] = ref object
     ## Allows systems to query for entities with specific components. Where `Comps` is a tuple of
@@ -67,7 +67,7 @@ iterator items*[Comps: tuple](query: AnyQuery[Comps]): Comps =
   while raw.getNext(raw.appState, state, iter, eid, slot):
     yield slot
 
-proc len*[Comps: tuple](query: AnyQuery[Comps]): uint {.gcsafe, raises: [].} =
+proc len*[Comps: tuple](query: AnyQuery[Comps]): Natural {.gcsafe, raises: [].} =
   ## Returns the number of entities in this query
   let rawQuery = RawQuery[Comps](query)
   return rawQuery.getLen(rawQuery.appState)

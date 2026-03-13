@@ -12,18 +12,6 @@ proc isSpawnSinkEnabled*(): bool =
   ## See https://github.com/nim-lang/Nim/issues/23907
   return (NimMajor, NimMinor) >= (2, 3)
 
-proc stringify*[T](value: T): string {.raises: [], gcsafe.} =
-  ## Converts a value to a string as best as it can
-  try:
-    when compiles($value):
-      return $value
-    elif compiles(value.repr):
-      return value.repr
-    else:
-      return $T
-  except:
-    return $T & "(Failed to generate string)"
-
 template optionPtr*[T](opt: Option[T]): Option[ptr T] =
   ## Returns a pointer to a value in an option
   if opt.isSome:

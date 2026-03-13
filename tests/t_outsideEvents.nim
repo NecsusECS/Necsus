@@ -6,7 +6,7 @@ type SomeEvent = object
 var expect = 0
 
 proc receive(receiver: Inbox[SomeEvent]) =
-  check(receiver.len == expect.uint)
+  check(receiver.len == expect)
 
   for message in receiver:
     check(message.value == expect)

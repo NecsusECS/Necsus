@@ -158,7 +158,7 @@ proc generate(
     )
 
     return quote:
-      proc `getLen`(appStatePtr: pointer): uint {.nimcall.} =
+      proc `getLen`(appStatePtr: pointer): Natural {.nimcall.} =
         let `appStateIdent` {.used.} = cast[ptr `appStateTypeName`](appStatePtr)
         result = 0
         `lenCalculation`

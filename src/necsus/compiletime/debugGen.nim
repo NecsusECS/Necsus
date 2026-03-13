@@ -1,6 +1,6 @@
 import macros, options, tables
 import tools, common, archetype, componentDef, systemGen
-import ../runtime/[world, archetypeStore, directives], ../util/tools
+import ../runtime/[world, archetypeStore, directives]
 
 let entityId {.compileTime.} = ident("entityId")
 
@@ -12,6 +12,18 @@ let entityArchetype {.compileTime.} = newDotExpr(entityIndex, ident("archetype")
 
 proc worldFields(name: string): seq[WorldField] =
   @[(name, bindSym("EntityDebug"))]
+
+proc stringify[T](value: T): string {.raises: [], gcsafe.} =
+  ## Converts a value to a string as best as it can
+  try:
+    when compiles($value):
+      return $value
+    elif compiles(value.repr):
+      return value.repr
+    else:
+      return $T
+  except:
+    return $T & "(Failed to generate string)"
 
 proc buildArchetypeLookup(
     details: GenerateContext, archetype: Archetype[ComponentDef]

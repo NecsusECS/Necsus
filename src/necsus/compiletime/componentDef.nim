@@ -111,7 +111,7 @@ proc maxCapacity*(errorSite: NimNode, components: auto): Option[NimNode] =
     assert(comp is ComponentDef)
     let capacity = comp.node.getCapacity
     if capacity.isSome:
-      let newValue = newCall("uint", capacity.get)
+      let newValue = newCall("Natural", capacity.get)
       if result.isSome:
         result = some(newCall(bindSym("max"), result.get, newValue))
       else:

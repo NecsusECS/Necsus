@@ -8,7 +8,7 @@ type
 
   ArchetypeStore*[Comps: tuple] = object ## Stores a specific archetype shape
     archetype: ArchetypeId
-    initialSize: BiggestInt
+    initialSize: Natural
     compStore: BlockStore[ArchRow[Comps]]
 
   NewArchSlot*[Comps: tuple] = distinct Entry[ArchRow[Comps]]
@@ -22,10 +22,10 @@ proc `=copy`*[Comps: tuple](
 ) {.error.}
 
 proc newArchetypeStore*[Comps: tuple](
-    archetype: ArchetypeId, initialSize: SomeInteger
+    archetype: ArchetypeId, initialSize: Natural
 ): ArchetypeStore[Comps] =
   ## Creates a new storage block for an archetype
-  ArchetypeStore[Comps](initialSize: initialSize.BiggestInt, archetype: archetype)
+  ArchetypeStore[Comps](initialSize: initialSize, archetype: archetype)
 
 proc readArchetype*(store: ArchetypeStore): ArchetypeId {.inline.} =
   ## Accessor for the archetype of a store
@@ -47,14 +47,14 @@ iterator entityIds*[Comps](store: var ArchetypeStore[Comps]): EntityId =
   while store.next(iter, eid) != nil:
     yield eid
 
-func addLen*[Comps: tuple](store: var ArchetypeStore[Comps], len: var uint) =
+func addLen*[Comps: tuple](store: var ArchetypeStore[Comps], len: var Natural) =
   ## Accessor for the archetype of a store
   if likely(store.compStore != nil):
     len += store.compStore.len
 
 proc addLen*[Comps: tuple](
     store: var ArchetypeStore[Comps],
-    len: var uint,
+    len: var Natural,
     predicate: proc(row: var Comps): bool {.nimcall, gcsafe, raises: [].},
 ) =
   ## Reads the length of an archetype store, using a predicate to determine whether to count a row

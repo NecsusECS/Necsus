@@ -1,7 +1,7 @@
 import necsus/util/tools
 
 when isSinkMemoryCorruptionFixed():
-  import unittest, necsus, sequtils
+  import unittest, necsus
 
   type
     Name = object
