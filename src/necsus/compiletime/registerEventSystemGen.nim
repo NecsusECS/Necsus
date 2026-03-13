@@ -1,5 +1,6 @@
-import macros
+import macros, strutils
 import common, systemGen, monoDirective
+import ../util/nimNode
 
 proc fields(name: string, dir: MonoDirective): seq[WorldField] =
   let eventType = dir.argType
@@ -35,12 +36,16 @@ proc generate(
   else:
     return newEmptyNode()
 
+proc chooseRegisterEventSystemName(context, argName: NimNode, dir: MonoDirective): string =
+  var hash: string
+  hash.addSignature(context)
+  context.symbols.join("_") & "_" & hash & "_" & argName.strVal
+
 let registerEventSystemGenerator* {.compileTime.} = newGenerator(
   ident = "RegisterEventSystem",
   interest = {Standard},
   generate = generate,
   worldFields = fields,
   systemArg = sysArg,
-  chooseName = proc(context, argName: NimNode, dir: MonoDirective): string =
-    argName.strVal,
+  chooseName = chooseRegisterEventSystemName,
 )
