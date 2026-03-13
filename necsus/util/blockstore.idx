@@ -2,10 +2,10 @@ nimTitle	blockstore	necsus/util/blockstore.html	module src/necsus/util/blockstor
 nim	Entry	necsus/util/blockstore.html#Entry	type Entry		9
 nim	BlockStore	necsus/util/blockstore.html#BlockStore	type BlockStore		11
 nim	BlockIter	necsus/util/blockstore.html#BlockIter	object BlockIter		18
-nim	newBlockStore	necsus/util/blockstore.html#newBlockStore,SomeInteger	proc newBlockStore[V](size: SomeInteger): BlockStore[V]		22
+nim	newBlockStore	necsus/util/blockstore.html#newBlockStore,Natural	proc newBlockStore[V](size: Natural): BlockStore[V]		22
 nim	isFirst	necsus/util/blockstore.html#isFirst,BlockIter	proc isFirst(iter: BlockIter): bool		28
 nim	isDone	necsus/util/blockstore.html#isDone,BlockIter	proc isDone(iter: BlockIter): bool		31
-nim	len	necsus/util/blockstore.html#len,BlockStore[V]	proc len[V](blockstore: var BlockStore[V]): uint		34
+nim	len	necsus/util/blockstore.html#len,BlockStore[V]	proc len[V](blockstore: var BlockStore[V]): Natural		34
 nim	reserve	necsus/util/blockstore.html#reserve,BlockStore[V]	proc reserve[V](blockstore: var BlockStore[V]): Entry[V]		38
 nim	index	necsus/util/blockstore.html#index,Entry[V]	proc index[V](entry: Entry[V]): uint		58
 nim	value	necsus/util/blockstore.html#value.t,Entry[V]	template value[V](entry: Entry[V]): var V		61

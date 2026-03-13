@@ -4,12 +4,12 @@ nim	ArchetypeStore	necsus/runtime/archetypeStore.html#ArchetypeStore	object Arch
 nim	NewArchSlot	necsus/runtime/archetypeStore.html#NewArchSlot	type NewArchSlot		14
 nim	`=copy`	necsus/runtime/archetypeStore.html#=copy,ArchRow[Comps: tuple],ArchRow[Comps: tuple]	proc `=copy`[Comps: tuple](target: var ArchRow[Comps]; source: ArchRow[Comps])		16
 nim	`=copy`	necsus/runtime/archetypeStore.html#=copy,ArchetypeStore[Comps: tuple],ArchetypeStore[Comps: tuple]	proc `=copy`[Comps: tuple](target: var ArchetypeStore[Comps];\n                      source: ArchetypeStore[Comps])		20
-nim	newArchetypeStore	necsus/runtime/archetypeStore.html#newArchetypeStore,ArchetypeId,SomeInteger	proc newArchetypeStore[Comps: tuple](archetype: ArchetypeId; initialSize: SomeInteger): ArchetypeStore[\n    Comps]		24
+nim	newArchetypeStore	necsus/runtime/archetypeStore.html#newArchetypeStore,ArchetypeId,Natural	proc newArchetypeStore[Comps: tuple](archetype: ArchetypeId; initialSize: Natural): ArchetypeStore[\n    Comps]		24
 nim	readArchetype	necsus/runtime/archetypeStore.html#readArchetype,ArchetypeStore	proc readArchetype(store: ArchetypeStore): ArchetypeId		30
 nim	next	necsus/runtime/archetypeStore.html#next,ArchetypeStore[Comps: tuple],BlockIter,EntityId	proc next[Comps: tuple](store: var ArchetypeStore[Comps]; iter: var BlockIter;\n                   eid: var EntityId): ptr Comps		34
 nim	entityIds	necsus/runtime/archetypeStore.html#entityIds.i,ArchetypeStore[Comps]	iterator entityIds[Comps](store: var ArchetypeStore[Comps]): EntityId		44
-nim	addLen	necsus/runtime/archetypeStore.html#addLen,ArchetypeStore[Comps: tuple],uint	proc addLen[Comps: tuple](store: var ArchetypeStore[Comps]; len: var uint)		50
-nim	addLen	necsus/runtime/archetypeStore.html#addLen,ArchetypeStore[Comps: tuple],uint,proc(Comps)	proc addLen[Comps: tuple](store: var ArchetypeStore[Comps]; len: var uint; predicate: proc (\n    row: var Comps): bool {.nimcall, gcsafe, raises: [].})		55
+nim	addLen	necsus/runtime/archetypeStore.html#addLen,ArchetypeStore[Comps: tuple],Natural	proc addLen[Comps: tuple](store: var ArchetypeStore[Comps]; len: var Natural)		50
+nim	addLen	necsus/runtime/archetypeStore.html#addLen,ArchetypeStore[Comps: tuple],Natural,proc(Comps)	proc addLen[Comps: tuple](store: var ArchetypeStore[Comps]; len: var Natural;\n    predicate: proc (row: var Comps): bool {.nimcall, gcsafe, raises: [].})		55
 nim	ensureAlloced	necsus/runtime/archetypeStore.html#ensureAlloced,ArchetypeStore[Comps: tuple]	proc ensureAlloced[Comps: tuple](store: var ArchetypeStore[Comps])		66
 nim	newSlot	necsus/runtime/archetypeStore.html#newSlot,ArchetypeStore[Comps: tuple],EntityId	proc newSlot[Comps: tuple](store: var ArchetypeStore[Comps]; entityId: EntityId): NewArchSlot[\n    Comps]		71
 nim	entityId	necsus/runtime/archetypeStore.html#entityId,NewArchSlot[Comps: tuple]	proc entityId[Comps: tuple](entry: NewArchSlot[Comps]): EntityId		80

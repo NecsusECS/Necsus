@@ -59,11 +59,15 @@
 <li><a class="reference" href="#Delete" title="Delete = proc (eid: EntityId) {.gcsafe, raises: [ValueError], closure.}">Delete</a></li>
 <li><a class="reference" href="#DeleteAll" title="DeleteAll[C] = proc () {.closure, gcsafe.}">DeleteAll</a></li>
 <li><a class="reference" href="#Detach" title="Detach[C] = proc (eid: EntityId) {.gcsafe, closure.}">Detach</a></li>
+<li><a class="reference" href="#DynamicSystem" title="DynamicSystem = proc () {.closure.}">DynamicSystem</a></li>
 <li><a class="reference" href="#EntityDebug" title="EntityDebug = proc (eid: EntityId): string {.gcsafe, closure,
     raises: [Exception].}">EntityDebug</a></li>
 <li><a class="reference" href="#EventSystemInstance" title="EventSystemInstance[T] = proc (event: T): void {.closure.}">EventSystemInstance</a></li>
 <li><a class="reference" href="#Lookup" title="Lookup[C] = proc (entityId: EntityId): Option[C] {.closure, gcsafe, raises: [].}">Lookup</a></li>
 <li><a class="reference" href="#Outbox" title="Outbox[T] = proc (message: T) {.closure, gcsafe.}">Outbox</a></li>
+<li><a class="reference" href="#RegisterEventSystem" title="RegisterEventSystem[E] = proc (system: proc (event: E): void {.closure.}) {.
+    closure.}">RegisterEventSystem</a></li>
+<li><a class="reference" href="#RegisterSystem" title="RegisterSystem = proc (system: DynamicSystem) {.closure.}">RegisterSystem</a></li>
 <li><a class="reference" href="#Resource" title="Resource[T] = T">Resource</a></li>
 <li><a class="reference" href="#Restore" title="Restore = proc (json: string) {.closure, gcsafe, raises: [IOError, OSError,
     JsonParsingError, ValueError, Exception].}">Restore</a></li>
@@ -137,6 +141,14 @@
     
   </dd>
 </div>
+<div id="DynamicSystem">
+  <dt><pre><a href="directives.html#DynamicSystem"><span class="Identifier">DynamicSystem</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span> {.<span class="Identifier">closure</span>.}</pre></dt>
+  <dd>
+    
+    A dynamically registered system proc
+    
+  </dd>
+</div>
 <div id="EntityDebug">
   <dt><pre><a href="directives.html#EntityDebug"><span class="Identifier">EntityDebug</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">eid</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> </span><span class="Identifier">closure</span><span class="Other">,</span>
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">]</span></span>.}</pre></dt>
@@ -167,6 +179,23 @@
   <dd>
     
     Sends an event. Where <tt class="docutils literal"><span class="pre"><span class="Identifier">T</span></span></tt> is the message being sent
+    
+  </dd>
+</div>
+<div id="RegisterEventSystem">
+  <dt><pre><a href="directives.html#RegisterEventSystem"><span class="Identifier">RegisterEventSystem</span></a><span class="Other">[</span><span class="Identifier">E</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">system</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">event</span><span class="Other">:</span> <span class="Identifier">E</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">void</span> {.<span class="Identifier">closure</span>.}<span class="Other">)</span> {.
+    <span class="Identifier">closure</span>.}</pre></dt>
+  <dd>
+    
+    Registers a dynamic event system callback for events of type E
+    
+  </dd>
+</div>
+<div id="RegisterSystem">
+  <dt><pre><a href="directives.html#RegisterSystem"><span class="Identifier">RegisterSystem</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">system</span><span class="Other">:</span> <a href="directives.html#DynamicSystem"><span class="Identifier">DynamicSystem</span></a><span class="Other">)</span> {.<span class="Identifier">closure</span>.}</pre></dt>
+  <dd>
+    
+    Registers a dynamic system
     
   </dd>
 </div>
@@ -254,7 +283,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2025-12-29 22:25:45 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-03-13 15:36:46 UTC</small>
       </div>
     </div>
   </div>

@@ -75,10 +75,10 @@
 
 </ul>
 <ul class="simple nested-toc-section">addLen
-  <li><a class="reference" href="#addLen%2CArchetypeStore%5BComps%3A%20tuple%5D%2Cuint" title="addLen[Comps: tuple](store: var ArchetypeStore[Comps]; len: var uint)">addLen[Comps: tuple](store: var ArchetypeStore[Comps]; len: var uint)</a></li>
-<li><a class="reference" href="#addLen%2CArchetypeStore%5BComps%3A%20tuple%5D%2Cuint%2Cproc%28Comps%29" title="addLen[Comps: tuple](store: var ArchetypeStore[Comps]; len: var uint; predicate: proc (
-    row: var Comps): bool {.nimcall, gcsafe, raises: [].})">addLen[Comps: tuple](store: var ArchetypeStore[Comps]; len: var uint; predicate: proc (
-    row: var Comps): bool {.nimcall, gcsafe, raises: [].})</a></li>
+  <li><a class="reference" href="#addLen%2CArchetypeStore%5BComps%3A%20tuple%5D%2CNatural" title="addLen[Comps: tuple](store: var ArchetypeStore[Comps]; len: var Natural)">addLen[Comps: tuple](store: var ArchetypeStore[Comps]; len: var Natural)</a></li>
+<li><a class="reference" href="#addLen%2CArchetypeStore%5BComps%3A%20tuple%5D%2CNatural%2Cproc%28Comps%29" title="addLen[Comps: tuple](store: var ArchetypeStore[Comps]; len: var Natural;
+    predicate: proc (row: var Comps): bool {.nimcall, gcsafe, raises: [].})">addLen[Comps: tuple](store: var ArchetypeStore[Comps]; len: var Natural;
+    predicate: proc (row: var Comps): bool {.nimcall, gcsafe, raises: [].})</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">del
@@ -114,8 +114,8 @@
 
 </ul>
 <ul class="simple nested-toc-section">newArchetypeStore
-  <li><a class="reference" href="#newArchetypeStore%2CArchetypeId%2CSomeInteger" title="newArchetypeStore[Comps: tuple](archetype: ArchetypeId; initialSize: SomeInteger): ArchetypeStore[
-    Comps]">newArchetypeStore[Comps: tuple](archetype: ArchetypeId; initialSize: SomeInteger): ArchetypeStore[
+  <li><a class="reference" href="#newArchetypeStore%2CArchetypeId%2CNatural" title="newArchetypeStore[Comps: tuple](archetype: ArchetypeId; initialSize: Natural): ArchetypeStore[
+    Comps]">newArchetypeStore[Comps: tuple](archetype: ArchetypeId; initialSize: Natural): ArchetypeStore[
     Comps]</a></li>
 
 </ul>
@@ -227,16 +227,16 @@
 
 </div>
 <div id="addLen-procs-all">
-  <div id="addLen,ArchetypeStore[Comps: tuple],uint">
-  <dt><pre><span class="Keyword">func</span> <a href="#addLen%2CArchetypeStore%5BComps%3A%20tuple%5D%2Cuint"><span class="Identifier">addLen</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">len</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">uint</span><span class="Other">)</span></pre></dt>
+  <div id="addLen,ArchetypeStore[Comps: tuple],Natural">
+  <dt><pre><span class="Keyword">func</span> <a href="#addLen%2CArchetypeStore%5BComps%3A%20tuple%5D%2CNatural"><span class="Identifier">addLen</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">len</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">Natural</span><span class="Other">)</span></pre></dt>
   <dd>
     
     Accessor for the archetype of a store
     
   </dd>
 </div>
-<div id="addLen,ArchetypeStore[Comps: tuple],uint,proc(Comps)">
-  <dt><pre><span class="Keyword">proc</span> <a href="#addLen%2CArchetypeStore%5BComps%3A%20tuple%5D%2Cuint%2Cproc%28Comps%29"><span class="Identifier">addLen</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">len</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">uint</span><span class="Other">;</span>
+<div id="addLen,ArchetypeStore[Comps: tuple],Natural,proc(Comps)">
+  <dt><pre><span class="Keyword">proc</span> <a href="#addLen%2CArchetypeStore%5BComps%3A%20tuple%5D%2CNatural%2Cproc%28Comps%29"><span class="Identifier">addLen</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">len</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">Natural</span><span class="Other">;</span>
     <span class="Identifier">predicate</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">row</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">Comps</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span class="Identifier">nimcall</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}<span class="Other">)</span></pre></dt>
   <dd>
     
@@ -318,10 +318,9 @@
 
 </div>
 <div id="newArchetypeStore-procs-all">
-  <div id="newArchetypeStore,ArchetypeId,SomeInteger">
-  <dt><pre><span class="Keyword">proc</span> <a href="#newArchetypeStore%2CArchetypeId%2CSomeInteger"><span class="Identifier">newArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <a href="world.html#ArchetypeId"><span class="Identifier">ArchetypeId</span></a><span class="Other">;</span>
-                                     <span class="Identifier">initialSize</span><span class="Other">:</span> <span class="Identifier">SomeInteger</span><span class="Other">)</span><span class="Other">:</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span>
-    <span class="Identifier">Comps</span><span class="Other">]</span></pre></dt>
+  <div id="newArchetypeStore,ArchetypeId,Natural">
+  <dt><pre><span class="Keyword">proc</span> <a href="#newArchetypeStore%2CArchetypeId%2CNatural"><span class="Identifier">newArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <a href="world.html#ArchetypeId"><span class="Identifier">ArchetypeId</span></a><span class="Other">;</span>
+                                     <span class="Identifier">initialSize</span><span class="Other">:</span> <span class="Identifier">Natural</span><span class="Other">)</span><span class="Other">:</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span></pre></dt>
   <dd>
     
     Creates a new storage block for an archetype
@@ -403,7 +402,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2025-12-29 22:25:45 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-03-13 15:36:46 UTC</small>
       </div>
     </div>
   </div>
