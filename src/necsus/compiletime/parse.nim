@@ -4,6 +4,7 @@ import
 import ../runtime/[pragmas, directives], ../util/[typeReader, nimNode]
 import spawnGen, queryGen, deleteGen, attachDetachGen, sharedGen, tickIdGen, resourceGen
 import localGen, lookupGen, eventGen, timeGen, debugGen, bundleGen, saveGen, restoreGen
+import registerSystemGen
 
 type
   SystemPhase* = enum
@@ -118,6 +119,8 @@ proc parseArgKind(symbol: NimNode): Option[DirectiveGen] =
     return some(swapGenerator)
   of "Resource":
     return some(resourceGenerator)
+  of "RegisterSystem":
+    return some(registerSystemGenerator)
   else:
     return none(DirectiveGen)
 
@@ -216,7 +219,7 @@ proc parseParametricArg(
   of DirectiveKind.None:
     error("System argument does not support tuple parameters: " & $gen.kind)
 
-proc parseFlagSystemArg(name: NimNode, directiveSymbol: NimNode): Option[SystemArg] =
+proc parseFlagSystemArg(context, name: NimNode, directiveSymbol: NimNode): Option[SystemArg] =
   ## Parses unparameterized system args
   let gen = parseArgKind(directiveSymbol).orElse:
     return none(SystemArg)
@@ -225,7 +228,7 @@ proc parseFlagSystemArg(name: NimNode, directiveSymbol: NimNode): Option[SystemA
     error("System argument is not flag based: " & $gen.kind)
   of DirectiveKind.None:
     return some(
-      newSystemArg[void](directiveSymbol, gen, name.extractStr, directiveSymbol.strVal)
+      newSystemArg[void](directiveSymbol, gen, name.extractStr, gen.chooseNameNone(context, name))
     )
 
 proc normalize(node: NimNode): NimNode =
@@ -253,7 +256,7 @@ proc parseArgType(context, argName, argType, original: NimNode): SystemArg =
   of nnkCall:
     parsed = parseParametricArg(context, argName, argType[1], argType[2 ..^ 1])
   of nnkSym:
-    parsed = parseFlagSystemArg(argName, argType)
+    parsed = parseFlagSystemArg(context, argName, argType)
   of nnkVarTy:
     parsed = some(parseArgType(context, argName, argType[0], original))
   else:

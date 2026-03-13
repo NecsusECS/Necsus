@@ -57,6 +57,12 @@ type
   SaveSystemInstance*[T] = proc(): T {.closure.}
     ## Marks the return type for an instanced save system
 
+  DynamicSystem* = proc() {.closure.}
+    ## A dynamically registered system proc
+
+  RegisterSystem* = proc(system: DynamicSystem) {.closure.}
+    ## Registers a dynamic system
+
 when isSinkMemoryCorruptionFixed():
   type Attach*[C: tuple] = proc(eid: EntityId, components: sink C) {.gcsafe, closure.}
     ## Describes a type that is able to update existing entities new entities. Where `C` is

@@ -90,6 +90,7 @@ type
       generateNone*: HookGenerator[void]
       worldFieldsNone: proc(name: string): seq[WorldField]
       systemArgNone*: SystemArgExtractor[void]
+      chooseNameNone*: proc(context, name: NimNode): string
     of DirectiveKind.Dual:
       generateDual*: HookGenerator[DualDirective]
       archetypeDual*: BuildArchetype[DualDirective]
@@ -225,12 +226,16 @@ proc defaultWorldFieldNone(name: string): seq[WorldField] =
 proc defaultSystemArgNone(name: string): NimNode =
   newDotExpr(appStateIdent, name.ident)
 
+proc defaultChooseNameNone(capturedIdent: string): proc(context, name: NimNode): string =
+  return proc(context, name: NimNode): string = capturedIdent
+
 proc newGenerator*(
     ident: string,
     interest: set[GenerateHook],
     generate: HookGenerator[void],
     worldFields: proc(name: string): seq[WorldField] = defaultWorldFieldNone,
     systemArg: SystemArgExtractor[void] = defaultSystemArgNone,
+    chooseName: proc(context, name: NimNode): string = nil,
 ): DirectiveGen =
   ## Creates a 'none' generator
   result.new
@@ -240,6 +245,7 @@ proc newGenerator*(
   result.generateNone = generate
   result.worldFieldsNone = worldFields
   result.systemArgNone = systemArg
+  result.chooseNameNone = if chooseName != nil: chooseName else: defaultChooseNameNone(ident)
 
 proc newGenerator*(
     ident: string,
