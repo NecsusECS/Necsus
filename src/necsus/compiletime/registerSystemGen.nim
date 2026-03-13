@@ -1,5 +1,6 @@
-import macros
+import macros, strutils
 import common, systemGen, ../runtime/directives
+import ../util/nimNode
 
 proc fields(name: string): seq[WorldField] =
   @[(name, bindSym("DynamicSystem"))]
@@ -26,12 +27,16 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string): NimNode =
   else:
     return newEmptyNode()
 
+proc chooseRegisterSystemName(context, name: NimNode): string =
+  var hash: string
+  hash.addSignature(context)
+  context.symbols.join("_") & "_" & hash & "_" & name.strVal
+
 let registerSystemGenerator* {.compileTime.} = newGenerator(
   ident = "RegisterSystem",
   interest = {Standard, LoopInPlace},
   generate = generate,
   worldFields = fields,
   systemArg = sysArg,
-  chooseName = proc(context, name: NimNode): string =
-    name.strVal,
+  chooseName = chooseRegisterSystemName,
 )
