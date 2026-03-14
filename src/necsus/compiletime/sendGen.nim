@@ -119,7 +119,11 @@ proc createSendProcs*(details: CodeGenInfo): NimNode =
             let fieldName = details.nameOf(arg).ident
             let invokeCallback = quote:
               `appStateIdent`.`fieldName`(`event`)
-            body.add(invokeCallback.addActiveChecks(details, system.checks, EventCallback))
+            body.add(
+              invokeCallback
+                .addActiveChecks(details, system.checks, EventCallback)
+                .addActiveChecks(details, arg.argChecks)
+            )
 
       if body.len == 0:
         body.add(nnkDiscardStmt.newTree(newEmptyNode()))

@@ -9,6 +9,23 @@ proc renderSystemArgs(
   args.mapIt:
     systemArg(codeGenInfo, it)
 
+proc buildCondition(
+    codeGenInfo: CodeGenInfo, items: openArray[tuple[value: NimNode, stateArg: SystemArg]]
+): NimNode =
+  var condition: NimNode = newLit(false)
+  for (checkAgainst, stateArg) in items:
+    let sysVarRef = codeGenInfo.systemArg(stateArg)
+    condition = quote:
+      `condition` or `sysVarRef` == `checkAgainst`
+  return condition
+
+proc addActiveChecks*(invocation: NimNode, codeGenInfo: CodeGenInfo, checks: seq[ArgCheck]): NimNode =
+  ## Wraps the invocation code in per-argument active checks
+  if checks.len == 0:
+    return invocation
+  let condition = codeGenInfo.buildCondition(checks.mapIt((it.value, it.sharedStateArg)))
+  return newIfStmt((condition, invocation))
+
 proc addActiveChecks*(
     invocation: NimNode,
     codeGenInfo: CodeGenInfo,
@@ -18,14 +35,7 @@ proc addActiveChecks*(
   ## Wraps the system invocation code in the checks required
   if phase notin {LoopPhase, IndirectEventCallback, EventCallback} or checks.len == 0:
     return invocation
-
-  var condition: NimNode = newLit(false)
-  for check in checks:
-    let sysVarRef = codeGenInfo.systemArg(check.arg)
-    let checkAgainst = check.value
-    condition = quote:
-      `condition` or `sysVarRef` == `checkAgainst`
-
+  let condition = codeGenInfo.buildCondition(checks.mapIt((it.value, it.arg)))
   return newIfStmt((condition, invocation))
 
 proc wrapInProfiler(node: NimNode, i: int, codeGenInfo: CodeGenInfo): NimNode =
