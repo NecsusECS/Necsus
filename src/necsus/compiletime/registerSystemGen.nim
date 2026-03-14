@@ -30,7 +30,7 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string): NimNode =
 proc chooseRegisterSystemName(context, name: NimNode): string =
   var hash: string
   hash.addSignature(context)
-  context.symbols.join("_") & "_" & hash & "_" & name.strVal
+  context.symbols.join("_") & "_" & hash & "_" & name.extractStr
 
 let registerSystemGenerator* {.compileTime.} = newGenerator(
   ident = "RegisterSystem",

@@ -26,16 +26,19 @@ proc generate(
     return quote:
       `appStateIdent`.`nameIdent` = proc(event: `eventType`): void =
         discard
-      `appStateIdent`.`setterIdent` =
-        proc(system: DynamicEventSystem[`eventType`]) {.closure.} =
-          `appStatePtr`.`nameIdent` = system
+      `appStateIdent`.`setterIdent` = proc(
+          system: DynamicEventSystem[`eventType`]
+      ) {.closure.} =
+        `appStatePtr`.`nameIdent` = system
   else:
     return newEmptyNode()
 
-proc chooseRegisterEventSystemName(context, argName: NimNode, dir: MonoDirective): string =
+proc chooseRegisterEventSystemName(
+    context, argName: NimNode, dir: MonoDirective
+): string =
   var hash: string
   hash.addSignature(context)
-  context.symbols.join("_") & "_" & hash & "_" & argName.strVal
+  context.symbols.join("_") & "_" & hash & "_" & argName.extractStr
 
 let registerEventSystemGenerator* {.compileTime.} = newGenerator(
   ident = "RegisterEventSystem",
