@@ -1,5 +1,35 @@
 # Changelog
 
+## 0.14.1
+
+### New Features
+
+* Support pragmas on system args
+* Support multiple `runSystemOnce` calls in a template
+
+## 0.14.0
+
+### New Features
+
+* Add `Resource` directive
+* Support resources that require initialization
+* Support `typeOf` in directives
+
+### Bug Fixes
+
+* Fix `eventSys` open symbol normalization
+* Improve support for open symbols
+* Fix `extend` usage in bundles
+* Fix tuple extension with generics
+* Fix `getTupleSubtypes` error message
+* Avoid unnecessary resource refs
+
+### Other Changes
+
+* Improve error location reporting for nimNode errors
+* Add type name to system var errors
+* Remove tuple join sorting requirement
+
 ## 0.13.0
 
 ### Backwards Incompatible Changes
