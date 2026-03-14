@@ -22,8 +22,17 @@ proc generate(details: GenerateContext, arg: SystemArg, name: string): NimNode =
       `appStateIdent`.`setterIdent` = proc(system: DynamicSystem) {.closure.} =
         `appStatePtr`.`nameIdent` = system
   of LoopInPlace:
-    return quote:
+    let call = quote:
       `appStateIdent`.`nameIdent`()
+    if arg.argChecks.len == 0:
+      return call
+    var condition = newLit(false)
+    for check in arg.argChecks:
+      let sysVarRef = details.systemArg(check.sharedStateArg)
+      let checkAgainst = check.value
+      condition = quote:
+        `condition` or `sysVarRef` == `checkAgainst`
+    return newIfStmt((condition, call))
   else:
     return newEmptyNode()
 

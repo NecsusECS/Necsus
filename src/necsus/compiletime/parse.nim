@@ -274,10 +274,14 @@ proc parseArgType(context, argName, argType, original: NimNode): SystemArg =
 
   error("Expecting an ECS interface type, but got: " & original.repr, original)
 
+proc parseActiveChecks(context, typeNode: NimNode): seq[ActiveCheck]
+
 proc parseSystemArg(context, identDef: NimNode): SystemArg =
   ## Parses a SystemArg from a proc argument
   identDef.expectKind({nnkIdentDefs, nnkExprEqExpr})
-  return parseArgType(context, identDef[0], identDef[1], identDef[1])
+  result = parseArgType(context, identDef[0], identDef[1], identDef[1])
+  for check in parseActiveChecks(context, identDef):
+    result.argChecks.add(ArgCheck(value: check.value, sharedStateArg: check.arg))
 
 proc readDependencies(typeNode: NimNode): seq[NimNode] =
   ## Reads the systems referenced by a pragma attached to another system

@@ -101,6 +101,10 @@ type
       nestedArgsDual*: NestedArgsExtractor[DualDirective]
       convertersDual*: ConvertExtractor[DualDirective]
 
+  ArgCheck* = object ## A per-argument active check condition
+    value*: NimNode ## The enum value to compare against
+    sharedStateArg*: SystemArg ## The Shared[T] arg to check
+
   SystemArg* = ref object ## A single arg within a system proc
     source*: NimNode
     generator*: DirectiveGen
@@ -117,6 +121,7 @@ type
     of DirectiveKind.Dual:
       dualDir*: DualDirective
     nestedArgs*: seq[SystemArg]
+    argChecks*: seq[ArgCheck]
 
 proc newConverter*(
     input: Archetype[ComponentDef],
@@ -439,6 +444,9 @@ proc allNestedArgs(arg: SystemArg, into: var seq[SystemArg]) =
   for nested in arg.nestedArgs:
     allNestedArgs(nested, into)
     into.add(nested)
+  for check in arg.argChecks:
+    allNestedArgs(check.sharedStateArg, into)
+    into.add(check.sharedStateArg)
 
 iterator allArgs*(args: openArray[SystemArg]): SystemArg =
   # Yield any system args nested inside other system args
