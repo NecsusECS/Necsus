@@ -694,6 +694,33 @@ proc testSystem(updater: RegisterSystem, checker: RegisterSystem) {.startupSys.}
 proc myApp() {.necsus([~testSystem], newNecsusConf()).}
 ```
 
+The `active()` pragma can be applied to control when registered closures execute:
+
+- On the **declaring system**: all closures registered by that system only execute
+  when the system is active.
+- On **individual arguments**: each `RegisterSystem` argument can have its own
+  `active()` condition, activating independently.
+
+```nim
+import necsus
+
+type SystemState = enum
+    StateA
+    StateB
+
+proc testSystem(
+    aSys {.active(StateA).}: RegisterSystem,
+    bSys {.active(StateB).}: RegisterSystem,
+) {.startupSys.} =
+    aSys do() -> void:
+        echo "Running in StateA"
+
+    bSys do() -> void:
+        echo "Running in StateB"
+
+proc myApp() {.necsus([~testSystem], newNecsusConf()).}
+```
+
 #### RegisterEventSystem
 
 `RegisterEventSystem[E]` is a directive that allows a startup system to dynamically register
@@ -718,8 +745,39 @@ proc myApp() {.necsus([~startup, ~sender], newNecsusConf()).}
 ```
 
 The registered callback is invoked inline when an event is sent, the same as
-an `{.eventSys.}` system. If the `active()` pragma is applied to the declaring
-system, the callback will only run when the active state condition is met.
+an `{.eventSys.}` system. The `active()` pragma can be applied to control when
+callbacks execute:
+
+- On the **declaring system**: all registered callbacks from that system only run
+  when the system is active.
+- On **individual arguments**: each `RegisterEventSystem` argument can have its own
+  `active()` condition, activating independently.
+
+```nim
+import necsus
+
+type
+    MyEvent = object
+        value: int
+
+    SystemState = enum
+        StateA
+        StateB
+
+proc startup(
+    handlerA {.active(StateA).}: RegisterEventSystem[MyEvent],
+    handlerB {.active(StateB).}: RegisterEventSystem[MyEvent],
+) {.startupSys.} =
+    handlerA do(event: MyEvent) -> void:
+        echo "Received in StateA: ", event.value
+    handlerB do(event: MyEvent) -> void:
+        echo "Received in StateB: ", event.value
+
+proc sender(outbox: Outbox[MyEvent]) =
+    outbox(MyEvent(value: 42))
+
+proc myApp() {.necsus([~startup, ~sender], newNecsusConf()).}
+```
 
 ### Extended System Usage
 
