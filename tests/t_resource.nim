@@ -19,5 +19,5 @@ test "Pass resources from default arguments to systems":
   appWithDefault()
 
 test "Missing resource should fail to compile":
-  check not(compiles do:
+  check not (compiles do:
     proc appNoDefault() {.necsus(runner, [~testSystem], newNecsusConf()).})

@@ -57,14 +57,12 @@ type
   SaveSystemInstance*[T] = proc(): T {.closure.}
     ## Marks the return type for an instanced save system
 
-  DynamicSystem* = proc() {.closure.}
-    ## A dynamically registered system proc
+  DynamicSystem* = proc() {.closure.} ## A dynamically registered system proc
 
   DynamicEventSystem*[E] = proc(event: E) {.closure.}
     ## A dynamically registered event system proc
 
-  RegisterSystem* = proc(system: DynamicSystem) {.closure.}
-    ## Registers a dynamic system
+  RegisterSystem* = proc(system: DynamicSystem) {.closure.} ## Registers a dynamic system
 
   RegisterEventSystem*[E] = proc(system: DynamicEventSystem[E]) {.closure.}
     ## Registers a dynamic event system callback for events of type E

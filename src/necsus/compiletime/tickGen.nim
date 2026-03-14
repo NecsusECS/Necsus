@@ -10,7 +10,8 @@ proc renderSystemArgs(
     systemArg(codeGenInfo, it)
 
 proc buildCondition(
-    codeGenInfo: CodeGenInfo, items: openArray[tuple[value: NimNode, stateArg: SystemArg]]
+    codeGenInfo: CodeGenInfo,
+    items: openArray[tuple[value: NimNode, stateArg: SystemArg]],
 ): NimNode =
   var condition: NimNode = newLit(false)
   for (checkAgainst, stateArg) in items:
@@ -19,11 +20,14 @@ proc buildCondition(
       `condition` or `sysVarRef` == `checkAgainst`
   return condition
 
-proc addActiveChecks*(invocation: NimNode, codeGenInfo: CodeGenInfo, checks: seq[ArgCheck]): NimNode =
+proc addActiveChecks*(
+    invocation: NimNode, codeGenInfo: CodeGenInfo, checks: seq[ArgCheck]
+): NimNode =
   ## Wraps the invocation code in per-argument active checks
   if checks.len == 0:
     return invocation
-  let condition = codeGenInfo.buildCondition(checks.mapIt((it.value, it.sharedStateArg)))
+  let condition =
+    codeGenInfo.buildCondition(checks.mapIt((it.value, it.sharedStateArg)))
   return newIfStmt((condition, invocation))
 
 proc addActiveChecks*(

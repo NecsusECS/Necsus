@@ -10,7 +10,9 @@ proc systemB(system: RegisterEventSystem[string]) {.startupSys.} =
     check event == "foo"
     value.add("bar")
 
-proc systemC(system: RegisterEventSystem[string], two: RegisterEventSystem[string]) {.startupSys.} =
+proc systemC(
+    system: RegisterEventSystem[string], two: RegisterEventSystem[string]
+) {.startupSys.} =
   system do(event: string) -> void:
     check event == "foo"
     value.add("baz")

@@ -20,7 +20,9 @@ proc systemA(state: Shared[SystemState]) =
 
 var timesCalled = 0
 
-proc systemB(bSys {.active(StateB).}: RegisterSystem, cSys {.active(StateC).}: RegisterSystem) {.startupSys.} =
+proc systemB(
+    bSys {.active(StateB).}: RegisterSystem, cSys {.active(StateC).}: RegisterSystem
+) {.startupSys.} =
   bSys do() -> void:
     timesCalled += 1
 

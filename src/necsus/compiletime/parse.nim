@@ -221,7 +221,9 @@ proc parseParametricArg(
   of DirectiveKind.None:
     error("System argument does not support tuple parameters: " & $gen.kind)
 
-proc parseFlagSystemArg(context, name: NimNode, directiveSymbol: NimNode): Option[SystemArg] =
+proc parseFlagSystemArg(
+    context, name: NimNode, directiveSymbol: NimNode
+): Option[SystemArg] =
   ## Parses unparameterized system args
   let gen = parseArgKind(directiveSymbol).orElse:
     return none(SystemArg)
@@ -230,7 +232,9 @@ proc parseFlagSystemArg(context, name: NimNode, directiveSymbol: NimNode): Optio
     error("System argument is not flag based: " & $gen.kind)
   of DirectiveKind.None:
     return some(
-      newSystemArg[void](directiveSymbol, gen, name.extractStr, gen.chooseNameNone(context, name))
+      newSystemArg[void](
+        directiveSymbol, gen, name.extractStr, gen.chooseNameNone(context, name)
+      )
     )
 
 proc normalize(node: NimNode): NimNode =

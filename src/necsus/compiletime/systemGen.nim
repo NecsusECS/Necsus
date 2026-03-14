@@ -232,8 +232,11 @@ proc defaultWorldFieldNone(name: string): seq[WorldField] =
 proc defaultSystemArgNone(name: string): NimNode =
   newDotExpr(appStateIdent, name.ident)
 
-proc defaultChooseNameNone(capturedIdent: string): proc(context, name: NimNode): string =
-  return proc(context, name: NimNode): string = capturedIdent
+proc defaultChooseNameNone(
+    capturedIdent: string
+): proc(context, name: NimNode): string =
+  return proc(context, name: NimNode): string =
+    capturedIdent
 
 proc newGenerator*(
     ident: string,
@@ -251,7 +254,11 @@ proc newGenerator*(
   result.generateNone = generate
   result.worldFieldsNone = worldFields
   result.systemArgNone = systemArg
-  result.chooseNameNone = if chooseName != nil: chooseName else: defaultChooseNameNone(ident)
+  result.chooseNameNone =
+    if chooseName != nil:
+      chooseName
+    else:
+      defaultChooseNameNone(ident)
 
 proc newGenerator*(
     ident: string,

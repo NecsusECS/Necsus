@@ -48,15 +48,15 @@ proc createMarshalType(
   var dedupe = initHashSet[string]()
 
   genInfo.systems
-  .filterIt(it.phase == SaveCallback)
-  .mapIt(it.returns)
-  .collectMarshalTypes(dedupe, records)
+    .filterIt(it.phase == SaveCallback)
+    .mapIt(it.returns)
+    .collectMarshalTypes(dedupe, records)
 
   if includeRestore:
     genInfo.systems
-    .filterIt(it.phase == RestoreCallback)
-    .mapIt(it.restoreSysType)
-    .collectMarshalTypes(dedupe, records)
+      .filterIt(it.phase == RestoreCallback)
+      .mapIt(it.restoreSysType)
+      .collectMarshalTypes(dedupe, records)
 
   return nnkTypeSection.newTree(
     nnkTypeDef.newTree(
