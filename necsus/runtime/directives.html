@@ -59,14 +59,14 @@
 <li><a class="reference" href="#Delete" title="Delete = proc (eid: EntityId) {.gcsafe, raises: [ValueError], closure.}">Delete</a></li>
 <li><a class="reference" href="#DeleteAll" title="DeleteAll[C] = proc () {.closure, gcsafe.}">DeleteAll</a></li>
 <li><a class="reference" href="#Detach" title="Detach[C] = proc (eid: EntityId) {.gcsafe, closure.}">Detach</a></li>
+<li><a class="reference" href="#DynamicEventSystem" title="DynamicEventSystem[E] = proc (event: E) {.closure.}">DynamicEventSystem</a></li>
 <li><a class="reference" href="#DynamicSystem" title="DynamicSystem = proc () {.closure.}">DynamicSystem</a></li>
 <li><a class="reference" href="#EntityDebug" title="EntityDebug = proc (eid: EntityId): string {.gcsafe, closure,
     raises: [Exception].}">EntityDebug</a></li>
 <li><a class="reference" href="#EventSystemInstance" title="EventSystemInstance[T] = proc (event: T): void {.closure.}">EventSystemInstance</a></li>
 <li><a class="reference" href="#Lookup" title="Lookup[C] = proc (entityId: EntityId): Option[C] {.closure, gcsafe, raises: [].}">Lookup</a></li>
 <li><a class="reference" href="#Outbox" title="Outbox[T] = proc (message: T) {.closure, gcsafe.}">Outbox</a></li>
-<li><a class="reference" href="#RegisterEventSystem" title="RegisterEventSystem[E] = proc (system: proc (event: E): void {.closure.}) {.
-    closure.}">RegisterEventSystem</a></li>
+<li><a class="reference" href="#RegisterEventSystem" title="RegisterEventSystem[E] = proc (system: DynamicEventSystem[E]) {.closure.}">RegisterEventSystem</a></li>
 <li><a class="reference" href="#RegisterSystem" title="RegisterSystem = proc (system: DynamicSystem) {.closure.}">RegisterSystem</a></li>
 <li><a class="reference" href="#Resource" title="Resource[T] = T">Resource</a></li>
 <li><a class="reference" href="#Restore" title="Restore = proc (json: string) {.closure, gcsafe, raises: [IOError, OSError,
@@ -141,6 +141,14 @@
     
   </dd>
 </div>
+<div id="DynamicEventSystem">
+  <dt><pre><a href="directives.html#DynamicEventSystem"><span class="Identifier">DynamicEventSystem</span></a><span class="Other">[</span><span class="Identifier">E</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">event</span><span class="Other">:</span> <span class="Identifier">E</span><span class="Other">)</span> {.<span class="Identifier">closure</span>.}</pre></dt>
+  <dd>
+    
+    A dynamically registered event system proc
+    
+  </dd>
+</div>
 <div id="DynamicSystem">
   <dt><pre><a href="directives.html#DynamicSystem"><span class="Identifier">DynamicSystem</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span> {.<span class="Identifier">closure</span>.}</pre></dt>
   <dd>
@@ -183,8 +191,7 @@
   </dd>
 </div>
 <div id="RegisterEventSystem">
-  <dt><pre><a href="directives.html#RegisterEventSystem"><span class="Identifier">RegisterEventSystem</span></a><span class="Other">[</span><span class="Identifier">E</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">system</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">event</span><span class="Other">:</span> <span class="Identifier">E</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">void</span> {.<span class="Identifier">closure</span>.}<span class="Other">)</span> {.
-    <span class="Identifier">closure</span>.}</pre></dt>
+  <dt><pre><a href="directives.html#RegisterEventSystem"><span class="Identifier">RegisterEventSystem</span></a><span class="Other">[</span><span class="Identifier">E</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">system</span><span class="Other">:</span> <a href="directives.html#DynamicEventSystem"><span class="Identifier">DynamicEventSystem</span></a><span class="Other">[</span><span class="Identifier">E</span><span class="Other">]</span><span class="Other">)</span> {.<span class="Identifier">closure</span>.}</pre></dt>
   <dd>
     
     Registers a dynamic event system callback for events of type E
@@ -283,7 +290,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-03-13 15:36:46 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-03-14 16:40:48 UTC</small>
       </div>
     </div>
   </div>

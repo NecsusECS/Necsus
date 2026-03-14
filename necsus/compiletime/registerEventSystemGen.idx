@@ -1,2 +1,2 @@
 nimTitle	registerEventSystemGen	necsus/compiletime/registerEventSystemGen.html	module src/necsus/compiletime/registerEventSystemGen		0
-nim	registerEventSystemGenerator	necsus/compiletime/registerEventSystemGen.html#registerEventSystemGenerator	let registerEventSystemGenerator		44
+nim	registerEventSystemGenerator	necsus/compiletime/registerEventSystemGen.html#registerEventSystemGenerator	let registerEventSystemGenerator		40
