@@ -136,7 +136,7 @@ proc callSystems*(codeGenInfo: CodeGenInfo, phases: set[SystemPhase]): NimNode =
     var invokeSystem = codeGenInfo.invokeSystem(system, phases)
     if invokeSystem.kind != nnkEmpty:
       result.add(invokeSystem)
-    elif LoopPhase in phases:
+    if LoopPhase in phases:
       let loopInPlace = codeGenInfo.generateForHook(system, LoopInPlace)
       if loopInPlace.len > 0:
         let name = "RegisterSystem: " & system.symbol.strVal

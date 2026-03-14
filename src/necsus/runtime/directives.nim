@@ -60,10 +60,13 @@ type
   DynamicSystem* = proc() {.closure.}
     ## A dynamically registered system proc
 
+  DynamicEventSystem*[E] = proc(event: E) {.closure.}
+    ## A dynamically registered event system proc
+
   RegisterSystem* = proc(system: DynamicSystem) {.closure.}
     ## Registers a dynamic system
 
-  RegisterEventSystem*[E] = proc(system: proc(event: E): void {.closure.}) {.closure.}
+  RegisterEventSystem*[E] = proc(system: DynamicEventSystem[E]) {.closure.}
     ## Registers a dynamic event system callback for events of type E
 
 when isSinkMemoryCorruptionFixed():

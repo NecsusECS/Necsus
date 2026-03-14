@@ -1,24 +1,16 @@
 import macros, strutils
 import common, systemGen, monoDirective
+import ../runtime/directives
 import ../util/nimNode
 
 proc fields(name: string, dir: MonoDirective): seq[WorldField] =
   let eventType = dir.argType
-  let procType = nnkProcTy.newTree(
-    nnkFormalParams.newTree(
-      newEmptyNode(),
-      nnkIdentDefs.newTree(ident("event"), eventType, newEmptyNode()),
-    ),
-    nnkPragma.newTree(ident("closure")),
-  )
-  @[(name, procType)]
+  let handlerType = nnkBracketExpr.newTree(bindSym("DynamicEventSystem"), eventType)
+  let setterType = nnkBracketExpr.newTree(bindSym("RegisterEventSystem"), eventType)
+  @[(name, handlerType), (name & "_setter", setterType)]
 
 proc sysArg(name: string, dir: MonoDirective): NimNode =
-  let nameIdent = name.ident
-  let eventType = dir.argType
-  return quote:
-    proc(system: proc(event: `eventType`): void {.closure.}) {.closure.} =
-      `appStatePtr`.`nameIdent` = system
+  newDotExpr(appStateIdent, (name & "_setter").ident)
 
 proc generate(
     details: GenerateContext, arg: SystemArg, name: string, dir: MonoDirective
@@ -27,12 +19,16 @@ proc generate(
     return newEmptyNode()
 
   let nameIdent = name.ident
+  let setterIdent = (name & "_setter").ident
   let eventType = dir.argType
   case details.hook
   of Standard:
     return quote:
       `appStateIdent`.`nameIdent` = proc(event: `eventType`): void =
         discard
+      `appStateIdent`.`setterIdent` =
+        proc(system: DynamicEventSystem[`eventType`]) {.closure.} =
+          `appStatePtr`.`nameIdent` = system
   else:
     return newEmptyNode()
 
