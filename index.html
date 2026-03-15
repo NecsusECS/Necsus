@@ -575,6 +575,31 @@ proc testSystem(updater: RegisterSystem, checker: RegisterSystem) {.startupSys.}
 
 proc myApp() {.necsus([~testSystem], newNecsusConf()).}
 </code></pre>
+<p>The <code>active()</code> pragma can be applied to control when registered closures execute:</p>
+<ul>
+<li>On the <strong>declaring system</strong>: all closures registered by that system only execute
+when the system is active.</li>
+<li>On <strong>individual arguments</strong>: each <code>RegisterSystem</code> argument can have its own
+<code>active()</code> condition, activating independently.</li>
+</ul>
+<pre><code class="language-nim">import necsus
+
+type SystemState = enum
+    StateA
+    StateB
+
+proc testSystem(
+    aSys {.active(StateA).}: RegisterSystem,
+    bSys {.active(StateB).}: RegisterSystem,
+) {.startupSys.} =
+    aSys do() -&gt; void:
+        echo &quot;Running in StateA&quot;
+
+    bSys do() -&gt; void:
+        echo &quot;Running in StateB&quot;
+
+proc myApp() {.necsus([~testSystem], newNecsusConf()).}
+</code></pre>
 <h4>RegisterEventSystem</h4>
 <p><code>RegisterEventSystem[E]</code> is a directive that allows a startup system to dynamically register
 a closure that will be called whenever an event of type <code>E</code> is sent via <code>Outbox[E]</code>. This is
@@ -595,8 +620,38 @@ proc sender(outbox: Outbox[MyEvent]) =
 proc myApp() {.necsus([~startup, ~sender], newNecsusConf()).}
 </code></pre>
 <p>The registered callback is invoked inline when an event is sent, the same as
-an <code>{.eventSys.}</code> system. If the <code>active()</code> pragma is applied to the declaring
-system, the callback will only run when the active state condition is met.</p>
+an <code>{.eventSys.}</code> system. The <code>active()</code> pragma can be applied to control when
+callbacks execute:</p>
+<ul>
+<li>On the <strong>declaring system</strong>: all registered callbacks from that system only run
+when the system is active.</li>
+<li>On <strong>individual arguments</strong>: each <code>RegisterEventSystem</code> argument can have its own
+<code>active()</code> condition, activating independently.</li>
+</ul>
+<pre><code class="language-nim">import necsus
+
+type
+    MyEvent = object
+        value: int
+
+    SystemState = enum
+        StateA
+        StateB
+
+proc startup(
+    handlerA {.active(StateA).}: RegisterEventSystem[MyEvent],
+    handlerB {.active(StateB).}: RegisterEventSystem[MyEvent],
+) {.startupSys.} =
+    handlerA do(event: MyEvent) -&gt; void:
+        echo &quot;Received in StateA: &quot;, event.value
+    handlerB do(event: MyEvent) -&gt; void:
+        echo &quot;Received in StateB: &quot;, event.value
+
+proc sender(outbox: Outbox[MyEvent]) =
+    outbox(MyEvent(value: 42))
+
+proc myApp() {.necsus([~startup, ~sender], newNecsusConf()).}
+</code></pre>
 <h3>Extended System Usage</h3>
 <p>Beyond the basics of declaring systems and using directives, there are a few more advanced system use cases
 worth understanding.</p>

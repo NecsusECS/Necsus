@@ -58,6 +58,9 @@
   <li><a class="reference" href="#addActiveChecks%2CNimNode%2CCodeGenInfo%2Cseq%5BActiveCheck%5D%2CSystemPhase" title="addActiveChecks(invocation: NimNode; codeGenInfo: CodeGenInfo;
                 checks: seq[ActiveCheck]; phase: SystemPhase): NimNode">addActiveChecks(invocation: NimNode; codeGenInfo: CodeGenInfo;
                 checks: seq[ActiveCheck]; phase: SystemPhase): NimNode</a></li>
+<li><a class="reference" href="#addActiveChecks%2CNimNode%2CCodeGenInfo%2Cseq%5BArgCheck%5D" title="addActiveChecks(invocation: NimNode; codeGenInfo: CodeGenInfo;
+                checks: seq[ArgCheck]): NimNode">addActiveChecks(invocation: NimNode; codeGenInfo: CodeGenInfo;
+                checks: seq[ArgCheck]): NimNode</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">callSystems
@@ -116,6 +119,16 @@
   <dd>
     
     Wraps the system invocation code in the checks required
+    
+  </dd>
+</div>
+<div id="addActiveChecks,NimNode,CodeGenInfo,seq[ArgCheck]">
+  <dt><pre><span class="Keyword">proc</span> <a href="#addActiveChecks%2CNimNode%2CCodeGenInfo%2Cseq%5BArgCheck%5D"><span class="Identifier">addActiveChecks</span></a><span class="Other">(</span><span class="Identifier">invocation</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">;</span> <span class="Identifier">codeGenInfo</span><span class="Other">:</span> <a href="codeGenInfo.html#CodeGenInfo"><span class="Identifier">CodeGenInfo</span></a><span class="Other">;</span>
+                     <span class="Identifier">checks</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="systemGen.html#ArgCheck"><span class="Identifier">ArgCheck</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Wraps the invocation code in per-argument active checks
     
   </dd>
 </div>
@@ -204,7 +217,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-03-14 16:40:49 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-03-15 04:51:47 UTC</small>
       </div>
     </div>
   </div>

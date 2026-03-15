@@ -17,7 +17,7 @@ nim	SystemInstance	necsus/runtime/directives.html#SystemInstance	type SystemInst
 nim	EventSystemInstance	necsus/runtime/directives.html#EventSystemInstance	type EventSystemInstance		54
 nim	SaveSystemInstance	necsus/runtime/directives.html#SaveSystemInstance	type SaveSystemInstance		57
 nim	DynamicSystem	necsus/runtime/directives.html#DynamicSystem	type DynamicSystem		60
-nim	DynamicEventSystem	necsus/runtime/directives.html#DynamicEventSystem	type DynamicEventSystem		63
-nim	RegisterSystem	necsus/runtime/directives.html#RegisterSystem	type RegisterSystem		66
-nim	RegisterEventSystem	necsus/runtime/directives.html#RegisterEventSystem	type RegisterEventSystem		69
-nim	Attach	necsus/runtime/directives.html#Attach	type Attach		78
+nim	DynamicEventSystem	necsus/runtime/directives.html#DynamicEventSystem	type DynamicEventSystem		62
+nim	RegisterSystem	necsus/runtime/directives.html#RegisterSystem	type RegisterSystem		65
+nim	RegisterEventSystem	necsus/runtime/directives.html#RegisterEventSystem	type RegisterEventSystem		67
+nim	Attach	necsus/runtime/directives.html#Attach	type Attach		76

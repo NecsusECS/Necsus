@@ -55,6 +55,9 @@
     <summary><a class="reference reference-toplevel" href="#7" id="57">Types</a></summary>
     <ul class="simple simple-toc-section">
       <li><a class="reference" href="#AppInputs" title="AppInputs = seq[tuple[argName: string, directive: MonoDirective]]">AppInputs</a></li>
+<li><a class="reference" href="#ArgCheck" title="ArgCheck = object
+  value*: NimNode            ## The enum value to compare against
+  sharedStateArg*: SystemArg ## The Shared[T] arg to check">ArgCheck</a></li>
 <li><a class="reference" href="#BuildArchetype" title="BuildArchetype[T] = proc (builder: var ArchetypeBuilder[ComponentDef];
                           systemArgs: seq[SystemArg]; dir: T)">BuildArchetype</a></li>
 <li><a class="reference" href="#ConverterDef" title="ConverterDef = ref object
@@ -130,7 +133,8 @@
     nil
   of DirectiveKind.Dual:
     dualDir*: DualDirective
-  nestedArgs*: seq[SystemArg]">SystemArg</a></li>
+  nestedArgs*: seq[SystemArg]
+  argChecks*: seq[ArgCheck]">SystemArg</a></li>
 <li><a class="reference" href="#SystemArgExtractor" title="SystemArgExtractor[T] = proc (name: string; dir: T): NimNode">SystemArgExtractor</a></li>
 <li><a class="reference" href="#WorldField" title="WorldField = tuple[name: string, typ: NimNode]">WorldField</a></li>
 
@@ -333,6 +337,16 @@
     
   </dd>
 </div>
+<div id="ArgCheck">
+  <dt><pre><a href="systemGen.html#ArgCheck"><span class="Identifier">ArgCheck</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
+  <span class="Identifier">value</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">NimNode</span>            <span class="Comment">## The enum value to compare against</span>
+  <span class="Identifier">sharedStateArg</span><span class="Operator">*</span><span class="Other">:</span> <a href="systemGen.html#SystemArg"><span class="Identifier">SystemArg</span></a> <span class="Comment">## The Shared[T] arg to check</span></pre></dt>
+  <dd>
+    
+    A per-argument active check condition
+    
+  </dd>
+</div>
 <div id="BuildArchetype">
   <dt><pre><a href="systemGen.html#BuildArchetype"><span class="Identifier">BuildArchetype</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">builder</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeBuilder.html#ArchetypeBuilder"><span class="Identifier">ArchetypeBuilder</span></a><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span><span class="Other">;</span>
                           <span class="Identifier">systemArgs</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="systemGen.html#SystemArg"><span class="Identifier">SystemArg</span></a><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">dir</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">)</span></pre></dt>
@@ -486,7 +500,8 @@
     <span class="Keyword">nil</span>
   <span class="Keyword">of</span> <span class="Identifier">DirectiveKind</span><span class="Other">.</span><span class="Identifier">Dual</span><span class="Other">:</span>
     <span class="Identifier">dualDir</span><span class="Operator">*</span><span class="Other">:</span> <a href="dualDirective.html#DualDirective"><span class="Identifier">DualDirective</span></a>
-  <span class="Identifier">nestedArgs</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="systemGen.html#SystemArg"><span class="Identifier">SystemArg</span></a><span class="Other">]</span></pre></dt>
+  <span class="Identifier">nestedArgs</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="systemGen.html#SystemArg"><span class="Identifier">SystemArg</span></a><span class="Other">]</span>
+  <span class="Identifier">argChecks</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="systemGen.html#ArgCheck"><span class="Identifier">ArgCheck</span></a><span class="Other">]</span></pre></dt>
   <dd>
     
     A single arg within a system proc
@@ -876,7 +891,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-03-14 16:40:48 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-03-15 04:51:47 UTC</small>
       </div>
     </div>
   </div>
