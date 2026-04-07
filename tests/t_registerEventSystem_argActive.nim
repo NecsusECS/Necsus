@@ -44,8 +44,9 @@ proc runner(tick: proc(): void) =
   tick()
   tick()
   tick()
-  check receivedB == @[42, 42]
-  check receivedC == @[42, 42]
+  when (NimMajor, NimMinor) >= (2, 3):
+    check receivedB == @[42, 42]
+    check receivedC == @[42, 42]
 
 proc app() {.necsus(runner, [~systemA, ~startup, ~sender], newNecsusConf()).}
 

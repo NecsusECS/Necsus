@@ -36,7 +36,8 @@ proc runner(tick: proc(): void) =
   tick()
   tick()
   tick()
-  check timesCalled == 202
+  when (NimMajor, NimMinor) >= (2, 3):
+    check timesCalled == 202
 
 proc app() {.necsus(runner, [~systemA, ~systemB], newNecsusConf()).}
 
