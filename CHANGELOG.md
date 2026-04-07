@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.15.0
+
+### New Features
+
+* Add `RegisterSystem` directive for dynamically registering systems at runtime
+* Add `RegisterEventSystem` directive for dynamically registering event handler systems
+* Support active pragma on `RegisterSystem` and `RegisterEventSystem` args
+* Support dynamic events in loop systems
+
 ## 0.14.1
 
 ### New Features
