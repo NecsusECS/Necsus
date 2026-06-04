@@ -200,8 +200,9 @@ proc createTickRunner*(genInfo: CodeGenInfo, runner: NimNode): NimNode =
 
   # Create a proc to use the `appState` in the current variable closure
   let runAppStateIdent = ident("runAppState")
+  let deref = nnkDerefExpr.newTree(appStateIdent)
   result.add(
-    newProc(runAppStateIdent, body = newStmtList(newCall(ident("tick"), appStateIdent)))
+    newProc(runAppStateIdent, body = newStmtList(newCall(ident("tick"), deref)))
   )
 
   # Invoke the runner, passing in any manually defined arguments

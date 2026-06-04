@@ -123,9 +123,10 @@ proc createAppStateInit*(genInfo: CodeGenInfo): NimNode =
       let beforeLoop = genInfo.generateForHook(GenerateHook.BeforeLoop)
       let profilers = genInfo.initProfilers()
       let archetypeDefs = genInfo.createArchetypeState()
+      let appStateTypeName = genInfo.appStateTypeName
 
       quote:
-        let `appStatePtr` {.used.} = addr `appStateIdent`
+        let `appStatePtr` {.used.} = cast[ptr `appStateTypeName`](`appStateIdent`)
         `appStateIdent`.`confIdent` = `createConfig`
         `appStateIdent`.`confIdent`.log("Beginning app initialization")
         `appStateIdent`.`worldIdent` = newWorld(`appStateIdent`.`confIdent`.entitySize)
@@ -149,7 +150,7 @@ proc createAppStateInit*(genInfo: CodeGenInfo): NimNode =
       name = genInfo.appStateInit,
       params = @[
         newEmptyNode(),
-        newIdentDefs(appStateIdent, nnkVarTy.newTree(genInfo.appStateTypeName)),
+        newIdentDefs(appStateIdent, nnkRefTy.newTree(genInfo.appStateTypeName)),
       ].concat(args),
       body = initBody,
     )
@@ -161,7 +162,7 @@ proc createAppStateInstance*(genInfo: CodeGenInfo): NimNode =
   let invoke = newCall(genInfo.appStateInit, @[appStateIdent].concat(extraArgs))
   let appType = genInfo.appStateTypeName
   return quote:
-    var `appStateIdent`: `appType`
+    let `appStateIdent` = new(`appType`)
     `invoke`
 
 proc createAppStateDestructor*(genInfo: CodeGenInfo): NimNode =

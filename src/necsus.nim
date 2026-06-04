@@ -134,7 +134,7 @@ macro runSystemOnce*(systemDef: typed): untyped =
     codeGenInfo.createAppStateInit(),
     quote do:
       block:
-        var `appStateIdent`: `appStateType`
+        let `appStateIdent` = new(`appStateType`)
         `initIdent`(`appStateIdent`)
         let `systemIdent` = `systemDef`
         `call`,

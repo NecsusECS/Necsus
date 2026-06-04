@@ -20,9 +20,9 @@ proc myApp() {.necsus(runner, [~setup, ~tick, ~teardown], conf = newNecsusConf()
 
 test "System phases should be executed when an app is run manually":
   block:
-    var app: myAppState
+    let app = new(myAppState)
     app.initMyApp()
-    app.tick()
+    app[].tick()
 
   check(ranSetup)
   check(ranTick)
