@@ -33,7 +33,7 @@ proc readArchetype*(store: ArchetypeStore): ArchetypeId {.inline.} =
 
 proc next*[Comps: tuple](
     store: var ArchetypeStore[Comps], iter: var BlockIter, eid: var EntityId
-): ptr Comps =
+): ptr Comps {.inline.} =
   ## Returns the next row of components in this archetype store
   let row = store.compStore.next(BlockIter(iter))
   if unlikely(row == nil):
