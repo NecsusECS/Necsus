@@ -5,4 +5,5 @@ switch("path", "$projectDir/../src")
 --verbosity:0
 --hints:off
 --boundChecks:off
+--overflowChecks:off
 --assertions:off

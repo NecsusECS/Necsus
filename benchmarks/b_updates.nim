@@ -36,7 +36,7 @@ proc comflab(entities: Query[tuple[comflab: ptr Comflabulation]]) =
 
 proc runner(tick: proc(): void) =
     tick()
-    benchmark "Updating " & $entityCount & " components: https://github.com/abeimler/ecs_benchmark", entityCount:
+    benchmarkLoop "Updating " & $entityCount & " components: https://github.com/abeimler/ecs_benchmark", entityCount, 20:
         tick()
 
 proc myApp() {.necsus(
