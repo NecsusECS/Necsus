@@ -110,9 +110,12 @@ proc initProfilers(genInfo: CodeGenInfo): NimNode =
 proc createAppStateInit*(genInfo: CodeGenInfo): NimNode =
   ## Creates a proc for initializing the app state object
 
+  let appStateTypeName = genInfo.appStateTypeName
+
   let initBody =
     if isFastCompileMode(fastInit):
-      newStmtList()
+      quote:
+        result = new(`appStateTypeName`)
     else:
       let createConfig = genInfo.config
       let stdInit = genInfo.generateForHook(GenerateHook.Standard)
@@ -123,9 +126,10 @@ proc createAppStateInit*(genInfo: CodeGenInfo): NimNode =
       let beforeLoop = genInfo.generateForHook(GenerateHook.BeforeLoop)
       let profilers = genInfo.initProfilers()
       let archetypeDefs = genInfo.createArchetypeState()
-      let appStateTypeName = genInfo.appStateTypeName
 
       quote:
+        result = new(`appStateTypeName`)
+        let `appStateIdent` = result
         let `appStatePtr` {.used.} = cast[ptr `appStateTypeName`](`appStateIdent`)
         `appStateIdent`.`confIdent` = `createConfig`
         `appStateIdent`.`confIdent`.log("Beginning app initialization")
@@ -148,10 +152,7 @@ proc createAppStateInit*(genInfo: CodeGenInfo): NimNode =
   return newStmtList(
     newProc(
       name = genInfo.appStateInit,
-      params = @[
-        newEmptyNode(),
-        newIdentDefs(appStateIdent, nnkRefTy.newTree(genInfo.appStateTypeName)),
-      ].concat(args),
+      params = @[nnkRefTy.newTree(appStateTypeName)].concat(args),
       body = initBody,
     )
   )
@@ -159,11 +160,9 @@ proc createAppStateInit*(genInfo: CodeGenInfo): NimNode =
 proc createAppStateInstance*(genInfo: CodeGenInfo): NimNode =
   ## Creates the instance of the app state object
   let extraArgs = genInfo.app.inputs.mapIt(it.argName.ident)
-  let invoke = newCall(genInfo.appStateInit, @[appStateIdent].concat(extraArgs))
-  let appType = genInfo.appStateTypeName
+  let invoke = newCall(genInfo.appStateInit, extraArgs)
   return quote:
-    let `appStateIdent` = new(`appType`)
-    `invoke`
+    let `appStateIdent` = `invoke`
 
 proc createAppStateDestructor*(genInfo: CodeGenInfo): NimNode =
   ## Creates the instance of the app state object

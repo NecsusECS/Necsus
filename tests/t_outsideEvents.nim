@@ -14,8 +14,7 @@ proc receive(receiver: Inbox[SomeEvent]) =
 proc testEvents() {.necsus([~receive], newNecsusConf()), used.}
 
 test "Sending events in from the outside world":
-  let instance = new(testEventsState)
-  instance.initTestEvents()
+  let instance = initTestEvents()
   instance[].tick()
 
   expect += 1

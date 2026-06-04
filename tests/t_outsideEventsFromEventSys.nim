@@ -17,8 +17,7 @@ proc receive2(msg: OtherEvent, send: Outbox[string]) {.eventSys.} =
 proc testEvents() {.necsus([~receive, ~receive2], newNecsusConf()), used.}
 
 test "Sending events in from the outside world":
-  let instance = new(testEventsState)
-  instance.initTestEvents()
+  let instance = initTestEvents()
 
   instance[].sendSomeEvent(0)
   instance[].sendSomeEvent(1)
