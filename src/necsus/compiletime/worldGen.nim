@@ -111,6 +111,8 @@ proc createAppStateInit*(genInfo: CodeGenInfo): NimNode =
   ## Creates a proc for initializing the app state object
 
   let appStateTypeName = genInfo.appStateTypeName
+  let args =
+    genInfo.app.inputs.mapIt(newIdentDefs(it.argName.ident, it.directive.argType))
 
   let initBody =
     if isFastCompileMode(fastInit):
@@ -127,27 +129,58 @@ proc createAppStateInit*(genInfo: CodeGenInfo): NimNode =
       let profilers = genInfo.initProfilers()
       let archetypeDefs = genInfo.createArchetypeState()
 
+      # Split the init body across separate stack frames so each
+      # function stays under a reasonable per-function stack limit
+      let initArchIdent = genSym(nskProc, "initArchetypes")
+      let initStdIdent = genSym(nskProc, "initStandard")
+      let initStartupIdent = genSym(nskProc, "initStartup")
+      let extraArgNames = genInfo.app.inputs.mapIt(it.argName.ident)
+
+      let initArchProc = newProc(
+        name = initArchIdent,
+        params = @[newEmptyNode(), newIdentDefs(appStateIdent, nnkRefTy.newTree(appStateTypeName))],
+        body = archetypeDefs,
+        pragmas = nnkPragma.newTree(ident("noinline"), ident("gcsafe")),
+      )
+
+      let initStdBody = newStmtList(
+        quote do:
+          let `appStatePtr` {.used.} = cast[ptr `appStateTypeName`](`appStateIdent`),
+        stdInit, inboxInit, lateInit, initializers,
+      )
+      let initStdProc = newProc(
+        name = initStdIdent,
+        params = @[newEmptyNode(), newIdentDefs(appStateIdent, nnkRefTy.newTree(appStateTypeName))].concat(args),
+        body = initStdBody,
+        pragmas = nnkPragma.newTree(ident("noinline")),
+      )
+
+      let initStartupProc = newProc(
+        name = initStartupIdent,
+        params = @[newEmptyNode(), newIdentDefs(appStateIdent, nnkRefTy.newTree(appStateTypeName))].concat(args),
+        body = newStmtList(startups, beforeLoop),
+        pragmas = nnkPragma.newTree(ident("noinline")),
+      )
+
+      let initStdCall = nnkCall.newTree(@[initStdIdent, appStateIdent].concat(extraArgNames))
+      let initStartupCall = nnkCall.newTree(@[initStartupIdent, appStateIdent].concat(extraArgNames))
+
       quote:
+        `initArchProc`
+        `initStdProc`
+        `initStartupProc`
         result = new(`appStateTypeName`)
         let `appStateIdent` = result
-        let `appStatePtr` {.used.} = cast[ptr `appStateTypeName`](`appStateIdent`)
         `appStateIdent`.`confIdent` = `createConfig`
         `appStateIdent`.`confIdent`.log("Beginning app initialization")
         `appStateIdent`.`worldIdent` = newWorld(`appStateIdent`.`confIdent`.entitySize)
         `appStateIdent`.`startTime` = `appStateIdent`.`confIdent`.getTime()
         `appStateIdent`.`confIdent`.log("Initializing archetypes")
-        `archetypeDefs`
+        `initArchIdent`(`appStateIdent`)
         `profilers`
         `appStateIdent`.`confIdent`.log("Beginning startup sys execution")
-        `stdInit`
-        `inboxInit`
-        `lateInit`
-        `initializers`
-        `startups`
-        `beforeLoop`
-
-  let args =
-    genInfo.app.inputs.mapIt(newIdentDefs(it.argName.ident, it.directive.argType))
+        `initStdCall`
+        `initStartupCall`
 
   return newStmtList(
     newProc(
