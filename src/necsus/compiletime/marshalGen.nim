@@ -98,9 +98,9 @@ proc createRestoreProc(genInfo: CodeGenInfo): NimNode =
       `body`
 
     proc restore*(
-        `appStateIdent`: var `appStateType`, `streamIdent`: string
+        `appStateIdent`: ref `appStateType`, `streamIdent`: string
     ) {.gcsafe, raises: [IOError, OSError, JsonParsingError, ValueError, Exception].} =
-      restore(addr `appStateIdent`, `streamIdent`)
+      restore(cast[ptr `appStateType`](`appStateIdent`), `streamIdent`)
 
 proc createSaveProc(genInfo: CodeGenInfo): NimNode =
   ## Generates a proc that calls all the 'save' systems and aggregates them into a single value
@@ -133,9 +133,9 @@ proc createSaveProc(genInfo: CodeGenInfo): NimNode =
       `body`
 
     proc save*(
-        `appStateIdent`: var `appStateType`
+        `appStateIdent`: ref `appStateType`
     ): string {.raises: [IOError, OSError, ValueError, Exception].} =
-      save(addr `appStateIdent`)
+      save(cast[ptr `appStateType`](`appStateIdent`))
 
 proc createMarshalProcs*(genInfo: CodeGenInfo): NimNode =
   ## Generates procs needed for saving and restoring game state

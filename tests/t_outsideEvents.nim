@@ -15,13 +15,13 @@ proc testEvents() {.necsus([~receive], newNecsusConf()), used.}
 
 test "Sending events in from the outside world":
   let instance = initTestEvents()
-  instance[].tick()
+  instance.tick()
 
   expect += 1
-  instance[].sendSomeEvent(SomeEvent(value: 1))
-  instance[].tick()
+  instance.sendSomeEvent(SomeEvent(value: 1))
+  instance.tick()
 
   expect += 1
-  instance[].sendSomeEvent(SomeEvent(value: 2))
-  instance[].sendSomeEvent(SomeEvent(value: 2))
-  instance[].tick()
+  instance.sendSomeEvent(SomeEvent(value: 2))
+  instance.sendSomeEvent(SomeEvent(value: 2))
+  instance.tick()

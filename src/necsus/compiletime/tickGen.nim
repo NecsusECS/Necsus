@@ -190,7 +190,7 @@ proc createTickProc*(genInfo: CodeGenInfo): NimNode =
         `profiler`
 
   return quote:
-    proc tick(`appStateIdent`: var `appStateType`) =
+    proc tick(`appStateIdent`: ref `appStateType`) =
       `body`
 
 proc createTickRunner*(genInfo: CodeGenInfo, runner: NimNode): NimNode =
@@ -200,9 +200,8 @@ proc createTickRunner*(genInfo: CodeGenInfo, runner: NimNode): NimNode =
 
   # Create a proc to use the `appState` in the current variable closure
   let runAppStateIdent = ident("runAppState")
-  let deref = nnkDerefExpr.newTree(appStateIdent)
   result.add(
-    newProc(runAppStateIdent, body = newStmtList(newCall(ident("tick"), deref)))
+    newProc(runAppStateIdent, body = newStmtList(newCall(ident("tick"), appStateIdent)))
   )
 
   # Invoke the runner, passing in any manually defined arguments

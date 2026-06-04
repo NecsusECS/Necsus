@@ -137,13 +137,13 @@ proc createSendProcs*(details: CodeGenInfo): NimNode =
             `body`
 
         proc `externalName`(
-            `appStateIdent`: var `appStateType`, `event`: `eventType`
+            `appStateIdent`: ref `appStateType`, `event`: `eventType`
         ) {.used, nimcall, gcsafe.} =
-          `internalName`(addr `appStateIdent`, `event`)
+          `internalName`(cast[pointer](`appStateIdent`), `event`)
 
     else:
       result.add quote do:
         proc `externalName`(
-            `appStateIdent`: var `appStateType`, `event`: `eventType`
+            `appStateIdent`: ref `appStateType`, `event`: `eventType`
         ) {.used, nimcall.} =
           discard
