@@ -107,6 +107,39 @@ proc initProfilers(genInfo: CodeGenInfo): NimNode =
       result.add quote do:
         `appStateIdent`.profile[`i`].name = `name`
 
+proc buildInitChunks(
+    stmts: seq[NimNode],
+    appStateTypeName: NimNode,
+    paramDefs: seq[NimNode],
+    extraArgNames: seq[NimNode],
+): NimNode =
+  ## Splits a flat statement list into fixed-size {.noinline.} chunk procs.
+  ## Each chunk defines its own appStatePtr so Nim ARC's colontmpD__ temporaries
+  ## (one per closure-generating directive) are confined to that chunk's stack
+  ## frame and freed on return, rather than accumulating across a single large frame.
+  const initChunkSize = 16
+  result = newStmtList()
+  for i in countup(0, stmts.len - 1, initChunkSize):
+    let chunkBody = newStmtList(
+      quote do:
+        let `appStatePtr` {.used.} = cast[ptr `appStateTypeName`](`appStateIdent`)
+    )
+    chunkBody.add(stmts[i ..< min(i + initChunkSize, stmts.len)])
+    let chunkIdent = genSym(nskProc, "initChunk")
+    result.add(
+      newProc(
+        name = chunkIdent,
+        params =
+          @[
+            newEmptyNode(),
+            newIdentDefs(appStateIdent, nnkRefTy.newTree(appStateTypeName)),
+          ] & paramDefs,
+        body = chunkBody,
+        pragmas = nnkPragma.newTree(ident("noinline")),
+      ),
+      newCall(chunkIdent, @[appStateIdent] & extraArgNames),
+    )
+
 proc createAppStateInit*(genInfo: CodeGenInfo): NimNode =
   ## Creates a proc for initializing the app state object
 
@@ -120,67 +153,30 @@ proc createAppStateInit*(genInfo: CodeGenInfo): NimNode =
         result = new(`appStateTypeName`)
     else:
       let createConfig = genInfo.config
-      let stdInit = genInfo.generateForHook(GenerateHook.Standard)
-      let inboxInit = genInfo.initIndirectEventInboxes()
-      let lateInit = genInfo.generateForHook(GenerateHook.Late)
-      let initializers = genInfo.initializeSystems()
-      let startups = genInfo.callSystems({StartupPhase})
-      let beforeLoop = genInfo.generateForHook(GenerateHook.BeforeLoop)
-      let profilers = genInfo.initProfilers()
-      let archetypeDefs = genInfo.createArchetypeState()
-
-      # Split the init body across separate stack frames so each
-      # function stays under a reasonable per-function stack limit
-      let initArchIdent = genSym(nskProc, "initArchetypes")
-      let initStdIdent = genSym(nskProc, "initStandard")
-      let initStartupIdent = genSym(nskProc, "initStartup")
       let extraArgNames = genInfo.app.inputs.mapIt(it.argName.ident)
 
-      let initArchProc = newProc(
-        name = initArchIdent,
-        params = @[newEmptyNode(), newIdentDefs(appStateIdent, nnkRefTy.newTree(appStateTypeName))],
-        body = archetypeDefs,
-        pragmas = nnkPragma.newTree(ident("noinline"), ident("gcsafe")),
-      )
+      var allInitWork = @[genInfo.createArchetypeState(), genInfo.initProfilers()]
+      for stmt in genInfo.generateForHook(GenerateHook.Standard):
+        allInitWork.add(stmt)
+      allInitWork &=
+        @[
+          genInfo.initIndirectEventInboxes(),
+          genInfo.generateForHook(GenerateHook.Late),
+          genInfo.initializeSystems(),
+          genInfo.callSystems({StartupPhase}),
+          genInfo.generateForHook(GenerateHook.BeforeLoop),
+        ]
 
-      let initStdBody = newStmtList(
-        quote do:
-          let `appStatePtr` {.used.} = cast[ptr `appStateTypeName`](`appStateIdent`),
-        stdInit, inboxInit, lateInit, initializers,
-      )
-      let initStdProc = newProc(
-        name = initStdIdent,
-        params = @[newEmptyNode(), newIdentDefs(appStateIdent, nnkRefTy.newTree(appStateTypeName))].concat(args),
-        body = initStdBody,
-        pragmas = nnkPragma.newTree(ident("noinline")),
-      )
-
-      let initStartupProc = newProc(
-        name = initStartupIdent,
-        params = @[newEmptyNode(), newIdentDefs(appStateIdent, nnkRefTy.newTree(appStateTypeName))].concat(args),
-        body = newStmtList(startups, beforeLoop),
-        pragmas = nnkPragma.newTree(ident("noinline")),
-      )
-
-      let initStdCall = nnkCall.newTree(@[initStdIdent, appStateIdent].concat(extraArgNames))
-      let initStartupCall = nnkCall.newTree(@[initStartupIdent, appStateIdent].concat(extraArgNames))
+      let chunks = buildInitChunks(allInitWork, appStateTypeName, args, extraArgNames)
 
       quote:
-        `initArchProc`
-        `initStdProc`
-        `initStartupProc`
         result = new(`appStateTypeName`)
         let `appStateIdent` = result
         `appStateIdent`.`confIdent` = `createConfig`
         `appStateIdent`.`confIdent`.log("Beginning app initialization")
         `appStateIdent`.`worldIdent` = newWorld(`appStateIdent`.`confIdent`.entitySize)
         `appStateIdent`.`startTime` = `appStateIdent`.`confIdent`.getTime()
-        `appStateIdent`.`confIdent`.log("Initializing archetypes")
-        `initArchIdent`(`appStateIdent`)
-        `profilers`
-        `appStateIdent`.`confIdent`.log("Beginning startup sys execution")
-        `initStdCall`
-        `initStartupCall`
+        `chunks`
 
   return newStmtList(
     newProc(
