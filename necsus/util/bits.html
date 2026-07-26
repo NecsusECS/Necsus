@@ -87,6 +87,7 @@
 </ul>
 <ul class="simple nested-toc-section">==
   <li><a class="reference" href="#%3D%3D%2CBits%2CBits" title="`==`(a, b: Bits): bool">`==`(a, b: Bits): bool</a></li>
+<li><a class="reference" href="#%3D%3D%2CBitsFilter%2CBitsFilter" title="`==`(a, b: BitsFilter): bool">`==`(a, b: BitsFilter): bool</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">>
@@ -115,7 +116,8 @@
 
 </ul>
 <ul class="simple nested-toc-section">matches
-  <li><a class="reference" href="#matches%2CBitsFilter%2CBits%2CBits" title="matches(filter: BitsFilter; all: Bits; optional: Bits = newBits()): bool">matches(filter: BitsFilter; all: Bits; optional: Bits = newBits()): bool</a></li>
+  <li><a class="reference" href="#matches%2CBitsFilter%2CBits" title="matches(filter: BitsFilter; all: Bits): bool">matches(filter: BitsFilter; all: Bits): bool</a></li>
+<li><a class="reference" href="#matches%2CBitsFilter%2CBits%2CBits" title="matches(filter: BitsFilter; all: Bits; optional: Bits): bool">matches(filter: BitsFilter; all: Bits; optional: Bits): bool</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">newBits
@@ -251,6 +253,14 @@
     
   </dd>
 </div>
+<div id="==,BitsFilter,BitsFilter">
+  <dt><pre><span class="Keyword">proc</span> <a href="#%3D%3D%2CBitsFilter%2CBitsFilter"><span class="Identifier">`==`</span></a><span class="Other">(</span><span class="Identifier">a</span><span class="Other">,</span> <span class="Identifier">b</span><span class="Other">:</span> <a href="bits.html#BitsFilter"><span class="Identifier">BitsFilter</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    
+    
+  </dd>
+</div>
 
 </div>
 <div id="&gt;-procs-all">
@@ -329,12 +339,21 @@
 
 </div>
 <div id="matches-procs-all">
-  <div id="matches,BitsFilter,Bits,Bits">
-  <dt><pre><span class="Keyword">proc</span> <a href="#matches%2CBitsFilter%2CBits%2CBits"><span class="Identifier">matches</span></a><span class="Other">(</span><span class="Identifier">filter</span><span class="Other">:</span> <a href="bits.html#BitsFilter"><span class="Identifier">BitsFilter</span></a><span class="Other">;</span> <span class="Identifier">all</span><span class="Other">:</span> <a href="bits.html#Bits"><span class="Identifier">Bits</span></a><span class="Other">;</span> <span class="Identifier">optional</span><span class="Other">:</span> <a href="bits.html#Bits"><span class="Identifier">Bits</span></a> <span class="Other">=</span> <span class="Identifier">newBits</span><span class="Other">(</span><span class="Other">)</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.
-    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <div id="matches,BitsFilter,Bits">
+  <dt><pre><span class="Keyword">proc</span> <a href="#matches%2CBitsFilter%2CBits"><span class="Identifier">matches</span></a><span class="Other">(</span><span class="Identifier">filter</span><span class="Other">:</span> <a href="bits.html#BitsFilter"><span class="Identifier">BitsFilter</span></a><span class="Other">;</span> <span class="Identifier">all</span><span class="Other">:</span> <a href="bits.html#Bits"><span class="Identifier">Bits</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
     Whether a target matches a filter
+    
+  </dd>
+</div>
+<div id="matches,BitsFilter,Bits,Bits">
+  <dt><pre><span class="Keyword">proc</span> <a href="#matches%2CBitsFilter%2CBits%2CBits"><span class="Identifier">matches</span></a><span class="Other">(</span><span class="Identifier">filter</span><span class="Other">:</span> <a href="bits.html#BitsFilter"><span class="Identifier">BitsFilter</span></a><span class="Other">;</span> <span class="Identifier">all</span><span class="Other">:</span> <a href="bits.html#Bits"><span class="Identifier">Bits</span></a><span class="Other">;</span> <span class="Identifier">optional</span><span class="Other">:</span> <a href="bits.html#Bits"><span class="Identifier">Bits</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Whether a target matches a filter, disregarding any optional components
     
   </dd>
 </div>
@@ -390,7 +409,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-06-06 04:24:59 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-07-26 21:02:25 UTC</small>
       </div>
     </div>
   </div>

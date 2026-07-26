@@ -10,13 +10,17 @@ nim	contains	necsus/util/bits.html#contains,Bits,uint16	proc contains(bitset: Bi
 nim	card	necsus/util/bits.html#card,Bits	proc card(bitset: Bits): int		77
 nim	`==`	necsus/util/bits.html#==,Bits,Bits	proc `==`(a, b: Bits): bool		93
 nim	`+=`	necsus/util/bits.html#+=,Bits,Bits	proc `+=`(a: var Bits; b: Bits)		103
-nim	`+`	necsus/util/bits.html#+,Bits,Bits	proc `+`(a, b: Bits): Bits		109
-nim	`-`	necsus/util/bits.html#-,Bits,Bits	proc `-`(a, b: Bits): Bits		115
-nim	`<=`	necsus/util/bits.html#<=,Bits,Bits	proc `<=`(a, b: Bits): bool		126
-nim	`>`	necsus/util/bits.html#>,Bits,Bits	proc `>`(a, b: Bits): bool		135
-nim	`<`	necsus/util/bits.html#<,Bits,Bits	proc `<`(a, b: Bits): bool		138
-nim	anyIntersect	necsus/util/bits.html#anyIntersect,Bits,Bits	proc anyIntersect(a, b: Bits): bool		147
-nim	newFilter	necsus/util/bits.html#newFilter,Bits,Bits	proc newFilter(mustContain, mustExclude: Bits): BitsFilter		154
-nim	matches	necsus/util/bits.html#matches,BitsFilter,Bits,Bits	proc matches(filter: BitsFilter; all: Bits; optional: Bits = newBits()): bool		158
-nim	hash	necsus/util/bits.html#hash,BitsFilter	proc hash(filter: BitsFilter): Hash		163
+nim	`+`	necsus/util/bits.html#+,Bits,Bits	proc `+`(a, b: Bits): Bits		110
+nim	`-`	necsus/util/bits.html#-,Bits,Bits	proc `-`(a, b: Bits): Bits		122
+nim	`<=`	necsus/util/bits.html#<=,Bits,Bits	proc `<=`(a, b: Bits): bool		140
+nim	`>`	necsus/util/bits.html#>,Bits,Bits	proc `>`(a, b: Bits): bool		150
+nim	`<`	necsus/util/bits.html#<,Bits,Bits	proc `<`(a, b: Bits): bool		153
+nim	anyIntersect	necsus/util/bits.html#anyIntersect,Bits,Bits	proc anyIntersect(a, b: Bits): bool		162
+nim	newFilter	necsus/util/bits.html#newFilter,Bits,Bits	proc newFilter(mustContain, mustExclude: Bits): BitsFilter		170
+nim	matches	necsus/util/bits.html#matches,BitsFilter,Bits	proc matches(filter: BitsFilter; all: Bits): bool		174
+nim	matches	necsus/util/bits.html#matches,BitsFilter,Bits,Bits	proc matches(filter: BitsFilter; all: Bits; optional: Bits): bool		178
+nim	`==`	necsus/util/bits.html#==,BitsFilter,BitsFilter	proc `==`(a, b: BitsFilter): bool		185
+nim	hash	necsus/util/bits.html#hash,BitsFilter	proc hash(filter: BitsFilter): Hash		190
+nimgrp	matches	necsus/util/bits.html#matches-procs-all	proc		174
 nimgrp	hash	necsus/util/bits.html#hash-procs-all	proc		61
+nimgrp	==	necsus/util/bits.html#==-procs-all	proc		93
