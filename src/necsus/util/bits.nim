@@ -105,6 +105,7 @@ proc `+=`*(a: var Bits, b: Bits) =
   a.buckets.setLen(max(a.buckets.len, b.buckets.len))
   for i, (aValue, bValue) in eachValue(a, b):
     a.buckets[i] = aValue or bValue
+  a.cachedHash = none(Hash)
 
 proc `+`*(a, b: Bits): Bits =
   ## Union of two sets
@@ -155,10 +156,21 @@ proc newFilter*(mustContain, mustExclude: Bits): BitsFilter =
   ## Creates a new filter
   BitsFilter(mustContain: mustContain, mustExclude: mustExclude)
 
-proc matches*(filter: BitsFilter, all: Bits, optional: Bits = newBits()): bool =
+proc matches*(filter: BitsFilter, all: Bits): bool =
   ## Whether a target matches a filter
+  return filter.mustContain <= all and not all.anyIntersect(filter.mustExclude)
+
+proc matches*(filter: BitsFilter, all: Bits, optional: Bits): bool =
+  ## Whether a target matches a filter, disregarding any optional components
+  if optional.card == 0:
+    return filter.matches(all)
   return
     filter.mustContain <= all and not (all - optional).anyIntersect(filter.mustExclude)
+
+proc `==`*(a, b: BitsFilter): bool =
+  if a.isNil or b.isNil:
+    return a.isNil and b.isNil
+  return a.mustContain == b.mustContain and a.mustExclude == b.mustExclude
 
 proc hash*(filter: BitsFilter): Hash =
   filter.mustContain.hash !& filter.mustExclude.hash

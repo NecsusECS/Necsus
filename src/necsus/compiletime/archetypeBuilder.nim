@@ -49,21 +49,19 @@ proc hash*(action: BuilderAction): Hash =
   if action.attaching:
     result = result !& action.attach.hash
   if action.detaching:
-    result = result !& action.detach.hash
+    result = result !& action.detach.hash !& action.optDetach.hash
 
 proc `==`*(a, b: BuilderAction): bool =
-  if a.filtered != b.filtered:
+  if a.filtered != b.filtered or a.attaching != b.attaching or a.detaching != b.detaching:
     return false
-  elif a.filtered and a.filtered != b.filtered:
-    return false
-  elif a.attaching == b.attaching:
+  elif a.filtered and a.filter != b.filter:
     return false
   elif a.attaching and a.attach != b.attach:
     return false
-  elif a.detaching == b.detaching:
+  elif a.detaching and (a.detach != b.detach or a.optDetach != b.optDetach):
     return false
-  elif a.detaching and a.detach != b.detach:
-    return false
+  else:
+    return true
 
 proc asBits[T](builder: var ArchetypeBuilder[T], values: openarray[T]): Bits =
   result = Bits()
