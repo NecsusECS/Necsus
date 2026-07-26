@@ -30,8 +30,14 @@ type
   ArchetypeAccum = ref object
     ## Used during the final calculation as an accumulator for the full set of archetypes
     seen: HashSet[Bits]
-    workQueue: HashSet[Bits]
+    workQueue: seq[Bits]
     output: Table[Bits, Bits]
+
+proc enqueue(accum: var ArchetypeAccum, bits: Bits) =
+  ## Queues a set of components to be processed, if it hasn't been queued already
+  if bits.card > 0 and bits notin accum.seen:
+    accum.seen.incl(bits)
+    accum.workQueue.add(bits)
 
 proc newArchetypeBuilder*[T](): ArchetypeBuilder[T] =
   ## Creates a new ArchetypeBuilder
@@ -142,43 +148,55 @@ iterator allComponents*[T](builder: ArchetypeBuilder[T]): T =
 
 proc addWork[T](builder: ArchetypeBuilder[T], source: Bits, accum: var ArchetypeAccum) =
   for action in builder.actions:
-    if not action.filtered or action.filter.matches(source):
-      var variant = source
-      if action.attaching:
-        variant = variant + action.attach
-      if action.detaching:
-        if action.detach <= variant:
-          variant = variant - action.detach
-        variant = variant - action.optDetach
-      if variant notin accum.seen:
-        accum.workQueue.incl(variant)
+    if action.filtered and not action.filter.matches(source):
+      continue
+
+    # An action that leaves `source` untouched can never enqueue anything, since
+    let attaches = action.attaching and not (action.attach <= source)
+    let detaches =
+      action.detaching and (
+        (action.detach.card > 0 and action.detach <= source) or
+        action.optDetach.anyIntersect(source)
+      )
+    if not attaches and not detaches:
+      continue
+
+    var variant = source
+    if action.attaching:
+      variant = variant + action.attach
+    if action.detaching:
+      if action.detach <= variant:
+        variant = variant - action.detach
+      variant = variant - action.optDetach
+    accum.enqueue(variant)
 
 proc process[T](builder: ArchetypeBuilder[T], next: Bits, accum: var ArchetypeAccum) =
-  if next.card > 0 and next notin accum.seen:
-    # The minimal set of components, minus all the accessory components
-    var minValues = next - builder.accessories
+  ## Records an archetype and queues up everything reachable from it. Anything that
+  ## made it onto the queue is already non-empty and marked as seen.
 
-    # Makes sure the registerd output includes any new accessories
-    if minValues in accum.output:
-      accum.output[minValues] = accum.output[minValues] + next
-    else:
-      accum.output[minValues] = next
+  # The minimal set of components, minus all the accessory components
+  var minValues = next - builder.accessories
 
-    accum.seen.incl(next)
-    builder.addWork(next, accum)
+  # Makes sure the registerd output includes any new accessories
+  if minValues in accum.output:
+    accum.output[minValues] = accum.output[minValues] + next
+  else:
+    accum.output[minValues] = next
+
+  builder.addWork(next, accum)
 
 proc build*[T](builder: ArchetypeBuilder[T]): ArchetypeSet[T] =
   ## Constructs the final set of archetypes
 
   var accum = ArchetypeAccum(
-    workQueue: initHashSet[Bits](256),
+    workQueue: newSeqOfCap[Bits](256),
     seen: initHashSet[Bits](256),
     output: initTable[Bits, Bits](256),
   )
 
   # Add in all the baseline archetypes
   for archetype in builder.archetypes.items:
-    builder.process(archetype, accum)
+    accum.enqueue(archetype)
 
   while accum.workQueue.len > 0:
     builder.process(accum.workQueue.pop, accum)

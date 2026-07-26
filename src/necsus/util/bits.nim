@@ -95,8 +95,8 @@ proc `==`*(a, b: Bits): bool =
   if a.buckets.len != b.buckets.len:
     return false
 
-  for _, (aValue, bValue) in eachValue(a, b):
-    if aValue != bValue:
+  for i in 0 ..< a.buckets.len:
+    if a.buckets[i] != b.buckets[i]:
       return false
   return true
 
@@ -109,18 +109,31 @@ proc `+=`*(a: var Bits, b: Bits) =
 
 proc `+`*(a, b: Bits): Bits =
   ## Union of two sets
+  let overlap = min(a.buckets.len, b.buckets.len)
   result = Bits(buckets: newSeq[Word](max(a.buckets.len, b.buckets.len)))
-  for i, (aValue, bValue) in eachValue(a, b):
-    result.buckets[i] = aValue or bValue
+  for i in 0 ..< overlap:
+    result.buckets[i] = a.buckets[i] or b.buckets[i]
+  # Only one of these can have trailing buckets past the overlap
+  for i in overlap ..< a.buckets.len:
+    result.buckets[i] = a.buckets[i]
+  for i in overlap ..< b.buckets.len:
+    result.buckets[i] = b.buckets[i]
 
 proc `-`*(a, b: Bits): Bits =
   ## Remove elements of set `b` from set `a` and return the new value
+  let overlap = min(a.buckets.len, b.buckets.len)
   result = Bits(buckets: newSeq[Word](max(a.buckets.len, b.buckets.len)))
   var maxBucket = 0
-  for i, (aValue, bValue) in eachValue(a, b):
-    let newValue = aValue and (not bValue)
+  for i in 0 ..< overlap:
+    let newValue = a.buckets[i] and (not b.buckets[i])
     if newValue != 0:
       result.buckets[i] = newValue
+      maxBucket = i
+  # Buckets past the end of `b` have nothing to remove, and buckets past the end
+  # of `a` are empty to begin with
+  for i in overlap ..< a.buckets.len:
+    if a.buckets[i] != 0:
+      result.buckets[i] = a.buckets[i]
       maxBucket = i
   result.buckets.setLen(maxBucket + 1)
 
@@ -128,8 +141,9 @@ proc `<=`*(a, b: Bits): bool =
   ## Returns whether a is a subset of b
   if a.buckets.len > b.buckets.len:
     return false
-  for i, (aValue, bValue) in eachValue(a, b):
-    if ((not bValue) and aValue) > 0:
+  # Anything past the end of `a` is empty, so it is trivially contained by `b`
+  for i in 0 ..< a.buckets.len:
+    if ((not b.buckets[i]) and a.buckets[i]) > 0:
       return false
   return true
 
@@ -147,8 +161,9 @@ proc `<`*(a, b: Bits): bool =
 
 proc anyIntersect*(a, b: Bits): bool =
   ## Returns whether any of the bits overlap
-  for i, (aValue, bValue) in eachValue(a, b):
-    if (bValue and aValue) > 0:
+  # Past the overlap one side is empty, so nothing there can intersect
+  for i in 0 ..< min(a.buckets.len, b.buckets.len):
+    if (b.buckets[i] and a.buckets[i]) > 0:
       return true
   return false
 
