@@ -146,8 +146,15 @@ iterator allComponents*[T](builder: ArchetypeBuilder[T]): T =
       seen.incl(bit)
       yield builder.lookup[bit]
 
-proc addWork[T](builder: ArchetypeBuilder[T], source: Bits, accum: var ArchetypeAccum) =
-  for action in builder.actions:
+proc addWork(
+    actions: openArray[BuilderAction], source: Bits, accum: var ArchetypeAccum
+) =
+  for i in 0 ..< actions.len:
+
+    template action(): untyped =
+      ## Allows iteration using the index to avoid copying each action
+      actions[i]
+
     if action.filtered and not action.filter.matches(source):
       continue
 
@@ -170,7 +177,12 @@ proc addWork[T](builder: ArchetypeBuilder[T], source: Bits, accum: var Archetype
       variant = variant - action.optDetach
     accum.enqueue(variant)
 
-proc process[T](builder: ArchetypeBuilder[T], next: Bits, accum: var ArchetypeAccum) =
+proc process[T](
+    builder: ArchetypeBuilder[T],
+    actions: openArray[BuilderAction],
+    next: Bits,
+    accum: var ArchetypeAccum,
+) =
   ## Records an archetype and queues up everything reachable from it. Anything that
   ## made it onto the queue is already non-empty and marked as seen.
 
@@ -183,7 +195,7 @@ proc process[T](builder: ArchetypeBuilder[T], next: Bits, accum: var ArchetypeAc
   else:
     accum.output[minValues] = next
 
-  builder.addWork(next, accum)
+  actions.addWork(next, accum)
 
 proc build*[T](builder: ArchetypeBuilder[T]): ArchetypeSet[T] =
   ## Constructs the final set of archetypes
@@ -199,7 +211,7 @@ proc build*[T](builder: ArchetypeBuilder[T]): ArchetypeSet[T] =
     accum.enqueue(archetype)
 
   while accum.workQueue.len > 0:
-    builder.process(accum.workQueue.pop, accum)
+    builder.process(builder.actions.toSeq, accum.workQueue.pop, accum)
 
   var archetypes: seq[Archetype[T]]
   for _, bits in accum.output:
