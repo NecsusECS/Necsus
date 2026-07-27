@@ -6,6 +6,11 @@ benchmarks/*
 !tests/t_*.*
 !benchmarks/*.*
 
+# The compile time benchmarks live in a subdirectory, which needs the same treatment
+!benchmarks/vm/
+benchmarks/vm/*
+!benchmarks/vm/*.*
+
 *.js
 
 .DS_Store

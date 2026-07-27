@@ -18,6 +18,12 @@ task benchmark, "Executes a suite of benchmarks":
             echo "Executing: ", file
             exec("nim r " & file)
 
+task vmbenchmark, "Profiles the compile time cost of the macro internals":
+    for file in listFiles("benchmarks/vm"):
+        if file.endsWith(".nim"):
+            echo "Profiling: ", file
+            exec("nim check --profileVM " & file)
+
 task readme, "Compiles code in the readme":
     let readme = readFile("README.md")
     var inCode = false
