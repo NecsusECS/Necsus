@@ -8,7 +8,7 @@ type
     filter: BitsFilter
     attach, detach, optDetach: Bits
 
-  PreparedAction = object
+  PreparedAction = ref object
     ## `BuilderAction` folded down for the graph walk. A field is nil when the walk can
     ## skip that part of the work outright, so the hot loop tests for nil instead of
     ## re-deriving emptiness from the bitsets on every pass.
@@ -171,8 +171,7 @@ proc prepare(action: BuilderAction): PreparedAction =
 
 template applyAction(entry: PreparedAction, source: Bits, accum: var ArchetypeAccum) =
   ## Works out what `entry` turns `source` into, and queues the result.
-  template action(): untyped =
-    entry
+  let action = entry
 
   if action.filter.isNil or action.filter.matches(source):
     # An action that leaves `source` untouched can never enqueue anything new, since
