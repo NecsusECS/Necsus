@@ -1,11 +1,12 @@
-import std/bitops, hashes, options
+import std/bitops, hashes
 
 type
   Word = uint64
 
   Bits* = ref object ## A bitset without a limit on the number of bits that can be set
     buckets: seq[Word]
-    cachedHash: Option[Hash]
+    hashCached: bool
+    cachedHash: Hash
 
   BitsFilter* = ref object
     ## Uses bitsets to determine whether another bit set 'matches' a set of conditions
@@ -30,7 +31,7 @@ proc incl*(bitset: var Bits, value: uint16) =
     let bucketValue = bitset.buckets[bucket]
     bitset.buckets[bucket] = bucketValue or mask
 
-  bitset.cachedHash = none(Hash)
+  bitset.hashCached = false
 
 proc newBits*(values: varargs[uint16]): Bits =
   ## Create a new bit set
@@ -62,14 +63,15 @@ proc hash*(bitset: Bits): Hash =
   # FNV-1a over the raw words, followed by a finalizer. `std/hashes` would run Wang Yi's
   # mixer across every word, which costs millions of VM instructions over the course of
   # building a large archetype graph.
-  if bitset.cachedHash.isNone:
+  if not bitset.hashCached:
     var accum = 0xcbf29ce484222325'u64
     for value in bitset.buckets:
       accum = (accum xor value) * 0x100000001b3'u64
     accum = accum xor (accum shr 33)
     accum = accum * 0xff51afd7ed558ccd'u64
-    bitset.cachedHash = some(cast[Hash](accum xor (accum shr 33)))
-  return bitset.cachedHash.get
+    bitset.cachedHash = cast[Hash](accum xor (accum shr 33))
+    bitset.hashCached = true
+  return bitset.cachedHash
 
 proc contains*(bitset: Bits, value: uint16): bool =
   ## Returns whether any of the bits overlap
@@ -110,7 +112,7 @@ proc `+=`*(a: var Bits, b: Bits) =
   a.buckets.setLen(max(a.buckets.len, b.buckets.len))
   for i, (aValue, bValue) in eachValue(a, b):
     a.buckets[i] = aValue or bValue
-  a.cachedHash = none(Hash)
+  a.hashCached = false
 
 proc `+`*(a, b: Bits): Bits =
   ## Union of two sets
