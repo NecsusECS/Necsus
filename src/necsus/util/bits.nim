@@ -41,13 +41,13 @@ proc newBits*(values: varargs[uint16]): Bits =
     result.incl(value)
 
 iterator items*(bitset: Bits): uint16 =
-  ## Returns the index of every bit that has been set
+  ## Returns the index of every bit that has been set, from lowest to highest
   for i, value in bitset.buckets:
-    var bitcheck = maxBitMask
-    for j in 0'u16 ..< wordBits:
-      if (value and bitcheck) > 0:
-        yield (i.uint16 * wordBits) + j
-      bitcheck = bitcheck shr 1
+    var remaining = value
+    while remaining != 0:
+      let j = remaining.countLeadingZeroBits.uint16
+      yield (i.uint16 * wordBits) + j
+      remaining = remaining and not (maxBitMask shr j)
 
 proc `$`*(bitset: Bits): string =
   result = "{"
