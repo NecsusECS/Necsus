@@ -156,13 +156,23 @@ iterator allComponents*[T](builder: ArchetypeBuilder[T]): T =
       seen.incl(bit)
       yield builder.lookup[bit]
 
-proc prepare(action: BuilderAction): PreparedAction =
+proc prepare(action: BuilderAction, gate: int): PreparedAction =
   ## Nils out every part of an action that the graph walk can skip. A filter that lets
   ## everything through, an empty attach set and an empty detach set all describe work
-  ## that would produce `source` right back again
+  ## that would produce `source` right back again.
+  ##
+  ## `gate` is a component the index has already established is present, or -1. Since it
+  ## is guaranteed, the filter no longer has to ask for it -- and a filter that wanted
+  ## nothing else falls away entirely
   let both = action.detach + action.optDetach
+  let filter =
+    if gate < 0:
+      action.filter
+    else:
+      action.filter.withoutRequired(gate.uint16)
+
   PreparedAction(
-    filter: if action.filter.acceptsAll: nil else: action.filter,
+    filter: if filter.acceptsAll: nil else: filter,
     attach: if action.attach.isEmpty: nil else: action.attach,
     detach: if action.detach.isEmpty: nil else: action.detach,
     optDetach: if action.optDetach.isEmpty: nil else: action.optDetach,
@@ -261,18 +271,16 @@ proc buildIndex[T](builder: ArchetypeBuilder[T]): ActionIndex =
   var ungated: seq[PreparedAction]
 
   for action in builder.actions.items:
-    let prepared = action.prepare
-
     var gate = -1
-    if not prepared.filter.isNil:
-      for component in prepared.filter.required:
+    if not action.filter.acceptsAll:
+      for component in action.filter.required:
         if gate < 0 or popularity[component.int] < popularity[gate]:
           gate = component.int
 
     if gate < 0:
-      ungated.add(prepared)
+      ungated.add(action.prepare(gate))
     else:
-      gated[gate].add(prepared)
+      gated[gate].add(action.prepare(gate))
 
   # Flattened into one array, so reaching an action costs a single index rather than one
   # per level of nesting -- which the walk pays for on every field it reads

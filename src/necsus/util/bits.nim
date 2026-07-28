@@ -243,6 +243,14 @@ proc acceptsAll*(filter: BitsFilter): bool =
   ## Whether this filter lets through every possible set of bits
   filter.isNil or (filter.mustContain.isEmpty and filter.mustExclude.isEmpty)
 
+proc withoutRequired*(filter: BitsFilter, component: uint16): BitsFilter =
+  ## The same filter, minus one component it requires. Useful where a caller has already
+  ## established that component is present and would rather not pay to confirm it
+  BitsFilter(
+    mustContain: filter.mustContain - newBits(component),
+    mustExclude: filter.mustExclude,
+  )
+
 proc matches*(filter: BitsFilter, all: Bits): bool =
   ## Whether a target matches a filter
   let allLen = all.buckets.len
