@@ -35,7 +35,7 @@ type
 
 proc enqueue(accum: var ArchetypeAccum, bits: Bits) =
   ## Queues a set of components to be processed, if it hasn't been queued already
-  if bits.card > 0 and not accum.seen.containsOrIncl(bits):
+  if not bits.isEmpty and not accum.seen.containsOrIncl(bits):
     accum.workQueue.add(bits)
 
 proc newArchetypeBuilder*[T](): ArchetypeBuilder[T] =
@@ -160,7 +160,7 @@ proc addWork(
     let attaches = action.attaching and not (action.attach <= source)
     let detaches =
       action.detaching and (
-        (action.detach.card > 0 and action.detach <= source) or
+        (not action.detach.isEmpty and action.detach <= source) or
         action.optDetach.anyIntersect(source)
       )
     if not attaches and not detaches:
@@ -185,7 +185,11 @@ proc process[T](
   ## made it onto the queue is already non-empty and marked as seen.
 
   # The minimal set of components, minus all the accessory components
-  var minValues = next - builder.accessories
+  let minValues =
+    if builder.accessories.isEmpty:
+      next
+    else:
+      next - builder.accessories
 
   # Makes sure the registerd output includes any new accessories. A missing entry reads
   # back as a nil `Bits`, so claiming the slot up front keeps this to a single probe

@@ -3,7 +3,8 @@ import std/bitops, hashes
 type
   Word = uint64
 
-  Bits* = ref object ## A bitset without a limit on the number of bits that can be set
+  Bits* = ref object
+    ## A bitset without a limit on the number of bits that can be set.
     buckets: seq[Word]
     hashCached: bool
     cachedHash: Hash
@@ -86,6 +87,10 @@ proc card*(bitset: Bits): int =
   for value in bitset.buckets:
     result += value.countSetBits
 
+proc isEmpty*(bitset: Bits): bool =
+  ## Whether no bits at all are set
+  bitset.buckets.len == 0
+
 iterator eachValue(a, b: Bits): (int, (Word, Word)) =
   let minLen = min(a.buckets.len, b.buckets.len)
   for i in 0 ..< minLen:
@@ -130,7 +135,7 @@ proc `-`*(a, b: Bits): Bits =
   ## Remove elements of set `b` from set `a` and return the new value
   let overlap = min(a.buckets.len, b.buckets.len)
   result = Bits(buckets: newSeq[Word](max(a.buckets.len, b.buckets.len)))
-  var maxBucket = 0
+  var maxBucket = -1
   for i in 0 ..< overlap:
     let newValue = a.buckets[i] and (not b.buckets[i])
     if newValue != 0:
@@ -142,6 +147,8 @@ proc `-`*(a, b: Bits): Bits =
     if a.buckets[i] != 0:
       result.buckets[i] = a.buckets[i]
       maxBucket = i
+  # Trailing empty buckets get trimmed all the way down, so subtracting a set from itself
+  # produces something that hashes and compares equal to a set that was never populated
   result.buckets.setLen(maxBucket + 1)
 
 proc `<=`*(a, b: Bits): bool =
@@ -184,7 +191,7 @@ proc matches*(filter: BitsFilter, all: Bits): bool =
 
 proc matches*(filter: BitsFilter, all: Bits, optional: Bits): bool =
   ## Whether a target matches a filter, disregarding any optional components
-  if optional.card == 0:
+  if optional.isEmpty:
     return filter.matches(all)
   return
     filter.mustContain <= all and not (all - optional).anyIntersect(filter.mustExclude)
