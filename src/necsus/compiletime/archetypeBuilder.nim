@@ -11,9 +11,11 @@ type
   PreparedAction = object
     ## `BuilderAction` folded down for the graph walk. A field is nil when the walk can
     ## skip that part of the work outright, so the hot loop tests for nil instead of
-    ## re-deriving emptiness from the bitsets on every pass
+    ## re-deriving emptiness from the bitsets on every pass.
+    ## `bothDetach is `detach` and `optDetach` together, so an action that does
+    ## both still only takes a single pass to apply
     filter: BitsFilter
-    attach, detach, optDetach: Bits
+    attach, detach, optDetach, bothDetach: Bits
 
   ActionIndex = object
     ## Actions arranged so that a single archetype only has to look at the ones that
@@ -158,11 +160,13 @@ proc prepare(action: BuilderAction): PreparedAction =
   ## Nils out every part of an action that the graph walk can skip. A filter that lets
   ## everything through, an empty attach set and an empty detach set all describe work
   ## that would produce `source` right back again
+  let both = action.detach + action.optDetach
   PreparedAction(
     filter: if action.filter.acceptsAll: nil else: action.filter,
     attach: if action.attach.isEmpty: nil else: action.attach,
     detach: if action.detach.isEmpty: nil else: action.detach,
     optDetach: if action.optDetach.isEmpty: nil else: action.optDetach,
+    bothDetach: if both.isEmpty: nil else: both,
   )
 
 template applyAction(entry: PreparedAction, source: Bits, accum: var ArchetypeAccum) =
@@ -180,18 +184,25 @@ template applyAction(entry: PreparedAction, source: Bits, accum: var ArchetypeAc
       (not action.optDetach.isNil and action.optDetach.anyIntersect(source))
 
     if attaches or detaches:
-      var variant = source
-      if attaches:
-        variant = variant + action.attach
-      # Without an attach, `variant` is still `source`, so the subset test above stands.
-      # With one, `variant` only grew, so a set already contained in `source` is still
-      # contained -- only a detach that missed needs asking about a second time
-      if detachesAll or
-          (attaches and not action.detach.isNil and action.detach <= variant):
-        variant = variant - action.detach
-      if not action.optDetach.isNil:
-        variant = variant - action.optDetach
-      accum.enqueue(variant)
+      let added =
+        if attaches:
+          action.attach
+        else:
+          nil
+
+      # `detachesAll` was decided against `source`. Attaching only ever grows the set, so
+      # a detach already contained in `source` is still contained afterwards -- it is only
+      # a detach that missed which has to be asked about a second time
+      let removed =
+        if detachesAll or (
+          attaches and not action.detach.isNil and
+          action.detach.isSubsetOfUnion(source, action.attach)
+        ):
+          action.bothDetach
+        else:
+          action.optDetach
+
+      accum.enqueue(combine(source, added, removed))
 
 proc addWork(index: ActionIndex, source: Bits, accum: var ArchetypeAccum) =
   ## Applies every action that could possibly do anything to `source`

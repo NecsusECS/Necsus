@@ -151,6 +151,37 @@ proc `-`*(a, b: Bits): Bits =
   # produces something that hashes and compares equal to a set that was never populated
   result.buckets.setLen(maxBucket + 1)
 
+proc combine*(source, attach, remove: Bits): Bits =
+  ## `(source + attach) - remove` in a single pass. Either `attach` or `remove` may be
+  ## nil, meaning there is nothing to add or nothing to take away.
+  let sourceLen = source.buckets.len
+  let attachLen =
+    if attach.isNil:
+      0
+    else:
+      attach.buckets.len
+  let removeLen =
+    if remove.isNil:
+      0
+    else:
+      remove.buckets.len
+
+  result = Bits(buckets: newSeq[Word](max(sourceLen, attachLen)))
+  var maxBucket = -1
+  for i in 0 ..< result.buckets.len:
+    var value: Word = 0
+    if i < sourceLen:
+      value = source.buckets[i]
+    if i < attachLen:
+      value = value or attach.buckets[i]
+    if i < removeLen:
+      value = value and not remove.buckets[i]
+    if value != 0:
+      result.buckets[i] = value
+      maxBucket = i
+  if maxBucket + 1 != result.buckets.len:
+    result.buckets.setLen(maxBucket + 1)
+
 proc `<=`*(a, b: Bits): bool =
   ## Returns whether a is a subset of b
   let aLen = a.buckets.len
@@ -159,6 +190,22 @@ proc `<=`*(a, b: Bits): bool =
   # Anything past the end of `a` is empty, so it is trivially contained by `b`
   for i in 0 ..< aLen:
     if ((not b.buckets[i]) and a.buckets[i]) > 0:
+      return false
+  return true
+
+proc isSubsetOfUnion*(a, b, c: Bits): bool =
+  ## Whether `a` is a subset of `b + c`, without building the union to find out
+  let bLen = b.buckets.len
+  let cLen = c.buckets.len
+  if a.buckets.len > max(bLen, cLen):
+    return false
+  for i in 0 ..< a.buckets.len:
+    var available: Word = 0
+    if i < bLen:
+      available = b.buckets[i]
+    if i < cLen:
+      available = available or c.buckets[i]
+    if ((not available) and a.buckets[i]) > 0:
       return false
   return true
 
