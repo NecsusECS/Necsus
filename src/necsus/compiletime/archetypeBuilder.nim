@@ -15,6 +15,25 @@ type
     filter: BitsFilter
     attach, detach, optDetach: Bits
 
+  ActionIndex = object
+    ## Actions arranged so that a single archetype only has to look at the ones that
+    ## stand a chance of applying to it.
+    ##
+    ## An action whose filter requires a component can never fire against an archetype
+    ## missing it, so each such action is filed under one of the components it requires.
+    ## Walking an archetype's own components then reaches every candidate, and never
+    ## looks at the rest. On a large app this is the difference between evaluating every
+    ## action against every archetype and evaluating a small fraction of them
+    entries: seq[PreparedAction]
+      ## Ungated actions first, then the gated ones grouped by the component gating them
+    ungated: int
+      ## How many leading entries are ungated
+    gateStart: seq[int]
+      ## Where each component's group starts in `entries`
+    gateEnd: seq[int]
+      ## Where each component's group ends. Equal to `gateStart` when nothing is gated
+      ## on that component
+
   ArchetypeBuilder*[T] = ref object
     ## A builder for creating a list of all known archetypes
     lookup: seq[T]
@@ -146,17 +165,12 @@ proc prepare(action: BuilderAction): PreparedAction =
     optDetach: if action.optDetach.isEmpty: nil else: action.optDetach,
   )
 
-proc addWork(
-    actions: openArray[PreparedAction], source: Bits, accum: var ArchetypeAccum
-) =
-  for i in 0 ..< actions.len:
-    template action(): untyped =
-      ## Allows iteration using the index to avoid copying each action
-      actions[i]
+template applyAction(entry: PreparedAction, source: Bits, accum: var ArchetypeAccum) =
+  ## Works out what `entry` turns `source` into, and queues the result.
+  template action(): untyped =
+    entry
 
-    if not action.filter.isNil and not action.filter.matches(source):
-      continue
-
+  if action.filter.isNil or action.filter.matches(source):
     # An action that leaves `source` untouched can never enqueue anything new, since
     # whatever it would produce is `source`, which has already been seen
     let attaches = not action.attach.isNil and not (action.attach <= source)
@@ -164,25 +178,36 @@ proc addWork(
     let detaches =
       detachesAll or
       (not action.optDetach.isNil and action.optDetach.anyIntersect(source))
-    if not attaches and not detaches:
-      continue
 
-    var variant = source
-    if attaches:
-      variant = variant + action.attach
-    # Without an attach, `variant` is still `source`, so the subset test above stands.
-    # With one, `variant` only grew, so a set already contained in `source` is still
-    # contained -- only a detach that missed needs asking about a second time
-    if detachesAll or
-        (attaches and not action.detach.isNil and action.detach <= variant):
-      variant = variant - action.detach
-    if not action.optDetach.isNil:
-      variant = variant - action.optDetach
-    accum.enqueue(variant)
+    if attaches or detaches:
+      var variant = source
+      if attaches:
+        variant = variant + action.attach
+      # Without an attach, `variant` is still `source`, so the subset test above stands.
+      # With one, `variant` only grew, so a set already contained in `source` is still
+      # contained -- only a detach that missed needs asking about a second time
+      if detachesAll or
+          (attaches and not action.detach.isNil and action.detach <= variant):
+        variant = variant - action.detach
+      if not action.optDetach.isNil:
+        variant = variant - action.optDetach
+      accum.enqueue(variant)
+
+proc addWork(index: ActionIndex, source: Bits, accum: var ArchetypeAccum) =
+  ## Applies every action that could possibly do anything to `source`
+  for i in 0 ..< index.ungated:
+    applyAction(index.entries[i], source, accum)
+
+  # Everything else is filed under a component its filter requires, so walking the
+  # components `source` actually has reaches every remaining candidate, and never looks
+  # at the rest
+  for component in source.items:
+    for i in index.gateStart[component.int] ..< index.gateEnd[component.int]:
+      applyAction(index.entries[i], source, accum)
 
 proc process[T](
     builder: ArchetypeBuilder[T],
-    actions: openArray[PreparedAction],
+    actions: ActionIndex,
     next: Bits,
     accum: var ArchetypeAccum,
 ) =
@@ -210,6 +235,49 @@ proc process[T](
 
   actions.addWork(next, accum)
 
+proc buildIndex[T](builder: ArchetypeBuilder[T]): ActionIndex =
+  ## Files every action under a component that gates it, picking the rarest component
+  ## the filter requires so the gate rejects as often as it can.
+  ##
+  ## Rarity is judged against the archetypes that were explicitly defined, which is the
+  ## only evidence available before the walk starts. It only has to be a decent guess:
+  ## a poor gate costs a few wasted candidates, never a wrong answer
+  var popularity = newSeq[int](builder.lookup.len)
+  for archetype in builder.archetypes.items:
+    for component in archetype.items:
+      popularity[component.int] += 1
+
+  var gated = newSeq[seq[PreparedAction]](builder.lookup.len)
+  var ungated: seq[PreparedAction]
+
+  for action in builder.actions.items:
+    let prepared = action.prepare
+
+    var gate = -1
+    if not prepared.filter.isNil:
+      for component in prepared.filter.required:
+        if gate < 0 or popularity[component.int] < popularity[gate]:
+          gate = component.int
+
+    if gate < 0:
+      ungated.add(prepared)
+    else:
+      gated[gate].add(prepared)
+
+  # Flattened into one array, so reaching an action costs a single index rather than one
+  # per level of nesting -- which the walk pays for on every field it reads
+  result = ActionIndex(
+    entries: ungated,
+    ungated: ungated.len,
+    gateStart: newSeq[int](gated.len),
+    gateEnd: newSeq[int](gated.len),
+  )
+  for component, actions in gated:
+    result.gateStart[component] = result.entries.len
+    for action in actions:
+      result.entries.add(action)
+    result.gateEnd[component] = result.entries.len
+
 proc build*[T](builder: ArchetypeBuilder[T]): ArchetypeSet[T] =
   ## Constructs the final set of archetypes
 
@@ -223,11 +291,9 @@ proc build*[T](builder: ArchetypeBuilder[T]): ArchetypeSet[T] =
   for archetype in builder.archetypes.items:
     accum.enqueue(archetype)
 
-  # Flattened once up front. The queue gets walked thousands of times over, and rebuilding
+  # Built once up front. The queue gets walked thousands of times over, and rebuilding
   # this for each pass costs more than everything the pass itself does
-  var actions = newSeqOfCap[PreparedAction](builder.actions.len)
-  for action in builder.actions.items:
-    actions.add(action.prepare)
+  let actions = builder.buildIndex
 
   while accum.workQueue.len > 0:
     builder.process(actions, accum.workQueue.pop, accum)

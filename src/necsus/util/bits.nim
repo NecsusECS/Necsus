@@ -186,6 +186,12 @@ proc newFilter*(mustContain, mustExclude: Bits): BitsFilter =
   ## Creates a new filter
   BitsFilter(mustContain: mustContain, mustExclude: mustExclude)
 
+iterator required*(filter: BitsFilter): uint16 =
+  ## Yields every component a filter insists on being present. A set missing any one of
+  ## these can never match, which makes them usable as a cheap precondition
+  for bit in filter.mustContain.items:
+    yield bit
+
 proc acceptsAll*(filter: BitsFilter): bool =
   ## Whether this filter lets through every possible set of bits
   filter.isNil or (filter.mustContain.isEmpty and filter.mustExclude.isEmpty)
