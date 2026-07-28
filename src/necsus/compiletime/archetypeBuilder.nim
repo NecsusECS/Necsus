@@ -1,10 +1,17 @@
-import sequtils, archetype, algorithm, ../util/[bits, openAddr], hashes
+import archetype, algorithm, ../util/[bits, openAddr], hashes
 
 export archetype, bits.hash, bits.`$`, bits.`==`
 
 type
   BuilderAction = object
     ## A single way of moving from one archetype to another.
+    filter: BitsFilter
+    attach, detach, optDetach: Bits
+
+  PreparedAction = object
+    ## `BuilderAction` folded down for the graph walk. A field is nil when the walk can
+    ## skip that part of the work outright, so the hot loop tests for nil instead of
+    ## re-deriving emptiness from the bitsets on every pass
     filter: BitsFilter
     attach, detach, optDetach: Bits
 
@@ -128,22 +135,35 @@ iterator allComponents*[T](builder: ArchetypeBuilder[T]): T =
       seen.incl(bit)
       yield builder.lookup[bit]
 
+proc prepare(action: BuilderAction): PreparedAction =
+  ## Nils out every part of an action that the graph walk can skip. A filter that lets
+  ## everything through, an empty attach set and an empty detach set all describe work
+  ## that would produce `source` right back again
+  PreparedAction(
+    filter: if action.filter.acceptsAll: nil else: action.filter,
+    attach: if action.attach.isEmpty: nil else: action.attach,
+    detach: if action.detach.isEmpty: nil else: action.detach,
+    optDetach: if action.optDetach.isEmpty: nil else: action.optDetach,
+  )
+
 proc addWork(
-    actions: openArray[BuilderAction], source: Bits, accum: var ArchetypeAccum
+    actions: openArray[PreparedAction], source: Bits, accum: var ArchetypeAccum
 ) =
   for i in 0 ..< actions.len:
     template action(): untyped =
       ## Allows iteration using the index to avoid copying each action
       actions[i]
 
-    if not action.filter.acceptsAll and not action.filter.matches(source):
+    if not action.filter.isNil and not action.filter.matches(source):
       continue
 
     # An action that leaves `source` untouched can never enqueue anything new, since
     # whatever it would produce is `source`, which has already been seen
-    let attaches = not (action.attach <= source)
-    let detachesAll = not action.detach.isEmpty and action.detach <= source
-    let detaches = detachesAll or action.optDetach.anyIntersect(source)
+    let attaches = not action.attach.isNil and not (action.attach <= source)
+    let detachesAll = not action.detach.isNil and action.detach <= source
+    let detaches =
+      detachesAll or
+      (not action.optDetach.isNil and action.optDetach.anyIntersect(source))
     if not attaches and not detaches:
       continue
 
@@ -153,15 +173,16 @@ proc addWork(
     # Without an attach, `variant` is still `source`, so the subset test above stands.
     # With one, `variant` only grew, so a set already contained in `source` is still
     # contained -- only a detach that missed needs asking about a second time
-    if detachesAll or (attaches and action.detach <= variant):
+    if detachesAll or
+        (attaches and not action.detach.isNil and action.detach <= variant):
       variant = variant - action.detach
-    if not action.optDetach.isEmpty:
+    if not action.optDetach.isNil:
       variant = variant - action.optDetach
     accum.enqueue(variant)
 
 proc process[T](
     builder: ArchetypeBuilder[T],
-    actions: openArray[BuilderAction],
+    actions: openArray[PreparedAction],
     next: Bits,
     accum: var ArchetypeAccum,
 ) =
@@ -204,7 +225,9 @@ proc build*[T](builder: ArchetypeBuilder[T]): ArchetypeSet[T] =
 
   # Flattened once up front. The queue gets walked thousands of times over, and rebuilding
   # this for each pass costs more than everything the pass itself does
-  let actions = builder.actions.toSeq
+  var actions = newSeqOfCap[PreparedAction](builder.actions.len)
+  for action in builder.actions.items:
+    actions.add(action.prepare)
 
   while accum.workQueue.len > 0:
     builder.process(actions, accum.workQueue.pop, accum)
