@@ -216,3 +216,111 @@ suite "Creating archetypes":
       builder.allComponents.toSeq
 
     check(components.toHashSet == ["A", "B", "C", "D", "E", "F"].toHashSet)
+
+suite "Accessories and the shape of the graph walk":
+  ## An accessory never changes which archetype an entity belongs to, so the walk is free
+  ## to stop treating one as a dimension of the search -- but only when nothing in the
+  ## graph can tell the two branches apart. These pin down where that line falls.
+
+  test "An accessory only reaches the archetypes it can be attached to":
+    const archetypes = block:
+      var builder = newArchetypeBuilder[string]()
+      builder.define(["acc1A"])
+      builder.define(["acc1B"])
+      builder.accessory("acc1D")
+      builder.attachable(["acc1D"], builder.filter(["acc1A"], []))
+      builder.build().toSeq.mapIt($it)
+
+    # The branch the filter never reaches must not pick the accessory up
+    check(archetypes.toHashSet == toHashSet(["{acc1A, acc1D?}", "{acc1B}"]))
+
+  test "An accessory can gate another accessory":
+    const archetypes = block:
+      var builder = newArchetypeBuilder[string]()
+      builder.define(["acc2A"])
+      builder.define(["acc2B"])
+      builder.accessory("acc2D")
+      builder.accessory("acc2E")
+      builder.attachable(["acc2D"], builder.filter(["acc2A"], []))
+      builder.attachable(["acc2E"], builder.filter(["acc2D"], []))
+      builder.build().toSeq.mapIt($it)
+
+    check(archetypes.toHashSet == toHashSet(["{acc2A, acc2D?, acc2E?}", "{acc2B}"]))
+
+  test "A filter that excludes an accessory is not fooled by it being optional":
+    const archetypes = block:
+      var builder = newArchetypeBuilder[string]()
+      builder.define(["acc3A", "acc3D"])
+      builder.accessory("acc3D")
+      builder.attachable(["acc3E"], builder.filter([], ["acc3D"]))
+      builder.build().toSeq.mapIt($it)
+
+    # Every entity here carries the accessory, so the exclusion can never let anything by
+    check(archetypes.toHashSet == toHashSet(["{acc3A, acc3D?}"]))
+
+  test "An accessory a detach requires still splits the graph":
+    const archetypes = block:
+      var builder = newArchetypeBuilder[string]()
+      builder.define(["acc4A", "acc4B"])
+      builder.define(["acc4A", "acc4B", "acc4D"])
+      builder.accessory("acc4D")
+      builder.detachable(["acc4B", "acc4D"])
+      builder.build().toSeq.mapIt($it)
+
+    # The detach only applies where the accessory is present, so the branch without it
+    # has to stay reachable in its own right for `{acc4A}` to ever be found
+    check(archetypes.toHashSet == toHashSet(["{acc4A, acc4B, acc4D?}", "{acc4A}"]))
+
+  test "Detaching an accessory on its own":
+    const archetypes = block:
+      var builder = newArchetypeBuilder[string]()
+      builder.define(["acc5A", "acc5D"])
+      builder.accessory("acc5D")
+      builder.detachable(["acc5D"])
+      builder.build().toSeq.mapIt($it)
+
+    check(archetypes.toHashSet == toHashSet(["{acc5A, acc5D?}"]))
+
+  test "An accessory that can be both attached and detached settles":
+    const archetypes = block:
+      var builder = newArchetypeBuilder[string]()
+      builder.define(["acc6A"])
+      builder.accessory("acc6D")
+      builder.attachable(["acc6D"], builder.filter([], []))
+      builder.detachable(["acc6D"])
+      builder.build().toSeq.mapIt($it)
+
+    check(archetypes.toHashSet == toHashSet(["{acc6A, acc6D?}"]))
+
+  test "Independent accessories do not multiply the archetypes they land on":
+    const archetypes = block:
+      var builder = newArchetypeBuilder[string]()
+      builder.define(["acc7A"])
+      builder.define(["acc7B"])
+      builder.accessory("acc7D")
+      builder.accessory("acc7E")
+      builder.accessory("acc7F")
+      builder.attachable(["acc7D"], builder.filter(["acc7A"], []))
+      builder.attachable(["acc7E"], builder.filter(["acc7A"], []))
+      builder.attachable(["acc7F"], builder.filter(["acc7A"], []))
+      builder.build().toSeq.mapIt($it)
+
+    check(
+      archetypes.toHashSet ==
+        toHashSet(["{acc7A, acc7D?, acc7E?, acc7F?}", "{acc7B}"])
+    )
+
+  test "An accessory detached alongside a component it does not travel with":
+    const archetypes = block:
+      var builder = newArchetypeBuilder[string]()
+      builder.define(["acc8A", "acc8B", "acc8D"])
+      builder.define(["acc8A", "acc8C"])
+      builder.accessory("acc8D")
+      # `acc8D` rides along with the detach, but only `acc8B` decides whether it applies
+      builder.detachable(["acc8B"], ["acc8D"])
+      builder.build().toSeq.mapIt($it)
+
+    check(
+      archetypes.toHashSet ==
+        toHashSet(["{acc8A, acc8B, acc8D?}", "{acc8A, acc8C}", "{acc8A}"])
+    )
