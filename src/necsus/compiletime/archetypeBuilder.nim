@@ -4,20 +4,9 @@ export archetype, bits.hash, bits.`$`, bits.`==`
 
 type
   BuilderAction = object
-    case filtered: bool
-    of true: filter: BitsFilter
-    of false: discard
-
-    case attaching: bool
-    of true: attach: Bits
-    of false: discard
-
-    case detaching: bool
-    of true:
-      detach: Bits
-      optDetach: Bits
-    of false:
-      discard
+    ## A single way of moving from one archetype to another.
+    filter: BitsFilter
+    attach, detach, optDetach: Bits
 
   ArchetypeBuilder*[T] = ref object
     ## A builder for creating a list of all known archetypes
@@ -49,24 +38,27 @@ proc newArchetypeBuilder*[T](): ArchetypeBuilder[T] =
   )
 
 proc hash*(action: BuilderAction): Hash =
-  if action.filtered:
-    result = action.filter.hash
-  if action.attaching:
-    result = result !& action.attach.hash
-  if action.detaching:
-    result = result !& action.detach.hash !& action.optDetach.hash
+  action.filter.hash !& action.attach.hash !& action.detach.hash !& action.optDetach.hash
 
 proc `==`*(a, b: BuilderAction): bool =
-  if a.filtered != b.filtered or a.attaching != b.attaching or a.detaching != b.detaching:
-    return false
-  elif a.filtered and a.filter != b.filter:
-    return false
-  elif a.attaching and a.attach != b.attach:
-    return false
-  elif a.detaching and (a.detach != b.detach or a.optDetach != b.optDetach):
-    return false
-  else:
-    return true
+  a.filter == b.filter and a.attach == b.attach and a.detach == b.detach and
+    a.optDetach == b.optDetach
+
+proc newAction(
+    filter: BitsFilter = nil;
+    attach: Bits = nil;
+    detach: Bits = nil;
+    optDetach: Bits = nil,
+): BuilderAction =
+  ## Builds an action with every part filled in, so nothing downstream has to reason
+  ## about nil. An omitted part becomes an empty set, which every operation treats as
+  ## the no-op it is
+  BuilderAction(
+    filter: if filter.isNil: newFilter(Bits(), Bits()) else: filter,
+    attach: if attach.isNil: Bits() else: attach,
+    detach: if detach.isNil: Bits() else: detach,
+    optDetach: if optDetach.isNil: Bits() else: optDetach,
+  )
 
 proc asBits[T](builder: var ArchetypeBuilder[T], values: openarray[T]): Bits =
   result = Bits()
@@ -94,9 +86,7 @@ proc attachable*[T](
 ) =
   ## Describes components that can be attached to entities to create new archetypes
   let bits = asBits(builder, values)
-  builder.actions.incl(
-    BuilderAction(filtered: true, filter: filter, attaching: true, attach: bits)
-  )
+  builder.actions.incl(newAction(filter = filter, attach = bits))
   builder.allComponents += bits
 
 proc detachable*[T](
@@ -104,11 +94,7 @@ proc detachable*[T](
 ) =
   ## Describes components that can be detached from entities to create new archetypes
   builder.actions.incl(
-    BuilderAction(
-      detaching: true,
-      detach: asBits(builder, values),
-      optDetach: asBits(builder, optional),
-    )
+    newAction(detach = asBits(builder, values), optDetach = asBits(builder, optional))
   )
 
 proc accessory*[T](builder: var ArchetypeBuilder[T], value: T) =
@@ -125,14 +111,11 @@ proc attachDetach*[T](
   ## Describes components that can be attached to entities to create new archetypes
   let bits = asBits(builder, attach)
   builder.actions.incl(
-    BuilderAction(
-      filtered: true,
-      filter: filter,
-      attaching: true,
-      attach: bits,
-      detaching: true,
-      detach: asBits(builder, detach),
-      optDetach: asBits(builder, optDetach),
+    newAction(
+      filter = filter,
+      attach = bits,
+      detach = asBits(builder, detach),
+      optDetach = asBits(builder, optDetach),
     )
   )
   builder.allComponents += bits
@@ -153,25 +136,26 @@ proc addWork(
       ## Allows iteration using the index to avoid copying each action
       actions[i]
 
-    if action.filtered and not action.filter.matches(source):
+    if not action.filter.acceptsAll and not action.filter.matches(source):
       continue
 
-    # An action that leaves `source` untouched can never enqueue anything, since
-    let attaches = action.attaching and not (action.attach <= source)
-    let detaches =
-      action.detaching and (
-        (not action.detach.isEmpty and action.detach <= source) or
-        action.optDetach.anyIntersect(source)
-      )
+    # An action that leaves `source` untouched can never enqueue anything new, since
+    # whatever it would produce is `source`, which has already been seen
+    let attaches = not (action.attach <= source)
+    let detachesAll = not action.detach.isEmpty and action.detach <= source
+    let detaches = detachesAll or action.optDetach.anyIntersect(source)
     if not attaches and not detaches:
       continue
 
     var variant = source
-    if action.attaching:
+    if attaches:
       variant = variant + action.attach
-    if action.detaching:
-      if action.detach <= variant:
-        variant = variant - action.detach
+    # Without an attach, `variant` is still `source`, so the subset test above stands.
+    # With one, `variant` only grew, so a set already contained in `source` is still
+    # contained -- only a detach that missed needs asking about a second time
+    if detachesAll or (attaches and action.detach <= variant):
+      variant = variant - action.detach
+    if not action.optDetach.isEmpty:
       variant = variant - action.optDetach
     accum.enqueue(variant)
 
