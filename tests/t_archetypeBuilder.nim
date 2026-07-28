@@ -87,6 +87,31 @@ suite "Creating archetypes":
 
     check(archetypes.toHashSet == toHashSet(["{A}", "{A, B}", "{A, C}", "{A, D}"]))
 
+  test "Allowing for attaching with a filter that both requires and excludes":
+    const archetypes = block:
+      var builder = newArchetypeBuilder[string]()
+      builder.define(["A"])
+      builder.define(["A", "B"])
+      builder.define(["A", "B", "C"])
+
+      builder.attachable(["D"], builder.filter(["B"], ["C"]))
+      builder.build().toSeq.mapIt($it)
+
+    check(
+      archetypes.toHashSet == toHashSet(["{A}", "{A, B}", "{A, B, C}", "{A, B, D}"])
+    )
+
+  test "Attaching gated on a component no defined archetype starts with":
+    const archetypes = block:
+      var builder = newArchetypeBuilder[string]()
+      builder.define(["A"])
+
+      builder.attachable(["B"], builder.filter([], []))
+      builder.attachable(["C"], builder.filter(["B"], []))
+      builder.build().toSeq.mapIt($it)
+
+    check(archetypes.toHashSet == toHashSet(["{A}", "{A, B}", "{A, B, C}"]))
+
   test "Allowing for detaching new components to existing archetypes":
     const archetypes = block:
       var builder = newArchetypeBuilder[string]()
