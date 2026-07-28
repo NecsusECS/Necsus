@@ -3,19 +3,18 @@ import archetype, algorithm, ../util/[bits, openAddr], hashes
 export archetype, bits.hash, bits.`$`, bits.`==`
 
 type
-  BuilderAction = object
+  BuilderAction = ref object
     ## A single way of moving from one archetype to another.
+    ##
+    ## A part is nil when there is no work in it: a filter that lets everything through,
+    ## or an empty set of components, both describe a move that hands `source` straight
+    ## back. Folding that down as the action is built means the graph walk tests for nil
+    ## rather than re-deriving emptiness from the bitsets on every pass
     filter: BitsFilter
     attach, detach, optDetach: Bits
-
-  PreparedAction = ref object
-    ## `BuilderAction` folded down for the graph walk. A field is nil when the walk can
-    ## skip that part of the work outright, so the hot loop tests for nil instead of
-    ## re-deriving emptiness from the bitsets on every pass.
-    ## `bothDetach is `detach` and `optDetach` together, so an action that does
-    ## both still only takes a single pass to apply
-    filter: BitsFilter
-    attach, detach, optDetach, bothDetach: Bits
+    bothDetach: Bits
+      ## `detach` and `optDetach` together, so an action that does both still only takes
+      ## a single pass to apply
 
   ActionIndex = object
     ## Actions arranged so that a single archetype only has to look at the ones that
@@ -26,7 +25,7 @@ type
     ## Walking an archetype's own components then reaches every candidate, and never
     ## looks at the rest. On a large app this is the difference between evaluating every
     ## action against every archetype and evaluating a small fraction of them
-    entries: seq[PreparedAction]
+    entries: seq[BuilderAction]
       ## Ungated actions first, then the gated ones grouped by the component gating them
     ungated: int
       ## How many leading entries are ungated
@@ -65,12 +64,35 @@ proc newArchetypeBuilder*[T](): ArchetypeBuilder[T] =
     accessories: Bits(),
   )
 
+template hashOrNil(value: untyped): Hash =
+  ## `hash` for a part of an action that may not be there at all
+  if value.isNil:
+    Hash(0)
+  else:
+    value.hash
+
+template eqOrNil(a, b: untyped): bool =
+  ## `==` for a part of an action that may not be there at all
+  if a.isNil or b.isNil:
+    a.isNil and b.isNil
+  else:
+    a == b
+
 proc hash*(action: BuilderAction): Hash =
-  action.filter.hash !& action.attach.hash !& action.detach.hash !& action.optDetach.hash
+  ## `bothDetach` follows from the other parts, so it takes no part in identity
+  hashOrNil(action.filter) !& hashOrNil(action.attach) !& hashOrNil(action.detach) !&
+    hashOrNil(action.optDetach)
 
 proc `==`*(a, b: BuilderAction): bool =
-  a.filter == b.filter and a.attach == b.attach and a.detach == b.detach and
-    a.optDetach == b.optDetach
+  eqOrNil(a.filter, b.filter) and eqOrNil(a.attach, b.attach) and
+    eqOrNil(a.detach, b.detach) and eqOrNil(a.optDetach, b.optDetach)
+
+proc orNil(bits: Bits): Bits =
+  ## An empty set asks for no work, so it is stored as nothing at all
+  if bits.isNil or bits.isEmpty:
+    nil
+  else:
+    bits
 
 proc newAction(
     filter: BitsFilter = nil;
@@ -78,14 +100,25 @@ proc newAction(
     detach: Bits = nil;
     optDetach: Bits = nil,
 ): BuilderAction =
-  ## Builds an action with every part filled in, so nothing downstream has to reason
-  ## about nil. An omitted part becomes an empty set, which every operation treats as
-  ## the no-op it is
+  ## Builds an action, folding away every part of it that describes no work
+  let required = detach.orNil
+  let optional = optDetach.orNil
   BuilderAction(
-    filter: if filter.isNil: newFilter(Bits(), Bits()) else: filter,
-    attach: if attach.isNil: Bits() else: attach,
-    detach: if detach.isNil: Bits() else: detach,
-    optDetach: if optDetach.isNil: Bits() else: optDetach,
+    filter:
+      if filter.acceptsAll:
+        nil
+      else:
+        filter,
+    attach: attach.orNil,
+    detach: required,
+    optDetach: optional,
+    bothDetach:
+      if required.isNil:
+        optional
+      elif optional.isNil:
+        required
+      else:
+        required + optional,
   )
 
 proc asBits[T](builder: var ArchetypeBuilder[T], values: openarray[T]): Bits =
@@ -156,30 +189,25 @@ iterator allComponents*[T](builder: ArchetypeBuilder[T]): T =
       seen.incl(bit)
       yield builder.lookup[bit]
 
-proc prepare(action: BuilderAction, gate: int): PreparedAction =
-  ## Nils out every part of an action that the graph walk can skip. A filter that lets
-  ## everything through, an empty attach set and an empty detach set all describe work
-  ## that would produce `source` right back again.
-  ##
-  ## `gate` is a component the index has already established is present, or -1. Since it
-  ## is guaranteed, the filter no longer has to ask for it -- and a filter that wanted
-  ## nothing else falls away entirely
-  let both = action.detach + action.optDetach
-  let filter =
-    if gate < 0:
-      action.filter
-    else:
-      action.filter.withoutRequired(gate.uint16)
-
-  PreparedAction(
-    filter: if filter.acceptsAll: nil else: filter,
-    attach: if action.attach.isEmpty: nil else: action.attach,
-    detach: if action.detach.isEmpty: nil else: action.detach,
-    optDetach: if action.optDetach.isEmpty: nil else: action.optDetach,
-    bothDetach: if both.isEmpty: nil else: both,
+proc gatedOn(action: BuilderAction, gate: uint16): BuilderAction =
+  ## The same action, minus the component gating it. The index only reaches an action
+  ## through a component it requires, so by the time the walk gets here that component
+  ## is known to be present and the filter no longer has to ask for it -- and a filter
+  ## that wanted nothing else falls away entirely
+  let filter = action.filter.withoutRequired(gate)
+  BuilderAction(
+    filter:
+      if filter.acceptsAll:
+        nil
+      else:
+        filter,
+    attach: action.attach,
+    detach: action.detach,
+    optDetach: action.optDetach,
+    bothDetach: action.bothDetach,
   )
 
-template applyAction(entry: PreparedAction, source: Bits, accum: var ArchetypeAccum) =
+template applyAction(entry: BuilderAction, source: Bits, accum: var ArchetypeAccum) =
   ## Works out what `entry` turns `source` into, and queues the result.
   let action = entry
 
@@ -267,8 +295,8 @@ proc buildIndex[T](builder: ArchetypeBuilder[T]): ActionIndex =
     for component in archetype.items:
       popularity[component.int] += 1
 
-  var gated = newSeq[seq[PreparedAction]](builder.lookup.len)
-  var ungated: seq[PreparedAction]
+  var byGate = newSeq[seq[BuilderAction]](builder.lookup.len)
+  var ungated: seq[BuilderAction]
 
   for action in builder.actions.items:
     var gate = -1
@@ -278,19 +306,19 @@ proc buildIndex[T](builder: ArchetypeBuilder[T]): ActionIndex =
           gate = component.int
 
     if gate < 0:
-      ungated.add(action.prepare(gate))
+      ungated.add(action)
     else:
-      gated[gate].add(action.prepare(gate))
+      byGate[gate].add(action.gatedOn(gate.uint16))
 
   # Flattened into one array, so reaching an action costs a single index rather than one
   # per level of nesting -- which the walk pays for on every field it reads
   result = ActionIndex(
     entries: ungated,
     ungated: ungated.len,
-    gateStart: newSeq[int](gated.len),
-    gateEnd: newSeq[int](gated.len),
+    gateStart: newSeq[int](byGate.len),
+    gateEnd: newSeq[int](byGate.len),
   )
-  for component, actions in gated:
+  for component, actions in byGate:
     result.gateStart[component] = result.entries.len
     for action in actions:
       result.entries.add(action)
