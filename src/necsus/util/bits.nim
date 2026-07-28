@@ -149,7 +149,8 @@ proc `-`*(a, b: Bits): Bits =
       maxBucket = i
   # Trailing empty buckets get trimmed all the way down, so subtracting a set from itself
   # produces something that hashes and compares equal to a set that was never populated
-  result.buckets.setLen(maxBucket + 1)
+  if maxBucket + 1 != result.buckets.len:
+    result.buckets.setLen(maxBucket + 1)
 
 proc combine*(source, attach, remove: Bits): Bits =
   ## `(source + attach) - remove` in a single pass. Either `attach` or `remove` may be
