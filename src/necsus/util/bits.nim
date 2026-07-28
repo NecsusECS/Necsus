@@ -59,11 +59,16 @@ proc `$`*(bitset: Bits): string =
   result &= "}"
 
 proc hash*(bitset: Bits): Hash =
+  # FNV-1a over the raw words, followed by a finalizer. `std/hashes` would run Wang Yi's
+  # mixer across every word, which costs millions of VM instructions over the course of
+  # building a large archetype graph.
   if bitset.cachedHash.isNone:
-    var accum = 0.hash
+    var accum = 0xcbf29ce484222325'u64
     for value in bitset.buckets:
-      accum = accum !& hash(value)
-    bitset.cachedHash = some(accum)
+      accum = (accum xor value) * 0x100000001b3'u64
+    accum = accum xor (accum shr 33)
+    accum = accum * 0xff51afd7ed558ccd'u64
+    bitset.cachedHash = some(cast[Hash](accum xor (accum shr 33)))
   return bitset.cachedHash.get
 
 proc contains*(bitset: Bits, value: uint16): bool =
