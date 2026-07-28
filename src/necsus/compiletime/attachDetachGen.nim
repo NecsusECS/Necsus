@@ -255,12 +255,28 @@ proc splitDetachArgs(
     else:
       result.detach.add(arg.component)
 
+proc splitDetachForArchetype(
+    args: openarray[DirectiveArg]
+): tuple[detach: seq[ComponentDef], optDetach: seq[ComponentDef]] =
+  ## The same split, for deciding which archetypes a detach can move between.
+  ##
+  ## An accessory is optional wherever it appears, so insisting one be present before the
+  ## detach applies describes a rule no entity is subject to -- and it splits the graph in
+  ## two to enforce it, doubling the search for every accessory a detach happens to name.
+  ## Letting it ride along as optional reaches the same archetypes by one route instead
+  ## of two
+  for arg in args:
+    if arg.kind == Optional or arg.component.isAccessory:
+      result.optDetach.add(arg.component)
+    else:
+      result.detach.add(arg.component)
+
 proc detachArchetype(
     builder: var ArchetypeBuilder[ComponentDef],
     systemArgs: seq[SystemArg],
     dir: TupleDirective,
 ) =
-  let partition = dir.args.splitDetachArgs
+  let partition = dir.args.splitDetachForArchetype
   builder.detachable(partition.detach, partition.optDetach)
 
 proc detachFields(name: string, dir: TupleDirective): seq[WorldField] =
@@ -348,7 +364,7 @@ proc swapArchetype(
     dir: DualDirective,
 ) =
   let attach = dir.first.comps
-  let (detach, optDetach) = dir.second.splitDetachArgs
+  let (detach, optDetach) = dir.second.splitDetachForArchetype
   for arg in systemArgs.allArgs:
     if arg.generator.isAttachable:
       builder.attachDetach(attach, detach, optDetach, arg.tupleDir.filter)
