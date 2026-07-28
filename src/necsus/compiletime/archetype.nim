@@ -40,27 +40,16 @@ proc getId(name: string): ArchetypeId =
     ids[name] = newId.newLit
     return ArchetypeId(newId)
 
-proc newArchetype*[T](values: openarray[T], accessories: Bits): Archetype[T] =
-  ## Create an archetype
+proc newArchetype*[T](
+    values: sink seq[T], allComps: Bits, accessoryComps: Bits
+): Archetype[T] =
+  ## Create an archetype from de-duplicated, sorted values whose bit sets have
+  ## already been calculated
 
-  var accessoryComps = Bits()
-  var allComps = Bits()
-
-  var verified: seq[T]
-  var previous: T
-  for i, value in values:
-    if i == 0 or previous != value:
-      verified.add(value)
-      allComps.incl(value.uniqueId)
-
-      if value.uniqueId in accessories:
-        accessoryComps.incl(value.uniqueId)
-    previous = value
-
-  let name = generateName(verified)
+  let name = generateName(values)
 
   return Archetype[T](
-    values: verified,
+    values: values,
     name: name,
     identName: "archetype_" & name,
     allComps: allComps,

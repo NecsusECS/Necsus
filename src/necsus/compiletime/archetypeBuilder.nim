@@ -150,7 +150,6 @@ proc addWork(
     actions: openArray[BuilderAction], source: Bits, accum: var ArchetypeAccum
 ) =
   for i in 0 ..< actions.len:
-
     template action(): untyped =
       ## Allows iteration using the index to avoid copying each action
       actions[i]
@@ -214,11 +213,15 @@ proc build*[T](builder: ArchetypeBuilder[T]): ArchetypeSet[T] =
     builder.process(builder.actions.toSeq, accum.workQueue.pop, accum)
 
   var archetypes: seq[Archetype[T]]
-  for _, bits in accum.output:
+  for minValues, bits in accum.output:
     var values: seq[T]
     for bit in bits.items:
       values.add(builder.lookup[bit])
     values.sort()
-    archetypes.add(newArchetype(values, builder.accessories))
+    # `bits` is already the exact component set, and everything it holds beyond
+    # the table key is, by construction, an accessory
+    archetypes.add(
+      newArchetype(values, allComps = bits, accessoryComps = bits - minValues)
+    )
 
   result = newArchetypeSet(archetypes, builder.accessories)
