@@ -153,10 +153,11 @@ proc `-`*(a, b: Bits): Bits =
 
 proc `<=`*(a, b: Bits): bool =
   ## Returns whether a is a subset of b
-  if a.buckets.len > b.buckets.len:
+  let aLen = a.buckets.len
+  if aLen > b.buckets.len:
     return false
   # Anything past the end of `a` is empty, so it is trivially contained by `b`
-  for i in 0 ..< a.buckets.len:
+  for i in 0 ..< aLen:
     if ((not b.buckets[i]) and a.buckets[i]) > 0:
       return false
   return true
@@ -185,9 +186,24 @@ proc newFilter*(mustContain, mustExclude: Bits): BitsFilter =
   ## Creates a new filter
   BitsFilter(mustContain: mustContain, mustExclude: mustExclude)
 
+proc acceptsAll*(filter: BitsFilter): bool =
+  ## Whether this filter lets through every possible set of bits
+  filter.isNil or (filter.mustContain.isEmpty and filter.mustExclude.isEmpty)
+
 proc matches*(filter: BitsFilter, all: Bits): bool =
   ## Whether a target matches a filter
-  return filter.mustContain <= all and not all.anyIntersect(filter.mustExclude)
+  let allLen = all.buckets.len
+  let containLen = filter.mustContain.buckets.len
+  if containLen > allLen:
+    return false
+  for i in 0 ..< containLen:
+    if ((not all.buckets[i]) and filter.mustContain.buckets[i]) > 0:
+      return false
+  let excludeLen = min(filter.mustExclude.buckets.len, allLen)
+  for i in 0 ..< excludeLen:
+    if (filter.mustExclude.buckets[i] and all.buckets[i]) > 0:
+      return false
+  return true
 
 proc matches*(filter: BitsFilter, all: Bits, optional: Bits): bool =
   ## Whether a target matches a filter, disregarding any optional components
