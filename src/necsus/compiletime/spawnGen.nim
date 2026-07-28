@@ -1,4 +1,4 @@
-import std/[macros, sets, options]
+import std/[macros, options]
 import
   tools, tupleDirective, archetype, archetypeBuilder, componentDef, common, systemGen
 import ../runtime/[spawn, archetypeStore, world]

@@ -1,4 +1,4 @@
-import necsus, std/[sequtils, unittest]
+import necsus, std/[sequtils, sets, unittest]
 
 type
   Person = object
@@ -27,9 +27,9 @@ proc assertion(
     marblesNoAge: Query[(Marbles, Not[Age])],
     ageNoMarbles: Query[(Age, Not[Marbles])],
 ) =
-  check(toSeq(all.items) == @[("John",), ("Jack",), ("Jill",)])
-  check(toSeq(notAged.items).mapIt(it[0]) == @["John", "Jill"])
-  check(toSeq(noMarbles.items).mapIt(it[0]) == @["John", "Jack"])
+  check(toSeq(all.items).toHashSet == @[("John",), ("Jack",), ("Jill",)].toHashSet)
+  check(toSeq(notAged.items).mapIt(it[0]).toHashSet == @["John", "Jill"].toHashSet)
+  check(toSeq(noMarbles.items).mapIt(it[0]).toHashSet == @["John", "Jack"].toHashSet)
   check(toSeq(marblesNoAge.items).mapIt(it[0]) == @[41])
   check(toSeq(ageNoMarbles.items).mapIt(it[0]) == @[100])
 

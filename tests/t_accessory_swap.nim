@@ -26,7 +26,7 @@ proc assertion(
     all: Query[(Name,)], aged: Query[(Name, Age)], marbles: Query[(Name, Marbles)]
 ) =
   check(toSeq(all.items).mapIt(it[0]).toHashSet == @["Jack", "John", "Jane"].toHashSet)
-  check(toSeq(aged.items) == @[("Jane", 30), ("John", 41)])
+  check(toSeq(aged.items).toHashSet == @[("Jane", 30), ("John", 41)].toHashSet)
   check(toSeq(marbles.items) == @[("Jane", 5)])
 
 proc runner(tick: proc(): void) =

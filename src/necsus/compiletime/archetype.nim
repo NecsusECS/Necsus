@@ -2,8 +2,14 @@ import
   std/[
     tables, sets, hashes, strutils, sequtils, macros, algorithm, macrocache, strformat,
     options,
-  ]
-import componentDef, ../util/[bits], ../runtime/[world], directiveArg, tupleDirective
+  ],
+  componentDef,
+  ../util/[bits, openAddr],
+  ../runtime/[world],
+  directiveArg,
+  tupleDirective
+
+export openAddr
 
 type
   Archetype*[T] = ref object ## A archetype of values that can be stored together
@@ -16,7 +22,7 @@ type
 
   ArchetypeSet*[T] = ref object ## A set of all known archetypes
     accessories: Bits
-    archetypes: Table[Bits, Archetype[T]]
+    archetypes: OpenTable[Bits, Archetype[T]]
 
 proc generateName(values: openarray[string]): string =
   values.join("_")
@@ -183,9 +189,22 @@ proc newArchetypeSet*[T](
 ): ArchetypeSet[T] =
   ## Creates a set of archetypes
   result = ArchetypeSet[T](
-    archetypes: initTable[Bits, Archetype[T]](values.len), accessories: accessories
+    archetypes: initOpenTable[Bits, Archetype[T]](values.len), accessories: accessories
   )
-  for arch in values:
+
+  # Queries walk archetypes in the order they land here. Which order that is shouldn't
+  # matter to a system -- except that attaching a component mid-query moves an entity into
+  # a wider archetype, and it would be yielded a second time if that archetype hadn't been
+  # walked yet. Widest first means an entity can only ever move backwards into ground
+  # already covered. The name breaks ties, so the layout doesn't shift around based on how
+  # the graph happened to be explored
+  var ordered = values.toSeq
+  ordered.sort do(a, b: Archetype[T]) -> int:
+    result = cmp(b.values.len, a.values.len)
+    if result == 0:
+      result = cmp(a.name, b.name)
+
+  for arch in ordered:
     let key = arch.allComps - accessories
     assert(key notin result.archetypes)
     result.archetypes[key] = arch

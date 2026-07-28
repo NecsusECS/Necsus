@@ -1,5 +1,5 @@
 import parse, componentDef, archetypeBuilder, systemGen, directiveSet
-import macros, sequtils, sets, tables, strutils
+import macros, sequtils, tables, strutils
 
 type CodeGenInfo* = ref object
   ## Contains all the information needed to do high level code gen

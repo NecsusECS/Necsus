@@ -1,4 +1,4 @@
-import unittest, necsus, sequtils, options
+import unittest, necsus, sequtils, sets, options
 
 type
   A = char
@@ -22,7 +22,7 @@ proc assertions(
     findD: Query[(D,)],
     findE: Query[(E,)],
 ) =
-  check(findA.toSeq() == @[('a',), ('A',)])
+  check(findA.toSeq().toHashSet == @[('a',), ('A',)].toHashSet)
   check(findB.toSeq() == @[('B',)])
   check(findC.toSeq().len == 0)
   check(findD.toSeq().len == 0)

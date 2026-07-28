@@ -1,4 +1,4 @@
-import tables, sets, sequtils, archetype, algorithm, ../util/bits, hashes
+import sequtils, archetype, algorithm, ../util/[bits, openAddr], hashes
 
 export archetype, bits.hash, bits.`$`, bits.`==`
 
@@ -23,20 +23,19 @@ type
     ## A builder for creating a list of all known archetypes
     lookup: seq[T]
     allComponents: Bits
-    archetypes: HashSet[Bits]
-    actions: HashSet[BuilderAction]
+    archetypes: OpenSet[Bits]
+    actions: OpenSet[BuilderAction]
     accessories: Bits
 
   ArchetypeAccum = ref object
     ## Used during the final calculation as an accumulator for the full set of archetypes
-    seen: HashSet[Bits]
+    seen: OpenSet[Bits]
     workQueue: seq[Bits]
-    output: Table[Bits, Bits]
+    output: OpenTable[Bits, Bits]
 
 proc enqueue(accum: var ArchetypeAccum, bits: Bits) =
   ## Queues a set of components to be processed, if it hasn't been queued already
-  if bits.card > 0 and bits notin accum.seen:
-    accum.seen.incl(bits)
+  if bits.card > 0 and not accum.seen.containsOrIncl(bits):
     accum.workQueue.add(bits)
 
 proc newArchetypeBuilder*[T](): ArchetypeBuilder[T] =
@@ -44,8 +43,8 @@ proc newArchetypeBuilder*[T](): ArchetypeBuilder[T] =
   ArchetypeBuilder[T](
     lookup: newSeq[T](256),
     allComponents: Bits(),
-    archetypes: initHashSet[Bits](),
-    actions: initHashSet[BuilderAction](),
+    archetypes: initOpenSet[Bits](),
+    actions: initOpenSet[BuilderAction](),
     accessories: Bits(),
   )
 
@@ -188,11 +187,17 @@ proc process[T](
   # The minimal set of components, minus all the accessory components
   var minValues = next - builder.accessories
 
-  # Makes sure the registerd output includes any new accessories
-  if minValues in accum.output:
-    accum.output[minValues] = accum.output[minValues] + next
-  else:
-    accum.output[minValues] = next
+  # Makes sure the registerd output includes any new accessories. A missing entry reads
+  # back as a nil `Bits`, so claiming the slot up front keeps this to a single probe
+  let slot = accum.output.slotFor(minValues)
+  let existing = accum.output.value(slot)
+  accum.output.setValue(
+    slot,
+    if existing.isNil:
+      next
+    else:
+      existing + next,
+  )
 
   actions.addWork(next, accum)
 
@@ -201,16 +206,20 @@ proc build*[T](builder: ArchetypeBuilder[T]): ArchetypeSet[T] =
 
   var accum = ArchetypeAccum(
     workQueue: newSeqOfCap[Bits](256),
-    seen: initHashSet[Bits](256),
-    output: initTable[Bits, Bits](256),
+    seen: initOpenSet[Bits](256),
+    output: initOpenTable[Bits, Bits](256),
   )
 
   # Add in all the baseline archetypes
   for archetype in builder.archetypes.items:
     accum.enqueue(archetype)
 
+  # Flattened once up front. The queue gets walked thousands of times over, and rebuilding
+  # this for each pass costs more than everything the pass itself does
+  let actions = builder.actions.toSeq
+
   while accum.workQueue.len > 0:
-    builder.process(builder.actions.toSeq, accum.workQueue.pop, accum)
+    builder.process(actions, accum.workQueue.pop, accum)
 
   var archetypes: seq[Archetype[T]]
   for minValues, bits in accum.output:
