@@ -36,9 +36,10 @@ proc `$`*[T](directives: DirectiveSet[T]): string =
   &"{directives.symbol}({directives.directives})"
 
 proc nameOf*[T](directives: DirectiveSet[T], value: T): string =
-  ## Returns the name of a directive
-  assert(
-    value in directives.values,
-    &"Directive {value} was not in directiveSet: {directives}",
-  )
-  directives.values[value]
+  ## Returns the name of a directive. Every name is built with a prefix and a suffix, so
+  ## an empty string can only mean the lookup missed
+  result = directives.values.getOrDefault(value, "")
+  if result == "":
+    raise newException(
+      KeyError, &"Directive {value} was not in directiveSet: {directives}"
+    )
