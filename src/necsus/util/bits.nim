@@ -183,6 +183,20 @@ proc combine*(source, attach, remove: Bits): Bits =
   if maxBucket + 1 != result.buckets.len:
     result.buckets.setLen(maxBucket + 1)
 
+proc intersect*(a, b: Bits): Bits =
+  ## The bits the two sets have in common
+  # Past the overlap one side is empty, so nothing there survives
+  let overlap = min(a.buckets.len, b.buckets.len)
+  result = Bits(buckets: newSeq[Word](overlap))
+  var maxBucket = -1
+  for i in 0 ..< overlap:
+    let value = a.buckets[i] and b.buckets[i]
+    if value != 0:
+      result.buckets[i] = value
+      maxBucket = i
+  if maxBucket + 1 != result.buckets.len:
+    result.buckets.setLen(maxBucket + 1)
+
 proc `<=`*(a, b: Bits): bool =
   ## Returns whether a is a subset of b
   let aLen = a.buckets.len
@@ -239,6 +253,14 @@ iterator required*(filter: BitsFilter): uint16 =
   ## these can never match, which makes them usable as a cheap precondition
   for bit in filter.mustContain.items:
     yield bit
+
+proc mentioned*(filter: BitsFilter): Bits =
+  ## Every component a filter asks after, whether it insists on one or rules it out.
+  ## A caller that wants to know which components a filter can tell apart wants this
+  if filter.isNil:
+    Bits()
+  else:
+    filter.mustContain + filter.mustExclude
 
 proc acceptsAll*(filter: BitsFilter): bool =
   ## Whether this filter lets through every possible set of bits

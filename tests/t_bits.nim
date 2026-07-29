@@ -154,6 +154,31 @@ suite "Bits":
     check(bits1 > bits2)
     check(bits1 > bits3)
 
+  test "Bit intersection":
+    check(newBits(1, 2, 3).intersect(newBits(2, 3, 4)) == newBits(2, 3))
+    check(newBits(1, 500).intersect(newBits(500, 700)) == newBits(500))
+
+    # Where one side reaches past the other, and where nothing is shared at all
+    check(newBits(1, 500).intersect(newBits(1)) == newBits(1))
+    check(newBits(1).intersect(newBits(1, 500)) == newBits(1))
+    check(newBits(1, 2).intersect(newBits(500)).isEmpty)
+    check(newBits(1, 2).intersect(Bits()).isEmpty)
+
+    # An intersection that comes out empty is still canonical
+    let emptied = newBits(1, 500).intersect(newBits(2))
+    check(emptied == Bits())
+    check(emptied.hash == Bits().hash)
+
+  test "What a filter can tell apart":
+    check(
+      newFilter(mustContain = newBits(1, 5), mustExclude = newBits(4, 500)).mentioned ==
+        newBits(1, 4, 5, 500)
+    )
+    check(newFilter(mustContain = newBits(), mustExclude = newBits()).mentioned.isEmpty)
+
+    var missing: BitsFilter = nil
+    check(missing.mentioned.isEmpty)
+
   test "Bit anyIntersect":
     check(newBits(1, 2, 3).anyIntersect(newBits(3, 4, 5)))
     check(newBits(1, 200, 300).anyIntersect(newBits(300, 400, 500)))
