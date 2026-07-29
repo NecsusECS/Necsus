@@ -1,6 +1,4 @@
-import
-  tables, componentDef, tupleDirective, sequtils, strutils, sets, strformat,
-  directiveArg
+import tables, sequtils, strutils, strformat
 
 type DirectiveSet*[T] = ref object ## All possible directives
   symbol: string
@@ -36,38 +34,6 @@ proc symbol*[T](directives: DirectiveSet[T]): string =
 proc `$`*[T](directives: DirectiveSet[T]): string =
   ## Returns the name of this query set
   &"{directives.symbol}({directives.directives})"
-
-proc isFulfilledBy(query: TupleDirective, components: HashSet[ComponentDef]): bool =
-  ## Determines whether a query can be fulfilled by the given components
-  for arg in query.args:
-    case arg.kind
-    of Include:
-      if arg.component notin components:
-        return false
-    of Exclude:
-      if arg.component in components:
-        return false
-    of Optional:
-      discard
-  return true
-
-proc containing*(
-    queries: DirectiveSet[TupleDirective], components: openarray[ComponentDef]
-): seq[TupleDirective] =
-  ## Yields all queries that reference the given components
-  let compSet = components.toHashSet
-  for query in queries.values.keys:
-    if query.isFulfilledBy(compSet):
-      result.add(query)
-
-proc mentioning*(
-    queries: DirectiveSet[TupleDirective], components: openarray[ComponentDef]
-): seq[TupleDirective] =
-  ## Yields all queries that mention the given component
-  let compSet = components.toHashSet
-  for query in queries.values.keys:
-    if query.toSeq.anyIt(it in compSet):
-      result.add(query)
 
 proc nameOf*[T](directives: DirectiveSet[T], value: T): string =
   ## Returns the name of a directive
