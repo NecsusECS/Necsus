@@ -15,6 +15,9 @@ type
     bothDetach: Bits
       ## `detach` and `optDetach` together, so an action that does both still only takes
       ## a single pass to apply
+    attachCore, attachInert: Bits
+      ## `attach` split across the two halves of a walk state. Filled in once the inert
+      ## accessories are known, which is not until every action has been declared
 
   ActionIndex = object
     ## Actions arranged so that a single archetype only has to look at the ones that
@@ -44,15 +47,31 @@ type
     accessories: Bits
 
   ArchetypeAccum = ref object
-    ## Used during the final calculation as an accumulator for the full set of archetypes
-    seen: OpenSet[Bits]
+    ## Used during the final calculation as an accumulator for the full set of archetypes.
+    ##
+    ## A walk state is split in two. The `core` is everything that decides which actions
+    ## apply and which archetype the entity ends up in. Against it sits every inert
+    ## accessory that can ride along with that core -- as one set of possibilities rather
+    ## than a state of its own, because nothing in the graph can tell those states apart
+    seen: OpenTable[Bits, Bits]
     workQueue: seq[Bits]
     output: OpenTable[Bits, Bits]
 
-proc enqueue(accum: var ArchetypeAccum, bits: Bits) =
-  ## Queues a set of components to be processed, if it hasn't been queued already
-  if not bits.isEmpty and not accum.seen.containsOrIncl(bits):
-    accum.workQueue.add(bits)
+proc enqueue(accum: var ArchetypeAccum, core, inert: Bits) =
+  ## Records a core as reachable along with the accessories that can come with it, and
+  ## queues it if either is news. A core already walked has to be walked again when its
+  ## accessories grow, since everything downstream of it inherited the smaller set
+  if core.isEmpty and inert.isEmpty:
+    return
+
+  let slot = accum.seen.slotFor(core)
+  let known = accum.seen.value(slot)
+  if known.isNil:
+    accum.seen.setValue(slot, inert)
+    accum.workQueue.add(core)
+  elif not (inert <= known):
+    accum.seen.setValue(slot, known + inert)
+    accum.workQueue.add(core)
 
 proc newArchetypeBuilder*[T](): ArchetypeBuilder[T] =
   ## Creates a new ArchetypeBuilder
@@ -189,13 +208,23 @@ iterator allComponents*[T](builder: ArchetypeBuilder[T]): T =
       seen.incl(bit)
       yield builder.lookup[bit]
 
-proc gatedOn(action: BuilderAction, gate: uint16): BuilderAction =
-  ## The same action, minus the component gating it. The index only reaches an action
-  ## through a component it requires, so by the time the walk gets here that component
-  ## is known to be present and the filter no longer has to ask for it -- and a filter
-  ## that wanted nothing else falls away entirely
-  let filter = action.filter.withoutRequired(gate)
-  BuilderAction(
+proc prepared(action: BuilderAction, gate: int, inert: Bits): BuilderAction =
+  ## The copy of an action the walk actually runs.
+  ##
+  ## When there is a gate, the index only reaches this action through a component it
+  ## requires, so by the time the walk gets here that component is known to be present
+  ## and the filter no longer has to ask for it -- and a filter that wanted nothing else
+  ## falls away entirely.
+  ##
+  ## The attached components get split across the two halves of a walk state at the same
+  ## time, since the walk always wants them apart and never wants them together
+  let filter =
+    if gate < 0:
+      action.filter
+    else:
+      action.filter.withoutRequired(gate.uint16)
+
+  result = BuilderAction(
     filter:
       if filter.acceptsAll:
         nil
@@ -207,23 +236,30 @@ proc gatedOn(action: BuilderAction, gate: uint16): BuilderAction =
     bothDetach: action.bothDetach,
   )
 
-template applyAction(entry: BuilderAction, source: Bits, accum: var ArchetypeAccum) =
-  ## Works out what `entry` turns `source` into, and queues the result.
+  if not action.attach.isNil:
+    result.attachCore = (action.attach - inert).orNil
+    result.attachInert = action.attach.intersect(inert).orNil
+
+template applyAction(
+    entry: BuilderAction, source, inert: Bits, accum: var ArchetypeAccum
+) =
+  ## Works out what `entry` turns a walk state into, and queues the result.
   let action = entry
 
   if action.filter.isNil or action.filter.matches(source):
-    # An action that leaves `source` untouched can never enqueue anything new, since
-    # whatever it would produce is `source`, which has already been seen
-    let attaches = not action.attach.isNil and not (action.attach <= source)
+    # An action that leaves the state untouched can never enqueue anything new, since
+    # whatever it would produce is the state itself, which has already been seen
+    let attaches = not action.attachCore.isNil and not (action.attachCore <= source)
     let detachesAll = not action.detach.isNil and action.detach <= source
     let detaches =
       detachesAll or
       (not action.optDetach.isNil and action.optDetach.anyIntersect(source))
+    let gains = not action.attachInert.isNil and not (action.attachInert <= inert)
 
-    if attaches or detaches:
+    if attaches or detaches or gains:
       let added =
         if attaches:
-          action.attach
+          action.attachCore
         else:
           nil
 
@@ -233,41 +269,53 @@ template applyAction(entry: BuilderAction, source: Bits, accum: var ArchetypeAcc
       let removed =
         if detachesAll or (
           attaches and not action.detach.isNil and
-          action.detach.isSubsetOfUnion(source, action.attach)
+          action.detach.isSubsetOfUnion(source, action.attachCore)
         ):
           action.bothDetach
         else:
           action.optDetach
 
-      accum.enqueue(combine(source, added, removed))
+      # Neither half has to have the other's components filtered out of `removed` first:
+      # a core never holds an inert accessory, and the accessories never hold a core
+      # component, so each side only ever takes away what it already lacks
+      accum.enqueue(
+        combine(source, added, removed), combine(inert, action.attachInert, removed)
+      )
 
-proc addWork(index: ActionIndex, source: Bits, accum: var ArchetypeAccum) =
-  ## Applies every action that could possibly do anything to `source`
+proc addWork(index: ActionIndex, source, inert: Bits, accum: var ArchetypeAccum) =
+  ## Applies every action that could possibly do anything to a walk state
   for i in 0 ..< index.ungated:
-    applyAction(index.entries[i], source, accum)
+    applyAction(index.entries[i], source, inert, accum)
 
   # Everything else is filed under a component its filter requires, so walking the
   # components `source` actually has reaches every remaining candidate, and never looks
-  # at the rest
+  # at the rest. An inert accessory is never one of them -- no filter mentions one
   for component in source.items:
     for i in index.gateStart[component.int] ..< index.gateEnd[component.int]:
-      applyAction(index.entries[i], source, accum)
+      applyAction(index.entries[i], source, inert, accum)
 
 proc process[T](
     builder: ArchetypeBuilder[T],
     actions: ActionIndex,
-    next: Bits,
+    core, inert: Bits,
     accum: var ArchetypeAccum,
 ) =
   ## Records an archetype and queues up everything reachable from it. Anything that
   ## made it onto the queue is already non-empty and marked as seen.
 
-  # The minimal set of components, minus all the accessory components
+  # The minimal set of components, minus all the accessory components. The inert ones are
+  # already out of the core, so only the rest are left to take away
   let minValues =
     if builder.accessories.isEmpty:
-      next
+      core
     else:
-      next - builder.accessories
+      core - builder.accessories
+
+  let next =
+    if inert.isEmpty:
+      core
+    else:
+      core + inert
 
   # Makes sure the registerd output includes any new accessories. A missing entry reads
   # back as a nil `Bits`, so claiming the slot up front keeps this to a single probe
@@ -281,9 +329,27 @@ proc process[T](
       existing + next,
   )
 
-  actions.addWork(next, accum)
+  actions.addWork(core, inert, accum)
 
-proc buildIndex[T](builder: ArchetypeBuilder[T]): ActionIndex =
+proc inertAccessories[T](builder: ArchetypeBuilder[T]): Bits =
+  ## The accessories nothing in the graph can tell apart.
+  ##
+  ## An accessory has to be searched for in its own right only when some action asks
+  ## whether it is there: a filter that requires or excludes it, or a detach that will
+  ## not apply without it. Any other one changes nothing about where an entity carrying
+  ## it can go, and it is already left out of the key an archetype is recorded under, so
+  ## the walk can carry it as one of a set of possibilities instead of splitting the
+  ## whole search in two to hold both answers
+  result = builder.accessories
+  if result.isEmpty:
+    return
+  for action in builder.actions.items:
+    if not action.filter.isNil:
+      result = result - action.filter.mentioned
+    if not action.detach.isNil:
+      result = result - action.detach
+
+proc buildIndex[T](builder: ArchetypeBuilder[T], inert: Bits): ActionIndex =
   ## Files every action under a component that gates it, picking the rarest component
   ## the filter requires so the gate rejects as often as it can.
   ##
@@ -306,9 +372,9 @@ proc buildIndex[T](builder: ArchetypeBuilder[T]): ActionIndex =
           gate = component.int
 
     if gate < 0:
-      ungated.add(action)
+      ungated.add(action.prepared(gate, inert))
     else:
-      byGate[gate].add(action.gatedOn(gate.uint16))
+      byGate[gate].add(action.prepared(gate, inert))
 
   # Flattened into one array, so reaching an action costs a single index rather than one
   # per level of nesting -- which the walk pays for on every field it reads
@@ -329,20 +395,24 @@ proc build*[T](builder: ArchetypeBuilder[T]): ArchetypeSet[T] =
 
   var accum = ArchetypeAccum(
     workQueue: newSeqOfCap[Bits](256),
-    seen: initOpenSet[Bits](256),
+    seen: initOpenTable[Bits, Bits](256),
     output: initOpenTable[Bits, Bits](256),
   )
 
+  # Worked out before anything is queued, because it decides how a state is even shaped
+  let inert = builder.inertAccessories
+
   # Add in all the baseline archetypes
   for archetype in builder.archetypes.items:
-    accum.enqueue(archetype)
+    accum.enqueue(archetype - inert, archetype.intersect(inert))
 
   # Built once up front. The queue gets walked thousands of times over, and rebuilding
   # this for each pass costs more than everything the pass itself does
-  let actions = builder.buildIndex
+  let actions = builder.buildIndex(inert)
 
   while accum.workQueue.len > 0:
-    builder.process(actions, accum.workQueue.pop, accum)
+    let core = accum.workQueue.pop
+    builder.process(actions, core, accum.seen[core], accum)
 
   var archetypes: seq[Archetype[T]]
   for minValues, bits in accum.output:
