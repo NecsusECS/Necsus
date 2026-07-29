@@ -1,0 +1,25 @@
+nimTitle	openAddr	necsus/util/openAddr.html	module src/necsus/util/openAddr		0
+nim	OpenTable	necsus/util/openAddr.html#OpenTable	object OpenTable		35
+nim	OpenSet	necsus/util/openAddr.html#OpenSet	object OpenSet		41
+nim	initOpenTable	necsus/util/openAddr.html#initOpenTable,int	proc initOpenTable[K, V](expected: int = 32): OpenTable[K, V]		97
+nim	len	necsus/util/openAddr.html#len,OpenTable[K,V]	proc len[K, V](table: OpenTable[K, V]): int		101
+nim	slotFor	necsus/util/openAddr.html#slotFor,OpenTable[K,V],K	proc slotFor[K, V](table: var OpenTable[K, V]; key: K): int		111
+nim	key	necsus/util/openAddr.html#key,OpenTable[K,V],int	proc key[K, V](table: OpenTable[K, V]; slot: int): K		128
+nim	value	necsus/util/openAddr.html#value,OpenTable[K,V],int	proc value[K, V](table: OpenTable[K, V]; slot: int): V		132
+nim	setValue	necsus/util/openAddr.html#setValue,OpenTable[K,V],int,sinkV	proc setValue[K, V](table: var OpenTable[K, V]; slot: int; value: sink V)		136
+nim	contains	necsus/util/openAddr.html#contains,OpenTable[K,V],K	proc contains[K, V](table: OpenTable[K, V]; key: K): bool		140
+nim	`[]`	necsus/util/openAddr.html#[],OpenTable[K,V],K	proc `[]`[K, V](table: OpenTable[K, V]; key: K): V		143
+nim	getOrDefault	necsus/util/openAddr.html#getOrDefault,OpenTable[K,V],K	proc getOrDefault[K, V](table: OpenTable[K, V]; key: K): V		150
+nim	`[]=`	necsus/util/openAddr.html#[]=,OpenTable[K,V],K,sinkV	proc `[]=`[K, V](table: var OpenTable[K, V]; key: K; value: sink V)		159
+nim	pairs	necsus/util/openAddr.html#pairs.i,OpenTable[K,V]	iterator pairs[K, V](table: OpenTable[K, V]): (K, V)		163
+nim	keys	necsus/util/openAddr.html#keys.i,OpenTable[K,V]	iterator keys[K, V](table: OpenTable[K, V]): K		168
+nim	values	necsus/util/openAddr.html#values.i,OpenTable[K,V]	iterator values[K, V](table: OpenTable[K, V]): V		173
+nim	initOpenSet	necsus/util/openAddr.html#initOpenSet,int	proc initOpenSet[K](expected: int = 32): OpenSet[K]		178
+nim	len	necsus/util/openAddr.html#len,OpenSet[K]	proc len[K](openSet: OpenSet[K]): int		182
+nim	card	necsus/util/openAddr.html#card,OpenSet[K]	proc card[K](openSet: OpenSet[K]): int		185
+nim	contains	necsus/util/openAddr.html#contains,OpenSet[K],K	proc contains[K](openSet: OpenSet[K]; key: K): bool		188
+nim	containsOrIncl	necsus/util/openAddr.html#containsOrIncl,OpenSet[K],K	proc containsOrIncl[K](openSet: var OpenSet[K]; key: K): bool		194
+nim	incl	necsus/util/openAddr.html#incl,OpenSet[K],K	proc incl[K](openSet: var OpenSet[K]; key: K)		209
+nim	items	necsus/util/openAddr.html#items.i,OpenSet[K]	iterator items[K](openSet: OpenSet[K]): K		213
+nimgrp	contains	necsus/util/openAddr.html#contains-procs-all	proc		140
+nimgrp	len	necsus/util/openAddr.html#len-procs-all	proc		101

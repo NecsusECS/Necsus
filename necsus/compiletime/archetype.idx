@@ -1,32 +1,32 @@
 nimTitle	archetype	necsus/compiletime/archetype.html	module src/necsus/compiletime/archetype		0
-nim	Archetype	necsus/compiletime/archetype.html#Archetype	type Archetype		9
-nim	ArchetypeSet	necsus/compiletime/archetype.html#ArchetypeSet	type ArchetypeSet		17
-nim	newArchetype	necsus/compiletime/archetype.html#newArchetype,openArray[T],Bits	proc newArchetype[T](values: openArray[T]; accessories: Bits): Archetype[T]		43
-nim	hasAccessories	necsus/compiletime/archetype.html#hasAccessories,Archetype	proc hasAccessories(arch: Archetype): bool		71
-nim	isAccessory	necsus/compiletime/archetype.html#isAccessory,Archetype[T],T	proc isAccessory[T](arch: Archetype[T]; value: T): bool		75
-nim	readableName	necsus/compiletime/archetype.html#readableName,Archetype[ComponentDef]	proc readableName(arch: Archetype[ComponentDef]): string		79
-nim	hash	necsus/compiletime/archetype.html#hash,Archetype[T]	proc hash[T](archetype: Archetype[T]): Hash		83
-nim	`==`	necsus/compiletime/archetype.html#==,Archetype[T],Archetype[T]	proc `==`[T](a, b: Archetype[T]): bool		86
-nim	`$`	necsus/compiletime/archetype.html#$,Archetype[T]	proc `$`[T](archetype: Archetype[T]): string		90
-nim	contains	necsus/compiletime/archetype.html#contains,Archetype[T],T	proc contains[T](archetype: Archetype[T]; value: T): bool		104
-nim	indexOf	necsus/compiletime/archetype.html#indexOf,Archetype[T],T	proc indexOf[T](archetype: Archetype[T]; value: T): int		108
-nim	containsAnyOf	necsus/compiletime/archetype.html#containsAnyOf,Archetype[T],openArray[T]	proc containsAnyOf[T](archetype: Archetype[T]; others: openArray[T]): bool		113
-nim	containsAllOf	necsus/compiletime/archetype.html#containsAllOf,Archetype[T],openArray[T]	proc containsAllOf[T](archetype: Archetype[T]; others: openArray[T]): bool		120
-nim	removeAndAdd	necsus/compiletime/archetype.html#removeAndAdd,Archetype[T],Bits,openArray[T]	proc removeAndAdd[T](archetype: Archetype[T]; remove: Bits; add: openArray[T]): seq[T]		127
-nim	ident	necsus/compiletime/archetype.html#ident,Archetype[ComponentDef]	proc ident(archetype: Archetype[ComponentDef]): NimNode		139
-nim	asStorageTuple	necsus/compiletime/archetype.html#asStorageTuple,Archetype[ComponentDef]	proc asStorageTuple(archetype: Archetype[ComponentDef]): NimNode		143
-nim	items	necsus/compiletime/archetype.html#items.i,Archetype[T]	iterator items[T](archetype: Archetype[T]): T		152
-nim	values	necsus/compiletime/archetype.html#values,Archetype[T]	proc values[T](archetype: Archetype[T]): seq[T]		157
-nim	idSymbol	necsus/compiletime/archetype.html#idSymbol,Archetype[T]	proc idSymbol[T](archetype: Archetype[T]): NimNode		167
-nim	archArchSymbolDef	necsus/compiletime/archetype.html#archArchSymbolDef,Archetype[T]	proc archArchSymbolDef[T](archetype: Archetype[T]): NimNode		180
-nim	newArchetypeSet	necsus/compiletime/archetype.html#newArchetypeSet,openArray[Archetype[T]],Bits	proc newArchetypeSet[T](values: openArray[Archetype[T]]; accessories: Bits): ArchetypeSet[\n    T]		192
-nim	len	necsus/compiletime/archetype.html#len,ArchetypeSet[T]	proc len[T](archetypes: ArchetypeSet[T]): int		204
-nim	contains	necsus/compiletime/archetype.html#contains,ArchetypeSet[T],Archetype[T]	proc contains[T](archetypes: ArchetypeSet[T]; archetype: Archetype[T]): bool		207
-nim	items	necsus/compiletime/archetype.html#items.i,ArchetypeSet[T]	iterator items[T](archetypes: ArchetypeSet[T]): Archetype[T]		210
-nim	dumpAnalysis	necsus/compiletime/archetype.html#dumpAnalysis,ArchetypeSet[T]	proc dumpAnalysis[T](archetypes: ArchetypeSet[T])		215
-nim	archetypeFor	necsus/compiletime/archetype.html#archetypeFor,ArchetypeSet[T],openArray[T]	proc archetypeFor[T](archs: ArchetypeSet[T]; components: openArray[T]): Archetype[T]		222
-nim	matches	necsus/compiletime/archetype.html#matches,Archetype,BitsFilter	proc matches(arch: Archetype; filter: BitsFilter): bool		231
-nim	asTupleDir	necsus/compiletime/archetype.html#asTupleDir,Archetype[ComponentDef]	proc asTupleDir(arch: Archetype[ComponentDef]): TupleDirective		235
-nim	calculateSize	necsus/compiletime/archetype.html#calculateSize,Archetype[ComponentDef]	proc calculateSize(arch: Archetype[ComponentDef]): Option[NimNode]		242
-nimgrp	contains	necsus/compiletime/archetype.html#contains-procs-all	proc		104
-nimgrp	items	necsus/compiletime/archetype.html#items-iterators-all	iterator		152
+nim	Archetype	necsus/compiletime/archetype.html#Archetype	type Archetype		15
+nim	ArchetypeSet	necsus/compiletime/archetype.html#ArchetypeSet	type ArchetypeSet		23
+nim	newArchetype	necsus/compiletime/archetype.html#newArchetype,sinkseq[T],Bits,Bits	proc newArchetype[T](values: sink seq[T]; allComps: Bits; accessoryComps: Bits): Archetype[\n    T]		49
+nim	hasAccessories	necsus/compiletime/archetype.html#hasAccessories,Archetype	proc hasAccessories(arch: Archetype): bool		66
+nim	isAccessory	necsus/compiletime/archetype.html#isAccessory,Archetype[T],T	proc isAccessory[T](arch: Archetype[T]; value: T): bool		70
+nim	readableName	necsus/compiletime/archetype.html#readableName,Archetype[ComponentDef]	proc readableName(arch: Archetype[ComponentDef]): string		74
+nim	hash	necsus/compiletime/archetype.html#hash,Archetype[T]	proc hash[T](archetype: Archetype[T]): Hash		78
+nim	`==`	necsus/compiletime/archetype.html#==,Archetype[T],Archetype[T]	proc `==`[T](a, b: Archetype[T]): bool		81
+nim	`$`	necsus/compiletime/archetype.html#$,Archetype[T]	proc `$`[T](archetype: Archetype[T]): string		85
+nim	contains	necsus/compiletime/archetype.html#contains,Archetype[T],T	proc contains[T](archetype: Archetype[T]; value: T): bool		99
+nim	indexOf	necsus/compiletime/archetype.html#indexOf,Archetype[T],T	proc indexOf[T](archetype: Archetype[T]; value: T): int		103
+nim	containsAnyOf	necsus/compiletime/archetype.html#containsAnyOf,Archetype[T],openArray[T]	proc containsAnyOf[T](archetype: Archetype[T]; others: openArray[T]): bool		108
+nim	containsAllOf	necsus/compiletime/archetype.html#containsAllOf,Archetype[T],openArray[T]	proc containsAllOf[T](archetype: Archetype[T]; others: openArray[T]): bool		115
+nim	removeAndAdd	necsus/compiletime/archetype.html#removeAndAdd,Archetype[T],Bits,openArray[T]	proc removeAndAdd[T](archetype: Archetype[T]; remove: Bits; add: openArray[T]): seq[T]		122
+nim	ident	necsus/compiletime/archetype.html#ident,Archetype[ComponentDef]	proc ident(archetype: Archetype[ComponentDef]): NimNode		134
+nim	asStorageTuple	necsus/compiletime/archetype.html#asStorageTuple,Archetype[ComponentDef]	proc asStorageTuple(archetype: Archetype[ComponentDef]): NimNode		138
+nim	items	necsus/compiletime/archetype.html#items.i,Archetype[T]	iterator items[T](archetype: Archetype[T]): T		147
+nim	values	necsus/compiletime/archetype.html#values,Archetype[T]	proc values[T](archetype: Archetype[T]): seq[T]		152
+nim	idSymbol	necsus/compiletime/archetype.html#idSymbol,Archetype[T]	proc idSymbol[T](archetype: Archetype[T]): NimNode		162
+nim	archArchSymbolDef	necsus/compiletime/archetype.html#archArchSymbolDef,Archetype[T]	proc archArchSymbolDef[T](archetype: Archetype[T]): NimNode		175
+nim	newArchetypeSet	necsus/compiletime/archetype.html#newArchetypeSet,openArray[Archetype[T]],Bits	proc newArchetypeSet[T](values: openArray[Archetype[T]]; accessories: Bits): ArchetypeSet[\n    T]		187
+nim	len	necsus/compiletime/archetype.html#len,ArchetypeSet[T]	proc len[T](archetypes: ArchetypeSet[T]): int		212
+nim	contains	necsus/compiletime/archetype.html#contains,ArchetypeSet[T],Archetype[T]	proc contains[T](archetypes: ArchetypeSet[T]; archetype: Archetype[T]): bool		215
+nim	items	necsus/compiletime/archetype.html#items.i,ArchetypeSet[T]	iterator items[T](archetypes: ArchetypeSet[T]): Archetype[T]		218
+nim	dumpAnalysis	necsus/compiletime/archetype.html#dumpAnalysis,ArchetypeSet[T]	proc dumpAnalysis[T](archetypes: ArchetypeSet[T])		223
+nim	archetypeFor	necsus/compiletime/archetype.html#archetypeFor,ArchetypeSet[T],openArray[T]	proc archetypeFor[T](archs: ArchetypeSet[T]; components: openArray[T]): Archetype[T]		230
+nim	matches	necsus/compiletime/archetype.html#matches,Archetype,BitsFilter	proc matches(arch: Archetype; filter: BitsFilter): bool		239
+nim	asTupleDir	necsus/compiletime/archetype.html#asTupleDir,Archetype[ComponentDef]	proc asTupleDir(arch: Archetype[ComponentDef]): TupleDirective		243
+nim	calculateSize	necsus/compiletime/archetype.html#calculateSize,Archetype[ComponentDef]	proc calculateSize(arch: Archetype[ComponentDef]): Option[NimNode]		250
+nimgrp	contains	necsus/compiletime/archetype.html#contains-procs-all	proc		99
+nimgrp	items	necsus/compiletime/archetype.html#items-iterators-all	iterator		147

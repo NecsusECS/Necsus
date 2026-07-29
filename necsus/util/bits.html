@@ -94,12 +94,20 @@
   <li><a class="reference" href="#%3E%2CBits%2CBits" title="`&gt;`(a, b: Bits): bool">`&gt;`(a, b: Bits): bool</a></li>
 
 </ul>
+<ul class="simple nested-toc-section">acceptsAll
+  <li><a class="reference" href="#acceptsAll%2CBitsFilter" title="acceptsAll(filter: BitsFilter): bool">acceptsAll(filter: BitsFilter): bool</a></li>
+
+</ul>
 <ul class="simple nested-toc-section">anyIntersect
   <li><a class="reference" href="#anyIntersect%2CBits%2CBits" title="anyIntersect(a, b: Bits): bool">anyIntersect(a, b: Bits): bool</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">card
   <li><a class="reference" href="#card%2CBits" title="card(bitset: Bits): int">card(bitset: Bits): int</a></li>
+
+</ul>
+<ul class="simple nested-toc-section">combine
+  <li><a class="reference" href="#combine%2CBits%2CBits%2CBits" title="combine(source, attach, remove: Bits): Bits">combine(source, attach, remove: Bits): Bits</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">contains
@@ -115,9 +123,25 @@
   <li><a class="reference" href="#incl%2CBits%2Cuint16" title="incl(bitset: var Bits; value: uint16)">incl(bitset: var Bits; value: uint16)</a></li>
 
 </ul>
+<ul class="simple nested-toc-section">intersect
+  <li><a class="reference" href="#intersect%2CBits%2CBits" title="intersect(a, b: Bits): Bits">intersect(a, b: Bits): Bits</a></li>
+
+</ul>
+<ul class="simple nested-toc-section">isEmpty
+  <li><a class="reference" href="#isEmpty%2CBits" title="isEmpty(bitset: Bits): bool">isEmpty(bitset: Bits): bool</a></li>
+
+</ul>
+<ul class="simple nested-toc-section">isSubsetOfUnion
+  <li><a class="reference" href="#isSubsetOfUnion%2CBits%2CBits%2CBits" title="isSubsetOfUnion(a, b, c: Bits): bool">isSubsetOfUnion(a, b, c: Bits): bool</a></li>
+
+</ul>
 <ul class="simple nested-toc-section">matches
   <li><a class="reference" href="#matches%2CBitsFilter%2CBits" title="matches(filter: BitsFilter; all: Bits): bool">matches(filter: BitsFilter; all: Bits): bool</a></li>
 <li><a class="reference" href="#matches%2CBitsFilter%2CBits%2CBits" title="matches(filter: BitsFilter; all: Bits; optional: Bits): bool">matches(filter: BitsFilter; all: Bits; optional: Bits): bool</a></li>
+
+</ul>
+<ul class="simple nested-toc-section">mentioned
+  <li><a class="reference" href="#mentioned%2CBitsFilter" title="mentioned(filter: BitsFilter): Bits">mentioned(filter: BitsFilter): Bits</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">newBits
@@ -126,6 +150,10 @@
 </ul>
 <ul class="simple nested-toc-section">newFilter
   <li><a class="reference" href="#newFilter%2CBits%2CBits" title="newFilter(mustContain, mustExclude: Bits): BitsFilter">newFilter(mustContain, mustExclude: Bits): BitsFilter</a></li>
+
+</ul>
+<ul class="simple nested-toc-section">withoutRequired
+  <li><a class="reference" href="#withoutRequired%2CBitsFilter%2Cuint16" title="withoutRequired(filter: BitsFilter; component: uint16): BitsFilter">withoutRequired(filter: BitsFilter; component: uint16): BitsFilter</a></li>
 
 </ul>
 
@@ -138,6 +166,10 @@
     <ul class="simple simple-toc-section">
       <ul class="simple nested-toc-section">items
   <li><a class="reference" href="#items.i%2CBits" title="items(bitset: Bits): uint16">items(bitset: Bits): uint16</a></li>
+
+</ul>
+<ul class="simple nested-toc-section">required
+  <li><a class="reference" href="#required.i%2CBitsFilter" title="required(filter: BitsFilter): uint16">required(filter: BitsFilter): uint16</a></li>
 
 </ul>
 
@@ -160,7 +192,7 @@
   <dt><pre><a href="bits.html#Bits"><span class="Identifier">Bits</span></a> <span class="Other">=</span> <span class="Keyword">ref</span> <span class="Keyword">object</span></pre></dt>
   <dd>
     
-    A bitset without a limit on the number of bits that can be set
+    A bitset without a limit on the number of bits that can be set.
     
   </dd>
 </div>
@@ -274,6 +306,17 @@
 </div>
 
 </div>
+<div id="acceptsAll-procs-all">
+  <div id="acceptsAll,BitsFilter">
+  <dt><pre><span class="Keyword">proc</span> <a href="#acceptsAll%2CBitsFilter"><span class="Identifier">acceptsAll</span></a><span class="Other">(</span><span class="Identifier">filter</span><span class="Other">:</span> <a href="bits.html#BitsFilter"><span class="Identifier">BitsFilter</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Whether this filter lets through every possible set of bits
+    
+  </dd>
+</div>
+
+</div>
 <div id="anyIntersect-procs-all">
   <div id="anyIntersect,Bits,Bits">
   <dt><pre><span class="Keyword">proc</span> <a href="#anyIntersect%2CBits%2CBits"><span class="Identifier">anyIntersect</span></a><span class="Other">(</span><span class="Identifier">a</span><span class="Other">,</span> <span class="Identifier">b</span><span class="Other">:</span> <a href="bits.html#Bits"><span class="Identifier">Bits</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
@@ -291,6 +334,18 @@
   <dd>
     
     The number of bits that have been set -- the cardinality
+    
+  </dd>
+</div>
+
+</div>
+<div id="combine-procs-all">
+  <div id="combine,Bits,Bits,Bits">
+  <dt><pre><span class="Keyword">proc</span> <a href="#combine%2CBits%2CBits%2CBits"><span class="Identifier">combine</span></a><span class="Other">(</span><span class="Identifier">source</span><span class="Other">,</span> <span class="Identifier">attach</span><span class="Other">,</span> <span class="Identifier">remove</span><span class="Other">:</span> <a href="bits.html#Bits"><span class="Identifier">Bits</span></a><span class="Other">)</span><span class="Other">:</span> <a href="bits.html#Bits"><span class="Identifier">Bits</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    <tt class="docutils literal"><span class="pre"><span class="Punctuation">(</span><span class="Identifier">source</span> <span class="Operator">+</span> <span class="Identifier">attach</span><span class="Punctuation">)</span> <span class="Operator">-</span> <span class="Identifier">remove</span></span></tt> in a single pass. Either <tt class="docutils literal"><span class="pre"><span class="Identifier">attach</span></span></tt> or <tt class="docutils literal"><span class="pre"><span class="Identifier">remove</span></span></tt> may be nil, meaning there is nothing to add or nothing to take away.
     
   </dd>
 </div>
@@ -338,6 +393,39 @@
 </div>
 
 </div>
+<div id="intersect-procs-all">
+  <div id="intersect,Bits,Bits">
+  <dt><pre><span class="Keyword">proc</span> <a href="#intersect%2CBits%2CBits"><span class="Identifier">intersect</span></a><span class="Other">(</span><span class="Identifier">a</span><span class="Other">,</span> <span class="Identifier">b</span><span class="Other">:</span> <a href="bits.html#Bits"><span class="Identifier">Bits</span></a><span class="Other">)</span><span class="Other">:</span> <a href="bits.html#Bits"><span class="Identifier">Bits</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    The bits the two sets have in common
+    
+  </dd>
+</div>
+
+</div>
+<div id="isEmpty-procs-all">
+  <div id="isEmpty,Bits">
+  <dt><pre><span class="Keyword">proc</span> <a href="#isEmpty%2CBits"><span class="Identifier">isEmpty</span></a><span class="Other">(</span><span class="Identifier">bitset</span><span class="Other">:</span> <a href="bits.html#Bits"><span class="Identifier">Bits</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Whether no bits at all are set
+    
+  </dd>
+</div>
+
+</div>
+<div id="isSubsetOfUnion-procs-all">
+  <div id="isSubsetOfUnion,Bits,Bits,Bits">
+  <dt><pre><span class="Keyword">proc</span> <a href="#isSubsetOfUnion%2CBits%2CBits%2CBits"><span class="Identifier">isSubsetOfUnion</span></a><span class="Other">(</span><span class="Identifier">a</span><span class="Other">,</span> <span class="Identifier">b</span><span class="Other">,</span> <span class="Identifier">c</span><span class="Other">:</span> <a href="bits.html#Bits"><span class="Identifier">Bits</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Whether <tt class="docutils literal"><span class="pre"><span class="Identifier">a</span></span></tt> is a subset of <tt class="docutils literal"><span class="pre"><span class="Identifier">b</span> <span class="Operator">+</span> <span class="Identifier">c</span></span></tt>, without building the union to find out
+    
+  </dd>
+</div>
+
+</div>
 <div id="matches-procs-all">
   <div id="matches,BitsFilter,Bits">
   <dt><pre><span class="Keyword">proc</span> <a href="#matches%2CBitsFilter%2CBits"><span class="Identifier">matches</span></a><span class="Other">(</span><span class="Identifier">filter</span><span class="Other">:</span> <a href="bits.html#BitsFilter"><span class="Identifier">BitsFilter</span></a><span class="Other">;</span> <span class="Identifier">all</span><span class="Other">:</span> <a href="bits.html#Bits"><span class="Identifier">Bits</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
@@ -354,6 +442,17 @@
   <dd>
     
     Whether a target matches a filter, disregarding any optional components
+    
+  </dd>
+</div>
+
+</div>
+<div id="mentioned-procs-all">
+  <div id="mentioned,BitsFilter">
+  <dt><pre><span class="Keyword">proc</span> <a href="#mentioned%2CBitsFilter"><span class="Identifier">mentioned</span></a><span class="Other">(</span><span class="Identifier">filter</span><span class="Other">:</span> <a href="bits.html#BitsFilter"><span class="Identifier">BitsFilter</span></a><span class="Other">)</span><span class="Other">:</span> <a href="bits.html#Bits"><span class="Identifier">Bits</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Every component a filter asks after, whether it insists on one or rules it out. A caller that wants to know which components a filter can tell apart wants this
     
   </dd>
 </div>
@@ -382,6 +481,18 @@
 </div>
 
 </div>
+<div id="withoutRequired-procs-all">
+  <div id="withoutRequired,BitsFilter,uint16">
+  <dt><pre><span class="Keyword">proc</span> <a href="#withoutRequired%2CBitsFilter%2Cuint16"><span class="Identifier">withoutRequired</span></a><span class="Other">(</span><span class="Identifier">filter</span><span class="Other">:</span> <a href="bits.html#BitsFilter"><span class="Identifier">BitsFilter</span></a><span class="Other">;</span> <span class="Identifier">component</span><span class="Other">:</span> <span class="Identifier">uint16</span><span class="Other">)</span><span class="Other">:</span> <a href="bits.html#BitsFilter"><span class="Identifier">BitsFilter</span></a> {.
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    The same filter, minus one component it requires. Useful where a caller has already established that component is present and would rather not pay to confirm it
+    
+  </dd>
+</div>
+
+</div>
 
   </dl>
 </div>
@@ -393,7 +504,19 @@
   <dt><pre><span class="Keyword">iterator</span> <a href="#items.i%2CBits"><span class="Identifier">items</span></a><span class="Other">(</span><span class="Identifier">bitset</span><span class="Other">:</span> <a href="bits.html#Bits"><span class="Identifier">Bits</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">uint16</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
-    Returns the index of every bit that has been set
+    Returns the index of every bit that has been set, from lowest to highest
+    
+  </dd>
+</div>
+
+</div>
+<div id="required-iterators-all">
+  <div id="required.i,BitsFilter">
+  <dt><pre><span class="Keyword">iterator</span> <a href="#required.i%2CBitsFilter"><span class="Identifier">required</span></a><span class="Other">(</span><span class="Identifier">filter</span><span class="Other">:</span> <a href="bits.html#BitsFilter"><span class="Identifier">BitsFilter</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">uint16</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Yields every component a filter insists on being present. A set missing any one of these can never match, which makes them usable as a cheap precondition
     
   </dd>
 </div>
@@ -409,7 +532,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-07-26 21:02:25 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-07-29 13:44:01 UTC</small>
       </div>
     </div>
   </div>
