@@ -1,4 +1,4 @@
-import std/[macros, sets]
+import std/macros
 import common, systemGen, ../runtime/directives
 
 let lastTime {.compileTime.} = ident("lastTime")

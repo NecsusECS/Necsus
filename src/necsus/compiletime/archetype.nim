@@ -1,6 +1,6 @@
 import
   std/[
-    tables, sets, hashes, strutils, sequtils, macros, algorithm, macrocache, strformat,
+    tables, hashes, strutils, sequtils, macros, algorithm, macrocache, strformat,
     options,
   ],
   componentDef,
