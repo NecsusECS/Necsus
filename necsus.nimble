@@ -35,7 +35,7 @@ task readme, "Compiles code in the readme":
             if inCode:
                 let tmpPath = getTempDir() & "necsus_readme_" & $count & ".nim"
                 writeFile(tmpPath, accum)
-                exec("nim c -r -p:" & getCurrentDir() & "/src --experimental:callOperator --threads:on --passC:-Wno-error=incompatible-pointer-types " & tmpPath)
+                exec("nim c -r -p:" & getCurrentDir() & "/src --threads:on --passC:-Wno-error=incompatible-pointer-types " & tmpPath)
                 accum = ""
                 count += 1
 
