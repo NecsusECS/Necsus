@@ -25,6 +25,10 @@ proc getArchetypeValueId(value: NimNode): uint16 =
 
   return lookup[sig].intVal.uint16
 
+proc componentIdCount*(): int =
+  ## The number of component ids handed out so far.
+  ids.value
+
 proc newComponentDef*(node: NimNode): ComponentDef =
   ## Instantiate a ComponentDef
   let id = getArchetypeValueId(node)
@@ -61,6 +65,19 @@ proc ident*(def: ComponentDef): NimNode =
 
 proc hash*(def: ComponentDef): Hash =
   def.uniqueId.hash
+
+proc columnType*(def: ComponentDef): NimNode =
+  ## The type stored in this component's column. An accessory is optional per entity, so
+  ## its column holds the option rather than the component
+  if def.isAccessory:
+    nnkBracketExpr.newTree(bindSym("Option"), def.ident)
+  else:
+    def.ident
+
+proc columnId*(def: ComponentDef): NimNode =
+  ## The literal this component is indexed by at runtime. Ids are global, so the same
+  ## literal reaches this component's column in every archetype that has one
+  newLit(def.uniqueId)
 
 proc addSignature*(onto: var string, comp: ComponentDef) =
   ## Generate a unique ID for a component

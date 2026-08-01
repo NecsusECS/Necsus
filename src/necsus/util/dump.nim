@@ -113,7 +113,7 @@ proc dumpGeneratedCode*(
 ) =
   ## Prints the generated necsus app for debugging purposes
   echo "import std/[math, json, jsonutils, options, importutils]"
-  echo "import necsus/runtime/[world, archetypeStore], necsus/util/[profile, tools, blockstore]"
+  echo "import necsus/runtime/[world, archetypeStore], necsus/util/[profile, tools]"
   dumpImports(app, systems)
 
   echo "const DEFAULT_ENTITY_COUNT = 1_000"

@@ -1,4 +1,4 @@
-import entityId, ../util/blockstore, std/[deques, options]
+import entityId, std/[deques, options]
 
 type
   ArchetypeId* = distinct BiggestInt

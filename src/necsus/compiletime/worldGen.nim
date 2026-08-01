@@ -1,5 +1,5 @@
 import std/[macros, options, tables, sequtils]
-import codeGenInfo, archetype, common, systemGen, converters
+import codeGenInfo, archetype, componentDef, common, systemGen, converters
 import tickGen, parse, monoDirective, sendGen
 import ../runtime/[world, archetypeStore, necsusConf], ../util/profile
 
@@ -16,10 +16,10 @@ proc fields(genInfo: CodeGenInfo): seq[(NimNode, NimNode)] =
       result.add (system.callbackSysMailboxName, typ)
 
   if not isFastCompileMode(fastFields):
+    let storeType =
+      nnkBracketExpr.newTree(bindSym("ArchetypeStore"), newLit(componentIdCount()))
     for archetype in genInfo.archetypes:
-      let storageType = archetype.asStorageTuple
-      let typ = nnkBracketExpr.newTree(bindSym("ArchetypeStore"), storageType)
-      result.add (archetype.ident, typ)
+      result.add (archetype.ident, storeType)
 
   for (name, typ) in genInfo.worldFields:
     result.add (name.ident, typ)
@@ -80,9 +80,10 @@ proc createAppReturn*(genInfo: CodeGenInfo, errorLocation: NimNode): NimNode =
 proc createArchetypeState(genInfo: CodeGenInfo): NimNode =
   ## Creates variables for storing archetypes
   result = newStmtList()
+  let compCount = newLit(componentIdCount())
+
   for archetype in genInfo.archetypes:
     let ident = archetype.ident
-    let storageType = archetype.asStorageTuple
     let archetypeRef = archetype.idSymbol
 
     let calculatedSize = archetype.calculateSize
@@ -93,10 +94,15 @@ proc createArchetypeState(genInfo: CodeGenInfo): NimNode =
         quote:
           `appStateIdent`.config.componentSize
 
+    var columns = nnkBracket.newTree()
+    for component in archetype.values:
+      let typ = component.columnType
+      let id = component.columnId
+      columns.add(newCall(nnkBracketExpr.newTree(bindSym("columnDef"), typ), id))
+
     result.add quote do:
-      `appStateIdent`.`ident` = newArchetypeStore[`storageType`](`archetypeRef`, `size`)
-      if `appStateIdent`.`confIdent`.eagerAlloc:
-        ensureAlloced(`appStateIdent`.`ident`)
+      `appStateIdent`.`ident` =
+        newArchetypeStore[`compCount`](`archetypeRef`, `size`, `columns`)
 
 proc initProfilers(genInfo: CodeGenInfo): NimNode =
   result = newStmtList()
@@ -203,6 +209,22 @@ proc createAppStateDestructor*(genInfo: CodeGenInfo): NimNode =
   if not isFastCompileMode(fastDestroy):
     destroys.add(genInfo.callSystems({TeardownPhase}))
     destroys.add(genInfo.destroySystems())
+
+    # Columns hold raw memory, so nothing is going to run a destructor over the values in
+    # them. That has to happen before the archetype hands its block back, because
+    # afterwards there is nothing left to say what was in it
+    for archetype in genInfo.archetypes:
+      let ident = archetype.ident
+      for component in archetype.values:
+        let typ = component.columnType
+        let id = component.columnId
+        destroys.add(
+          newCall(
+            nnkBracketExpr.newTree(bindSym("destroyColumn"), typ),
+            newDotExpr(appStateIdent, ident),
+            id,
+          )
+        )
 
     for (name, _) in items(genInfo.fields):
       destroys.add quote do:

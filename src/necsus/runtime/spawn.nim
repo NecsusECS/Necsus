@@ -1,4 +1,4 @@
-import entityId, world, archetypeStore, ../util/tools, std/macros
+import entityId, ../util/tools, std/macros
 
 type
   RawSpawn*[C: tuple] = ref object ## A callback for populating a component with values
@@ -26,14 +26,6 @@ proc newSpawn*[Comps: tuple](
       proc(app: pointer, value: sink Comps): EntityId {.nimcall, raises: [], gcsafe.},
 ): RawSpawn[Comps] =
   return RawSpawn[Comps](app: app, callback: callback)
-
-proc beginSpawn*[Comps: tuple](
-    world: var World, store: ptr ArchetypeStore[Comps]
-): NewArchSlot[Comps] {.inline, gcsafe, raises: [].} =
-  ## Spawns an entity in this archetype
-  var newEntity = world.newEntity
-  result = store.newSlot(newEntity.entityId)
-  newEntity.setArchetypeDetails(store.archetype, result.index)
 
 when isSpawnSinkEnabled():
   proc set[C: tuple](

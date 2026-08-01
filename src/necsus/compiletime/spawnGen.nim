@@ -43,25 +43,33 @@ when NimMajor >= 2:
 else:
   var spawnProcs {.compileTime.} = initTable[string, NimNode]()
 
-proc convertSpawnValue(
-    archetype: Archetype[ComponentDef], dir: TupleDirective, readFrom: NimNode
+proc storeComponents(
+    archetype: Archetype[ComponentDef],
+    dir: TupleDirective,
+    store, index, readFrom: NimNode,
 ): NimNode =
-  ## Generates code for taking a tuple and converting it to the archetype in which it is being stored
-  if archetype.hasAccessories or archetype.asTupleDir.comps != dir.comps:
-    result = nnkTupleConstr.newTree()
-    for component in archetype.values:
-      if component in dir:
-        let read = nnkBracketExpr.newTree(readFrom, dir.indexOf(component).newLit)
-        result.add(
-          if component.isAccessory:
-            newCall(bindSym("some"), read)
-          else:
-            read
+  ## Generates the writes that put a spawned tuple into an archetype.
+  result = newStmtList()
+  for component in archetype.values:
+    let typ = component.columnType
+    let id = component.columnId
+    let node = component.node
+    let value =
+      if component notin dir:
+        newCall(nnkBracketExpr.newTree(bindSym("none"), node))
+      elif component.isAccessory:
+        newCall(
+          bindSym("some"),
+          nnkBracketExpr.newTree(readFrom, dir.indexOf(component).newLit),
         )
       else:
-        result.add(newCall(nnkBracketExpr.newTree(bindSym("none"), component.node)))
-  else:
-    result = readFrom
+        nnkBracketExpr.newTree(readFrom, dir.indexOf(component).newLit)
+
+    result.add(
+      newCall(
+        nnkBracketExpr.newTree(bindSym("setComponent"), typ), store, id, index, value
+      )
+    )
 
 proc buildSpawnProc(details: GenerateContext, dir: TupleDirective): NimNode =
   ## Builds the proc needed to execute a spawn against the given tuple
@@ -73,10 +81,16 @@ proc buildSpawnProc(details: GenerateContext, dir: TupleDirective): NimNode =
   let spawnProc = details.spawnProcName(dir)
   let archetype = details.archetypeFor(dir)
   let archIdent = archetype.ident
+  let archetypeRef = archetype.idSymbol
   let value = genSym(nskParam, "value")
-  let construct = archetype.convertSpawnValue(dir, value)
+  let index = genSym(nskLet, "index")
   let log = emitEntityTrace("Spawned ", ident("result"), " of kind ", $dir)
   let tupleTyp = dir.asTupleType
+
+  let store = quote:
+    `appStateIdent`.`archIdent`
+
+  let storeComps = archetype.storeComponents(dir, store, index, value)
 
   result = quote:
     proc `spawnProc`(
@@ -84,11 +98,10 @@ proc buildSpawnProc(details: GenerateContext, dir: TupleDirective): NimNode =
     ): EntityId {.nimcall, raises: [], gcsafe.} =
       let `appStateIdent` = cast[ptr `appState`](appStatePtr)
       var newEntity = `appStateIdent`.world.newEntity
-      var slot = newSlot(`appStateIdent`.`archIdent`, newEntity.entityId)
-      newEntity.setArchetypeDetails(
-        readArchetype(`appStateIdent`.`archIdent`), slot.index
-      )
-      result = setComp(slot, `construct`)
+      result = newEntity.entityId
+      let `index` = reserve(`appStateIdent`.`archIdent`, result)
+      newEntity.setArchetypeDetails(`archetypeRef`, uint(`index`))
+      `storeComps`
       `log`
 
   spawnProcs[sig] = true.newLit

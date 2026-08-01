@@ -1,5 +1,5 @@
 import unittest, sequtils
-import necsus/runtime/[columnStore, entityId, world]
+import necsus/runtime/[archetypeStore, entityId, world]
 
 type
   Position = object
@@ -54,7 +54,6 @@ suite "ColumnStore":
     check(store.column(cPosition).isEmpty)
     check(store.column(cLabel).isEmpty)
     check(store.entityIds.toSeq.len == 0)
-    store.teardown()
 
   test "Storing components and reading them back":
     var store = newStore(8, [colPosition, colLabel])
@@ -72,7 +71,6 @@ suite "ColumnStore":
     check(store.entityId(idx) == EntityId(7))
 
     destroyColumn[Label](store, cLabel)
-    store.teardown()
 
   test "Components the archetype does not have":
     var store = newStore(4, [colPosition])
@@ -80,7 +78,6 @@ suite "ColumnStore":
     check(store.column(cAbsent).isEmpty)
     check(not store.column(cPosition).isEmpty)
     check(NO_COLUMN.isEmpty)
-    store.teardown()
 
   test "A reserved row starts zeroed":
     var store = newStore(4, [colPosition, colLabel])
@@ -91,7 +88,6 @@ suite "ColumnStore":
     check(store.column(cLabel).read(Label, idx).value == "")
 
     destroyColumn[Label](store, cLabel)
-    store.teardown()
 
   test "Reading a column points at the store itself":
     var store = newStore(4, [colPosition])
@@ -100,9 +96,10 @@ suite "ColumnStore":
     store.column(cPosition).at(Position, idx).x = 5
     check(store.column(cPosition).read(Position, idx).x == 5)
 
-    check(store.column(cPosition).at(Position, idx) == addr getColumn[Position](store, cPosition)[idx])
-
-    store.teardown()
+    check(
+      store.column(cPosition).at(Position, idx) ==
+        addr getColumn[Position](store, cPosition)[idx]
+    )
 
   test "Rows are handed out in order":
     var store = newStore(4, [colPosition])
@@ -112,7 +109,6 @@ suite "ColumnStore":
     check(store.len == 3)
     check(store.entityIds.toSeq == @[EntityId(10), EntityId(11), EntityId(12)])
     check(store.entities[1] == EntityId(11))
-    store.teardown()
 
   test "Reserving more rows than an archetype has room for":
     var store = newStore(2, [colPosition])
@@ -123,7 +119,6 @@ suite "ColumnStore":
       discard store.reserve(EntityId(3))
 
     check(store.len == 2)
-    store.teardown()
 
   test "Adding lengths onto a running total":
     var a = newStore(4, [colPosition])
@@ -136,9 +131,6 @@ suite "ColumnStore":
     a.addLen(total)
     b.addLen(total)
     check(total == 3)
-
-    a.teardown()
-    b.teardown()
 
   test "Columns stay aligned and do not overlap":
     const capacity = 7'u32
@@ -158,10 +150,10 @@ suite "ColumnStore":
     for i in 0'u32 ..< capacity:
       check(store.column(cFlag).read(Flag, i).on == uint8(i + 1))
       check(store.column(cWide).read(Wide, i).value == int64(i) * 1000)
-      check(store.column(cPosition).read(Position, i) == Position(x: int32(i), y: -int32(i)))
+      check(
+        store.column(cPosition).read(Position, i) == Position(x: int32(i), y: -int32(i))
+      )
       check(store.entityId(i) == EntityId(i))
-
-    store.teardown()
 
   test "Destroying a column destroys every live value in it":
     destroyed = @[]
@@ -174,8 +166,6 @@ suite "ColumnStore":
 
     destroyColumn[Tracked](store, cTracked)
     check(destroyed == @[1, 2, 3])
-
-    store.teardown()
 
   test "Dropping a row moves the last row down into the hole":
     destroyed = @[]
@@ -199,8 +189,6 @@ suite "ColumnStore":
     destroyColumn[Tracked](store, cTracked)
     check(destroyed == @[2, 1, 3])
 
-    store.teardown()
-
   test "Dropping the last row moves nothing":
     destroyed = @[]
     var store = newStore(8, [colTracked])
@@ -219,8 +207,6 @@ suite "ColumnStore":
     destroyColumn[Tracked](store, cTracked)
     check(destroyed == @[3, 1, 2])
 
-    store.teardown()
-
   test "Dropping every row":
     var store = newStore(4, [colPosition])
     for i in 1 .. 3:
@@ -232,7 +218,6 @@ suite "ColumnStore":
 
     check(store.len == 0)
     check(store.entityIds.toSeq.len == 0)
-    store.teardown()
 
   test "Tearing an archetype down leaves nothing behind":
     var store = newStore(4, [colPosition, colLabel])
@@ -240,7 +225,7 @@ suite "ColumnStore":
     setComponent[Label](store, cLabel, idx, Label(value: "foo"))
 
     destroyColumn[Label](store, cLabel)
-    store.teardown()
+    `=destroy`(store)
 
     check(store.len == 0)
     check(store.rows == 0)
@@ -249,4 +234,4 @@ suite "ColumnStore":
     check(store.entityIds.toSeq.len == 0)
 
     # Tearing down what has already been torn down is not an error
-    store.teardown()
+    `=destroy`(store)

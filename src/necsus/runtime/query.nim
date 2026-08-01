@@ -1,4 +1,4 @@
-import entityId, columnStore, std/[typetraits, options, macros]
+import entityId, archetypeStore, std/[typetraits, options, macros]
 
 type
   Not*[Comps] = distinct int8

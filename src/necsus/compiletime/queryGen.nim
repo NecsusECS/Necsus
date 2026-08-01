@@ -13,58 +13,14 @@ iterator selectArchetypes(
       yield archetype
 
 let state {.compileTime.} = ident("state")
-let span {.compileTime.} = ident("span")
+let cols {.compileTime.} = ident("cols")
 
-proc addLenPredicate(
-    existing, row: NimNode,
-    arch: Archetype[ComponentDef],
-    arg: DirectiveArg,
-    fn: NimNode,
-): NimNode =
-  if arg.component notin arch:
-    return false.newLit
-
-  let index = arch.indexOf(arg.component).newLit
-  let newCheck = newCall(fn, nnkBracketExpr.newTree(row, index))
-  return
-    if existing.kind == nnkEmpty:
-      newCheck
-    else:
-      infix(existing, "and", newCheck)
-
-proc buildAddLen(query: TupleDirective, archetype: Archetype[ComponentDef]): NimNode =
-  ## Builds the code for calculating the length of an archetype
-
-  let archetypeIdent = archetype.ident
-
-  # Builds a predicate that is able to determine whether a row should be counted against the length of a query.
-  # This is needed because accessories are optional and not specifically tracked
-  if query.hasAccessories:
-    let row = genSym(nskParam, "row")
-
-    var predicate = newEmptyNode()
-    for arg in query.args:
-      if arg.isAccessory:
-        case arg.kind
-        of Optional:
-          discard
-        of Include:
-          predicate = predicate.addLenPredicate(row, archetype, arg, bindSym("isSome"))
-        of Exclude:
-          predicate = predicate.addLenPredicate(row, archetype, arg, bindSym("isNone"))
-
-    if predicate.kind != nnkEmpty:
-      let symbol = genSym(nskProc, "filter")
-      let rowType = archetype.asStorageTuple
-      return quote:
-        proc `symbol`(`row`: var `rowType`): bool {.nimcall, gcsafe, raises: [].} =
-          return `predicate`
-
-        addLen(`appStateIdent`.`archetypeIdent`, result, `symbol`)
-
-  # This is the simple case -- no accessories, so we can just trust the length of the archetype itself
-  return quote:
-    addLen(`appStateIdent`.`archetypeIdent`, result)
+proc componentIds(query: TupleDirective): NimNode =
+  ## The column ids a query wants, one per argument and in argument order.
+  ## Component ids are global, so this is the same list no matter what.
+  result = nnkBracket.newTree()
+  for arg in query.args:
+    result.add(arg.component.columnId)
 
 proc walkArchetypes(
     details: GenerateContext,
@@ -77,32 +33,28 @@ proc walkArchetypes(
 
   var iterCases: seq[NimNode]
 
-  for archetype in details.selectArchetypes(query):
-    lenCalculation.add(buildAddLen(query, archetype))
+  let ids = query.componentIds
 
+  for archetype in details.selectArchetypes(query):
     let archetypeIdent = archetype.ident
-    let convert = newConverter(archetype, query).name
-    let found = genSym(nskLet, "found")
+
+    lenCalculation.add quote do:
+      addLen(`appStateIdent`.`archetypeIdent`, result)
 
     # These are bound here rather than left to be resolved where this code is pasted, so
     # that a name in the app being generated can not shadow them
-    let wholeSpan = bindSym("wholeSpan")
-    let isEmpty = bindSym("isEmpty")
+    let rows = bindSym("rows")
+    let newQueryCols = bindSym("newQueryCols")
 
-    # An archetype yields all of its rows in one span, so the state moves on as soon as
-    # the archetype has been asked, whether or not it had anything to give.
-    #
-    # The converter is typed against this archetype, but the span it gets attached to is
-    # shared by every archetype the query touches, so it travels as an untyped pointer
+    # An archetype hands over every column the query asked for in one go, so the state
+    # moves on as soon as the archetype has been asked, whether or not it had rows to give
     iterCases.add nnkOfBranch.newTree(
       iterCases.len.newLit,
       quote do:
         `state` += 1
-        let `found` = `wholeSpan`(`appStateIdent`.`archetypeIdent`)
-        if not `isEmpty`(`found`):
-          `span` = newQuerySpan[`queryTupleType`](
-            `found`, cast[QueryConvert[`queryTupleType`]](`convert`)
-          )
+        if `rows`(`appStateIdent`.`archetypeIdent`) > 0'u32:
+          `cols` =
+            `newQueryCols`[`queryTupleType`](`appStateIdent`.`archetypeIdent`, `ids`)
           return true
       ,
     )
@@ -141,10 +93,6 @@ proc querySystemArg(name: string, dir: TupleDirective): NimNode =
 proc fullQuerySystemArg(name: string, dir: TupleDirective): NimNode =
   systemArg(bindSym("asFullQuery"), name)
 
-proc converters(ctx: GenerateContext, dir: TupleDirective): seq[ConverterDef] =
-  for archetype in ctx.selectArchetypes(dir):
-    result.add(newConverter(archetype, dir))
-
 proc generate(
     details: GenerateContext, arg: SystemArg, name: string, dir: TupleDirective
 ): NimNode =
@@ -154,7 +102,7 @@ proc generate(
 
   let queryTuple = dir.args.asTupleType
   let getLen = details.globalName(name & "_getLen")
-  let getSpan = details.globalName(name & "_getSpan")
+  let getCols = details.globalName(name & "_getCols")
 
   case details.hook
   of GenerateHook.Outside:
@@ -172,8 +120,8 @@ proc generate(
         result = 0
         `lenCalculation`
 
-      proc `getSpan`(
-          `appStatePtr`: pointer, `state`: var uint, `span`: var QuerySpan[`queryTuple`]
+      proc `getCols`(
+          `appStatePtr`: pointer, `state`: var uint, `cols`: var QueryCols[`queryTuple`]
       ): bool {.gcsafe, raises: [], nimcall.} =
         let `appStateIdent` {.used.} = cast[ptr `appStateTypeName`](`appStatePtr`)
         `trace`
@@ -183,7 +131,7 @@ proc generate(
     let ident = name.ident
     return quote:
       `appStateIdent`.`ident` =
-        newQuery[`queryTuple`](`appStatePtr`, `getLen`, `getSpan`)
+        newQuery[`queryTuple`](`appStatePtr`, `getLen`, `getCols`)
   else:
     return newEmptyNode()
 
@@ -193,7 +141,6 @@ let queryGenerator* {.compileTime.} = newGenerator(
   generate = generate,
   worldFields = worldFields,
   systemArg = querySystemArg,
-  converters = converters,
 )
 
 let fullQueryGenerator* {.compileTime.} = newGenerator(
@@ -202,5 +149,4 @@ let fullQueryGenerator* {.compileTime.} = newGenerator(
   generate = generate,
   worldFields = worldFields,
   systemArg = fullQuerySystemArg,
-  converters = converters,
 )
