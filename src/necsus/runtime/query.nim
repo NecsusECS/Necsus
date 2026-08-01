@@ -94,6 +94,15 @@ template readCol*[T](column: Column, idx: uint32, slot: var Option[T]) =
     else:
       some(column.read(T, idx))
 
+template readCol*[T](column: Column, idx: uint32, slot: var Option[ptr T]) =
+  ## An optional component asked for by pointer. Without this, the option overload above
+  ## matches with `T` bound to `ptr T` and reads the component itself as a pointer
+  slot =
+    if column.isEmpty:
+      none(ptr T)
+    else:
+      some(column.at(T, idx))
+
 macro unrollRead(arity: static int, cols, idx, slot: typed): untyped =
   ## Emits one read per column with the index spelled out as a literal.
   ##
