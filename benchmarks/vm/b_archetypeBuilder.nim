@@ -37,22 +37,18 @@ const
     ## Number of "core" components -- the position/sprite/health style components that
     ## show up in nearly every entity and in most query filters
 
-  archSpawns {.intdefine.} = 20 * archScale
-    ## Number of distinct spawned entity shapes
+  archSpawns {.intdefine.} = 20 * archScale ## Number of distinct spawned entity shapes
 
   archAttaches {.intdefine.} = 8
     ## Number of attachable actions. This is the primary driver of combinatorial growth:
     ## every extra unfiltered attach roughly doubles the resulting archetype count, so
     ## nudge this one a step at a time
 
-  archDetaches {.intdefine.} = 8
-    ## Number of detachable actions
+  archDetaches {.intdefine.} = 8 ## Number of detachable actions
 
-  archAttachDetach {.intdefine.} = 3
-    ## Number of combined attach/detach actions
+  archAttachDetach {.intdefine.} = 3 ## Number of combined attach/detach actions
 
-  archAccessories {.intdefine.} = 6
-    ## Number of components flagged as accessories
+  archAccessories {.intdefine.} = 6 ## Number of components flagged as accessories
 
 proc comp(id: int): string =
   "c" & $id
@@ -91,9 +87,7 @@ proc buildWorkload(): int =
       if i mod 3 == 0:
         builder.filter([], [])
       else:
-        builder.filter(
-          rand.pick(1 .. 2, 0, archCore), rand.pick(1 .. 1, 0, archCore)
-        )
+        builder.filter(rand.pick(1 .. 2, 0, archCore), rand.pick(1 .. 1, 0, archCore))
     builder.attachable(rand.pick(1 .. 2, archCore, archComponents), filter)
 
   # Detachable components

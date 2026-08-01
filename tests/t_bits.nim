@@ -250,15 +250,21 @@ suite "Bits":
     check(filter.matches(all = newBits(1, 4, 5, 40), optional = newBits(4)))
 
     # An exclusion reaching past the end of the set being tested excludes nothing
-    check(newFilter(mustContain = newBits(), mustExclude = newBits(500)).matches(newBits(1)))
-    check(not newFilter(mustContain = newBits(), mustExclude = newBits(500)).matches(
-      newBits(1, 500)
-    ))
+    check(
+      newFilter(mustContain = newBits(), mustExclude = newBits(500)).matches(newBits(1))
+    )
+    check(
+      not newFilter(mustContain = newBits(), mustExclude = newBits(500)).matches(
+        newBits(1, 500)
+      )
+    )
 
     # As does a requirement, except that it can never be satisfied
-    check(not newFilter(mustContain = newBits(500), mustExclude = newBits()).matches(
-      newBits(1)
-    ))
+    check(
+      not newFilter(mustContain = newBits(500), mustExclude = newBits()).matches(
+        newBits(1)
+      )
+    )
 
   test "Filters that accept everything":
     var missing: BitsFilter = nil
@@ -272,7 +278,10 @@ suite "Bits":
       newFilter(mustContain = newBits(1, 5, 40), mustExclude = newBits(4)).required.toSeq ==
         @[1'u16, 5, 40]
     )
-    check(newFilter(mustContain = newBits(), mustExclude = newBits(4)).required.toSeq.len == 0)
+    check(
+      newFilter(mustContain = newBits(), mustExclude = newBits(4)).required.toSeq.len ==
+        0
+    )
 
   test "Dropping a component a filter requires":
     let filter = newFilter(mustContain = newBits(1, 5), mustExclude = newBits(4))
@@ -290,9 +299,11 @@ suite "Bits":
     check(not filter.matches(newBits(5)))
 
     # Dropping the only requirement leaves a filter that still excludes
-    check(newFilter(mustContain = newBits(1), mustExclude = newBits()).withoutRequired(
-      1
-    ).acceptsAll)
-    check(not newFilter(mustContain = newBits(1), mustExclude = newBits(4)).withoutRequired(
-      1
-    ).acceptsAll)
+    check(
+      newFilter(mustContain = newBits(1), mustExclude = newBits())
+        .withoutRequired(1).acceptsAll
+    )
+    check(
+      not newFilter(mustContain = newBits(1), mustExclude = newBits(4))
+        .withoutRequired(1).acceptsAll
+    )

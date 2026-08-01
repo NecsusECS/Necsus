@@ -30,10 +30,8 @@ type
     ## action against every archetype and evaluating a small fraction of them
     entries: seq[BuilderAction]
       ## Ungated actions first, then the gated ones grouped by the component gating them
-    ungated: int
-      ## How many leading entries are ungated
-    gateStart: seq[int]
-      ## Where each component's group starts in `entries`
+    ungated: int ## How many leading entries are ungated
+    gateStart: seq[int] ## Where each component's group starts in `entries`
     gateEnd: seq[int]
       ## Where each component's group ends. Equal to `gateStart` when nothing is gated
       ## on that component
@@ -108,26 +106,19 @@ proc `==`*(a, b: BuilderAction): bool =
 
 proc orNil(bits: Bits): Bits =
   ## An empty set asks for no work, so it is stored as nothing at all
-  if bits.isNil or bits.isEmpty:
-    nil
-  else:
-    bits
+  if bits.isNil or bits.isEmpty: nil else: bits
 
 proc newAction(
-    filter: BitsFilter = nil;
-    attach: Bits = nil;
-    detach: Bits = nil;
+    filter: BitsFilter = nil,
+    attach: Bits = nil,
+    detach: Bits = nil,
     optDetach: Bits = nil,
 ): BuilderAction =
   ## Builds an action, folding away every part of it that describes no work
   let required = detach.orNil
   let optional = optDetach.orNil
   BuilderAction(
-    filter:
-      if filter.acceptsAll:
-        nil
-      else:
-        filter,
+    filter: if filter.acceptsAll: nil else: filter,
     attach: attach.orNil,
     detach: required,
     optDetach: optional,
@@ -225,11 +216,7 @@ proc prepared(action: BuilderAction, gate: int, inert: Bits): BuilderAction =
       action.filter.withoutRequired(gate.uint16)
 
   result = BuilderAction(
-    filter:
-      if filter.acceptsAll:
-        nil
-      else:
-        filter,
+    filter: if filter.acceptsAll: nil else: filter,
     attach: action.attach,
     detach: action.detach,
     optDetach: action.optDetach,
@@ -257,11 +244,7 @@ template applyAction(
     let gains = not action.attachInert.isNil and not (action.attachInert <= inert)
 
     if attaches or detaches or gains:
-      let added =
-        if attaches:
-          action.attachCore
-        else:
-          nil
+      let added = if attaches: action.attachCore else: nil
 
       # `detachesAll` was decided against `source`. Attaching only ever grows the set, so
       # a detach already contained in `source` is still contained afterwards -- it is only
@@ -270,10 +253,7 @@ template applyAction(
         if detachesAll or (
           attaches and not action.detach.isNil and
           action.detach.isSubsetOfUnion(source, action.attachCore)
-        ):
-          action.bothDetach
-        else:
-          action.optDetach
+        ): action.bothDetach else: action.optDetach
 
       # Neither half has to have the other's components filtered out of `removed` first:
       # a core never holds an inert accessory, and the accessories never hold a core

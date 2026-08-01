@@ -306,8 +306,7 @@ suite "Accessories and the shape of the graph walk":
       builder.build().toSeq.mapIt($it)
 
     check(
-      archetypes.toHashSet ==
-        toHashSet(["{acc7A, acc7D?, acc7E?, acc7F?}", "{acc7B}"])
+      archetypes.toHashSet == toHashSet(["{acc7A, acc7D?, acc7E?, acc7F?}", "{acc7B}"])
     )
 
   test "An accessory detached alongside a component it does not travel with":

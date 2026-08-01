@@ -3,8 +3,7 @@ import std/bitops, hashes
 type
   Word = uint64
 
-  Bits* = ref object
-    ## A bitset without a limit on the number of bits that can be set.
+  Bits* = ref object ## A bitset without a limit on the number of bits that can be set.
     buckets: seq[Word]
     hashCached: bool
     cachedHash: Hash
@@ -156,16 +155,8 @@ proc combine*(source, attach, remove: Bits): Bits =
   ## `(source + attach) - remove` in a single pass. Either `attach` or `remove` may be
   ## nil, meaning there is nothing to add or nothing to take away.
   let sourceLen = source.buckets.len
-  let attachLen =
-    if attach.isNil:
-      0
-    else:
-      attach.buckets.len
-  let removeLen =
-    if remove.isNil:
-      0
-    else:
-      remove.buckets.len
+  let attachLen = if attach.isNil: 0 else: attach.buckets.len
+  let removeLen = if remove.isNil: 0 else: remove.buckets.len
 
   result = Bits(buckets: newSeq[Word](max(sourceLen, attachLen)))
   var maxBucket = -1

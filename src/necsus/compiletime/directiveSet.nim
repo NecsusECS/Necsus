@@ -40,6 +40,5 @@ proc nameOf*[T](directives: DirectiveSet[T], value: T): string =
   ## an empty string can only mean the lookup missed
   result = directives.values.getOrDefault(value, "")
   if result == "":
-    raise newException(
-      KeyError, &"Directive {value} was not in directiveSet: {directives}"
-    )
+    raise
+      newException(KeyError, &"Directive {value} was not in directiveSet: {directives}")
