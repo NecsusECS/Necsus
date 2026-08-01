@@ -1,4 +1,4 @@
-import unittest, necsus, sequtils
+import unittest, necsus, sequtils, algorithm
 
 type
   Multiply = object
@@ -17,8 +17,8 @@ proc operate(query: Query[tuple[mult: ptr Multiply, add: ptr Add]]) =
     entity.add.value = entity.add.value + entity.add.value
 
 proc assertion(query: Query[tuple[mult: Multiply, add: Add]]) =
-  check(toSeq(query.items).mapIt(it.mult.value) == @[1, 4, 9, 16, 25])
-  check(toSeq(query.items).mapIt(it.add.value) == @[2, 4, 6, 8, 10])
+  check(toSeq(query.items).mapIt(it.mult.value).sorted == @[1, 4, 9, 16, 25])
+  check(toSeq(query.items).mapIt(it.add.value).sorted == @[2, 4, 6, 8, 10])
 
 proc runner(tick: proc(): void) =
   tick()

@@ -1,4 +1,4 @@
-import unittest, necsus, sequtils
+import unittest, necsus, sequtils, algorithm
 
 type Thingy = object
   number: int
@@ -13,7 +13,7 @@ proc rm(all: FullQuery[tuple[thingy: Thingy]], delete: Delete) =
       delete(entityId)
 
 proc assertions(all: Query[(Thingy,)]) =
-  check(toSeq(all.items).mapIt(it[0].number) == @[1, 3, 5, 7, 9])
+  check(toSeq(all.items).mapIt(it[0].number).sorted == @[1, 3, 5, 7, 9])
 
 proc runner(tick: proc(): void) =
   tick()

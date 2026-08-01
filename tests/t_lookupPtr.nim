@@ -1,4 +1,4 @@
-import unittest, necsus, options, sequtils
+import unittest, necsus, options, sequtils, algorithm
 
 type
   A = object
@@ -22,8 +22,8 @@ proc modify(
     eid.lookup().get().b.value = eid.lookup().get().b.value & "bar"
 
 proc assertModifications(query: Query[tuple[a: A, b: B]]) =
-  check(query.items.toSeq.mapIt(it.a.value) == @[2, 4])
-  check(query.items.toSeq.mapIt(it.b.value) == @["foobar", "barbar"])
+  check(query.items.toSeq.mapIt(it.a.value).sorted == @[2, 4])
+  check(query.items.toSeq.mapIt(it.b.value).sorted == @["barbar", "foobar"])
 
 proc testLookupWithPointers() {.
   necsus(runner, [~spawn, ~modify, ~assertModifications], newNecsusConf())

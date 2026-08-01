@@ -116,15 +116,24 @@ template read*[Comps: tuple](cols: QueryCols[Comps], idx: uint32, slot: var Comp
 macro walkRows(arity: static int, cols, slot, body: untyped): untyped =
   ## Emits the row loop for a single archetype, with everything the loop needs lifted
   ## out of `cols` first.
-  ##
-  ## Reading straight out of `cols` looks equivalent, but `cols` has had its address
-  ## taken -- it is filled in through a `var` parameter -- and the generated C is built
-  ## with `-fno-strict-aliasing`. Between the two, a write through any column pointer is
-  ## something the C compiler has to assume might have landed on `cols` itself, so it
-  ## reloads every column base and the row count from the stack on every single row, and
-  ## gives up on vectorizing the loop. Copies in plain locals cannot be aliased by
-  ## anything, so they stay in registers and the loop is free to be widened
+
+  # Reading straight out of `cols` looks equivalent, but `cols` has had its address
+  # taken -- it is filled in through a `var` parameter -- and the generated C is built
+  # with `-fno-strict-aliasing`. Between the two, a write through any column pointer is
+  # something the C compiler has to assume might have landed on `cols` itself, so it
+  # reloads every column base and the row count from the stack on every single row, and
+  # gives up on vectorizing the loop. Copies in plain locals cannot be aliased by
+  # anything, so they stay in registers and the loop is free to be widened
+  #
+  # Rows are walked back to front, which is what makes it safe for the body to delete the
+  # entity it is looking at. Deleting a row fills the hole with the last one, so walking
+  # forwards would move a row that has not been reached yet down to a position already
+  # passed -- skipping it -- and would keep running past a row count that has since
+  # shrunk. Going backwards, the row that moves always comes from at or above the cursor,
+  # which has already been visited, and the cursor can never outrun the live row count
   let rows = genSym(nskLet, "rows")
+  let cursor = genSym(nskVar, "cursor")
+  let idx = ident("idx")
   result = newStmtList()
 
   var reads = newStmtList()
@@ -134,15 +143,20 @@ macro walkRows(arity: static int, cols, slot, body: untyped): untyped =
       col, nnkBracketExpr.newTree(newDotExpr(cols, ident("columns")), newLit(i))
     )
     reads.add newCall(
-      bindSym("readCol"), col, ident("idx"), nnkBracketExpr.newTree(slot, newLit(i))
+      bindSym("readCol"), col, idx, nnkBracketExpr.newTree(slot, newLit(i))
     )
 
   result.add newLetStmt(rows, newDotExpr(cols, ident("rows")))
   reads.add body
-  result.add nnkForStmt.newTree(
-    ident("idx"),
-    nnkInfix.newTree(ident("..<"), newLit(0'u32), rows),
-    newBlockStmt(reads),
+
+  result.add newVarStmt(cursor, rows)
+  result.add nnkWhileStmt.newTree(
+    nnkInfix.newTree(ident(">"), cursor, newLit(0'u32)),
+    newStmtList(
+      newAssignment(cursor, nnkInfix.newTree(ident("-"), cursor, newLit(1'u32))),
+      newLetStmt(idx, cursor),
+      newBlockStmt(reads),
+    ),
   )
   result = newBlockStmt(result)
 

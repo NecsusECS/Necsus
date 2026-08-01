@@ -1,4 +1,4 @@
-import necsus, std/[sequtils, unittest]
+import necsus, std/[sequtils, unittest, algorithm]
 
 type
   Name = string
@@ -12,7 +12,7 @@ proc setup2(spawn1: Spawn[(Age, Name)], spawn2: FullSpawn[(Age, Name)]) =
   discard spawn2.with(53, "Joe")
 
 proc assertion(people: Query[(Name, Age)]) =
-  check(toSeq(people.items) == @[("Jack", 50), ("Jill", 51), ("Joe", 53)])
+  check(toSeq(people.items).sorted == @[("Jack", 50), ("Jill", 51), ("Joe", 53)])
 
 proc runner(tick: proc(): void) =
   tick()

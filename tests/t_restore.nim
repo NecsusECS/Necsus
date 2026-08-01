@@ -1,4 +1,4 @@
-import unittest, necsus, sequtils
+import unittest, necsus, sequtils, algorithm
 
 type
   RestoreMe1 = seq[string]
@@ -25,7 +25,7 @@ proc doRestore(
   restore(
     """{"RestoreMe1": ["bar", "baz", "foo"], "RestoreMe2": 5, "RestoreMe3": {"number": 7}}"""
   )
-  check(strings.toSeq.mapIt(it[0]) == ["bar", "baz", "foo"])
+  check(strings.toSeq.mapIt(it[0]).sorted == @["bar", "baz", "foo"])
   check(restore2.getOrRaise == 5)
   check(restore3.getOrRaise.number == 7)
 
