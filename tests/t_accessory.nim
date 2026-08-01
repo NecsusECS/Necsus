@@ -1,4 +1,4 @@
-import necsus, std/[sequtils, unittest]
+import necsus, std/[algorithm, sequtils, unittest]
 
 type
   Person = object
@@ -19,9 +19,9 @@ proc assertion(
     ages: Query[tuple[age: Age]],
     all: Query[tuple[person: Person, name: Name, age: Age]],
 ) =
-  check(toSeq(people.items).mapIt(it.name.name) == @["Jack", "Jill", "John"])
-  check(toSeq(ages.items).mapIt(it.age.age) == @[50, 40])
-  check(toSeq(all.items).mapIt(it.name.name) == @["Jack", "Jill"])
+  check(toSeq(people.items).mapIt(it.name.name).sorted == @["Jack", "Jill", "John"])
+  check(toSeq(ages.items).mapIt(it.age.age).sorted == @[40, 50])
+  check(toSeq(all.items).mapIt(it.name.name).sorted == @["Jack", "Jill"])
 
 proc runner(tick: proc(): void) =
   tick()

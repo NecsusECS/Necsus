@@ -17,8 +17,13 @@ type
     ## what the global component index buys: the same id names the same component in
     ## every archetype, so nothing about this depends on which archetype it came from
     rows*: uint32
+    hasAccessories*: bool
+      ## Whether any argument at all is backed by an accessory column, which is what says
+      ## whether the rows have to be filtered as they are walked
     eids*: ptr UncheckedArray[EntityId]
     columns*: array[tupleLen(Comps), Column]
+    accessories*: array[tupleLen(Comps), bool]
+      ## Which arguments are backed by an accessory column.
 
   QueryGetCols*[Comps: tuple] = proc(
     appStatePtr: pointer, state: var uint, cols: var QueryCols[Comps]
@@ -55,7 +60,9 @@ proc newQuery*[Comps: tuple](
   RawQuery[Comps](appState: appState, getLen: getLen, getCols: getCols)
 
 proc newQueryCols*[Comps: tuple](
-    store: ArchetypeStore, components: openArray[ComponentId]
+    store: ArchetypeStore,
+    components: openArray[ComponentId],
+    accessories: openArray[bool],
 ): QueryCols[Comps] {.inline.} =
   ## Picks out the columns a query wants from an archetype.
   ##
@@ -70,6 +77,8 @@ proc newQueryCols*[Comps: tuple](
   result.eids = store.entities
   for i in 0 ..< components.len:
     result.columns[i] = store.column(components[i])
+    result.accessories[i] = accessories[i]
+    result.hasAccessories = result.hasAccessories or accessories[i]
 
 template readCol*[T](column: Column, idx: uint32, slot: var T) =
   ## Reads one component out of a column. The slot is what says how to read it
@@ -103,24 +112,129 @@ template readCol*[T](column: Column, idx: uint32, slot: var Option[ptr T]) =
     else:
       some(column.at(T, idx))
 
+template readAccCol*[T](column: Column, isAcc: bool, idx: uint32, slot: var T): bool =
+  ## Reads a required component that may be held as an accessory, and says whether the
+  ## row turned out to have it.
+  if isAcc:
+    let opt = column.at(Option[T], idx)
+    if opt[].isSome:
+      slot = opt[].unsafeGet
+      true
+    else:
+      false
+  else:
+    slot = column.read(T, idx)
+    true
+
+template readAccCol*[T](
+    column: Column, isAcc: bool, idx: uint32, slot: var ptr T
+): bool =
+  ## A required component asked for by pointer. An accessory hands back a pointer to the
+  ## value inside the option rather than to the option itself
+  if isAcc:
+    let opt = column.at(Option[T], idx)
+    if opt[].isSome:
+      slot = unsafeAddr opt[].unsafeGet
+      true
+    else:
+      false
+  else:
+    slot = column.at(T, idx)
+    true
+
+template readAccCol*[T](
+    column: Column, isAcc: bool, idx: uint32, slot: var Not[T]
+): bool =
+  ## An excluded component usually has no column at all, which the archetype settled once
+  ## and for all. An excluded accessory does have one. The archetype holds entities both
+  ## with and without it, so it is the row that has to be checked
+  (not isAcc) or column.isEmpty or column.at(Option[T], idx)[].isNone
+
+template readAccCol*[T](
+    column: Column, isAcc: bool, idx: uint32, slot: var Option[T]
+): bool =
+  ## An optional component. An accessory column is already holding exactly the option
+  ## being asked for, so it comes straight back out
+  slot =
+    if column.isEmpty:
+      none(T)
+    elif isAcc:
+      column.read(Option[T], idx)
+    else:
+      some(column.read(T, idx))
+  true
+
+template readAccCol*[T](
+    column: Column, isAcc: bool, idx: uint32, slot: var Option[ptr T]
+): bool =
+  ## An optional component asked for by pointer. Without this, the option overload above
+  ## matches with `T` bound to `ptr T` and reads the component itself as a pointer
+  slot =
+    if column.isEmpty:
+      none(ptr T)
+    elif isAcc:
+      let opt = column.at(Option[T], idx)
+      if opt[].isSome:
+        some(unsafeAddr opt[].unsafeGet)
+      else:
+        none(ptr T)
+    else:
+      some(column.at(T, idx))
+  true
+
+proc isAccArg(cols: NimNode, i: int): NimNode =
+  ## Whether one argument of a query is backed by an accessory column
+  nnkBracketExpr.newTree(newDotExpr(cols, ident("accessories")), newLit(i))
+
+proc accReads(cols: NimNode, columns: seq[NimNode], idx, slot: NimNode): NimNode =
+  ## Chains the read of every column into the one condition of whether the row is a match.
+  result = newLit(true)
+  for i, column in columns:
+    let read = newCall(
+      bindSym("readAccCol"),
+      column,
+      cols.isAccArg(i),
+      idx,
+      nnkBracketExpr.newTree(copyNimTree(slot), newLit(i)),
+    )
+    result =
+      if i == 0:
+        read
+      else:
+        nnkInfix.newTree(ident("and"), result, read)
+
 macro unrollRead(arity: static int, cols, idx, slot: typed): untyped =
   ## Emits one read per column with the index spelled out as a literal.
   ##
   ## Walking the fields with a counter would leave the column index as a runtime value,
   ## which drags a bounds check and an overflow check into every read. Naming the index
   ## up front means there is nothing left to check
-  result = newStmtList()
+  var columns: seq[NimNode]
   for i in 0 ..< arity:
-    result.add newCall(
-      bindSym("readCol"),
-      nnkBracketExpr.newTree(newDotExpr(cols, ident("columns")), newLit(i)),
-      idx,
-      nnkBracketExpr.newTree(slot, newLit(i)),
-    )
+    columns.add nnkBracketExpr.newTree(newDotExpr(cols, ident("columns")), newLit(i))
+  accReads(cols, columns, idx, slot)
 
-template read*[Comps: tuple](cols: QueryCols[Comps], idx: uint32, slot: var Comps) =
-  ## Fills a slot with one row. Each field becomes a plain indexed load from its column
+template read*[Comps: tuple](
+    cols: QueryCols[Comps], idx: uint32, slot: var Comps
+): bool =
+  ## Fills a slot with one row, and says whether the row was a match at all -- which it
+  ## may not be, when the row is missing an accessory that was asked for
   unrollRead(tupleLen(Comps), cols, idx, slot)
+
+proc rowLoop(rows, idx, reads: NimNode): NimNode =
+  ## Walks every row of an archetype, running `reads` against each.
+  let cursor = genSym(nskVar, "cursor")
+  newStmtList(
+    newVarStmt(cursor, rows),
+    nnkWhileStmt.newTree(
+      nnkInfix.newTree(ident(">"), cursor, newLit(0'u32)),
+      newStmtList(
+        newAssignment(cursor, nnkInfix.newTree(ident("-"), cursor, newLit(1'u32))),
+        newLetStmt(idx, cursor),
+        newBlockStmt(reads),
+      ),
+    ),
+  )
 
 macro walkRows(arity: static int, cols, slot, body: untyped): untyped =
   ## Emits the row loop for a single archetype, with everything the loop needs lifted
@@ -141,31 +255,46 @@ macro walkRows(arity: static int, cols, slot, body: untyped): untyped =
   # shrunk. Going backwards, the row that moves always comes from at or above the cursor,
   # which has already been visited, and the cursor can never outrun the live row count
   let rows = genSym(nskLet, "rows")
-  let cursor = genSym(nskVar, "cursor")
-  let idx = ident("idx")
   result = newStmtList()
 
-  var reads = newStmtList()
+  var columns: seq[NimNode]
   for i in 0 ..< arity:
     let col = genSym(nskLet, "col" & $i)
     result.add newLetStmt(
       col, nnkBracketExpr.newTree(newDotExpr(cols, ident("columns")), newLit(i))
     )
-    reads.add newCall(
-      bindSym("readCol"), col, idx, nnkBracketExpr.newTree(slot, newLit(i))
-    )
+    columns.add(col)
 
   result.add newLetStmt(rows, newDotExpr(cols, ident("rows")))
-  reads.add body
 
-  result.add newVarStmt(cursor, rows)
-  result.add nnkWhileStmt.newTree(
-    nnkInfix.newTree(ident(">"), cursor, newLit(0'u32)),
-    newStmtList(
-      newAssignment(cursor, nnkInfix.newTree(ident("-"), cursor, newLit(1'u32))),
-      newLetStmt(idx, cursor),
-      newBlockStmt(reads),
+  let plainIdx = ident("idx")
+  var plain = newStmtList()
+  for i, column in columns:
+    plain.add newCall(
+      bindSym("readCol"),
+      column,
+      plainIdx,
+      nnkBracketExpr.newTree(copyNimTree(slot), newLit(i)),
+    )
+  plain.add copyNimTree(body)
+
+  let checkedIdx = ident("idx")
+  let checked = newIfStmt(
+    (accReads(cols, columns, checkedIdx, slot), newStmtList(copyNimTree(body)))
+  )
+
+  # Rows holding an accessory have to be filtered as they are walked, and the columns
+  # holding one are read as options rather than as the component itself. Which archetypes
+  # those are is not known until runtime, but it is settled for a whole archetype at a
+  # time. So the test goes outside the loop and there are two loops rather than a branch
+  # on every row. A query with no accessory in sight is then exactly the loop it always
+  # was, with nothing in the body to stop it being vectorized
+  result.add nnkIfStmt.newTree(
+    nnkElifBranch.newTree(
+      nnkPrefix.newTree(ident("not"), newDotExpr(cols, ident("hasAccessories"))),
+      rowLoop(rows, plainIdx, plain),
     ),
+    nnkElse.newTree(rowLoop(rows, checkedIdx, checked)),
   )
   result = newBlockStmt(result)
 

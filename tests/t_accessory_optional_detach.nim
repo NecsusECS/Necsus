@@ -1,4 +1,4 @@
-import necsus, std/[sequtils, unittest, options]
+import necsus, std/[algorithm, sequtils, unittest, options]
 
 type
   Person = object
@@ -21,7 +21,7 @@ proc setup(
   spawnUnrelated.with(Unrelated()).detach()
 
 proc assertion(noAge: Query[(Name, Not[Age])], aged: Query[(Age,)]) =
-  check(noAge.mapIt(it[0]) == @["Jack", "Jill"])
+  check(noAge.mapIt(it[0]).sorted == @["Jack", "Jill"])
   check(aged.len == 0)
 
 proc runner(tick: proc(): void) =

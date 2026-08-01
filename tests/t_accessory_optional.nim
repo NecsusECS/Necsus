@@ -1,4 +1,4 @@
-import necsus, std/[sequtils, unittest, options]
+import necsus, std/[algorithm, sequtils, unittest, options]
 
 type
   Person = object
@@ -15,7 +15,7 @@ proc setup(spawn1: Spawn[(Age, Name, Person)], spawn2: Spawn[(Marbles, Name, Per
 
 proc assertion(all: Query[(Name, Option[Age], Option[Marbles])]) =
   check(
-    toSeq(all.items) ==
+    toSeq(all.items).sortedByIt(it[0]) ==
       @[("Jack", some(100), none(Marbles)), ("Jill", none(Age), some(41))]
   )
 

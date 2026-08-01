@@ -38,6 +38,13 @@ proc componentIds*(dir: TupleDirective): NimNode =
   for arg in dir.args:
     result.add(arg.component.columnId)
 
+proc accessoryArgs*(dir: TupleDirective): NimNode =
+  ## Which arguments of a directive are backed by an accessory column, one flag per
+  ## argument and in argument order.
+  result = nnkBracket.newTree()
+  for arg in dir.args:
+    result.add(newLit(arg.isAccessory))
+
 iterator archetypeCases*(
     details: GenerateContext
 ): tuple[ofBranch: NimNode, archetype: Archetype[ComponentDef]] =

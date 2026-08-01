@@ -19,6 +19,7 @@ proc buildArchetypeLookup(
   ## the one row it came for
   let archetypeIdent = archetype.ident
   let ids = lookup.componentIds
+  let accessories = lookup.accessoryArgs
   let cols = genSym(nskLet, "cols")
 
   # These are bound here rather than left to be resolved where this code is pasted, so that
@@ -26,10 +27,14 @@ proc buildArchetypeLookup(
   let newQueryCols = bindSym("newQueryCols")
   let read = bindSym("read")
 
+  # The read is what decides whether the lookup found anything, rather than the archetype
+  # alone: an entity in a matching archetype can still be missing an accessory that was
+  # asked for, because an accessory is present per entity
   return quote:
-    let `cols` = `newQueryCols`[`tupleType`](`appStateIdent`.`archetypeIdent`, `ids`)
-    `read`(`cols`, uint32(`entityIndex`.archetypeIndex), `output`)
-    return true
+    let `cols` = `newQueryCols`[`tupleType`](
+      `appStateIdent`.`archetypeIdent`, `ids`, `accessories`
+    )
+    return `read`(`cols`, uint32(`entityIndex`.archetypeIndex), `output`)
 
 proc worldFields(name: string, dir: TupleDirective): seq[WorldField] =
   @[(name, nnkBracketExpr.newTree(bindSym("Lookup"), dir.asTupleType))]
