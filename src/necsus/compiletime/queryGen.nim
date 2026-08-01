@@ -1,7 +1,6 @@
 import std/[tables, macros, options]
 import
-  tupleDirective, archetype, componentDef, tools, systemGen, archetypeBuilder, common,
-  directiveArg
+  tupleDirective, archetype, componentDef, tools, systemGen, archetypeBuilder, common
 import ../runtime/[archetypeStore, query], ../util/bits
 
 iterator selectArchetypes(
@@ -14,13 +13,6 @@ iterator selectArchetypes(
 
 let state {.compileTime.} = ident("state")
 let cols {.compileTime.} = ident("cols")
-
-proc componentIds(query: TupleDirective): NimNode =
-  ## The column ids a query wants, one per argument and in argument order.
-  ## Component ids are global, so this is the same list no matter what.
-  result = nnkBracket.newTree()
-  for arg in query.args:
-    result.add(arg.component.columnId)
 
 proc walkArchetypes(
     details: GenerateContext,

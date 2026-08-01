@@ -28,6 +28,16 @@ proc asTupleType*(args: openarray[DirectiveArg]): NimNode =
 proc asTupleType*(tupleDir: TupleDirective): NimNode =
   tupleDir.args.toSeq.asTupleType
 
+proc componentIds*(dir: TupleDirective): NimNode =
+  ## The column ids a directive wants, one per argument and in argument order.
+  ##
+  ## Component ids are global, so this is the same list no matter which archetype it gets
+  ## applied to -- including for an excluded argument, which names a component the
+  ## archetype is guaranteed not to have and so resolves to no column at all
+  result = nnkBracket.newTree()
+  for arg in dir.args:
+    result.add(arg.component.columnId)
+
 iterator archetypeCases*(
     details: GenerateContext
 ): tuple[ofBranch: NimNode, archetype: Archetype[ComponentDef]] =

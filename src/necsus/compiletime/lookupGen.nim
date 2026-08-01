@@ -1,34 +1,38 @@
 import std/[macros, sequtils, tables, options]
 import tupleDirective, tools, common, archetype, componentDef, systemGen
-import ../runtime/[world, archetypeStore, directives]
+import ../runtime/[world, archetypeStore, query, directives]
 
 let entityId {.compileTime.} = ident("entityId")
 let entityIndex {.compileTime.} = ident("entityIndex")
-let compsIdent {.compileTime.} = ident("comps")
 let output {.compileTime.} = ident("output")
 
 proc buildArchetypeLookup(
-    details: GenerateContext, lookup: TupleDirective, archetype: Archetype[ComponentDef]
+    details: GenerateContext,
+    lookup: TupleDirective,
+    tupleType: NimNode,
+    archetype: Archetype[ComponentDef],
 ): NimNode =
-  ## Builds the block of code for pulling a lookup out of a specific archetype
-
-  let archetypeType = archetype.asStorageTuple
+  ## Builds the block of code for pulling a lookup out of a specific archetype.
+  ##
+  ## A lookup wants exactly one row out of one archetype, which is a query narrowed down to
+  ## a single index -- so it resolves its columns the same way a query does and then reads
+  ## the one row it came for
   let archetypeIdent = archetype.ident
-  let convert = newConverter(archetype, lookup).name
+  let ids = lookup.componentIds
+  let cols = genSym(nskLet, "cols")
+
+  # These are bound here rather than left to be resolved where this code is pasted, so that
+  # a name in the app being generated can not shadow them
+  let newQueryCols = bindSym("newQueryCols")
+  let read = bindSym("read")
 
   return quote:
-    let `compsIdent` = getComps[`archetypeType`](
-      `appStateIdent`.`archetypeIdent`, `entityIndex`.archetypeIndex
-    )
-    return `convert`(`compsIdent`, nil, `output`)
+    let `cols` = `newQueryCols`[`tupleType`](`appStateIdent`.`archetypeIdent`, `ids`)
+    `read`(`cols`, uint32(`entityIndex`.archetypeIndex), `output`)
+    return true
 
 proc worldFields(name: string, dir: TupleDirective): seq[WorldField] =
   @[(name, nnkBracketExpr.newTree(bindSym("Lookup"), dir.asTupleType))]
-
-proc converters(ctx: GenerateContext, dir: TupleDirective): seq[ConverterDef] =
-  for archetype in ctx.archetypes:
-    if archetype.matches(dir.filter):
-      result.add(newConverter(archetype, dir))
 
 proc generate(
     details: GenerateContext, arg: SystemArg, name: string, lookup: TupleDirective
@@ -53,7 +57,7 @@ proc generate(
         if archetype.matches(lookup.filter):
           cases.add(
             nnkOfBranch.newTree(
-              ofBranch, details.buildArchetypeLookup(lookup, archetype)
+              ofBranch, details.buildArchetypeLookup(lookup, tupleType, archetype)
             )
           )
 
@@ -86,5 +90,4 @@ let lookupGenerator* {.compileTime.} = newGenerator(
   interest = {Standard, Outside},
   generate = generate,
   worldFields = worldFields,
-  converters = converters,
 )
