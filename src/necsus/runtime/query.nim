@@ -1,16 +1,25 @@
-import entityId, options, ../util/blockstore
+import entityId, options, archetypeStore
 
 type
   QueryItem*[Comps: tuple] = tuple[entityId: EntityId, components: Comps]
     ## An individual value yielded by a query. Where `Comps` is a tuple of the components to fetch in
     ## this query
 
-  QueryNext*[Comps: tuple] = proc(
-    appStatePtr: pointer,
-    state: var uint,
-    iter: var BlockIter,
-    eid: var EntityId,
-    slot: var Comps,
+  QueryConvert*[Comps: tuple] = proc(
+    input: pointer, adding: pointer, output: var Comps
+  ): bool {.gcsafe, raises: [], nimcall.}
+    ## Copies the components of a single row into the shape a query asked for. Returns
+    ## false for rows that the query turns out not to want after all
+
+  QuerySpan*[Comps: tuple] = object
+    ## A run of consecutive rows belonging to one archetype. Queries hand these out rather
+    ## than individual rows so that the walk over the rows stays in the caller, where the
+    ## cursor lives in registers instead of behind a call
+    rows: ArchRowSpan
+    convert: QueryConvert[Comps]
+
+  QueryGetSpan*[Comps: tuple] = proc(
+    appStatePtr: pointer, state: var uint, span: var QuerySpan[Comps]
   ): bool {.gcsafe, raises: [], nimcall.}
 
   QueryGetLen = proc(appState: pointer): Natural {.gcsafe, raises: [], nimcall.}
@@ -20,7 +29,7 @@ type
     ## the components to fetch in this query.
     appState: pointer
     getLen: QueryGetLen
-    getNext: QueryNext[Comps]
+    getSpan: QueryGetSpan[Comps]
 
   Query*[Comps: tuple] = distinct RawQuery[Comps]
     ## Allows systems to query for entities with specific components. Where `Comps` is a tuple of
@@ -43,29 +52,43 @@ proc asQuery*[Comps](rawQuery: RawQuery[Comps]): Query[Comps] =
   Query[Comps](rawQuery)
 
 proc newQuery*[Comps: tuple](
-    appState: pointer, getLen: QueryGetLen, getNext: QueryNext[Comps]
+    appState: pointer, getLen: QueryGetLen, getSpan: QueryGetSpan[Comps]
 ): RawQuery[Comps] =
-  RawQuery[Comps](appState: appState, getLen: getLen, getNext: getNext)
+  RawQuery[Comps](appState: appState, getLen: getLen, getSpan: getSpan)
+
+proc newQuerySpan*[Comps: tuple](
+    rows: ArchRowSpan, convert: QueryConvert[Comps]
+): QuerySpan[Comps] {.inline.} =
+  ## Describes a run of rows to be walked by a query
+  QuerySpan[Comps](rows: rows, convert: convert)
+
+iterator rows*[Comps: tuple](span: QuerySpan[Comps], slot: var Comps): RawArchRow =
+  ## Walks the rows of a span that the query actually wants, filling `slot` with the
+  ## components of each
+  let convert = span.convert
+  for row in span.rows.rows:
+    if likely(convert(row.components, nil, slot)):
+      yield row
 
 iterator pairs*[Comps: tuple](query: FullQuery[Comps]): QueryItem[Comps] =
   ## Iterates through the entities in a query
   let raw = RawQuery[Comps](query)
   var state: uint
-  var iter: BlockIter
-  var eid: EntityId
+  var span: QuerySpan[Comps]
   var slot: Comps
-  while raw.getNext(raw.appState, state, iter, eid, slot):
-    yield (eid, slot)
+  while raw.getSpan(raw.appState, state, span):
+    for row in span.rows(slot):
+      yield (row.entityId, slot)
 
 iterator items*[Comps: tuple](query: AnyQuery[Comps]): Comps =
   ## Iterates through the entities in a query
   let raw = RawQuery[Comps](query)
   var state: uint
-  var iter: BlockIter
-  var eid: EntityId
+  var span: QuerySpan[Comps]
   var slot: Comps
-  while raw.getNext(raw.appState, state, iter, eid, slot):
-    yield slot
+  while raw.getSpan(raw.appState, state, span):
+    for _ in span.rows(slot):
+      yield slot
 
 proc len*[Comps: tuple](query: AnyQuery[Comps]): Natural {.gcsafe, raises: [].} =
   ## Returns the number of entities in this query

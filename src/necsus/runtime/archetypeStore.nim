@@ -13,6 +13,20 @@ type
 
   NewArchSlot*[Comps: tuple] = distinct Entry[ArchRow[Comps]]
 
+  ArchRowSpan* = object
+    ## Every row an archetype had at the moment the span was taken, described without the
+    ## shape of the components in it. That is what lets a single walk cover archetypes that
+    ## do not share a shape
+    rows: BlockSpan
+    compsOffset: uint
+
+  RawArchRow* = object
+    ## A single row, reached without knowing the shape of the components in it. Where each
+    ## half of the row sits is worked out here, so a caller never has to know how a row is
+    ## laid out
+    eid: ptr EntityId
+    comps: pointer
+
 proc `=copy`*[Comps: tuple](
   target: var ArchRow[Comps], source: ArchRow[Comps]
 ) {.error.}
@@ -41,15 +55,39 @@ proc next*[Comps: tuple](
   eid = row.entityId
   return addr row.components
 
-proc next*[Comps: tuple](
-    store: var ArchetypeStore[Comps], iter: var BlockIter
-): ptr Comps {.inline.} =
-  ## Returns the next row of components, skipping the entity id read. Used by `Query`,
-  ## which discards the entity id -- only `FullQuery` needs it
-  let row = store.compStore.next(BlockIter(iter))
-  if unlikely(row == nil):
-    return nil
-  return addr row.components
+proc wholeSpan*[Comps: tuple](
+    store: var ArchetypeStore[Comps]
+): ArchRowSpan {.inline.} =
+  ## Returns every row in this archetype. Callers walk the rows themselves, which keeps the
+  ## archetype out of the per row path entirely
+  static:
+    # Rows are walked from their front, so nothing may sit ahead of the entity id
+    doAssert(offsetOf(ArchRow[Comps], entityId) == 0)
+  ArchRowSpan(
+    rows: store.compStore.wholeSpan(),
+    compsOffset: uint(offsetOf(ArchRow[Comps], components)),
+  )
+
+proc isEmpty*(span: ArchRowSpan): bool {.inline.} =
+  ## Whether this span covers any rows at all
+  span.rows.isEmpty
+
+iterator rows*(span: ArchRowSpan): RawArchRow =
+  ## Walks the rows in a span, resolving where each half of a row sits as it goes
+  let compsOffset = span.compsOffset
+  # A row starts with its entity id, so that is what it gets walked as. The components sit
+  # further along, at an offset fixed by the shape of the row
+  for row in span.rows.addresses(EntityId):
+    yield RawArchRow(eid: row, comps: cast[pointer](cast[uint](row) + compsOffset))
+
+proc entityId*(row: RawArchRow): EntityId {.inline.} =
+  ## The entity a row belongs to. Only read if a caller actually asks for it
+  row.eid[]
+
+proc components*(row: RawArchRow): pointer {.inline.} =
+  ## The components in a row, untyped. Only code generated against this archetype knows the
+  ## shape well enough to read them
+  row.comps
 
 iterator entityIds*[Comps](store: var ArchetypeStore[Comps]): EntityId =
   var iter: BlockIter

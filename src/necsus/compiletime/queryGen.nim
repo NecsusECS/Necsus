@@ -2,7 +2,7 @@ import std/[tables, macros, options]
 import
   tupleDirective, archetype, componentDef, tools, systemGen, archetypeBuilder, common,
   directiveArg
-import ../runtime/[archetypeStore, query], ../util/[bits, blockstore]
+import ../runtime/[archetypeStore, query], ../util/bits
 
 iterator selectArchetypes(
     details: GenerateContext, query: TupleDirective
@@ -12,14 +12,8 @@ iterator selectArchetypes(
     if archetype.matches(query.filter):
       yield archetype
 
-const fullQueryIdent = "FullQuery"
-  ## The directive that exposes entity ids to the system, and so is the only one that
-  ## needs them read out of each row
-
 let state {.compileTime.} = ident("state")
-let iter {.compileTime.} = ident("iter")
-let eid {.compileTime.} = ident("eid")
-let slot {.compileTime.} = ident("slot")
+let span {.compileTime.} = ident("span")
 
 proc addLenPredicate(
     existing, row: NimNode,
@@ -77,7 +71,6 @@ proc walkArchetypes(
     name: string,
     query: TupleDirective,
     queryTupleType: NimNode,
-    needsEid: bool,
 ): (NimNode, NimNode) {.used.} =
   ## Creates the views that bind an archetype to a query
   var lenCalculation = newStmtList()
@@ -89,21 +82,27 @@ proc walkArchetypes(
 
     let archetypeIdent = archetype.ident
     let convert = newConverter(archetype, query).name
+    let found = genSym(nskLet, "found")
 
-    # Reading the entity id costs a load and a store per row, so only do it for the
-    # directives that actually expose it
-    let nextRow =
-      if needsEid:
-        quote:
-          `appStateIdent`.`archetypeIdent`.next(`iter`, `eid`)
-      else:
-        quote:
-          `appStateIdent`.`archetypeIdent`.next(`iter`)
+    # These are bound here rather than left to be resolved where this code is pasted, so
+    # that a name in the app being generated can not shadow them
+    let wholeSpan = bindSym("wholeSpan")
+    let isEmpty = bindSym("isEmpty")
 
+    # An archetype yields all of its rows in one span, so the state moves on as soon as
+    # the archetype has been asked, whether or not it had anything to give.
+    #
+    # The converter is typed against this archetype, but the span it gets attached to is
+    # shared by every archetype the query touches, so it travels as an untyped pointer
     iterCases.add nnkOfBranch.newTree(
       iterCases.len.newLit,
       quote do:
-        if likely(`convert`(`nextRow`, nil, `slot`)):
+        `state` += 1
+        let `found` = `wholeSpan`(`appStateIdent`.`archetypeIdent`)
+        if not `isEmpty`(`found`):
+          `span` = newQuerySpan[`queryTupleType`](
+            `found`, cast[QueryConvert[`queryTupleType`]](`convert`)
+          )
           return true
       ,
     )
@@ -125,9 +124,6 @@ proc walkArchetypes(
       quote:
         while true:
           `iterCaseStmt`
-          if `iter`.isDone:
-            `state` += 1
-            `iter` = default(BlockIter)
 
   return (lenCalculation, iteratorBody)
 
@@ -158,15 +154,13 @@ proc generate(
 
   let queryTuple = dir.args.asTupleType
   let getLen = details.globalName(name & "_getLen")
-  let getNext = details.globalName(name & "_getNext")
+  let getSpan = details.globalName(name & "_getSpan")
 
   case details.hook
   of GenerateHook.Outside:
     let appStateTypeName = details.appStateTypeName
 
-    let needsEid = arg.generator.ident == fullQueryIdent
-    let (lenCalculation, iteratorBody) =
-      details.walkArchetypes(name, dir, queryTuple, needsEid)
+    let (lenCalculation, iteratorBody) = details.walkArchetypes(name, dir, queryTuple)
 
     let trace = emitQueryTrace(
       "Query for ", $dir, " returned ", newCall(getLen, appStatePtr), " result(s)"
@@ -178,12 +172,8 @@ proc generate(
         result = 0
         `lenCalculation`
 
-      proc `getNext`(
-          `appStatePtr`: pointer,
-          `state`: var uint,
-          `iter`: var BlockIter,
-          `eid`: var EntityId,
-          `slot`: var `queryTuple`,
+      proc `getSpan`(
+          `appStatePtr`: pointer, `state`: var uint, `span`: var QuerySpan[`queryTuple`]
       ): bool {.gcsafe, raises: [], nimcall.} =
         let `appStateIdent` {.used.} = cast[ptr `appStateTypeName`](`appStatePtr`)
         `trace`
@@ -193,7 +183,7 @@ proc generate(
     let ident = name.ident
     return quote:
       `appStateIdent`.`ident` =
-        newQuery[`queryTuple`](`appStatePtr`, `getLen`, `getNext`)
+        newQuery[`queryTuple`](`appStatePtr`, `getLen`, `getSpan`)
   else:
     return newEmptyNode()
 
@@ -207,7 +197,7 @@ let queryGenerator* {.compileTime.} = newGenerator(
 )
 
 let fullQueryGenerator* {.compileTime.} = newGenerator(
-  ident = fullQueryIdent,
+  ident = "FullQuery",
   interest = {Standard, Outside},
   generate = generate,
   worldFields = worldFields,
