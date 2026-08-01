@@ -41,6 +41,16 @@ proc next*[Comps: tuple](
   eid = row.entityId
   return addr row.components
 
+proc next*[Comps: tuple](
+    store: var ArchetypeStore[Comps], iter: var BlockIter
+): ptr Comps {.inline.} =
+  ## Returns the next row of components, skipping the entity id read. Used by `Query`,
+  ## which discards the entity id -- only `FullQuery` needs it
+  let row = store.compStore.next(BlockIter(iter))
+  if unlikely(row == nil):
+    return nil
+  return addr row.components
+
 iterator entityIds*[Comps](store: var ArchetypeStore[Comps]): EntityId =
   var iter: BlockIter
   var eid: EntityId

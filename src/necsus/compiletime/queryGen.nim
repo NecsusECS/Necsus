@@ -12,6 +12,10 @@ iterator selectArchetypes(
     if archetype.matches(query.filter):
       yield archetype
 
+const fullQueryIdent = "FullQuery"
+  ## The directive that exposes entity ids to the system, and so is the only one that
+  ## needs them read out of each row
+
 let state {.compileTime.} = ident("state")
 let iter {.compileTime.} = ident("iter")
 let eid {.compileTime.} = ident("eid")
@@ -73,6 +77,7 @@ proc walkArchetypes(
     name: string,
     query: TupleDirective,
     queryTupleType: NimNode,
+    needsEid: bool,
 ): (NimNode, NimNode) {.used.} =
   ## Creates the views that bind an archetype to a query
   var lenCalculation = newStmtList()
@@ -85,12 +90,20 @@ proc walkArchetypes(
     let archetypeIdent = archetype.ident
     let convert = newConverter(archetype, query).name
 
+    # Reading the entity id costs a load and a store per row, so only do it for the
+    # directives that actually expose it
+    let nextRow =
+      if needsEid:
+        quote:
+          `appStateIdent`.`archetypeIdent`.next(`iter`, `eid`)
+      else:
+        quote:
+          `appStateIdent`.`archetypeIdent`.next(`iter`)
+
     iterCases.add nnkOfBranch.newTree(
       iterCases.len.newLit,
       quote do:
-        if likely(
-          `convert`(`appStateIdent`.`archetypeIdent`.next(`iter`, `eid`), nil, `slot`)
-        ):
+        if likely(`convert`(`nextRow`, nil, `slot`)):
           return true
       ,
     )
@@ -151,7 +164,9 @@ proc generate(
   of GenerateHook.Outside:
     let appStateTypeName = details.appStateTypeName
 
-    let (lenCalculation, iteratorBody) = details.walkArchetypes(name, dir, queryTuple)
+    let needsEid = arg.generator.ident == fullQueryIdent
+    let (lenCalculation, iteratorBody) =
+      details.walkArchetypes(name, dir, queryTuple, needsEid)
 
     let trace = emitQueryTrace(
       "Query for ", $dir, " returned ", newCall(getLen, appStatePtr), " result(s)"
@@ -192,7 +207,7 @@ let queryGenerator* {.compileTime.} = newGenerator(
 )
 
 let fullQueryGenerator* {.compileTime.} = newGenerator(
-  ident = "FullQuery",
+  ident = fullQueryIdent,
   interest = {Standard, Outside},
   generate = generate,
   worldFields = worldFields,
