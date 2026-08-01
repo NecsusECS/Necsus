@@ -224,11 +224,9 @@ proc isSubsetOfUnion*(a, b, c: Bits): bool =
       return false
   return true
 
-proc `>`*(a, b: Bits): bool = ## Returns whether a contains bits not set in b
-  not (a <= b)
-
 proc `<`*(a, b: Bits): bool =
-  ## Returns whether a is a strict subset of b
+  ## Returns whether a is a strict subset of b. Nim derives `>` from this
+  ## automatically, which gives back a strict superset check
   result = false
   for i, (aValue, bValue) in eachValue(a, b):
     if ((not bValue) and aValue) > 0:
