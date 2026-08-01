@@ -1,6 +1,10 @@
 import macros, options, tables
-import tools, common, archetype, componentDef, systemGen
+import common, archetype, componentDef, systemGen
 import ../runtime/[world, archetypeStore, directives]
+
+{.warning[UnusedImport]:off.}
+import tools
+{.warning[UnusedImport]:on.}
 
 let entityId {.compileTime.} = ident("entityId")
 
