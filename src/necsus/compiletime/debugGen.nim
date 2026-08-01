@@ -2,15 +2,13 @@ import macros, options, tables
 import common, archetype, componentDef, systemGen
 import ../runtime/[world, archetypeStore, directives]
 
-{.warning[UnusedImport]:off.}
+{.warning[UnusedImport]: off.}
 import tools
-{.warning[UnusedImport]:on.}
+{.warning[UnusedImport]: on.}
 
 let entityId {.compileTime.} = ident("entityId")
 
 let entityIndex {.compileTime.} = ident("entityIndex")
-
-let compsIdent {.compileTime.} = ident("comps")
 
 let entityArchetype {.compileTime.} = newDotExpr(entityIndex, ident("archetype"))
 
@@ -32,10 +30,13 @@ proc stringify[T](value: T): string {.raises: [], gcsafe.} =
 proc buildArchetypeLookup(
     details: GenerateContext, archetype: Archetype[ComponentDef]
 ): NimNode =
-  ## Builds the block of code for pulling a lookup out of a specific archetype
-
-  let archetypeType = archetype.asStorageTuple
+  ## Builds the block of code for describing an entity out of a specific archetype.
   let archetypeIdent = archetype.ident
+  let index = genSym(nskLet, "index")
+
+  # This is bound here rather than left to be resolved where this code is pasted, so that
+  # a name in the app being generated can not shadow it
+  let getColumn = bindSym("getColumn")
 
   let archetypeIdentVar =
     newLit(" = " & archetype.readableName & " (" & archetype.idSymbol.strVal & ")")
@@ -43,17 +44,16 @@ proc buildArchetypeLookup(
   var str = quote:
     $`entityId` & `archetypeIdentVar`
 
-  var i = 0
   for comp in archetype:
     let label = newLit("; " & comp.readableName & " = ")
+    let columnId = comp.columnId
+    let readColumn = nnkBracketExpr.newTree(getColumn, comp.columnType)
     str = quote:
-      `str` & `label` & stringify(`compsIdent`[`i`])
-    i += 1
+      `str` & `label` &
+        stringify(`readColumn`(`appStateIdent`.`archetypeIdent`, `columnId`)[`index`])
 
   return quote:
-    let `compsIdent` = getComps[`archetypeType`](
-      `appStateIdent`.`archetypeIdent`, `entityIndex`.archetypeIndex
-    )
+    let `index` = uint32(`entityIndex`.archetypeIndex)
     return `str`
 
 proc generateEntityDebug(
