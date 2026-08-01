@@ -2,12 +2,35 @@ import std/[macros, options, strformat, sequtils, strutils]
 import
   tools, tupleDirective, dualDirective, common, queryGen, lookupGen, spawnGen,
   directiveArg
-import archetype, componentDef, systemGen, archetypeBuilder, converters
+import archetype, componentDef, systemGen, archetypeBuilder
 import ../runtime/[world, archetypeStore, directives], ../util/[bits, tools]
 
 let entityIndex {.compileTime.} = ident("entityIndex")
 let newComps {.compileTime.} = ident("newComps")
 let entityId {.compileTime.} = ident("entityId")
+
+proc attachedValue(component: ComponentDef, index: int): NimNode =
+  ## Reads one component out of the tuple handed to an attach.
+  result = nnkBracketExpr.newTree(newComps, newLit(index))
+  if component.isAccessory:
+    result = newCall(bindSym("some"), result)
+
+proc absentValue(component: ComponentDef): NimNode =
+  ## The value standing in for a component an archetype has a column for but this entity
+  ## does not have. Only an accessory can be in that position
+  newCall(nnkBracketExpr.newTree(bindSym("none"), component.node))
+
+proc storeComponent(
+    store, index: NimNode, component: ComponentDef, value: NimNode
+): NimNode =
+  ## Emits the write that puts a single component into its column
+  newCall(
+    nnkBracketExpr.newTree(bindSym("setComponent"), component.columnType),
+    store,
+    component.columnId,
+    index,
+    value,
+  )
 
 proc createArchUpdate(
     details: GenerateContext,
@@ -17,7 +40,7 @@ proc createArchUpdate(
     optDetachComps: seq[ComponentDef],
     archetype: Archetype[ComponentDef],
 ): NimNode =
-  ## Creates code for updating archetype information in place
+  ## Creates code for updating archetype information in place.
 
   let attachStr = attachComps.mapIt(it.readableName).join(", ")
   let detachStr = detachComps.mapIt(it.readableName).join(", ")
@@ -32,67 +55,103 @@ proc createArchUpdate(
   )
 
   let archIdent = archetype.ident
-  let archTuple = archetype.asStorageTuple
+  let index = genSym(nskLet, "index")
 
-  let existing = ident("existing")
-  result.add quote do:
-    let `existing` =
-      getComps[`archTuple`](`appStateIdent`.`archIdent`, `entityIndex`.archetypeIndex)
+  let store = quote:
+    `appStateIdent`.`archIdent`
+
+  result.add(
+    newLetStmt(
+      index, newCall(ident("uint32"), newDotExpr(entityIndex, ident("archetypeIndex")))
+    )
+  )
 
   for i, component in attachComps:
-    let storageIndex = archetype.indexOf(component)
-    let adapter = newAdapter(archetype, attachComps, component, newComps, existing)
-    let newValue = adapter.build()
-    result.add quote do:
-      `existing`[`storageIndex`] = `newValue`
+    result.add(storeComponent(store, index, component, component.attachedValue(i)))
 
   for component in both(detachComps, optDetachComps):
     if component in archetype:
-      let storageIndex = archetype.indexOf(component)
-      let typ = component.node
-      result.add quote do:
-        `existing`[`storageIndex`] = none[`typ`]()
-
-proc newCompsTupleType(newCompValues: seq[ComponentDef]): NimNode =
-  ## Creates the type definition to use for a tuple that represents new values passed into a convert proc
-  if newCompValues.len > 0:
-    return newCompValues.asTupleType
-  else:
-    return quote:
-      (int,)
+      result.add(storeComponent(store, index, component, component.absentValue))
 
 proc createArchMove(
     details: GenerateContext,
     title: string,
     fromArch: Archetype[ComponentDef],
-    newCompValues: seq[ComponentDef],
+    attachComps: seq[ComponentDef],
     toArch: Archetype[ComponentDef],
-    convert: ConverterDef,
 ): NimNode =
-  ## Creates code for copying from one archetype to another
+  ## Creates code for moving an entity from one archetype to another.
+
   let fromArchIdent = fromArch.ident
-  let fromArchTuple = fromArch.asStorageTuple
-  let toArchTuple = toArch.asStorageTuple
   let toArchIdent = toArch.ident
-  let convertProc = convert.name
-  let newCompsType = newCompValues.newCompsTupleType()
+  let toArchId = toArch.idSymbol
 
-  let newCompsArg =
-    if newCompValues.len > 0:
-      newComps
-    else:
-      quote:
-        (0,)
+  let fromIndex = genSym(nskLet, "fromIndex")
+  let toIndex = genSym(nskLet, "toIndex")
+  let moved = genSym(nskLet, "moved")
 
-  let log =
+  # These are bound here rather than left to be resolved where this code is pasted, so that
+  # a name in the app being generated can not shadow them
+  let takeColumn = bindSym("takeColumn")
+  let dropColumn = bindSym("dropColumn")
+  let dropRow = bindSym("dropRow")
+
+  let fromStore = quote:
+    `appStateIdent`.`fromArchIdent`
+  let toStore = quote:
+    `appStateIdent`.`toArchIdent`
+
+  result = newStmtList(
     emitEntityTrace(title, " ", entityId, " from ", fromArch.name, " to ", toArch.name)
+  )
 
-  return quote:
-    `log`
-    moveEntity[`fromArchTuple`, `newCompsType`, `toArchTuple`](
-      `appStateIdent`.`worldIdent`, `entityIndex`, `appStateIdent`.`fromArchIdent`,
-      `appStateIdent`.`toArchIdent`, `newCompsArg`, `convertProc`,
+  # The destination row is claimed before anything is taken out of the source, so that
+  # running out of room leaves the entity where it was instead of half moved
+  result.add quote do:
+    let `fromIndex` = uint32(`entityIndex`.archetypeIndex)
+    let `toIndex` = reserve(`appStateIdent`.`toArchIdent`, `entityId`)
+
+  for component in fromArch:
+    let takeFrom = newCall(
+      nnkBracketExpr.newTree(takeColumn, component.columnType),
+      fromStore,
+      component.columnId,
+      fromIndex,
     )
+
+    # A component being attached is about to be overwritten, so the value already in the
+    # source is not worth carrying across even when the destination has a column for it
+    if component in toArch and component notin attachComps:
+      result.add(storeComponent(toStore, toIndex, component, takeFrom))
+    else:
+      result.add(
+        newCall(
+          nnkBracketExpr.newTree(dropColumn, component.columnType),
+          fromStore,
+          component.columnId,
+          fromIndex,
+        )
+      )
+
+  for component in toArch:
+    let index = attachComps.find(component)
+    if index >= 0:
+      result.add(
+        storeComponent(toStore, toIndex, component, component.attachedValue(index))
+      )
+    elif component notin fromArch:
+      # Nothing on either side has a value for this, which only an accessory can manage
+      result.add(storeComponent(toStore, toIndex, component, component.absentValue))
+
+  # Taking the row out of the source moves its last row down into the hole, which leaves
+  # whichever entity was sitting there pointing at the wrong index. Nothing moves when the
+  # row was already the last one, and that is what dropRow handing back this entity means
+  result.add quote do:
+    let `moved` = `dropRow`(`appStateIdent`.`fromArchIdent`, `fromIndex`)
+    if `moved` != `entityId`:
+      `appStateIdent`.`worldIdent`[`moved`].archetypeIndex = uint(`fromIndex`)
+    `entityIndex`.archetype = `toArchId`
+    `entityIndex`.archetypeIndex = uint(`toIndex`)
 
 proc asBits(comps: varargs[seq[ComponentDef]]): Bits =
   result = Bits()
@@ -127,12 +186,9 @@ proc attachDetachProcBody(
         if toArch.isNil:
           discard
         elif fromArch != toArch:
-          let convert = newConverter(fromArch, attachComps, toArch, true)
-          result.convertProcs.add(convert.buildConverter)
           cases.add(
             nnkOfBranch.newTree(
-              ofBranch,
-              details.createArchMove(title, fromArch, attachComps, toArch, convert),
+              ofBranch, details.createArchMove(title, fromArch, attachComps, toArch)
             )
           )
         elif toArch.containsAllOf(attachComps):

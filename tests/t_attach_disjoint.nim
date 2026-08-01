@@ -1,4 +1,4 @@
-import unittest, necsus, sequtils
+import unittest, necsus, sequtils, algorithm
 
 type
   Name = string
@@ -23,7 +23,7 @@ proc stunPeople(people: FullQuery[(Name,)], stun: Attach[(Stunned,)]) =
     entityId.stun((Stunned(),))
 
 proc assertions(broken: Query[(Broken, Title)], stunned: Query[(Stunned, Name)]) =
-  check(toSeq(broken.items).mapIt(it[1]) == @["Sword", "Dagger"])
+  check(toSeq(broken.items).mapIt(it[1]).sorted == @["Dagger", "Sword"])
   check(toSeq(stunned.items).mapIt(it[1]) == @["Jack"])
 
 proc runner(tick: proc(): void) =

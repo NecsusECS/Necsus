@@ -1,4 +1,4 @@
-import unittest, necsus, sequtils
+import unittest, necsus, sequtils, algorithm
 
 type
   Name = object
@@ -21,9 +21,8 @@ proc modify(all: FullQuery[(Age, Mood)], attach: Attach[(Age, Mood)]) =
     entityId.attach((newAge, newMood))
 
 proc assertions(all: Query[(Name, Age, Mood)]) =
-  check(toSeq(all.items).mapIt(it[0].name) == @["Foo", "Bar"])
-  check(toSeq(all.items).mapIt(it[1].age) == @[21, 31])
-  check(toSeq(all.items).mapIt(it[2].mood) == @["Very Happy", "Very Sad"])
+  let found = toSeq(all.items).mapIt((it[0].name, it[1].age, it[2].mood)).sorted
+  check(found == @[("Bar", 31, "Very Sad"), ("Foo", 21, "Very Happy")])
 
 proc runner(tick: proc(): void) =
   tick()

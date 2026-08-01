@@ -1,4 +1,4 @@
-import unittest, necsus, sequtils
+import unittest, necsus, sequtils, algorithm
 
 type
   Name = object
@@ -24,9 +24,10 @@ proc modify(
     entityId.addNum((FavoriteNumber(number: i),))
 
 proc assertions(all: Query[(Name, Age, FavoriteNumber)]) =
-  check(toSeq(all.items).mapIt(it[0].name) == @["Foo", "Bar"])
-  check(toSeq(all.items).mapIt(it[1].age) == @[21, 22])
-  check(toSeq(all.items).mapIt(it[2].number) == @[1, 2])
+  let found = toSeq(all.items)
+  check(found.mapIt(it[0].name).sorted == @["Bar", "Foo"])
+  check(found.mapIt(it[2].number).sorted == @[1, 2])
+  check(found.allIt(it[1].age == it[2].number + 20))
 
 proc runner(tick: proc(): void) =
   tick()

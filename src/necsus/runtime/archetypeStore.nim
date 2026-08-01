@@ -107,11 +107,15 @@ proc rows*(store: ArchetypeStore): uint32 {.inline, raises: [].} =
   ## The number of rows every column in this archetype currently holds
   store.used
 
-proc entities*(store: ArchetypeStore): ptr UncheckedArray[EntityId] {.inline, raises: [].} =
+proc entities*(
+    store: ArchetypeStore
+): ptr UncheckedArray[EntityId] {.inline, raises: [].} =
   ## The entity ids sitting alongside the columns, one per row and in the same order
   store.eids
 
-proc column*(store: ArchetypeStore, component: ComponentId): Column {.inline, raises: [].} =
+proc column*(
+    store: ArchetypeStore, component: ComponentId
+): Column {.inline, raises: [].} =
   ## The column holding a component, or `NO_COLUMN` when this archetype does not have it.
   ##
   ## Component ids are global, so this is the same lookup in every archetype -- which is
@@ -127,9 +131,6 @@ proc getColumn*[T](
 
 proc reserve*(store: var ArchetypeStore, entityId: EntityId): uint32 =
   ## Claims the next row for an entity and returns its index.
-  ##
-  ## The row is left zeroed, which makes it a valid destination to assign a component
-  ## over the top of, and leaves any accessory column reading as `none`
   if unlikely(store.used >= store.capacity):
     raise newException(IndexDefect, "Archetype capacity exceeded: " & $store.capacity)
   result = store.used
@@ -141,7 +142,7 @@ proc setComponent*[T](
 ) {.inline.} =
   ## Stores a single component in a row. The row was zeroed when it was reserved, so the
   ## assignment has a valid value to sink over
-  store.getColumn[:T](component)[index] = value
+  getColumn[T](store, component)[index] = value
 
 proc entityId*(store: ArchetypeStore, index: uint32): EntityId {.inline.} =
   store.eids[index]
@@ -154,24 +155,30 @@ iterator entityIds*(store: ArchetypeStore): EntityId =
 proc destroyColumn*[T](store: var ArchetypeStore, component: ComponentId) =
   ## Destroys the live values in a single column. Columns hold raw memory, so nothing
   ## else is going to run a destructor over them
-  let column = store.getColumn[:T](component)
+  let column = getColumn[T](store, component)
   for i in 0'u32 ..< store.used:
     `=destroy`(column[i])
 
-proc dropColumn*[T](
-    store: var ArchetypeStore, component: ComponentId, index: uint32
-) =
-  ## Destroys one value in a column and relocates the last row into the hole it leaves.
-  ##
-  ## Relocation is a bitwise move: the bytes are copied and the source is marked as moved
-  ## from, so no destructor runs against either end of it. That holds for any type that
-  ## does not point back into itself, which covers everything in the standard library
-  let column = store.getColumn[:T](component)
-  let last = store.used - 1
-  `=destroy`(column[index])
+proc relocateLast[T](column: ptr UncheckedArray[T], index, last: uint32) {.inline.} =
+  ## Fills a vacated row with the last one, and leaves the row the last one came from
+  ## reading as zero.
   if index != last:
     copyMem(addr column[index], addr column[last], sizeof(T))
-    wasMoved(column[last])
+  wasMoved(column[last])
+
+proc dropColumn*[T](store: var ArchetypeStore, component: ComponentId, index: uint32) =
+  ## Destroys one value in a column and relocates the last row into the hole it leaves
+  let column = getColumn[T](store, component)
+  `=destroy`(column[index])
+  relocateLast(column, index, store.used - 1)
+
+proc takeColumn*[T](
+    store: var ArchetypeStore, component: ComponentId, index: uint32
+): T =
+  ## Moves one value out of a column and relocates the last row into the hole it leaves.
+  let column = getColumn[T](store, component)
+  result = move(column[index])
+  relocateLast(column, index, store.used - 1)
 
 proc dropRow*(store: var ArchetypeStore, index: uint32): EntityId {.discardable.} =
   ## Finishes a delete once every column has been dropped, moving the last entity id down
