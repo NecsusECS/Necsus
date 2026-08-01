@@ -114,10 +114,6 @@
           <li><a class="reference external"
           data-doc-search-tag="archetypeStore: proc `=copy`[Comps: tuple](target: var ArchRow[Comps]; source: ArchRow[Comps])" href="necsus/runtime/archetypeStore.html#%3Dcopy%2CArchRow%5BComps%3A%20tuple%5D%2CArchRow%5BComps%3A%20tuple%5D">archetypeStore: proc `=copy`[Comps: tuple](target: var ArchRow[Comps]; source: ArchRow[Comps])</a></li>
           </ul></dd>
-<dt><a name="%60%26gt%3B%60" href="#%60%26gt%3B%60"><span>`&gt;`:</span></a></dt><dd><ul class="simple">
-<li><a class="reference external"
-          data-doc-search-tag="bits: proc `&gt;`(a, b: Bits): bool" href="necsus/util/bits.html#%3E%2CBits%2CBits">bits: proc `&gt;`(a, b: Bits): bool</a></li>
-          </ul></dd>
 <dt><a name="%60%5B%5D%3D%60" href="#%60%5B%5D%3D%60"><span>`[]=`:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="blockstore: template `[]=`[V](store: BlockStore[V]; idx: uint; newValue: V)" href="necsus/util/blockstore.html#%5B%5D%3D.t%2CBlockStore%5BV%5D%2Cuint%2CV">blockstore: template `[]=`[V](store: BlockStore[V]; idx: uint; newValue: V)</a></li>
@@ -183,6 +179,10 @@
           data-doc-search-tag="archetypeStore: proc addLen[Comps: tuple](store: var ArchetypeStore[Comps]; len: var Natural;
     predicate: proc (row: var Comps): bool {.nimcall, gcsafe, raises: [].})" href="necsus/runtime/archetypeStore.html#addLen%2CArchetypeStore%5BComps%3A%20tuple%5D%2CNatural%2Cproc%28Comps%29">archetypeStore: proc addLen[Comps: tuple](store: var ArchetypeStore[Comps]; len: var Natural;
     predicate: proc (row: var Comps): bool {.nimcall, gcsafe, raises: [].})</a></li>
+          </ul></dd>
+<dt><a name="addresses" href="#addresses"><span>addresses:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="blockstore: iterator addresses[V](span: BlockSpan; kind: typedesc[V]): ptr V" href="necsus/util/blockstore.html#addresses.i%2CBlockSpan%2Ctypedesc%5BV%5D">blockstore: iterator addresses[V](span: BlockSpan; kind: typedesc[V]): ptr V</a></li>
           </ul></dd>
 <dt><a name="addSignature" href="#addSignature"><span>addSignature:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -280,6 +280,10 @@
 <li><a class="reference external"
           data-doc-search-tag="archetypeStore: object ArchRow" href="necsus/runtime/archetypeStore.html#ArchRow">archetypeStore: object ArchRow</a></li>
           </ul></dd>
+<dt><a name="ArchRowSpan" href="#ArchRowSpan"><span>ArchRowSpan:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="archetypeStore: object ArchRowSpan" href="necsus/runtime/archetypeStore.html#ArchRowSpan">archetypeStore: object ArchRowSpan</a></li>
+          </ul></dd>
 <dt><a name="ArgCheck" href="#ArgCheck"><span>ArgCheck:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="systemGen: object ArgCheck" href="necsus/compiletime/systemGen.html#ArgCheck">systemGen: object ArgCheck</a></li>
@@ -370,6 +374,10 @@
 <li><a class="reference external"
           data-doc-search-tag="blockstore: object BlockIter" href="necsus/util/blockstore.html#BlockIter">blockstore: object BlockIter</a></li>
           </ul></dd>
+<dt><a name="BlockSpan" href="#BlockSpan"><span>BlockSpan:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="blockstore: object BlockSpan" href="necsus/util/blockstore.html#BlockSpan">blockstore: object BlockSpan</a></li>
+          </ul></dd>
 <dt><a name="BlockStore" href="#BlockStore"><span>BlockStore:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="blockstore: type BlockStore" href="necsus/util/blockstore.html#BlockStore">blockstore: type BlockStore</a></li>
@@ -459,6 +467,8 @@
           data-doc-search-tag="parse: iterator components(app: ParsedApp): ComponentDef" href="necsus/compiletime/parse.html#components.i%2CParsedApp">parse: iterator components(app: ParsedApp): ComponentDef</a></li>
           <li><a class="reference external"
           data-doc-search-tag="parse: iterator components(arg: SystemArg): ComponentDef" href="necsus/compiletime/parse.html#components.i%2CSystemArg">parse: iterator components(arg: SystemArg): ComponentDef</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="archetypeStore: proc components(row: RawArchRow): pointer" href="necsus/runtime/archetypeStore.html#components%2CRawArchRow">archetypeStore: proc components(row: RawArchRow): pointer</a></li>
           </ul></dd>
 <dt><a name="comps" href="#comps"><span>comps:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -691,6 +701,8 @@
 <dt><a name="entityId" href="#entityId"><span>entityId:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="archetypeStore: proc entityId[Comps: tuple](entry: NewArchSlot[Comps]): EntityId" href="necsus/runtime/archetypeStore.html#entityId%2CNewArchSlot%5BComps%3A%20tuple%5D">archetypeStore: proc entityId[Comps: tuple](entry: NewArchSlot[Comps]): EntityId</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="archetypeStore: proc entityId(row: RawArchRow): EntityId" href="necsus/runtime/archetypeStore.html#entityId%2CRawArchRow">archetypeStore: proc entityId(row: RawArchRow): EntityId</a></li>
           </ul></dd>
 <dt><a name="EntityId" href="#EntityId"><span>EntityId:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -710,7 +722,7 @@
           </ul></dd>
 <dt><a name="Entry" href="#Entry"><span>Entry:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="blockstore: type Entry" href="necsus/util/blockstore.html#Entry">blockstore: type Entry</a></li>
+          data-doc-search-tag="blockstore: object Entry" href="necsus/util/blockstore.html#Entry">blockstore: object Entry</a></li>
           </ul></dd>
 <dt><a name="EventCallback" href="#EventCallback"><span>EventCallback:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -980,23 +992,27 @@
           <li><a class="reference external"
           data-doc-search-tag="directiveArg: proc isAccessory(arg: DirectiveArg): bool" href="necsus/compiletime/directiveArg.html#isAccessory%2CDirectiveArg">directiveArg: proc isAccessory(arg: DirectiveArg): bool</a></li>
           </ul></dd>
+<dt><a name="isAlive" href="#isAlive"><span>isAlive:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="blockstore: proc isAlive(span: BlockSpan; idx: uint): bool" href="necsus/util/blockstore.html#isAlive%2CBlockSpan%2Cuint">blockstore: proc isAlive(span: BlockSpan; idx: uint): bool</a></li>
+          </ul></dd>
 <dt><a name="isDone" href="#isDone"><span>isDone:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="blockstore: proc isDone(iter: BlockIter): bool" href="necsus/util/blockstore.html#isDone%2CBlockIter">blockstore: proc isDone(iter: BlockIter): bool</a></li>
           </ul></dd>
 <dt><a name="isEmpty" href="#isEmpty"><span>isEmpty:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
+          data-doc-search-tag="archetypeStore: proc isEmpty(span: ArchRowSpan): bool" href="necsus/runtime/archetypeStore.html#isEmpty%2CArchRowSpan">archetypeStore: proc isEmpty(span: ArchRowSpan): bool</a></li>
+          <li><a class="reference external"
           data-doc-search-tag="systemVar: proc isEmpty[T](sysvar: SystemVar[T]): bool" href="necsus/runtime/systemVar.html#isEmpty%2CSystemVar%5BT%5D">systemVar: proc isEmpty[T](sysvar: SystemVar[T]): bool</a></li>
           <li><a class="reference external"
           data-doc-search-tag="bits: proc isEmpty(bitset: Bits): bool" href="necsus/util/bits.html#isEmpty%2CBits">bits: proc isEmpty(bitset: Bits): bool</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="blockstore: proc isEmpty(span: BlockSpan): bool" href="necsus/util/blockstore.html#isEmpty%2CBlockSpan">blockstore: proc isEmpty(span: BlockSpan): bool</a></li>
           </ul></dd>
 <dt><a name="isFastCompileMode" href="#isFastCompileMode"><span>isFastCompileMode:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="common: template isFastCompileMode(title: untyped): bool" href="necsus/compiletime/common.html#isFastCompileMode.t%2Cuntyped">common: template isFastCompileMode(title: untyped): bool</a></li>
-          </ul></dd>
-<dt><a name="isFirst" href="#isFirst"><span>isFirst:</span></a></dt><dd><ul class="simple">
-<li><a class="reference external"
-          data-doc-search-tag="blockstore: proc isFirst(iter: BlockIter): bool" href="necsus/util/blockstore.html#isFirst%2CBlockIter">blockstore: proc isFirst(iter: BlockIter): bool</a></li>
           </ul></dd>
 <dt><a name="isPragma" href="#isPragma"><span>isPragma:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -1037,6 +1053,8 @@
           data-doc-search-tag="systemVar: iterator items[T](sysvar: SystemVar[T]): lent T" href="necsus/runtime/systemVar.html#items.i%2CSystemVar%5BT%5D_2">systemVar: iterator items[T](sysvar: SystemVar[T]): lent T</a></li>
           <li><a class="reference external"
           data-doc-search-tag="bits: iterator items(bitset: Bits): uint16" href="necsus/util/bits.html#items.i%2CBits">bits: iterator items(bitset: Bits): uint16</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="blockstore: iterator items[V](span: BlockSpan; kind: typedesc[V]): var V" href="necsus/util/blockstore.html#items.i%2CBlockSpan%2Ctypedesc%5BV%5D">blockstore: iterator items[V](span: BlockSpan; kind: typedesc[V]): var V</a></li>
           <li><a class="reference external"
           data-doc-search-tag="blockstore: iterator items[V](store: var BlockStore[V]): var V" href="necsus/util/blockstore.html#items.i%2CBlockStore%5BV%5D">blockstore: iterator items[V](store: var BlockStore[V]): var V</a></li>
           <li><a class="reference external"
@@ -1387,8 +1405,14 @@
 <dt><a name="newQuery" href="#newQuery"><span>newQuery:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="query: proc newQuery[Comps: tuple](appState: pointer; getLen: QueryGetLen;
-                       getNext: QueryNext[Comps]): RawQuery[Comps]" href="necsus/runtime/query.html#newQuery%2Cpointer%2CQueryGetLen%2CQueryNext%5BComps%3A%20tuple%5D">query: proc newQuery[Comps: tuple](appState: pointer; getLen: QueryGetLen;
-                       getNext: QueryNext[Comps]): RawQuery[Comps]</a></li>
+                       getSpan: QueryGetSpan[Comps]): RawQuery[Comps]" href="necsus/runtime/query.html#newQuery%2Cpointer%2CQueryGetLen%2CQueryGetSpan%5BComps%3A%20tuple%5D">query: proc newQuery[Comps: tuple](appState: pointer; getLen: QueryGetLen;
+                       getSpan: QueryGetSpan[Comps]): RawQuery[Comps]</a></li>
+          </ul></dd>
+<dt><a name="newQuerySpan" href="#newQuerySpan"><span>newQuerySpan:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="query: proc newQuerySpan[Comps: tuple](rows: ArchRowSpan; convert: QueryConvert[Comps]): QuerySpan[
+    Comps]" href="necsus/runtime/query.html#newQuerySpan%2CArchRowSpan%2CQueryConvert%5BComps%3A%20tuple%5D">query: proc newQuerySpan[Comps: tuple](rows: ArchRowSpan; convert: QueryConvert[Comps]): QuerySpan[
+    Comps]</a></li>
           </ul></dd>
 <dt><a name="newSlot" href="#newSlot"><span>newSlot:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -1510,17 +1534,29 @@
 <li><a class="reference external"
           data-doc-search-tag="query: type Query" href="necsus/runtime/query.html#Query">query: type Query</a></li>
           </ul></dd>
+<dt><a name="QueryConvert" href="#QueryConvert"><span>QueryConvert:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="query: type QueryConvert" href="necsus/runtime/query.html#QueryConvert">query: type QueryConvert</a></li>
+          </ul></dd>
 <dt><a name="queryGenerator" href="#queryGenerator"><span>queryGenerator:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="queryGen: let queryGenerator" href="necsus/compiletime/queryGen.html#queryGenerator">queryGen: let queryGenerator</a></li>
+          </ul></dd>
+<dt><a name="QueryGetSpan" href="#QueryGetSpan"><span>QueryGetSpan:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="query: type QueryGetSpan" href="necsus/runtime/query.html#QueryGetSpan">query: type QueryGetSpan</a></li>
           </ul></dd>
 <dt><a name="QueryItem" href="#QueryItem"><span>QueryItem:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="query: tuple QueryItem" href="necsus/runtime/query.html#QueryItem">query: tuple QueryItem</a></li>
           </ul></dd>
-<dt><a name="QueryNext" href="#QueryNext"><span>QueryNext:</span></a></dt><dd><ul class="simple">
+<dt><a name="QuerySpan" href="#QuerySpan"><span>QuerySpan:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="query: type QueryNext" href="necsus/runtime/query.html#QueryNext">query: type QueryNext</a></li>
+          data-doc-search-tag="query: object QuerySpan" href="necsus/runtime/query.html#QuerySpan">query: object QuerySpan</a></li>
+          </ul></dd>
+<dt><a name="RawArchRow" href="#RawArchRow"><span>RawArchRow:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="archetypeStore: object RawArchRow" href="necsus/runtime/archetypeStore.html#RawArchRow">archetypeStore: object RawArchRow</a></li>
           </ul></dd>
 <dt><a name="RawNestedArg" href="#RawNestedArg"><span>RawNestedArg:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -1616,6 +1652,12 @@
 <li><a class="reference external"
           data-doc-search-tag="pragmas: template restoreSys()" href="necsus/runtime/pragmas.html#restoreSys.t">pragmas: template restoreSys()</a></li>
           </ul></dd>
+<dt><a name="rows" href="#rows"><span>rows:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="archetypeStore: iterator rows(span: ArchRowSpan): RawArchRow" href="necsus/runtime/archetypeStore.html#rows.i%2CArchRowSpan">archetypeStore: iterator rows(span: ArchRowSpan): RawArchRow</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="query: iterator rows[Comps: tuple](span: QuerySpan[Comps]; slot: var Comps): RawArchRow" href="necsus/runtime/query.html#rows.i%2CQuerySpan%5BComps%3A%20tuple%5D%2CComps">query: iterator rows[Comps: tuple](span: QuerySpan[Comps]; slot: var Comps): RawArchRow</a></li>
+          </ul></dd>
 <dt><a name="RunLoop" href="#RunLoop"><span>RunLoop:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="necsus: NecsusRun.RunLoop" href="necsus.html#RunLoop">necsus: NecsusRun.RunLoop</a></li>
@@ -1697,6 +1739,10 @@
 <dt><a name="slotFor" href="#slotFor"><span>slotFor:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="openAddr: proc slotFor[K, V](table: var OpenTable[K, V]; key: K): int" href="necsus/util/openAddr.html#slotFor%2COpenTable%5BK%2CV%5D%2CK">openAddr: proc slotFor[K, V](table: var OpenTable[K, V]; key: K): int</a></li>
+          </ul></dd>
+<dt><a name="slots" href="#slots"><span>slots:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="blockstore: proc slots(span: BlockSpan): uint" href="necsus/util/blockstore.html#slots%2CBlockSpan">blockstore: proc slots(span: BlockSpan): uint</a></li>
           </ul></dd>
 <dt><a name="Spawn" href="#Spawn"><span>Spawn:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -1840,6 +1886,12 @@
           <li><a class="reference external"
           data-doc-search-tag="openAddr: iterator values[K, V](table: OpenTable[K, V]): V" href="necsus/util/openAddr.html#values.i%2COpenTable%5BK%2CV%5D">openAddr: iterator values[K, V](table: OpenTable[K, V]): V</a></li>
           </ul></dd>
+<dt><a name="wholeSpan" href="#wholeSpan"><span>wholeSpan:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="archetypeStore: proc wholeSpan[Comps: tuple](store: var ArchetypeStore[Comps]): ArchRowSpan" href="necsus/runtime/archetypeStore.html#wholeSpan%2CArchetypeStore%5BComps%3A%20tuple%5D">archetypeStore: proc wholeSpan[Comps: tuple](store: var ArchetypeStore[Comps]): ArchRowSpan</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="blockstore: proc wholeSpan[V](store: var BlockStore[V]): BlockSpan" href="necsus/util/blockstore.html#wholeSpan%2CBlockStore%5BV%5D">blockstore: proc wholeSpan[V](store: var BlockStore[V]): BlockSpan</a></li>
+          </ul></dd>
 <dt><a name="with" href="#with"><span>with:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="spawn: template with[C: tuple](spawn: FullSpawn[C]; values: varargs[typed]): EntityId" href="necsus/runtime/spawn.html#with.t%2CFullSpawn%5BC%3A%20tuple%5D%2Cvarargs%5Btyped%5D">spawn: template with[C: tuple](spawn: FullSpawn[C]; values: varargs[typed]): EntityId</a></li>
@@ -1872,7 +1924,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-07-29 13:44:02 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-08-01 14:22:22 UTC</small>
       </div>
     </div>
   </div>

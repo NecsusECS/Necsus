@@ -58,7 +58,9 @@
 <li><a class="reference" href="#ArchRow" title="ArchRow[Comps] = object
   entityId*: EntityId
   components*: Comps">ArchRow</a></li>
+<li><a class="reference" href="#ArchRowSpan" title="ArchRowSpan = object">ArchRowSpan</a></li>
 <li><a class="reference" href="#NewArchSlot" title="NewArchSlot[Comps] = distinct Entry[ArchRow[Comps]]">NewArchSlot</a></li>
+<li><a class="reference" href="#RawArchRow" title="RawArchRow = object">RawArchRow</a></li>
 
     </ul>
   </details>
@@ -81,6 +83,10 @@
     predicate: proc (row: var Comps): bool {.nimcall, gcsafe, raises: [].})</a></li>
 
 </ul>
+<ul class="simple nested-toc-section">components
+  <li><a class="reference" href="#components%2CRawArchRow" title="components(row: RawArchRow): pointer">components(row: RawArchRow): pointer</a></li>
+
+</ul>
 <ul class="simple nested-toc-section">del
   <li><a class="reference" href="#del%2CArchetypeStore%2Cuint" title="del(store: var ArchetypeStore; index: uint)">del(store: var ArchetypeStore; index: uint)</a></li>
 
@@ -90,7 +96,8 @@
 
 </ul>
 <ul class="simple nested-toc-section">entityId
-  <li><a class="reference" href="#entityId%2CNewArchSlot%5BComps%3A%20tuple%5D" title="entityId[Comps: tuple](entry: NewArchSlot[Comps]): EntityId">entityId[Comps: tuple](entry: NewArchSlot[Comps]): EntityId</a></li>
+  <li><a class="reference" href="#entityId%2CRawArchRow" title="entityId(row: RawArchRow): EntityId">entityId(row: RawArchRow): EntityId</a></li>
+<li><a class="reference" href="#entityId%2CNewArchSlot%5BComps%3A%20tuple%5D" title="entityId[Comps: tuple](entry: NewArchSlot[Comps]): EntityId">entityId[Comps: tuple](entry: NewArchSlot[Comps]): EntityId</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">getComps
@@ -99,6 +106,10 @@
 </ul>
 <ul class="simple nested-toc-section">index
   <li><a class="reference" href="#index%2CNewArchSlot%5BComps%3A%20tuple%5D" title="index[Comps: tuple](entry: NewArchSlot[Comps]): uint">index[Comps: tuple](entry: NewArchSlot[Comps]): uint</a></li>
+
+</ul>
+<ul class="simple nested-toc-section">isEmpty
+  <li><a class="reference" href="#isEmpty%2CArchRowSpan" title="isEmpty(span: ArchRowSpan): bool">isEmpty(span: ArchRowSpan): bool</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">moveEntity
@@ -139,6 +150,10 @@
   <li><a class="reference" href="#setComp%2CNewArchSlot%5BComps%3A%20tuple%5D%2CsinkComps" title="setComp[Comps: tuple](slot: NewArchSlot[Comps]; comps: sink Comps): EntityId">setComp[Comps: tuple](slot: NewArchSlot[Comps]; comps: sink Comps): EntityId</a></li>
 
 </ul>
+<ul class="simple nested-toc-section">wholeSpan
+  <li><a class="reference" href="#wholeSpan%2CArchetypeStore%5BComps%3A%20tuple%5D" title="wholeSpan[Comps: tuple](store: var ArchetypeStore[Comps]): ArchRowSpan">wholeSpan[Comps: tuple](store: var ArchetypeStore[Comps]): ArchRowSpan</a></li>
+
+</ul>
 
     </ul>
   </details>
@@ -149,6 +164,10 @@
     <ul class="simple simple-toc-section">
       <ul class="simple nested-toc-section">entityIds
   <li><a class="reference" href="#entityIds.i%2CArchetypeStore%5BComps%5D" title="entityIds[Comps](store: var ArchetypeStore[Comps]): EntityId">entityIds[Comps](store: var ArchetypeStore[Comps]): EntityId</a></li>
+
+</ul>
+<ul class="simple nested-toc-section">rows
+  <li><a class="reference" href="#rows.i%2CArchRowSpan" title="rows(span: ArchRowSpan): RawArchRow">rows(span: ArchRowSpan): RawArchRow</a></li>
 
 </ul>
 
@@ -191,11 +210,27 @@
     
   </dd>
 </div>
+<div id="ArchRowSpan">
+  <dt><pre><a href="archetypeStore.html#ArchRowSpan"><span class="Identifier">ArchRowSpan</span></a> <span class="Other">=</span> <span class="Keyword">object</span></pre></dt>
+  <dd>
+    
+    Every row an archetype had at the moment the span was taken, described without the shape of the components in it. That is what lets a single walk cover archetypes that do not share a shape
+    
+  </dd>
+</div>
 <div id="NewArchSlot">
   <dt><pre><a href="archetypeStore.html#NewArchSlot"><span class="Identifier">NewArchSlot</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">distinct</span> <a href="../util/blockstore.html#Entry"><span class="Identifier">Entry</span></a><span class="Other">[</span><a href="archetypeStore.html#ArchRow"><span class="Identifier">ArchRow</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">]</span></pre></dt>
   <dd>
     
     
+    
+  </dd>
+</div>
+<div id="RawArchRow">
+  <dt><pre><a href="archetypeStore.html#RawArchRow"><span class="Identifier">RawArchRow</span></a> <span class="Other">=</span> <span class="Keyword">object</span></pre></dt>
+  <dd>
+    
+    A single row, reached without knowing the shape of the components in it. Where each half of the row sits is worked out here, so a caller never has to know how a row is laid out
     
   </dd>
 </div>
@@ -246,6 +281,18 @@
 </div>
 
 </div>
+<div id="components-procs-all">
+  <div id="components,RawArchRow">
+  <dt><pre><span class="Keyword">proc</span> <a href="#components%2CRawArchRow"><span class="Identifier">components</span></a><span class="Other">(</span><span class="Identifier">row</span><span class="Other">:</span> <a href="archetypeStore.html#RawArchRow"><span class="Identifier">RawArchRow</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">pointer</span> {.<span class="Identifier">inline</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    The components in a row, untyped. Only code generated against this archetype knows the shape well enough to read them
+    
+  </dd>
+</div>
+
+</div>
 <div id="del-procs-all">
   <div id="del,ArchetypeStore,uint">
   <dt><pre><span class="Keyword">proc</span> <a href="#del%2CArchetypeStore%2Cuint"><span class="Identifier">del</span></a><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">;</span> <span class="Identifier">index</span><span class="Other">:</span> <span class="Identifier">uint</span><span class="Other">)</span></pre></dt>
@@ -269,7 +316,16 @@
 
 </div>
 <div id="entityId-procs-all">
-  <div id="entityId,NewArchSlot[Comps: tuple]">
+  <div id="entityId,RawArchRow">
+  <dt><pre><span class="Keyword">proc</span> <a href="#entityId%2CRawArchRow"><span class="Identifier">entityId</span></a><span class="Other">(</span><span class="Identifier">row</span><span class="Other">:</span> <a href="archetypeStore.html#RawArchRow"><span class="Identifier">RawArchRow</span></a><span class="Other">)</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a> {.<span class="Identifier">inline</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    The entity a row belongs to. Only read if a caller actually asks for it
+    
+  </dd>
+</div>
+<div id="entityId,NewArchSlot[Comps: tuple]">
   <dt><pre><span class="Keyword">proc</span> <a href="#entityId%2CNewArchSlot%5BComps%3A%20tuple%5D"><span class="Identifier">entityId</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">entry</span><span class="Other">:</span> <a href="archetypeStore.html#NewArchSlot"><span class="Identifier">NewArchSlot</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a></pre></dt>
   <dd>
     
@@ -296,6 +352,18 @@
   <dd>
     
     
+    
+  </dd>
+</div>
+
+</div>
+<div id="isEmpty-procs-all">
+  <div id="isEmpty,ArchRowSpan">
+  <dt><pre><span class="Keyword">proc</span> <a href="#isEmpty%2CArchRowSpan"><span class="Identifier">isEmpty</span></a><span class="Other">(</span><span class="Identifier">span</span><span class="Other">:</span> <a href="archetypeStore.html#ArchRowSpan"><span class="Identifier">ArchRowSpan</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span class="Identifier">inline</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+                                        <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Whether this span covers any rows at all
     
   </dd>
 </div>
@@ -375,6 +443,18 @@
 </div>
 
 </div>
+<div id="wholeSpan-procs-all">
+  <div id="wholeSpan,ArchetypeStore[Comps: tuple]">
+  <dt><pre><span class="Keyword">proc</span> <a href="#wholeSpan%2CArchetypeStore%5BComps%3A%20tuple%5D"><span class="Identifier">wholeSpan</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="archetypeStore.html#ArchRowSpan"><span class="Identifier">ArchRowSpan</span></a> {.
+    <span class="Identifier">inline</span>.}</pre></dt>
+  <dd>
+    
+    Returns every row in this archetype. Callers walk the rows themselves, which keeps the archetype out of the per row path entirely
+    
+  </dd>
+</div>
+
+</div>
 
   </dl>
 </div>
@@ -392,6 +472,17 @@
 </div>
 
 </div>
+<div id="rows-iterators-all">
+  <div id="rows.i,ArchRowSpan">
+  <dt><pre><span class="Keyword">iterator</span> <a href="#rows.i%2CArchRowSpan"><span class="Identifier">rows</span></a><span class="Other">(</span><span class="Identifier">span</span><span class="Other">:</span> <a href="archetypeStore.html#ArchRowSpan"><span class="Identifier">ArchRowSpan</span></a><span class="Other">)</span><span class="Other">:</span> <a href="archetypeStore.html#RawArchRow"><span class="Identifier">RawArchRow</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Walks the rows in a span, resolving where each half of a row sits as it goes
+    
+  </dd>
+</div>
+
+</div>
 
   </dl>
 </div>
@@ -402,7 +493,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-07-29 13:44:01 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-08-01 14:22:21 UTC</small>
       </div>
     </div>
   </div>

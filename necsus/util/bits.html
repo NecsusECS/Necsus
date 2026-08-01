@@ -90,10 +90,6 @@
 <li><a class="reference" href="#%3D%3D%2CBitsFilter%2CBitsFilter" title="`==`(a, b: BitsFilter): bool">`==`(a, b: BitsFilter): bool</a></li>
 
 </ul>
-<ul class="simple nested-toc-section">>
-  <li><a class="reference" href="#%3E%2CBits%2CBits" title="`&gt;`(a, b: Bits): bool">`&gt;`(a, b: Bits): bool</a></li>
-
-</ul>
 <ul class="simple nested-toc-section">acceptsAll
   <li><a class="reference" href="#acceptsAll%2CBitsFilter" title="acceptsAll(filter: BitsFilter): bool">acceptsAll(filter: BitsFilter): bool</a></li>
 
@@ -259,7 +255,7 @@
   <dt><pre><span class="Keyword">proc</span> <a href="#%3C%2CBits%2CBits"><span class="Identifier">`&lt;`</span></a><span class="Other">(</span><span class="Identifier">a</span><span class="Other">,</span> <span class="Identifier">b</span><span class="Other">:</span> <a href="bits.html#Bits"><span class="Identifier">Bits</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
-    Returns whether a is a strict subset of b
+    Returns whether a is a strict subset of b. Nim derives <tt class="docutils literal"><span class="pre"><span class="Operator">&gt;</span></span></tt> from this automatically, which gives back a strict superset check
     
   </dd>
 </div>
@@ -290,17 +286,6 @@
   <dd>
     
     
-    
-  </dd>
-</div>
-
-</div>
-<div id="&gt;-procs-all">
-  <div id=">,Bits,Bits">
-  <dt><pre><span class="Keyword">proc</span> <a href="#%3E%2CBits%2CBits"><span class="Identifier">`&gt;`</span></a><span class="Other">(</span><span class="Identifier">a</span><span class="Other">,</span> <span class="Identifier">b</span><span class="Other">:</span> <a href="bits.html#Bits"><span class="Identifier">Bits</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
-  <dd>
-    
-    Returns whether a contains bits not set in b
     
   </dd>
 </div>
@@ -532,7 +517,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-07-29 13:44:01 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-08-01 14:22:21 UTC</small>
       </div>
     </div>
   </div>

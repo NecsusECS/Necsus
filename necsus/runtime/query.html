@@ -58,10 +58,13 @@
 <li><a class="reference" href="#FullQuery" title="FullQuery[Comps] = distinct RawQuery[Comps]">FullQuery</a></li>
 <li><a class="reference" href="#Not" title="Not[Comps] = distinct int8">Not</a></li>
 <li><a class="reference" href="#Query" title="Query[Comps] = distinct RawQuery[Comps]">Query</a></li>
+<li><a class="reference" href="#QueryConvert" title="QueryConvert[Comps] = proc (input: pointer; adding: pointer; output: var Comps): bool {.
+    gcsafe, raises: [], nimcall.}">QueryConvert</a></li>
+<li><a class="reference" href="#QueryGetSpan" title="QueryGetSpan[Comps] = proc (appStatePtr: pointer; state: var uint;
+                            span: var QuerySpan[Comps]): bool {.gcsafe,
+    raises: [], nimcall.}">QueryGetSpan</a></li>
 <li><a class="reference" href="#QueryItem" title="QueryItem[Comps] = tuple[entityId: EntityId, components: Comps]">QueryItem</a></li>
-<li><a class="reference" href="#QueryNext" title="QueryNext[Comps] = proc (appStatePtr: pointer; state: var uint;
-                         iter: var BlockIter; eid: var EntityId; slot: var Comps): bool {.
-    gcsafe, raises: [], nimcall.}">QueryNext</a></li>
+<li><a class="reference" href="#QuerySpan" title="QuerySpan[Comps] = object">QuerySpan</a></li>
 <li><a class="reference" href="#RawQuery" title="RawQuery[Comps] = ref object">RawQuery</a></li>
 
     </ul>
@@ -84,9 +87,15 @@
 
 </ul>
 <ul class="simple nested-toc-section">newQuery
-  <li><a class="reference" href="#newQuery%2Cpointer%2CQueryGetLen%2CQueryNext%5BComps%3A%20tuple%5D" title="newQuery[Comps: tuple](appState: pointer; getLen: QueryGetLen;
-                       getNext: QueryNext[Comps]): RawQuery[Comps]">newQuery[Comps: tuple](appState: pointer; getLen: QueryGetLen;
-                       getNext: QueryNext[Comps]): RawQuery[Comps]</a></li>
+  <li><a class="reference" href="#newQuery%2Cpointer%2CQueryGetLen%2CQueryGetSpan%5BComps%3A%20tuple%5D" title="newQuery[Comps: tuple](appState: pointer; getLen: QueryGetLen;
+                       getSpan: QueryGetSpan[Comps]): RawQuery[Comps]">newQuery[Comps: tuple](appState: pointer; getLen: QueryGetLen;
+                       getSpan: QueryGetSpan[Comps]): RawQuery[Comps]</a></li>
+
+</ul>
+<ul class="simple nested-toc-section">newQuerySpan
+  <li><a class="reference" href="#newQuerySpan%2CArchRowSpan%2CQueryConvert%5BComps%3A%20tuple%5D" title="newQuerySpan[Comps: tuple](rows: ArchRowSpan; convert: QueryConvert[Comps]): QuerySpan[
+    Comps]">newQuerySpan[Comps: tuple](rows: ArchRowSpan; convert: QueryConvert[Comps]): QuerySpan[
+    Comps]</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">single
@@ -109,6 +118,10 @@
   <li><a class="reference" href="#pairs.i%2CFullQuery%5BComps%3A%20tuple%5D" title="pairs[Comps: tuple](query: FullQuery[Comps]): QueryItem[Comps]">pairs[Comps: tuple](query: FullQuery[Comps]): QueryItem[Comps]</a></li>
 
 </ul>
+<ul class="simple nested-toc-section">rows
+  <li><a class="reference" href="#rows.i%2CQuerySpan%5BComps%3A%20tuple%5D%2CComps" title="rows[Comps: tuple](span: QuerySpan[Comps]; slot: var Comps): RawArchRow">rows[Comps: tuple](span: QuerySpan[Comps]; slot: var Comps): RawArchRow</a></li>
+
+</ul>
 
     </ul>
   </details>
@@ -125,7 +138,7 @@
     <div class="section" id="6">
   <h1><a class="toc-backref" href="#6">Imports</a></h1>
   <dl class="item">
-    <a class="reference external" href="entityId.html">entityId</a>, <a class="reference external" href="../util/blockstore.html">../util/blockstore</a>
+    <a class="reference external" href="entityId.html">entityId</a>, <a class="reference external" href="archetypeStore.html">archetypeStore</a>
   </dl>
 </div>
 <div class="section" id="7">
@@ -163,6 +176,25 @@
     
   </dd>
 </div>
+<div id="QueryConvert">
+  <dt><pre><a href="query.html#QueryConvert"><span class="Identifier">QueryConvert</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">input</span><span class="Other">:</span> <span class="Identifier">pointer</span><span class="Other">;</span> <span class="Identifier">adding</span><span class="Other">:</span> <span class="Identifier">pointer</span><span class="Other">;</span> <span class="Identifier">output</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">Comps</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> </span><span class="Identifier">nimcall</span>.}</pre></dt>
+  <dd>
+    
+    Copies the components of a single row into the shape a query asked for. Returns false for rows that the query turns out not to want after all
+    
+  </dd>
+</div>
+<div id="QueryGetSpan">
+  <dt><pre><a href="query.html#QueryGetSpan"><span class="Identifier">QueryGetSpan</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">appStatePtr</span><span class="Other">:</span> <span class="Identifier">pointer</span><span class="Other">;</span> <span class="Identifier">state</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">uint</span><span class="Other">;</span>
+                            <span class="Identifier">span</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="query.html#QuerySpan"><span class="Identifier">QuerySpan</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span>
+    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> </span><span class="Identifier">nimcall</span>.}</pre></dt>
+  <dd>
+    
+    
+    
+  </dd>
+</div>
 <div id="QueryItem">
   <dt><pre><a href="query.html#QueryItem"><span class="Identifier">QueryItem</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">tuple</span><span class="Other">[</span><span class="Identifier">entityId</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">,</span> <span class="Identifier">components</span><span class="Other">:</span> <span class="Identifier">Comps</span><span class="Other">]</span></pre></dt>
   <dd>
@@ -171,13 +203,11 @@
     
   </dd>
 </div>
-<div id="QueryNext">
-  <dt><pre><a href="query.html#QueryNext"><span class="Identifier">QueryNext</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">appStatePtr</span><span class="Other">:</span> <span class="Identifier">pointer</span><span class="Other">;</span> <span class="Identifier">state</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">uint</span><span class="Other">;</span>
-                         <span class="Identifier">iter</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="../util/blockstore.html#BlockIter"><span class="Identifier">BlockIter</span></a><span class="Other">;</span> <span class="Identifier">eid</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">;</span> <span class="Identifier">slot</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">Comps</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.
-    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> </span><span class="Identifier">nimcall</span>.}</pre></dt>
+<div id="QuerySpan">
+  <dt><pre><a href="query.html#QuerySpan"><span class="Identifier">QuerySpan</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">object</span></pre></dt>
   <dd>
     
-    
+    A run of consecutive rows belonging to one archetype. Queries hand these out rather than individual rows so that the walk over the rows stays in the caller, where the cursor lives in registers instead of behind a call
     
   </dd>
 </div>
@@ -229,12 +259,24 @@
 
 </div>
 <div id="newQuery-procs-all">
-  <div id="newQuery,pointer,QueryGetLen,QueryNext[Comps: tuple]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#newQuery%2Cpointer%2CQueryGetLen%2CQueryNext%5BComps%3A%20tuple%5D"><span class="Identifier">newQuery</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">appState</span><span class="Other">:</span> <span class="Identifier">pointer</span><span class="Other">;</span> <span class="Identifier">getLen</span><span class="Other">:</span> <span class="Identifier">QueryGetLen</span><span class="Other">;</span>
-                            <span class="Identifier">getNext</span><span class="Other">:</span> <a href="query.html#QueryNext"><span class="Identifier">QueryNext</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="query.html#RawQuery"><span class="Identifier">RawQuery</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span></pre></dt>
+  <div id="newQuery,pointer,QueryGetLen,QueryGetSpan[Comps: tuple]">
+  <dt><pre><span class="Keyword">proc</span> <a href="#newQuery%2Cpointer%2CQueryGetLen%2CQueryGetSpan%5BComps%3A%20tuple%5D"><span class="Identifier">newQuery</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">appState</span><span class="Other">:</span> <span class="Identifier">pointer</span><span class="Other">;</span> <span class="Identifier">getLen</span><span class="Other">:</span> <span class="Identifier">QueryGetLen</span><span class="Other">;</span>
+                            <span class="Identifier">getSpan</span><span class="Other">:</span> <a href="query.html#QueryGetSpan"><span class="Identifier">QueryGetSpan</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="query.html#RawQuery"><span class="Identifier">RawQuery</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span></pre></dt>
   <dd>
     
     
+    
+  </dd>
+</div>
+
+</div>
+<div id="newQuerySpan-procs-all">
+  <div id="newQuerySpan,ArchRowSpan,QueryConvert[Comps: tuple]">
+  <dt><pre><span class="Keyword">proc</span> <a href="#newQuerySpan%2CArchRowSpan%2CQueryConvert%5BComps%3A%20tuple%5D"><span class="Identifier">newQuerySpan</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">rows</span><span class="Other">:</span> <a href="archetypeStore.html#ArchRowSpan"><span class="Identifier">ArchRowSpan</span></a><span class="Other">;</span> <span class="Identifier">convert</span><span class="Other">:</span> <a href="query.html#QueryConvert"><span class="Identifier">QueryConvert</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="query.html#QuerySpan"><span class="Identifier">QuerySpan</span></a><span class="Other">[</span>
+    <span class="Identifier">Comps</span><span class="Other">]</span> {.<span class="Identifier">inline</span>.}</pre></dt>
+  <dd>
+    
+    Describes a run of rows to be walked by a query
     
   </dd>
 </div>
@@ -279,6 +321,17 @@
 </div>
 
 </div>
+<div id="rows-iterators-all">
+  <div id="rows.i,QuerySpan[Comps: tuple],Comps">
+  <dt><pre><span class="Keyword">iterator</span> <a href="#rows.i%2CQuerySpan%5BComps%3A%20tuple%5D%2CComps"><span class="Identifier">rows</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">span</span><span class="Other">:</span> <a href="query.html#QuerySpan"><span class="Identifier">QuerySpan</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">slot</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">Comps</span><span class="Other">)</span><span class="Other">:</span> <a href="archetypeStore.html#RawArchRow"><span class="Identifier">RawArchRow</span></a></pre></dt>
+  <dd>
+    
+    Walks the rows of a span that the query actually wants, filling <tt class="docutils literal"><span class="pre"><span class="Identifier">slot</span></span></tt> with the components of each
+    
+  </dd>
+</div>
+
+</div>
 
   </dl>
 </div>
@@ -289,7 +342,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-07-29 13:44:01 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-08-01 14:22:21 UTC</small>
       </div>
     </div>
   </div>
