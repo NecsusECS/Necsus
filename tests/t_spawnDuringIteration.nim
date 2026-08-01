@@ -7,7 +7,7 @@ proc setup(spawn: Spawn[(Thingy,)]) =
   for i in 1 .. 3:
     spawn.with(Thingy(number: i))
 
-proc grow(all: Query[(Thingy,)], spawn: Spawn[(Thingy,)]) =
+proc spawnMore(all: Query[(Thingy,)], spawn: Spawn[(Thingy,)]) =
   var visited: seq[int]
   for comp in all:
     visited.add(comp[0].number)
@@ -21,7 +21,7 @@ proc assertions(all: Query[(Thingy,)]) =
 proc runner(tick: proc(): void) =
   tick()
 
-proc myApp() {.necsus(runner, [~setup, ~grow, ~assertions], newNecsusConf()).}
+proc myApp() {.necsus(runner, [~setup, ~spawnMore, ~assertions], newNecsusConf()).}
 
 test "Entities spawned during iteration are skipped":
   myApp()
