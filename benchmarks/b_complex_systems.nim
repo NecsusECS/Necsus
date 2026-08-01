@@ -55,6 +55,11 @@ const
 
 var frameBuffer: array[frameWidth * frameHeight, char]
 
+proc randU32(rng: var Rand): uint32 {.inline.} =
+  ## `rand(var Rand, typedesc)` only exists in Nim 2.0 and later, so pull the low bits off
+  ## the raw stream, which is exactly what that overload does for a `uint32`
+  uint32(rng.next and uint64(uint32.high))
+
 proc draw(x, y: int, character: char) {.inline.} =
   if x in 0 ..< frameWidth and y in 0 ..< frameHeight:
     frameBuffer[x + y * frameWidth] = character
@@ -77,7 +82,7 @@ proc setup(
   # million times. `initRand` is expensive -- it burns 128 rounds to jump the stream ahead.
   let baseData = block:
     var data = Data(rng: initRand(DataSeed))
-    data.numgy = data.rng.rand(uint32)
+    data.numgy = data.rng.randU32()
     data
 
   # A single stream for the setup rolls. The original seeds one PRNG per entity, but a
@@ -132,7 +137,7 @@ proc data(dt: TimeDelta, entities: Query[tuple[data: ptr Data]]) =
     comp.data.thingy = (comp.data.thingy + 1) mod 1_000_000
     comp.data.dingy += 0.0001 * delta
     comp.data.mingy = not comp.data.mingy
-    comp.data.numgy = comp.data.rng.rand(uint32)
+    comp.data.numgy = comp.data.rng.randU32()
 
 proc moreComplex(
     entities: Query[tuple[pos: Position, vel: ptr Velocity, data: ptr Data]]

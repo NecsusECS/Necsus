@@ -15,7 +15,7 @@ type
     ## A run of consecutive rows belonging to one archetype. Queries hand these out rather
     ## than individual rows so that the walk over the rows stays in the caller, where the
     ## cursor lives in registers instead of behind a call
-    rows: ArchRowSpan
+    archSpan: ArchRowSpan
     convert: QueryConvert[Comps]
 
   QueryGetSpan*[Comps: tuple] = proc(
@@ -57,16 +57,16 @@ proc newQuery*[Comps: tuple](
   RawQuery[Comps](appState: appState, getLen: getLen, getSpan: getSpan)
 
 proc newQuerySpan*[Comps: tuple](
-    rows: ArchRowSpan, convert: QueryConvert[Comps]
+    archSpan: ArchRowSpan, convert: QueryConvert[Comps]
 ): QuerySpan[Comps] {.inline.} =
   ## Describes a run of rows to be walked by a query
-  QuerySpan[Comps](rows: rows, convert: convert)
+  QuerySpan[Comps](archSpan: archSpan, convert: convert)
 
 iterator rows*[Comps: tuple](span: QuerySpan[Comps], slot: var Comps): RawArchRow =
   ## Walks the rows of a span that the query actually wants, filling `slot` with the
   ## components of each
   let convert = span.convert
-  for row in span.rows.rows:
+  for row in span.archSpan.rows:
     if likely(convert(row.components, nil, slot)):
       yield row
 

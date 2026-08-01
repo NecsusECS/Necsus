@@ -17,7 +17,7 @@ type
     ## Every row an archetype had at the moment the span was taken, described without the
     ## shape of the components in it. That is what lets a single walk cover archetypes that
     ## do not share a shape
-    rows: BlockSpan
+    blockSpan: BlockSpan
     compsOffset: uint
 
   RawArchRow* = object
@@ -26,6 +26,11 @@ type
     ## laid out
     eid: ptr EntityId
     comps: pointer
+
+static:
+  # Rows are walked from their front, so nothing may sit ahead of the entity id. The field
+  # order is the same for every instantiation, so a single shape is enough to check it
+  doAssert(offsetOf(ArchRow[tuple[dummy: int]], entityId) == 0)
 
 proc `=copy`*[Comps: tuple](
   target: var ArchRow[Comps], source: ArchRow[Comps]
@@ -60,24 +65,21 @@ proc wholeSpan*[Comps: tuple](
 ): ArchRowSpan {.inline.} =
   ## Returns every row in this archetype. Callers walk the rows themselves, which keeps the
   ## archetype out of the per row path entirely
-  static:
-    # Rows are walked from their front, so nothing may sit ahead of the entity id
-    doAssert(offsetOf(ArchRow[Comps], entityId) == 0)
   ArchRowSpan(
-    rows: store.compStore.wholeSpan(),
+    blockSpan: store.compStore.wholeSpan(),
     compsOffset: uint(offsetOf(ArchRow[Comps], components)),
   )
 
 proc isEmpty*(span: ArchRowSpan): bool {.inline.} =
   ## Whether this span covers any rows at all
-  span.rows.isEmpty
+  span.blockSpan.isEmpty
 
 iterator rows*(span: ArchRowSpan): RawArchRow =
   ## Walks the rows in a span, resolving where each half of a row sits as it goes
   let compsOffset = span.compsOffset
   # A row starts with its entity id, so that is what it gets walked as. The components sit
   # further along, at an offset fixed by the shape of the row
-  for row in span.rows.addresses(EntityId):
+  for row in span.blockSpan.addresses(EntityId):
     yield RawArchRow(eid: row, comps: cast[pointer](cast[uint](row) + compsOffset))
 
 proc entityId*(row: RawArchRow): EntityId {.inline.} =
