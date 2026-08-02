@@ -1,4 +1,4 @@
-import std/[tables, macros, options]
+import std/[tables, macros]
 import
   tupleDirective, archetype, componentDef, tools, systemGen, archetypeBuilder, common,
   directiveArg
@@ -30,20 +30,22 @@ proc buildLen(query: TupleDirective, archetype: Archetype[ComponentDef]): NimNod
     if not arg.isAccessory or arg.component notin archetype:
       continue
 
-    let check =
-      case arg.kind
-      of Include:
-        bindSym("isSome")
-      of Exclude:
-        bindSym("isNone")
-      of Optional:
-        continue
+    case arg.kind
+    of Include, Exclude:
+      discard
+    of Optional:
+      continue
 
+    # Only the presence column gets walked. Counting never has to look at a value, so it
+    # streams a byte a row rather than the component itself
     let readColumn =
-      nnkBracketExpr.newTree(bindSym("getColumn"), arg.component.columnType)
-    let columnId = arg.component.columnId
-    let present = quote:
-      `check`(`readColumn`(`appStateIdent`.`archetypeIdent`, `columnId`)[`index`])
+      nnkBracketExpr.newTree(bindSym("getColumn"), bindSym("AccessoryFlag"))
+    let columnId = arg.component.presenceColumnId
+    var present = quote:
+      `readColumn`(`appStateIdent`.`archetypeIdent`, `columnId`)[`index`]
+
+    if arg.kind == Exclude:
+      present = nnkPrefix.newTree(ident("not"), present)
 
     condition =
       if condition.kind == nnkEmpty:

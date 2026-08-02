@@ -5,25 +5,40 @@ type ComponentDef* = ref object ## An individual component symbol within the ECS
   node*: NimNode
   name*: string
   uniqueId*: uint16
+  presenceId*: uint16
+    ## The column recording whether each entity in an archetype actually has this
+    ## accessory. Only meaningful when `isAccessory`
   isAccessory*: bool
 
 const ids = CacheCounter("NecsusComponentIds")
 
 when NimMajor >= 2:
   const lookup = CacheTable("NecsusComponentIdCache")
+  const presenceLookup = CacheTable("NecsusAccessoryPresenceIds")
 else:
   import std/tables
   var lookup {.compileTime.} = initTable[string, NimNode]()
+  var presenceLookup {.compileTime.} = initTable[string, NimNode]()
 
-proc getArchetypeValueId(value: NimNode): uint16 =
-  var sig: string
-  sig.addSignature(value)
+proc nextId(): NimNode =
+  ## Hands out the next global column id
+  result = ids.value.newLit
+  ids.inc
 
+proc getArchetypeValueId(sig: string): uint16 =
   if sig notin lookup:
-    lookup[sig] = ids.value.newLit
-    ids.inc
-
+    lookup[sig] = nextId()
   return lookup[sig].intVal.uint16
+
+proc getPresenceId(sig: string): uint16 =
+  ## The id of the column that records which entities have an accessory.
+  ##
+  ## This comes out of the same pool the components themselves are numbered from, which is
+  ## what keeps a presence column an ordinary column: it needs no special case in the store
+  ## and it is laid out and reached exactly like the value it stands for
+  if sig notin presenceLookup:
+    presenceLookup[sig] = nextId()
+  return presenceLookup[sig].intVal.uint16
 
 proc componentIdCount*(): int =
   ## The number of component ids handed out so far.
@@ -31,12 +46,21 @@ proc componentIdCount*(): int =
 
 proc newComponentDef*(node: NimNode): ComponentDef =
   ## Instantiate a ComponentDef
-  let id = getArchetypeValueId(node)
+  var sig: string
+  sig.addSignature(node)
+
+  let id = getArchetypeValueId(sig)
+  let isAccessory = node.hasPragma(bindSym("accessory"))
   ComponentDef(
     node: node,
     name: "c" & $id,
     uniqueId: id,
-    isAccessory: node.hasPragma(bindSym("accessory")),
+    isAccessory: isAccessory,
+    presenceId:
+      if isAccessory:
+        getPresenceId(sig)
+      else:
+        0,
   )
 
 proc readableName*(comp: ComponentDef): string =
@@ -66,18 +90,15 @@ proc ident*(def: ComponentDef): NimNode =
 proc hash*(def: ComponentDef): Hash =
   def.uniqueId.hash
 
-proc columnType*(def: ComponentDef): NimNode =
-  ## The type stored in this component's column. An accessory is optional per entity, so
-  ## its column holds the option rather than the component
-  if def.isAccessory:
-    nnkBracketExpr.newTree(bindSym("Option"), def.ident)
-  else:
-    def.ident
-
 proc columnId*(def: ComponentDef): NimNode =
   ## The literal this component is indexed by at runtime. Ids are global, so the same
   ## literal reaches this component's column in every archetype that has one
   newLit(def.uniqueId)
+
+proc presenceColumnId*(def: ComponentDef): NimNode =
+  ## The literal naming the column that says which entities have this accessory
+  assert(def.isAccessory, "Only an accessory has a presence column")
+  newLit(def.presenceId)
 
 proc addSignature*(onto: var string, comp: ComponentDef) =
   ## Generate a unique ID for a component

@@ -96,9 +96,19 @@ proc createArchetypeState(genInfo: CodeGenInfo): NimNode =
 
     var columns = nnkBracket.newTree()
     for component in archetype.values:
-      let typ = component.columnType
+      let typ = component.ident
       let id = component.columnId
       columns.add(newCall(nnkBracketExpr.newTree(bindSym("columnDef"), typ), id))
+
+      # An accessory needs somewhere to record which of these entities actually have one,
+      # which is an ordinary column of its own rather than anything the store knows about
+      if component.isAccessory:
+        columns.add(
+          newCall(
+            nnkBracketExpr.newTree(bindSym("columnDef"), bindSym("AccessoryFlag")),
+            component.presenceColumnId,
+          )
+        )
 
     result.add quote do:
       `appStateIdent`.`ident` =
@@ -212,11 +222,15 @@ proc createAppStateDestructor*(genInfo: CodeGenInfo): NimNode =
 
     # Columns hold raw memory, so nothing is going to run a destructor over the values in
     # them. That has to happen before the archetype hands its block back, because
-    # afterwards there is nothing left to say what was in it
+    # afterwards there is nothing left to say what was in it.
+    #
+    # A row missing an accessory gets destroyed along with the rest. Its slot reads as
+    # zero, which every component has to survive being destroyed in anyway -- storing one
+    # sinks over whatever the row held before, and a freshly reserved row holds zeroes
     for archetype in genInfo.archetypes:
       let ident = archetype.ident
       for component in archetype.values:
-        let typ = component.columnType
+        let typ = component.ident
         let id = component.columnId
         destroys.add(
           newCall(

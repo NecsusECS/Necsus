@@ -10,6 +10,14 @@ type
     ## A column of some component. Nothing here knows which -- only the site that
     ## resolved the column does, and it reads the column as the type it knows about
 
+  AccessoryFlag* = bool
+    ## What the presence column of an accessory holds, one per row.
+    ##
+    ## An accessory belongs to an entity rather than to an archetype, so an archetype that
+    ## has one holds rows both with and without it. The value lives in an ordinary column
+    ## and whether the row has it at all lives in a column of its own, which means a walk
+    ## that only cares about presence never has to touch the values
+
   ColumnDef* = object
     ## Describes one column an archetype needs room for. The sizes come from `sizeof` and
     ## `alignof` at the site that knows the component type, so nothing has to be carried
@@ -171,6 +179,14 @@ proc dropColumn*[T](store: var ArchetypeStore, component: ComponentId, index: ui
   let column = getColumn[T](store, component)
   `=destroy`(column[index])
   relocateLast(column, index, store.used - 1)
+
+proc clearColumn*[T](store: var ArchetypeStore, component: ComponentId, index: uint32) =
+  ## Destroys one value in a column without disturbing any other row, leaving the slot
+  ## reading as zero. This is how an accessory is taken off an entity that stays where it
+  ## is: the row is still live, so nothing gets relocated into it
+  let column = getColumn[T](store, component)
+  `=destroy`(column[index])
+  wasMoved(column[index])
 
 proc takeColumn*[T](
     store: var ArchetypeStore, component: ComponentId, index: uint32

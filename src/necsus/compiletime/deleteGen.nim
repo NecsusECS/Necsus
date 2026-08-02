@@ -36,12 +36,24 @@ proc buildArchetypeDelete(archetype: Archetype[ComponentDef]): NimNode =
   for component in archetype.values:
     result.add(
       newCall(
-        nnkBracketExpr.newTree(dropColumn, component.columnType),
+        nnkBracketExpr.newTree(dropColumn, component.ident),
         newDotExpr(appStateIdent, archIdent),
         component.columnId,
         index,
       )
     )
+
+    # A presence column is relocated alongside the value it stands for, so that the row
+    # moved down to fill the hole keeps saying what it said before it moved
+    if component.isAccessory:
+      result.add(
+        newCall(
+          nnkBracketExpr.newTree(dropColumn, bindSym("AccessoryFlag")),
+          newDotExpr(appStateIdent, archIdent),
+          component.presenceColumnId,
+          index,
+        )
+      )
 
   # The last row gets moved down to fill the hole, which leaves whichever entity was
   # sitting in it pointing at the wrong index. Nothing moves when the deleted row was

@@ -47,10 +47,27 @@ proc buildArchetypeLookup(
   for comp in archetype:
     let label = newLit("; " & comp.readableName & " = ")
     let columnId = comp.columnId
-    let readColumn = nnkBracketExpr.newTree(getColumn, comp.columnType)
+    let readColumn = nnkBracketExpr.newTree(getColumn, comp.ident)
+
+    # An accessory belongs to the entity rather than to the archetype, so having a column
+    # for one says nothing about whether this entity is one of the ones that has it
+    let value =
+      if comp.isAccessory:
+        let readPresence = nnkBracketExpr.newTree(getColumn, bindSym("AccessoryFlag"))
+        let presenceId = comp.presenceColumnId
+        quote:
+          if `readPresence`(`appStateIdent`.`archetypeIdent`, `presenceId`)[`index`]:
+            stringify(
+              `readColumn`(`appStateIdent`.`archetypeIdent`, `columnId`)[`index`]
+            )
+          else:
+            "none"
+      else:
+        quote:
+          stringify(`readColumn`(`appStateIdent`.`archetypeIdent`, `columnId`)[`index`])
+
     str = quote:
-      `str` & `label` &
-        stringify(`readColumn`(`appStateIdent`.`archetypeIdent`, `columnId`)[`index`])
+      `str` & `label` & `value`
 
   return quote:
     let `index` = uint32(`entityIndex`.archetypeIndex)

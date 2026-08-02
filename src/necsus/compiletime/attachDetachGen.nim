@@ -11,25 +11,69 @@ let entityId {.compileTime.} = ident("entityId")
 
 proc attachedValue(component: ComponentDef, index: int): NimNode =
   ## Reads one component out of the tuple handed to an attach.
-  result = nnkBracketExpr.newTree(newComps, newLit(index))
-  if component.isAccessory:
-    result = newCall(bindSym("some"), result)
-
-proc absentValue(component: ComponentDef): NimNode =
-  ## The value standing in for a component an archetype has a column for but this entity
-  ## does not have. Only an accessory can be in that position
-  newCall(nnkBracketExpr.newTree(bindSym("none"), component.node))
+  nnkBracketExpr.newTree(newComps, newLit(index))
 
 proc storeComponent(
     store, index: NimNode, component: ComponentDef, value: NimNode
 ): NimNode =
   ## Emits the write that puts a single component into its column
   newCall(
-    nnkBracketExpr.newTree(bindSym("setComponent"), component.columnType),
+    nnkBracketExpr.newTree(bindSym("setComponent"), component.ident),
     store,
     component.columnId,
     index,
     value,
+  )
+
+proc setPresence(
+    store, index: NimNode, component: ComponentDef, present: bool
+): NimNode =
+  ## Emits the write that records whether an entity has an accessory
+  newCall(
+    nnkBracketExpr.newTree(bindSym("setComponent"), bindSym("AccessoryFlag")),
+    store,
+    component.presenceColumnId,
+    index,
+    newLit(present),
+  )
+
+proc movePresence(
+    fromStore, toStore, fromIndex, toIndex: NimNode, component: ComponentDef
+): NimNode =
+  ## Carries an accessory's presence flag across with the entity it belongs to
+  newCall(
+    nnkBracketExpr.newTree(bindSym("setComponent"), bindSym("AccessoryFlag")),
+    toStore,
+    component.presenceColumnId,
+    toIndex,
+    newCall(
+      nnkBracketExpr.newTree(bindSym("takeColumn"), bindSym("AccessoryFlag")),
+      fromStore,
+      component.presenceColumnId,
+      fromIndex,
+    ),
+  )
+
+proc dropPresence(store, index: NimNode, component: ComponentDef): NimNode =
+  ## Relocates an accessory's presence column once its entity has left the archetype
+  newCall(
+    nnkBracketExpr.newTree(bindSym("dropColumn"), bindSym("AccessoryFlag")),
+    store,
+    component.presenceColumnId,
+    index,
+  )
+
+proc clearComponent(store, index: NimNode, component: ComponentDef): NimNode =
+  ## Takes an accessory off an entity that is staying where it is: the value is destroyed
+  ## in place and the flag saying it was there is cleared
+  newStmtList(
+    newCall(
+      nnkBracketExpr.newTree(bindSym("clearColumn"), component.ident),
+      store,
+      component.columnId,
+      index,
+    ),
+    setPresence(store, index, component, false),
   )
 
 proc createArchUpdate(
@@ -68,10 +112,14 @@ proc createArchUpdate(
 
   for i, component in attachComps:
     result.add(storeComponent(store, index, component, component.attachedValue(i)))
+    if component.isAccessory:
+      result.add(setPresence(store, index, component, true))
 
+  # Detaching without moving archetype is something only an accessory does, since anything
+  # else leaving takes the entity to a different shape
   for component in both(detachComps, optDetachComps):
     if component in archetype:
-      result.add(storeComponent(store, index, component, component.absentValue))
+      result.add(clearComponent(store, index, component))
 
 proc createArchMove(
     details: GenerateContext,
@@ -113,7 +161,7 @@ proc createArchMove(
 
   for component in fromArch:
     let takeFrom = newCall(
-      nnkBracketExpr.newTree(takeColumn, component.columnType),
+      nnkBracketExpr.newTree(takeColumn, component.ident),
       fromStore,
       component.columnId,
       fromIndex,
@@ -123,15 +171,22 @@ proc createArchMove(
     # source is not worth carrying across even when the destination has a column for it
     if component in toArch and component notin attachComps:
       result.add(storeComponent(toStore, toIndex, component, takeFrom))
+      if component.isAccessory:
+        result.add(movePresence(fromStore, toStore, fromIndex, toIndex, component))
     else:
       result.add(
         newCall(
-          nnkBracketExpr.newTree(dropColumn, component.columnType),
+          nnkBracketExpr.newTree(dropColumn, component.ident),
           fromStore,
           component.columnId,
           fromIndex,
         )
       )
+
+      # Every column of the row being left behind has to be relocated, whether or not the
+      # destination wanted it, or the rows the last entity left behind stop lining up
+      if component.isAccessory:
+        result.add(dropPresence(fromStore, fromIndex, component))
 
   for component in toArch:
     let index = attachComps.find(component)
@@ -139,9 +194,12 @@ proc createArchMove(
       result.add(
         storeComponent(toStore, toIndex, component, component.attachedValue(index))
       )
+      if component.isAccessory:
+        result.add(setPresence(toStore, toIndex, component, true))
     elif component notin fromArch:
-      # Nothing on either side has a value for this, which only an accessory can manage
-      result.add(storeComponent(toStore, toIndex, component, component.absentValue))
+      # Nothing on either side has a value for this, which only an accessory can manage.
+      # The reserved row already reads as zero, so only the flag needs writing
+      result.add(setPresence(toStore, toIndex, component, false))
 
   # Taking the row out of the source moves its last row down into the hole, which leaves
   # whichever entity was sitting there pointing at the wrong index. Nothing moves when the

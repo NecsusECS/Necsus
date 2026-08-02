@@ -50,26 +50,35 @@ proc storeComponents(
 ): NimNode =
   ## Generates the writes that put a spawned tuple into an archetype.
   result = newStmtList()
+  let setComponent = bindSym("setComponent")
+
   for component in archetype.values:
-    let typ = component.columnType
-    let id = component.columnId
-    let node = component.node
-    let value =
-      if component notin dir:
-        newCall(nnkBracketExpr.newTree(bindSym("none"), node))
-      elif component.isAccessory:
+    let present = component in dir
+
+    # Only an accessory can be missing from the tuple while the archetype still has a
+    # column for it. Nothing needs writing in that case -- a reserved row reads as zero --
+    # but the flag saying so does
+    if present:
+      result.add(
         newCall(
-          bindSym("some"),
+          nnkBracketExpr.newTree(setComponent, component.ident),
+          store,
+          component.columnId,
+          index,
           nnkBracketExpr.newTree(readFrom, dir.indexOf(component).newLit),
         )
-      else:
-        nnkBracketExpr.newTree(readFrom, dir.indexOf(component).newLit)
-
-    result.add(
-      newCall(
-        nnkBracketExpr.newTree(bindSym("setComponent"), typ), store, id, index, value
       )
-    )
+
+    if component.isAccessory:
+      result.add(
+        newCall(
+          nnkBracketExpr.newTree(setComponent, bindSym("AccessoryFlag")),
+          store,
+          component.presenceColumnId,
+          index,
+          newLit(present),
+        )
+      )
 
 proc buildSpawnProc(details: GenerateContext, dir: TupleDirective): NimNode =
   ## Builds the proc needed to execute a spawn against the given tuple

@@ -39,11 +39,20 @@ proc componentIds*(dir: TupleDirective): NimNode =
     result.add(arg.component.columnId)
 
 proc accessoryArgs*(dir: TupleDirective): NimNode =
-  ## Which arguments of a directive are backed by an accessory column, one flag per
-  ## argument and in argument order.
+  ## The presence column standing behind each argument of a directive, one per argument
+  ## and in argument order, or no column at all for an argument that is not an accessory.
+  ##
+  ## Being an accessory is a property of a component rather than of an archetype, so this
+  ## is the same list wherever it gets applied. Whether the archetype in hand actually
+  ## carries the accessory is a separate question, and one the column lookup answers
   result = nnkBracket.newTree()
   for arg in dir.args:
-    result.add(newLit(arg.isAccessory))
+    result.add(
+      if arg.isAccessory:
+        arg.component.presenceColumnId
+      else:
+        bindSym("NO_ACCESSORY")
+    )
 
 iterator archetypeCases*(
     details: GenerateContext

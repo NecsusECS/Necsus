@@ -18,12 +18,18 @@ type
     ## every archetype, so nothing about this depends on which archetype it came from
     rows*: uint32
     hasAccessories*: bool
-      ## Whether any argument at all is backed by an accessory column, which is what says
-      ## whether the rows have to be filtered as they are walked
+      ## Whether any argument at all landed on an accessory this archetype carries, which
+      ## is what says whether the rows have to be filtered as they are walked
     eids*: ptr UncheckedArray[EntityId]
     columns*: array[tupleLen(Comps), Column]
-    accessories*: array[tupleLen(Comps), bool]
-      ## Which arguments are backed by an accessory column.
+    accessories*: array[tupleLen(Comps), Column]
+      ## The presence column standing behind each argument, or no column when there is
+      ## nothing to check -- either because the argument is not an accessory at all, or
+      ## because this archetype does not carry the one it named.
+      ##
+      ## Which arguments are accessories is settled at compile time, but it cannot be
+      ## carried in the type: `Query[Comps]` is what a system declares, so `Comps` is all
+      ## these columns get to be generic over. It rides along as a value instead
 
   QueryGetCols*[Comps: tuple] = proc(
     appStatePtr: pointer, state: var uint, cols: var QueryCols[Comps]
@@ -59,10 +65,14 @@ proc newQuery*[Comps: tuple](
 ): RawQuery[Comps] =
   RawQuery[Comps](appState: appState, getLen: getLen, getCols: getCols)
 
+const NO_ACCESSORY* = high(ComponentId)
+  ## Names no presence column at all, which is what an argument that is not an accessory
+  ## has in place of one
+
 proc newQueryCols*[Comps: tuple](
     store: ArchetypeStore,
     components: openArray[ComponentId],
-    accessories: openArray[bool],
+    accessories: openArray[ComponentId],
 ): QueryCols[Comps] {.inline.} =
   ## Picks out the columns a query wants from an archetype.
   ##
@@ -77,8 +87,13 @@ proc newQueryCols*[Comps: tuple](
   result.eids = store.entities
   for i in 0 ..< components.len:
     result.columns[i] = store.column(components[i])
-    result.accessories[i] = accessories[i]
-    result.hasAccessories = result.hasAccessories or accessories[i]
+    if accessories[i] != NO_ACCESSORY:
+      # An archetype that does not carry this accessory has no presence column for it, and
+      # so has nothing to filter on -- which is worth spotting here rather than per row,
+      # because it is what lets such an archetype keep the unfiltered walk
+      let presence = store.column(accessories[i])
+      result.accessories[i] = presence
+      result.hasAccessories = result.hasAccessories or not presence.isEmpty
 
 template readCol*[T](column: Column, idx: uint32, slot: var T) =
   ## Reads one component out of a column. The slot is what says how to read it
@@ -112,78 +127,67 @@ template readCol*[T](column: Column, idx: uint32, slot: var Option[ptr T]) =
     else:
       some(column.at(T, idx))
 
-template readAccCol*[T](column: Column, isAcc: bool, idx: uint32, slot: var T): bool =
+template isPresent(presence: Column, idx: uint32): bool =
+  ## Whether one row has the accessory a presence column stands for. Nothing to check
+  ## means nothing to fail: an argument that is not an accessory has no presence column,
+  ## and neither does an archetype that does not carry the one that was named
+  presence.isEmpty or presence.read(AccessoryFlag, idx)
+
+template readAccCol*[T](
+    column: Column, presence: Column, idx: uint32, slot: var T
+): bool =
   ## Reads a required component that may be held as an accessory, and says whether the
   ## row turned out to have it.
-  if isAcc:
-    let opt = column.at(Option[T], idx)
-    if opt[].isSome:
-      slot = opt[].unsafeGet
-      true
-    else:
-      false
-  else:
+  if presence.isPresent(idx):
     slot = column.read(T, idx)
     true
+  else:
+    false
 
 template readAccCol*[T](
-    column: Column, isAcc: bool, idx: uint32, slot: var ptr T
+    column: Column, presence: Column, idx: uint32, slot: var ptr T
 ): bool =
-  ## A required component asked for by pointer. An accessory hands back a pointer to the
-  ## value inside the option rather than to the option itself
-  if isAcc:
-    let opt = column.at(Option[T], idx)
-    if opt[].isSome:
-      slot = unsafeAddr opt[].unsafeGet
-      true
-    else:
-      false
-  else:
+  ## A required component asked for by pointer, straight into the column
+  if presence.isPresent(idx):
     slot = column.at(T, idx)
     true
+  else:
+    false
 
 template readAccCol*[T](
-    column: Column, isAcc: bool, idx: uint32, slot: var Not[T]
+    column: Column, presence: Column, idx: uint32, slot: var Not[T]
 ): bool =
   ## An excluded component usually has no column at all, which the archetype settled once
   ## and for all. An excluded accessory does have one. The archetype holds entities both
   ## with and without it, so it is the row that has to be checked
-  (not isAcc) or column.isEmpty or column.at(Option[T], idx)[].isNone
+  column.isEmpty or not presence.isPresent(idx)
 
 template readAccCol*[T](
-    column: Column, isAcc: bool, idx: uint32, slot: var Option[T]
+    column: Column, presence: Column, idx: uint32, slot: var Option[T]
 ): bool =
-  ## An optional component. An accessory column is already holding exactly the option
-  ## being asked for, so it comes straight back out
+  ## An optional component. The archetype says whether the column is there at all, and the
+  ## presence column says whether this row is one of the ones that has it
   slot =
-    if column.isEmpty:
+    if column.isEmpty or not presence.isPresent(idx):
       none(T)
-    elif isAcc:
-      column.read(Option[T], idx)
     else:
       some(column.read(T, idx))
   true
 
 template readAccCol*[T](
-    column: Column, isAcc: bool, idx: uint32, slot: var Option[ptr T]
+    column: Column, presence: Column, idx: uint32, slot: var Option[ptr T]
 ): bool =
   ## An optional component asked for by pointer. Without this, the option overload above
   ## matches with `T` bound to `ptr T` and reads the component itself as a pointer
   slot =
-    if column.isEmpty:
+    if column.isEmpty or not presence.isPresent(idx):
       none(ptr T)
-    elif isAcc:
-      let opt = column.at(Option[T], idx)
-      if opt[].isSome:
-        some(unsafeAddr opt[].unsafeGet)
-      else:
-        none(ptr T)
     else:
       some(column.at(T, idx))
   true
 
 proc isAccArg(cols: NimNode, i: int): NimNode =
-  ## Whether one argument of a query is backed by an accessory column
+  ## The presence column standing behind one argument of a query
   nnkBracketExpr.newTree(newDotExpr(cols, ident("accessories")), newLit(i))
 
 proc accReads(cols: NimNode, columns: seq[NimNode], idx, slot: NimNode): NimNode =
@@ -283,12 +287,12 @@ macro walkRows(arity: static int, cols, slot, body: untyped): untyped =
     (accReads(cols, columns, checkedIdx, slot), newStmtList(copyNimTree(body)))
   )
 
-  # Rows holding an accessory have to be filtered as they are walked, and the columns
-  # holding one are read as options rather than as the component itself. Which archetypes
-  # those are is not known until runtime, but it is settled for a whole archetype at a
-  # time. So the test goes outside the loop and there are two loops rather than a branch
-  # on every row. A query with no accessory in sight is then exactly the loop it always
-  # was, with nothing in the body to stop it being vectorized
+  # An archetype carrying an accessory the query named has to have its rows filtered as
+  # they are walked, because presence is per entity. Which archetypes those are is not
+  # known until runtime, but it is settled for a whole archetype at a time. So the test
+  # goes outside the loop and there are two loops rather than a branch on every row. A
+  # query with no accessory in sight is then exactly the loop it always was, with nothing
+  # in the body to stop it being vectorized
   result.add nnkIfStmt.newTree(
     nnkElifBranch.newTree(
       nnkPrefix.newTree(ident("not"), newDotExpr(cols, ident("hasAccessories"))),
