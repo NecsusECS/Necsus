@@ -225,6 +225,24 @@ template read*[Comps: tuple](
   ## may not be, when the row is missing an accessory that was asked for
   unrollRead(tupleLen(Comps), cols, idx, slot)
 
+template declSlot*(slot: untyped, Comps: typedesc) =
+  ## Declares the value a query fills in as it walks a row.
+  ##
+  ## Every field is written before the body gets to see it, so zeroing the slot first is
+  ## wasted work. But it is worse than wasted. Zeroing takes the slot's address, and an
+  ## address-taken local is one the C compiler has to keep in memory: it then writes each
+  ## component into the stack even when the body only reads a field or two of it, and
+  ## widening the loop is off the table. Left uninitialised, the slot scalarises into
+  ## registers and the components nothing looks at stop being loaded at all.
+  ##
+  ## Only safe while nothing in the tuple has a lifetime to manage. Assigning over a
+  ## garbage `string` would hand its destructor a garbage pointer, so a tuple carrying one
+  ## keeps the zeroing
+  when supportsCopyMem(Comps):
+    var slot {.noinit, inject.}: Comps
+  else:
+    var slot {.inject.}: Comps
+
 proc rowLoop(rows, idx, reads: NimNode): NimNode =
   ## Walks every row of an archetype, running `reads` against each.
   let cursor = genSym(nskVar, "cursor")
@@ -307,7 +325,7 @@ iterator pairs*[Comps: tuple](query: FullQuery[Comps]): QueryItem[Comps] =
   let raw = RawQuery[Comps](query)
   var state: uint
   var cols: QueryCols[Comps]
-  var slot: Comps
+  declSlot(slot, Comps)
   while raw.getCols(raw.appState, state, cols):
     let eids = cols.eids
     walkRows(tupleLen(Comps), cols, slot):
@@ -318,7 +336,7 @@ iterator items*[Comps: tuple](query: AnyQuery[Comps]): Comps =
   let raw = RawQuery[Comps](query)
   var state: uint
   var cols: QueryCols[Comps]
-  var slot: Comps
+  declSlot(slot, Comps)
   while raw.getCols(raw.appState, state, cols):
     walkRows(tupleLen(Comps), cols, slot):
       yield slot
