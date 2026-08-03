@@ -1,5 +1,5 @@
 import std/[macros, options, tables, sequtils]
-import codeGenInfo, archetype, componentDef, common, systemGen, converters
+import codeGenInfo, archetype, componentDef, common, systemGen
 import tickGen, parse, monoDirective, sendGen
 import ../runtime/[world, archetypeStore, necsusConf], ../util/profile
 
@@ -248,15 +248,6 @@ proc createAppStateDestructor*(genInfo: CodeGenInfo): NimNode =
     {.warning[Deprecated]: off, hint[XCannotRaiseY]: off.}
     proc `destroy`*(`appStateIdent`: var `appStateType`) {.raises: [Exception], used.} =
       `destroys`
-
-proc createConverterProcs*(details: CodeGenInfo): NimNode =
-  ## Creates a list of procs for converting from one tuple type to another
-  result = newStmtList()
-
-  let ctx = details.newGenerateContext(Outside)
-  for arg in details.allArgs:
-    for convert in converters(ctx, arg):
-      result.add(buildConverter(convert))
 
 proc createArchetypeIdSyms*(details: CodeGenInfo): NimNode =
   result = newStmtList()

@@ -5,9 +5,7 @@ import
   ],
   componentDef,
   ../util/[bits, openAddr],
-  ../runtime/[world],
-  directiveArg,
-  tupleDirective
+  ../runtime/[world]
 
 export openAddr
 
@@ -62,14 +60,6 @@ proc newArchetype*[T](
     accessoryComps: accessoryComps,
     id: name.getId,
   )
-
-proc hasAccessories*(arch: Archetype): bool =
-  ## Returns whether there are any accessories in this archetype
-  return arch.accessoryComps.card > 0
-
-proc isAccessory*[T](arch: Archetype[T], value: T): bool =
-  ## Whether a specific value is an accessory
-  value.uniqueId in arch.accessoryComps
 
 proc readableName*(arch: Archetype[ComponentDef]): string =
   ## Returns a readable name that describes an archetype
@@ -134,15 +124,6 @@ proc removeAndAdd*[T](
 proc ident*(archetype: Archetype[ComponentDef]): NimNode =
   ## Creates a variable for referencing an archetype store
   archetype.identName.ident
-
-proc asStorageTuple*(archetype: Archetype[ComponentDef]): NimNode =
-  ## Creates the tuple type for storing an archetype
-  result = nnkTupleConstr.newTree()
-  for component in archetype.values:
-    if component.isAccessory:
-      result.add(nnkBracketExpr.newTree(bindSym("Option"), component.ident))
-    else:
-      result.add(component.ident)
 
 iterator items*[T](archetype: Archetype[T]): T =
   ## Produces all the archetype values
@@ -239,13 +220,6 @@ proc archetypeFor*[T](archs: ArchetypeSet[T], components: openArray[T]): Archety
 proc matches*(arch: Archetype, filter: BitsFilter): bool =
   ## Whether this archetype can fulfill the given filter
   filter.matches(all = arch.allComps, optional = arch.accessoryComps)
-
-proc asTupleDir*(arch: Archetype[ComponentDef]): TupleDirective =
-  ## Convert an archetype to a TupleDirective
-  var args = newSeq[DirectiveArg](arch.values.len)
-  for i, comp in arch.values:
-    args[i] = newDirectiveArg(comp, false, if comp.isAccessory: Optional else: Include)
-  return newTupleDir(args)
 
 proc calculateSize*(arch: Archetype[ComponentDef]): Option[NimNode] =
   ## Calculates the storage size required to store the components of an archetype

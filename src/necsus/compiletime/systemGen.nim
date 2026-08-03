@@ -1,6 +1,6 @@
 import std/[options, hashes, tables, macros, strformat, strutils, sequtils]
 import archetype, dualDirective, monoDirective, tupleDirective, archetypeBuilder
-import componentDef, directiveSet, common, directiveArg
+import componentDef, directiveSet, common
 
 type
   GenerateHook* = enum
@@ -50,17 +50,6 @@ type
   SystemArgExtractor*[T] = proc(name: string, dir: T): NimNode
     ## The callback used for determining the value to pass when calling the system
 
-  ConverterDef* = ref object
-    ## Defines a function for converting from one tuple shape to another
-    input*: Archetype[ComponentDef]
-    adding*: seq[ComponentDef]
-    output*: TupleDirective
-    sinkParams*: bool
-    signatureCache: string
-
-  ConvertExtractor*[T] = proc(context: GenerateContext, dir: T): seq[ConverterDef]
-    ## The callback for determining what converters to execute
-
   BuildArchetype*[T] = proc(
     builder: var ArchetypeBuilder[ComponentDef], systemArgs: seq[SystemArg], dir: T
   ) ## A callback used to construct an archetype
@@ -86,7 +75,6 @@ type
       worldFieldsTuple*: proc(name: string, returns: TupleDirective): seq[WorldField]
       systemArgTuple*: SystemArgExtractor[TupleDirective]
       nestedArgsTuple*: NestedArgsExtractor[TupleDirective]
-      convertersTuple*: ConvertExtractor[TupleDirective]
     of DirectiveKind.None:
       generateNone*: HookGenerator[void]
       worldFieldsNone: proc(name: string): seq[WorldField]
@@ -99,7 +87,6 @@ type
       worldFieldsDual*: proc(name: string, returns: DualDirective): seq[WorldField]
       systemArgDual*: SystemArgExtractor[DualDirective]
       nestedArgsDual*: NestedArgsExtractor[DualDirective]
-      convertersDual*: ConvertExtractor[DualDirective]
 
   ArgCheck* = object ## A per-argument active check condition
     value*: NimNode ## The enum value to compare against
@@ -122,21 +109,6 @@ type
       dualDir*: DualDirective
     nestedArgs*: seq[SystemArg]
     argChecks*: seq[ArgCheck]
-
-proc newConverter*(
-    input: Archetype[ComponentDef],
-    adding: seq[ComponentDef],
-    output: Archetype[ComponentDef],
-    sinkParams: bool,
-): ConverterDef =
-  ConverterDef(
-    input: input, adding: adding, output: output.asTupleDir, sinkParams: sinkParams
-  )
-
-proc newConverter*(
-    input: Archetype[ComponentDef], output: TupleDirective
-): ConverterDef =
-  ConverterDef(input: input, output: output)
 
 proc noArchetype[T](
     builder: var ArchetypeBuilder[ComponentDef], systemArgs: seq[SystemArg], dir: T
@@ -163,11 +135,6 @@ proc defaultNestedArgs(
 ): seq[RawNestedArg] =
   @[]
 
-proc defaultConverters(
-    context: GenerateContext, dir: TupleDirective | DualDirective
-): seq[ConverterDef] =
-  @[]
-
 proc newGenerator*(
     ident: string,
     interest: set[GenerateHook],
@@ -178,7 +145,6 @@ proc newGenerator*(
       defaultWorldField,
     systemArg: SystemArgExtractor[TupleDirective] = defaultSystemArg,
     nestedArgs: NestedArgsExtractor[TupleDirective] = defaultNestedArgs,
-    converters: ConvertExtractor[TupleDirective] = defaultConverters,
 ): DirectiveGen =
   ## Create a tuple based generator
   result.new
@@ -192,7 +158,6 @@ proc newGenerator*(
   result.worldFieldsTuple = worldFields
   result.systemArgTuple = systemArg
   result.nestedArgsTuple = nestedArgs
-  result.convertersTuple = converters
 
 proc defaultSystemReturn(
     args: DirectiveSet[SystemArg], returns: MonoDirective
@@ -270,7 +235,6 @@ proc newGenerator*(
       defaultWorldField,
     systemArg: SystemArgExtractor[DualDirective] = defaultSystemArg,
     nestedArgs: NestedArgsExtractor[DualDirective] = defaultNestedArgs,
-    converters: ConvertExtractor[DualDirective] = defaultConverters,
 ): DirectiveGen =
   ## Create a tuple based generator
   return DirectiveGen(
@@ -284,7 +248,6 @@ proc newGenerator*(
     worldFieldsDual: worldFields,
     systemArgDual: systemArg,
     nestedArgsDual: nestedArgs,
-    convertersDual: converters,
   )
 
 proc `==`*(a, b: DirectiveGen): bool =
@@ -403,16 +366,6 @@ proc worldFields*(arg: SystemArg, name: string): seq[WorldField] =
   of DirectiveKind.None:
     arg.generator.worldFieldsNone(name)
 
-proc converters*(ctx: GenerateContext, arg: SystemArg): seq[ConverterDef] =
-  ## Returns a list of all the convertsers needed by a system
-  case arg.kind
-  of DirectiveKind.Tuple:
-    return arg.generator.convertersTuple(ctx, arg.tupleDir)
-  of DirectiveKind.Dual:
-    return arg.generator.convertersDual(ctx, arg.dualDir)
-  of DirectiveKind.Mono, DirectiveKind.None:
-    return @[]
-
 proc systemArg(arg: SystemArg, name: string): NimNode =
   ## Generates the argument to pass in when calling a system
   case arg.kind
@@ -502,37 +455,3 @@ iterator nodes*(arg: SystemArg): NimNode =
     yield arg.monoDir.argType
   of DirectiveKind.None:
     discard
-
-when NimMajor >= 2:
-  const converterNames = CacheTable("NecsusConverterName")
-else:
-  import std/tables
-  var converterNames {.compileTime.} = initTable[string, NimNode]()
-
-proc signature*(conv: ConverterDef): string =
-  ## Produces a globally unique signature for a converter
-  if conv.signatureCache == "":
-    if conv.sinkParams:
-      result = "SINK_"
-
-    for comp in conv.input:
-      result.addSignature(comp)
-
-    result &= "_WITH_"
-    for comp in conv.adding:
-      result.addSignature(comp)
-
-    result &= "_TO_"
-    for arg in conv.output.args:
-      result.addSignature(arg)
-
-    conv.signatureCache = result
-  else:
-    return conv.signatureCache
-
-proc name*(convert: ConverterDef): NimNode =
-  ## Returns the name for referencing a `ConverterDef`
-  let signature = convert.signature
-  if signature notin converterNames:
-    converterNames[signature] = genSym(nskProc, "conv")
-  return converterNames[signature]
