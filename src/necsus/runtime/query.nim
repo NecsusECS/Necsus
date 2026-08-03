@@ -1,5 +1,8 @@
 import entityId, archetypeStore, std/[typetraits, options, macros]
 
+# Fix Nim 1.6 handling of tupleLen resolution
+export typetraits.tupleLen
+
 type
   Not*[Comps] = distinct int8
     ## A query flag that indicates a component should be excluded from a query. Where `Comps` is
@@ -21,8 +24,8 @@ type
       ## Whether any argument at all landed on an accessory this archetype carries, which
       ## is what says whether the rows have to be filtered as they are walked
     eids*: ptr UncheckedArray[EntityId]
-    columns*: array[tupleLen(Comps), Column]
-    accessories*: array[tupleLen(Comps), Column]
+    columns*: array[Comps.tupleLen, Column]
+    accessories*: array[Comps.tupleLen, Column]
       ## The presence column standing behind each argument, or no column when there is
       ## nothing to check -- either because the argument is not an accessory at all, or
       ## because this archetype does not carry the one it named.
@@ -97,12 +100,12 @@ proc newQueryCols*[Comps: tuple](
 
 template readCol*[T](column: Column, idx: uint32, slot: var T) =
   ## Reads one component out of a column. The slot is what says how to read it
-  slot = column.read(T, idx)
+  slot = column.read(typeof(slot), idx)
 
 template readCol*[T](column: Column, idx: uint32, slot: var ptr T) =
   ## A query that asked for a pointer gets one straight into the column, so nothing is
   ## copied and writes land back in the store
-  slot = column.at(T, idx)
+  slot = column.at(typeof(slot[]), idx)
 
 template readCol*[T](column: Column, idx: uint32, slot: var Not[T]) =
   ## An excluded component has no column. The archetype already established it is absent,
@@ -114,18 +117,18 @@ template readCol*[T](column: Column, idx: uint32, slot: var Option[T]) =
   ## archetype says which
   slot =
     if column.isEmpty:
-      none(T)
+      none(typeof(slot.unsafeGet))
     else:
-      some(column.read(T, idx))
+      some(column.read(typeof(slot.unsafeGet), idx))
 
 template readCol*[T](column: Column, idx: uint32, slot: var Option[ptr T]) =
   ## An optional component asked for by pointer. Without this, the option overload above
   ## matches with `T` bound to `ptr T` and reads the component itself as a pointer
   slot =
     if column.isEmpty:
-      none(ptr T)
+      none(typeof(slot.unsafeGet))
     else:
-      some(column.at(T, idx))
+      some(column.at(typeof(slot.unsafeGet[]), idx))
 
 template isPresent(presence: Column, idx: uint32): bool =
   ## Whether one row has the accessory a presence column stands for. Nothing to check
@@ -139,7 +142,7 @@ template readAccCol*[T](
   ## Reads a required component that may be held as an accessory, and says whether the
   ## row turned out to have it.
   if presence.isPresent(idx):
-    slot = column.read(T, idx)
+    slot = column.read(typeof(slot), idx)
     true
   else:
     false
@@ -149,7 +152,7 @@ template readAccCol*[T](
 ): bool =
   ## A required component asked for by pointer, straight into the column
   if presence.isPresent(idx):
-    slot = column.at(T, idx)
+    slot = column.at(typeof(slot[]), idx)
     true
   else:
     false
@@ -169,9 +172,9 @@ template readAccCol*[T](
   ## presence column says whether this row is one of the ones that has it
   slot =
     if column.isEmpty or not presence.isPresent(idx):
-      none(T)
+      none(typeof(slot.unsafeGet))
     else:
-      some(column.read(T, idx))
+      some(column.read(typeof(slot.unsafeGet), idx))
   true
 
 template readAccCol*[T](
@@ -181,9 +184,9 @@ template readAccCol*[T](
   ## matches with `T` bound to `ptr T` and reads the component itself as a pointer
   slot =
     if column.isEmpty or not presence.isPresent(idx):
-      none(ptr T)
+      none(typeof(slot.unsafeGet))
     else:
-      some(column.at(T, idx))
+      some(column.at(typeof(slot.unsafeGet[]), idx))
   true
 
 proc isAccArg(cols: NimNode, i: int): NimNode =
