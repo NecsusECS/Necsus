@@ -14,6 +14,25 @@ jobs:
       - run: nim --version
       - run: nimble test -y
 
+  memory:
+    runs-on: ubuntu-latest
+    container: nimlang/choosenim
+    strategy:
+      matrix:
+        nim: [2.0.10, 1.6.14, 2.2.2, devel]
+    steps:
+      - uses: actions/checkout@v1
+      - run: choosenim update -y ${{ matrix.nim }}
+      - run: git config --global --add safe.directory "$(pwd)"
+      - run: nim --version
+      - run: apt-get update && apt-get install -y --no-install-recommends valgrind
+      - name: Extended churn
+        run: nim c -r -d:release -d:stressTicks:20000 tests/t_memoryStress.nim
+      - name: Churn under valgrind
+        run: |
+          nim c -d:release -d:useMalloc --debugger:native -d:stressTicks:2000 tests/t_memoryStress.nim
+          valgrind --leak-check=full --errors-for-leak-kinds=definite --error-exitcode=1 tests/t_memoryStress
+
   benchmark:
     runs-on: ubuntu-latest
     container: nimlang/choosenim
