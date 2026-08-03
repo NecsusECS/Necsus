@@ -110,9 +110,14 @@ proc createArchetypeState(genInfo: CodeGenInfo): NimNode =
           )
         )
 
+    # An archetype claims its memory when its first entity turns up, so an app that only
+    # ever fills a few of the shapes it describes pays for the few. Somewhere that would
+    # rather not be allocating part way through a frame can ask for the lot up front
     result.add quote do:
       `appStateIdent`.`ident` =
         newArchetypeStore[`compCount`](`archetypeRef`, `size`, `columns`)
+      if `appStateIdent`.config.eagerAlloc:
+        ensureAlloced(`appStateIdent`.`ident`)
 
 proc initProfilers(genInfo: CodeGenInfo): NimNode =
   result = newStmtList()

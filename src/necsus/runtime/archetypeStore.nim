@@ -30,12 +30,21 @@ type
     ##
     ## `N` is the number of components in the whole app, so there is one instantiation of
     ## this per app rather than one per archetype shape. Holding the column table inline
-    ## keeps reaching a column down to a single load at a constant offset
+    ## keeps reaching a column down to a single load at a constant offset, and everything
+    ## claiming a row needs sits ahead of that table, so a spawn touches one cache line
+    ## however many components the app has
     archetype: ArchetypeId
-    used, capacity: uint32
+    used: uint32
+    capacity: uint32
+      ## How many rows there is room for right now, which is none until the memory to hold
+      ## them has been claimed. Reserving a row already has to check this, so leaving it at
+      ## zero is what lets an archetype notice its first entity without the hot path
+      ## growing a second test
+    rowLimit: uint32 ## How many rows there will be room for once the memory arrives
     eids: ptr UncheckedArray[EntityId]
-    columns: array[N, Column]
     blk: pointer
+    blockSize: uint
+    columns: array[N, Column]
 
 const NO_COLUMN* = Column(nil)
   ## What an archetype holds for a component it does not have
@@ -76,32 +85,45 @@ proc roundUp(offset, align: uint): uint {.inline.} =
 proc newArchetypeStore*[N: static int](
     archetype: ArchetypeId, capacity: Natural, columns: openArray[ColumnDef]
 ): ArchetypeStore[N] =
-  ## Creates the storage for a single archetype.
+  ## Lays out the storage for a single archetype, without claiming any memory for it yet.
   ##
-  ## Everything lands in one allocation, laid out as the entity ids followed by each
-  ## column in turn, with each column started at an offset its component is happy to be
-  ## aligned to
+  ## Everything lands in one allocation, arranged as the entity ids followed by each column
+  ## in turn, with each column started at an offset its component is happy to be aligned
+  ## to. Working the layout out up front means the column table can hold the offset each
+  ## column will sit at, so nothing has to remember what the columns were to be able to
+  ## allocate later
   result.archetype = archetype
-  result.capacity = uint32(capacity)
+  result.rowLimit = uint32(capacity)
 
   if capacity == 0:
     return
 
-  # A first pass works out how much room the whole thing needs, so the columns can be
-  # handed out of a single block rather than allocated one by one
-  var size = uint(sizeof(EntityId)) * uint(capacity)
-  for column in columns:
-    size = roundUp(size, uint(column.align)) + (uint(column.size) * uint(capacity))
-
-  result.blk = alloc0(size)
-
-  result.eids = cast[ptr UncheckedArray[EntityId]](result.blk)
-
   var offset = uint(sizeof(EntityId)) * uint(capacity)
   for column in columns:
     offset = roundUp(offset, uint(column.align))
-    result.columns[column.id] = Column(cast[pointer](cast[uint](result.blk) + offset))
+    result.columns[column.id] = Column(cast[pointer](offset))
     offset += uint(column.size) * uint(capacity)
+
+  result.blockSize = offset
+
+proc ensureAlloced*[N: static int](store: var ArchetypeStore[N]) {.noinline.} =
+  ## Claims the memory backing an archetype, if it doesn't have any yet.
+  ##
+  ## An app describes more archetypes than it tends to fill, and each one is sized for the
+  ## whole app, so waiting until an entity actually arrives keeps the archetypes that never
+  ## see one down to nothing at all. The column table holds offsets until this runs, which
+  ## is what turns them into the pointers everything else reads
+  if store.blk != nil or store.blockSize == 0:
+    return
+
+  store.blk = alloc0(store.blockSize)
+  store.eids = cast[ptr UncheckedArray[EntityId]](store.blk)
+
+  for column in store.columns.mitems:
+    if not column.isEmpty:
+      column = Column(cast[pointer](cast[uint](store.blk) + cast[uint](column)))
+
+  store.capacity = store.rowLimit
 
 proc len*(store: ArchetypeStore): Natural {.inline.} =
   ## The number of entities currently stored
@@ -127,7 +149,12 @@ proc column*(
   ## The column holding a component, or `NO_COLUMN` when this archetype does not have it.
   ##
   ## Component ids are global, so this is the same lookup in every archetype -- which is
-  ## what lets a caller resolve a column without knowing which archetype it came from
+  ## what lets a caller resolve a column without knowing which archetype it came from.
+  ##
+  ## Only worth reading once the archetype has rows in it: an archetype yet to be allocated
+  ## is still carrying the offset each column is going to sit at rather than a pointer to
+  ## it. Every caller already asks about rows first, because a column of an empty archetype
+  ## has nothing in it to read
   store.columns[component]
 
 proc getColumn*[T](
@@ -140,7 +167,11 @@ proc getColumn*[T](
 proc reserve*(store: var ArchetypeStore, entityId: EntityId): uint32 =
   ## Claims the next row for an entity and returns its index.
   if unlikely(store.used >= store.capacity):
-    raise newException(IndexDefect, "Archetype capacity exceeded: " & $store.capacity)
+    # An archetype with no memory behind it has room for nothing, so running out of room is
+    # also how it finds out it is being filled for the first time
+    store.ensureAlloced()
+    if unlikely(store.used >= store.capacity):
+      raise newException(IndexDefect, "Archetype capacity exceeded: " & $store.rowLimit)
   result = store.used
   store.used += 1
   store.eids[result] = entityId
@@ -215,7 +246,9 @@ proc `=destroy`*[N: static int](store: var ArchetypeStore[N]) =
     dealloc(store.blk)
     store.blk = nil
     store.eids = nil
-    for i in 0 ..< store.columns.len:
-      store.columns[i] = NO_COLUMN
+  for i in 0 ..< store.columns.len:
+    store.columns[i] = NO_COLUMN
   store.used = 0
   store.capacity = 0
+  store.rowLimit = 0
+  store.blockSize = 0

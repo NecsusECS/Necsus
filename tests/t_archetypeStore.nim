@@ -137,6 +137,7 @@ suite "ColumnStore":
     # An odd capacity of a single byte component leaves the next column misaligned unless
     # something rounds it up
     var store = newStore(capacity, [colFlag, colWide, colPosition])
+    store.ensureAlloced()
 
     check(cast[uint](pointer(store.column(cWide))) mod uint(alignof(Wide)) == 0)
     check(cast[uint](pointer(store.column(cPosition))) mod uint(alignof(Position)) == 0)
@@ -154,6 +155,28 @@ suite "ColumnStore":
         store.column(cPosition).read(Position, i) == Position(x: int32(i), y: -int32(i))
       )
       check(store.entityId(i) == EntityId(i))
+
+  test "An archetype takes no memory until something is stored in it":
+    var store = newStore(4, [colPosition, colLabel])
+    check(store.entities == nil)
+
+    discard store.reserve(EntityId(1))
+    check(store.entities != nil)
+
+  test "Allocating an archetype up front":
+    var store = newStore(4, [colPosition])
+    store.ensureAlloced()
+    check(store.entities != nil)
+
+    let column = pointer(store.column(cPosition))
+    let entities = store.entities
+
+    # Whatever asked for the memory, the rows that follow have to land in the same place
+    store.ensureAlloced()
+    let idx = store.reserve(EntityId(1))
+    check(pointer(store.column(cPosition)) == column)
+    check(store.entities == entities)
+    check(store.column(cPosition).read(Position, idx) == Position(x: 0, y: 0))
 
   test "Destroying a column destroys every live value in it":
     destroyed = @[]
