@@ -16,9 +16,6 @@ type
     ## Detaches a set of components from an entity. Where `C` is a tuple describing all
     ## the components to detach
 
-  Swap*[A: tuple, B: tuple] = proc(eid: EntityId, newComps: sink A) {.gcsafe, closure.}
-    ## A directive that adds components in `A` and removes components in `B`
-
   Lookup*[C: tuple] =
     proc(entityId: EntityId): Option[C] {.closure, gcsafe, raises: [].}
     ## Looks up entity details based on its entity ID. Where `C` is a tuple with all the
@@ -68,11 +65,19 @@ type
     ## Registers a dynamic event system callback for events of type E
 
 when isSinkMemoryCorruptionFixed():
-  type Attach*[C: tuple] = proc(eid: EntityId, components: sink C) {.gcsafe, closure.}
-    ## Describes a type that is able to update existing entities new entities. Where `C` is
-    ## a tuple with all the components to attach.
+  type
+    Attach*[C: tuple] = proc(eid: EntityId, components: sink C) {.gcsafe, closure.}
+      ## Describes a type that is able to update existing entities new entities. Where `C` is
+      ## a tuple with all the components to attach.
+
+    Swap*[A: tuple, B: tuple] = proc(eid: EntityId, newComps: sink A) {.gcsafe, closure.}
+      ## A directive that adds components in `A` and removes components in `B`
 
 else:
-  type Attach*[C: tuple] = proc(eid: EntityId, components: C) {.gcsafe, closure.}
-    ## Describes a type that is able to update existing entities new entities. Where `C` is
-    ## a tuple with all the components to attach.
+  type
+    Attach*[C: tuple] = proc(eid: EntityId, components: C) {.gcsafe, closure.}
+      ## Describes a type that is able to update existing entities new entities. Where `C` is
+      ## a tuple with all the components to attach.
+
+    Swap*[A: tuple, B: tuple] = proc(eid: EntityId, newComps: A) {.gcsafe, closure.}
+      ## A directive that adds components in `A` and removes components in `B`

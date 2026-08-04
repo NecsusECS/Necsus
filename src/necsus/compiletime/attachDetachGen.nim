@@ -453,22 +453,41 @@ proc generateSwap(
       "Swapping", dir.first.comps, detachComps, optDetachComps
     )
     let appStateTypeName = details.appStateTypeName
-    return quote:
-      `convertProcs`
-      proc `swapProc`(
-          `appStateIdent`: ptr `appStateTypeName`,
-          `entityId`: EntityId,
-          `newComps`: sink `componentTuple`,
-      ) {.gcsafe, nimcall, used.} =
-        `body`
+    when isSinkMemoryCorruptionFixed():
+      return quote:
+        `convertProcs`
+        proc `swapProc`(
+            `appStateIdent`: ptr `appStateTypeName`,
+            `entityId`: EntityId,
+            `newComps`: sink `componentTuple`,
+        ) {.gcsafe, nimcall, used.} =
+          `body`
+
+    else:
+      return quote:
+        `convertProcs`
+        proc `swapProc`(
+            `appStateIdent`: ptr `appStateTypeName`,
+            `entityId`: EntityId,
+            `newComps`: `componentTuple`,
+        ) {.gcsafe, nimcall, used.} =
+          `body`
 
   of Standard:
     let procName = ident(name)
-    return quote:
-      `appStateIdent`.`procName` = proc(
-          `entityId`: EntityId, `newComps`: sink `componentTuple`
-      ) =
-        `swapProc`(`appStatePtr`, `entityId`, `newComps`)
+    when isSinkMemoryCorruptionFixed():
+      return quote:
+        `appStateIdent`.`procName` = proc(
+            `entityId`: EntityId, `newComps`: sink `componentTuple`
+        ) =
+          `swapProc`(`appStatePtr`, `entityId`, `newComps`)
+
+    else:
+      return quote:
+        `appStateIdent`.`procName` = proc(
+            `entityId`: EntityId, `newComps`: `componentTuple`
+        ) =
+          `swapProc`(`appStatePtr`, `entityId`, `newComps`)
   else:
     return newEmptyNode()
 
