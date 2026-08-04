@@ -1,3 +1,4 @@
+import std/typetraits
 import world, entityId
 
 type
@@ -191,12 +192,25 @@ iterator entityIds*(store: ArchetypeStore): EntityId =
   for i in 0'u32 ..< store.used:
     yield store.eids[i]
 
+template destroyValue(value: typed) =
+  ## Destroys a single value held in a column, leaving the slot it came out of reading as
+  ## zero.
+  # Plain data has nothing to destroy, so it is skipped outright
+  when not supportsCopyMem(typeof(value)):
+    # We move values out and let them go out of scope rather than being handed
+    # to `=destroy` directly because a destructor the compiler injects is exempt
+    # from effect inference, where an explicit call inside a generic gets read
+    # as GC unsafe and as raising `Exception`. That spreads to every generated
+    # proc that deletes a component, all of which are `gcsafe`
+    let dead {.used.} = move(value)
+
 proc destroyColumn*[T](store: var ArchetypeStore, component: ComponentId) =
   ## Destroys the live values in a single column. Columns hold raw memory, so nothing
   ## else is going to run a destructor over them
-  let column = getColumn[T](store, component)
-  for i in 0'u32 ..< store.used:
-    `=destroy`(column[i])
+  when not supportsCopyMem(T):
+    let column = getColumn[T](store, component)
+    for i in 0'u32 ..< store.used:
+      destroyValue(column[i])
 
 proc relocateLast[T](column: ptr UncheckedArray[T], index, last: uint32) {.inline.} =
   ## Fills a vacated row with the last one, and leaves the row the last one came from
@@ -208,7 +222,7 @@ proc relocateLast[T](column: ptr UncheckedArray[T], index, last: uint32) {.inlin
 proc dropColumn*[T](store: var ArchetypeStore, component: ComponentId, index: uint32) =
   ## Destroys one value in a column and relocates the last row into the hole it leaves
   let column = getColumn[T](store, component)
-  `=destroy`(column[index])
+  destroyValue(column[index])
   relocateLast(column, index, store.used - 1)
 
 proc clearColumn*[T](store: var ArchetypeStore, component: ComponentId, index: uint32) =
@@ -216,7 +230,7 @@ proc clearColumn*[T](store: var ArchetypeStore, component: ComponentId, index: u
   ## reading as zero. This is how an accessory is taken off an entity that stays where it
   ## is: the row is still live, so nothing gets relocated into it
   let column = getColumn[T](store, component)
-  `=destroy`(column[index])
+  destroyValue(column[index])
   wasMoved(column[index])
 
 proc takeColumn*[T](
