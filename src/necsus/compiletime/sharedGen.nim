@@ -19,8 +19,9 @@ proc generateShared(
     for (inputName, inputDir) in details.inputs:
       if dir == inputDir:
         let inputIdent = inputName.ident
+        let argType = dir.argType
         result.add quote do:
-          systemVar.set(Shared(addr `appStateIdent`.`varIdent`), `inputIdent`)
+          systemVar.set(Shared[`argType`](addr `appStateIdent`.`varIdent`), `inputIdent`)
   else:
     discard
 
@@ -30,15 +31,17 @@ proc systemReturn(
   for name, directive in args:
     if directive.monoDir == returns:
       let stateIdent = name.ident
+      let argType = returns.argType
       let returnCode = quote:
-        getOrRaise(Shared(addr `appStateIdent`.`stateIdent`))
+        getOrRaise(Shared[`argType`](addr `appStateIdent`.`stateIdent`))
       return some(returnCode)
   return none(NimNode)
 
 proc systemArg(name: string, dir: MonoDirective): NimNode =
   let nameIdent = name.ident
+  let argType = dir.argType
   return quote:
-    Shared(addr `appStateIdent`.`nameIdent`)
+    Shared[`argType`](addr `appStateIdent`.`nameIdent`)
 
 let sharedGenerator* {.compileTime.} = newGenerator(
   ident = "Shared",

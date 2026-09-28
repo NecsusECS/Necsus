@@ -16,8 +16,9 @@ proc generateLocal(
 
 proc systemArg(name: string, dir: MonoDirective): NimNode =
   let nameIdent = name.ident
+  let argType = dir.argType
   return quote:
-    Local(addr `appStateIdent`.`nameIdent`)
+    Local[`argType`](addr `appStateIdent`.`nameIdent`)
 
 let localGenerator* {.compileTime.} = newGenerator(
   ident = "Local",
