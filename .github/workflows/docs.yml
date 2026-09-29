@@ -6,12 +6,13 @@ on:
 jobs:
   docs:
     runs-on: ubuntu-latest
-    container: nimlang/choosenim
     steps:
-      - name: Choose Nim
-        run: choosenim update -y 2.0.10
       - uses: actions/checkout@v3
-      - run: git config --global --add safe.directory "$(pwd)"
+      - uses: iffy/install-nim@v5
+        with:
+          version: binary:2.0.10
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: nimble install -y markdown
       - run: nimble documentation
       - name: Deploy documents

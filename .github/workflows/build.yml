@@ -3,29 +3,33 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
-    container: nimlang/choosenim
     strategy:
       matrix:
         nim: [2.0.10, 1.6.14, 2.2.2, devel]
     steps:
       - uses: actions/checkout@v1
-      - run: choosenim update -y ${{ matrix.nim }}
-      - run: git config --global --add safe.directory "$(pwd)"
+      - uses: iffy/install-nim@v5
+        with:
+          version: ${{ matrix.nim == 'devel' && 'nightly:https://github.com/nim-lang/nightlies/releases/latest-devel' || format('binary:{0}', matrix.nim) }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: nim --version
       - run: nimble test -y
 
   memory:
     runs-on: ubuntu-latest
-    container: nimlang/choosenim
     strategy:
       matrix:
         nim: [2.0.10, 1.6.14, 2.2.2, devel]
     steps:
       - uses: actions/checkout@v1
-      - run: choosenim update -y ${{ matrix.nim }}
-      - run: git config --global --add safe.directory "$(pwd)"
+      - uses: iffy/install-nim@v5
+        with:
+          version: ${{ matrix.nim == 'devel' && 'nightly:https://github.com/nim-lang/nightlies/releases/latest-devel' || format('binary:{0}', matrix.nim) }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: nim --version
-      - run: apt-get update && apt-get install -y --no-install-recommends valgrind
+      - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends valgrind
       - name: Extended churn
         run: nim c -r -d:release -d:stressTicks:20000 tests/t_memoryStress.nim
       - name: Churn under valgrind
@@ -35,43 +39,47 @@ jobs:
 
   benchmark:
     runs-on: ubuntu-latest
-    container: nimlang/choosenim
     strategy:
       matrix:
         nim: [2.0.10, 1.6.14, 2.2.2, devel]
     steps:
       - uses: actions/checkout@v1
-      - run: choosenim update -y ${{ matrix.nim }}
-      - run: git config --global --add safe.directory "$(pwd)"
+      - uses: iffy/install-nim@v5
+        with:
+          version: ${{ matrix.nim == 'devel' && 'nightly:https://github.com/nim-lang/nightlies/releases/latest-devel' || format('binary:{0}', matrix.nim) }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: nim --version
       - run: nimble -y -d:release benchmark
 
   readme:
     runs-on: ubuntu-latest
-    container: nimlang/choosenim
     strategy:
       matrix:
         nim: [2.0.10, 1.6.14, 2.2.2, devel]
     steps:
       - uses: actions/checkout@v1
-      - run: choosenim update -y ${{ matrix.nim }}
-      - run: git config --global --add safe.directory "$(pwd)"
+      - uses: iffy/install-nim@v5
+        with:
+          version: ${{ matrix.nim == 'devel' && 'nightly:https://github.com/nim-lang/nightlies/releases/latest-devel' || format('binary:{0}', matrix.nim) }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: nim --version
       - run: nimble readme
 
   example-projects:
     runs-on: ubuntu-latest
-    container: nimlang/choosenim
     strategy:
       matrix:
         project: [NecsusECS/NecsusAsteroids, NecsusECS/NecsusParticleDemo]
         nim: [2.0.10, 1.6.14]
     steps:
       - uses: actions/checkout@v1
-      - name: Choose Nim
-        run: choosenim update -y ${{ matrix.nim }}
-      - name: Safe git directory
-        run: git config --global --add safe.directory "$(pwd)"
+      - uses: iffy/install-nim@v5
+        with:
+          version: ${{ matrix.nim == 'devel' && 'nightly:https://github.com/nim-lang/nightlies/releases/latest-devel' || format('binary:{0}', matrix.nim) }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Local override
         run: nimble develop
       - name: Checkout
@@ -82,7 +90,6 @@ jobs:
   flags:
     ## Confirm the tests are able to run in profiling mode
     runs-on: ubuntu-latest
-    container: nimlang/choosenim
     strategy:
       matrix:
         nim: [2.0.10]
@@ -99,22 +106,27 @@ jobs:
           ]
     steps:
       - uses: actions/checkout@v1
-      - run: choosenim update -y ${{ matrix.nim }}
-      - run: git config --global --add safe.directory "$(pwd)"
+      - uses: iffy/install-nim@v5
+        with:
+          version: ${{ matrix.nim == 'devel' && 'nightly:https://github.com/nim-lang/nightlies/releases/latest-devel' || format('binary:{0}', matrix.nim) }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: nim --version
       - run: nimble -d:${{ matrix.flag }} test
 
   fast-compile:
     ## Confirm all the tests compile when running in a 'fast compile' mode
     runs-on: ubuntu-latest
-    container: nimlang/choosenim
     strategy:
       matrix:
         nim: [2.0.10, 1.6.14]
     steps:
       - uses: actions/checkout@v1
-      - run: choosenim update -y ${{ matrix.nim }}
-      - run: git config --global --add safe.directory "$(pwd)"
+      - uses: iffy/install-nim@v5
+        with:
+          version: ${{ matrix.nim == 'devel' && 'nightly:https://github.com/nim-lang/nightlies/releases/latest-devel' || format('binary:{0}', matrix.nim) }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: nim --version
       - name: Nim suggest
         run: find tests -name "t_*.nim" | xargs -n1 sh -c 'nim c -d:nimsuggest $0 || exit 255'
