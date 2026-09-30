@@ -481,7 +481,6 @@ proc generateSwap(
             `entityId`: EntityId, `newComps`: sink `componentTuple`
         ) =
           `swapProc`(`appStatePtr`, `entityId`, `newComps`)
-
     else:
       return quote:
         `appStateIdent`.`procName` = proc(

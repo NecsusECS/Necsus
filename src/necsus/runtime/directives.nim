@@ -70,7 +70,8 @@ when isSinkMemoryCorruptionFixed():
       ## Describes a type that is able to update existing entities new entities. Where `C` is
       ## a tuple with all the components to attach.
 
-    Swap*[A: tuple, B: tuple] = proc(eid: EntityId, newComps: sink A) {.gcsafe, closure.}
+    Swap*[A: tuple, B: tuple] =
+      proc(eid: EntityId, newComps: sink A) {.gcsafe, closure.}
       ## A directive that adds components in `A` and removes components in `B`
 
 else:

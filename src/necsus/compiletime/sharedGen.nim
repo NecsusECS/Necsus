@@ -21,7 +21,9 @@ proc generateShared(
         let inputIdent = inputName.ident
         let argType = dir.argType
         result.add quote do:
-          systemVar.set(Shared[`argType`](addr `appStateIdent`.`varIdent`), `inputIdent`)
+          systemVar.set(
+            Shared[`argType`](addr `appStateIdent`.`varIdent`), `inputIdent`
+          )
   else:
     discard
 
