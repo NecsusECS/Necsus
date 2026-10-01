@@ -83,18 +83,15 @@ proc roundUp(offset, align: uint): uint {.inline.} =
   let mask = align - 1
   (offset + mask) and not mask
 
-proc newArchetypeStore*[N: static int](
-    archetype: ArchetypeId, capacity: Natural, columns: openArray[ColumnDef]
-): ArchetypeStore[N] =
-  ## Lays out the storage for a single archetype, without claiming any memory for it yet.
-  ##
-  ## Everything lands in one allocation, arranged as the entity ids followed by each column
-  ## in turn, with each column started at an offset its component is happy to be aligned
-  ## to. Working the layout out up front means the column table can hold the offset each
-  ## column will sit at, so nothing has to remember what the columns were to be able to
-  ## allocate later
-  result.archetype = archetype
-  result.rowLimit = uint32(capacity)
+proc initArchetypeStore*(
+    store: var ArchetypeStore,
+    archetype: ArchetypeId,
+    capacity: Natural,
+    columns: static openArray[ColumnDef],
+) =
+  ## Lays out the storage for a single archetype in place
+  store.archetype = archetype
+  store.rowLimit = uint32(capacity)
 
   if capacity == 0:
     return
@@ -102,10 +99,10 @@ proc newArchetypeStore*[N: static int](
   var offset = uint(sizeof(EntityId)) * uint(capacity)
   for column in columns:
     offset = roundUp(offset, uint(column.align))
-    result.columns[column.id] = Column(cast[pointer](offset))
+    store.columns[column.id] = Column(cast[pointer](offset))
     offset += uint(column.size) * uint(capacity)
 
-  result.blockSize = offset
+  store.blockSize = offset
 
 proc ensureAlloced*[N: static int](store: var ArchetypeStore[N]) {.noinline.} =
   ## Claims the memory backing an archetype, if it doesn't have any yet.

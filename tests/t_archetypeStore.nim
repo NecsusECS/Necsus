@@ -41,10 +41,8 @@ const
   colWide = columnDef[Wide](cWide)
   colTracked = columnDef[Tracked](cTracked)
 
-template newStore(capacity: Natural, columns: untyped): untyped =
-  ## Every store in here is sized for the same set of components, since the component
-  ## count is a property of the app rather than of any one archetype
-  newArchetypeStore[COMPONENT_COUNT](ArchetypeId(1), capacity, columns)
+proc newStore(capacity: Natural, columns: static openArray[ColumnDef]): ArchetypeStore[COMPONENT_COUNT] =
+  result.initArchetypeStore(ArchetypeId(1), capacity, columns)
 
 suite "ColumnStore":
   test "An archetype with no room for anything":
