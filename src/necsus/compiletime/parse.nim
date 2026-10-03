@@ -126,19 +126,46 @@ proc parseArgKind(symbol: NimNode): Option[DirectiveGen] =
   else:
     return none(DirectiveGen)
 
+proc expandWrapper(symbol: NimNode): Option[NimNode] =
+  ## Follows a component's aliases to an `Option[...]` or `Not[...]`
+  symbol.resolveAliasTo(["Option", "Not"])
+
+proc rejectWrappedPointer(written, wrapper: NimNode) =
+  ## Rejects a pointer to an `Option[...]` or `Not[...]`. `written` is what the system
+  ## spelled out, and `wrapper` is the wrapper it names, which differ when it is an alias
+  let alias =
+    if written == wrapper: "" else: &", as `{written.repr}` is `{wrapper.repr}`"
+  error(
+    &"`ptr {written.repr}` is not supported{alias}. Put the pointer inside: " &
+      &"`{wrapper[0].strVal}[ptr {wrapper[1].repr}]`",
+    written,
+  )
+
 proc parseDirectiveArg(
     symbol: NimNode, isPointer: bool = false, kind: DirectiveArgKind = Include
 ): DirectiveArg =
   case symbol.kind
-  of nnkSym, nnkTupleTy:
+  of nnkSym:
+    let wrapper = symbol.expandWrapper
+    if wrapper.isSome:
+      if isPointer:
+        rejectWrappedPointer(symbol, wrapper.get)
+      return parseDirectiveArg(wrapper.get, isPointer, kind)
+    return newDirectiveArg(newComponentDef(symbol), isPointer, kind)
+  of nnkTupleTy:
     return newDirectiveArg(newComponentDef(symbol), isPointer, kind)
   of nnkBracketExpr:
     case symbol[0].strVal
-    of "Not":
-      return parseDirectiveArg(symbol[1], isPointer, Exclude)
-    of "Option":
-      return parseDirectiveArg(symbol[1], isPointer, Optional)
+    of "Not", "Option":
+      if isPointer:
+        rejectWrappedPointer(symbol, symbol)
+      return parseDirectiveArg(
+        symbol[1], isPointer, if symbol[0].strVal == "Not": Exclude else: Optional
+      )
     else:
+      let wrapper = symbol.expandWrapper
+      if wrapper.isSome:
+        return parseDirectiveArg(wrapper.get, isPointer, kind)
       return newDirectiveArg(newComponentDef(symbol), isPointer, kind)
   of nnkIdentDefs:
     return parseDirectiveArg(symbol[1], isPointer, kind)

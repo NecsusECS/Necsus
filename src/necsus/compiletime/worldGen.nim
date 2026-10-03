@@ -24,6 +24,29 @@ proc fields(genInfo: CodeGenInfo): seq[(NimNode, NimNode)] =
   for (name, typ) in genInfo.worldFields:
     result.add (name.ident, typ)
 
+proc rejectOptionComponents(genInfo: CodeGenInfo): NimNode =
+  ## Rejects any stored component whose type turns out to be an `Option`.
+  ##
+  ## The parser reads an `Option` as an optional component, and follows aliases to find
+  ## one. This catches any components that managed to fall through that check.
+  result = newStmtList()
+  var seen: seq[ComponentDef]
+  for archetype in genInfo.archetypes:
+    for component in archetype.values:
+      if component in seen:
+        continue
+      seen.add(component)
+
+      let message = newLit(
+        "Component `" & component.node.repr & "` is an Option that Necsus could not " &
+          "read as an optional component. Spell it as `Option[...]`, or wrap it in a " &
+          "distinct type or an object to store the whole option"
+      )
+      let typ = component.ident
+      result.add quote do:
+        when `typ` is Option:
+          {.error(message).}
+
 proc createAppStateType*(genInfo: CodeGenInfo): NimNode =
   ## Creates a type definition that captures the state of the app
   var fields = nnkRecList.newTree()
@@ -54,6 +77,7 @@ proc createAppStateType*(genInfo: CodeGenInfo): NimNode =
   let b = ident("b")
 
   return newStmtList(
+    genInfo.rejectOptionComponents(),
     nnkTypeSection.newTree(
       nnkTypeDef.newTree(
         genInfo.appStateTypeName,

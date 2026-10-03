@@ -113,6 +113,25 @@ proc resolveAlias*(typeDef: NimNode): Option[NimNode] =
   else:
     discard
 
+proc resolveAliasTo*(typeDef: NimNode, heads: openarray[string]): Option[NimNode] =
+  ## Follows a chain of aliases to an instantiation of one of the named generic types,
+  ## if that is where it leads. Anything else the chain ends at, whether a concrete type
+  ## or an instantiation of some other generic, is not a match
+  var current = typeDef
+  while true:
+    let next = current.resolveAlias
+    if next.isNone:
+      return none(NimNode)
+    current = next.get
+    case current.kind
+    of nnkBracketExpr:
+      if current[0].kind == nnkSym and current[0].strVal in heads:
+        return some(current)
+    of nnkSym:
+      discard
+    else:
+      return none(NimNode)
+
 proc findSym*(node: NimNode): NimNode =
   ## Unwraps the symbol from a node
   case node.kind
