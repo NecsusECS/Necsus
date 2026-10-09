@@ -58,6 +58,8 @@
   node*: NimNode
   name*: string
   uniqueId*: uint16
+  presenceId*: uint16 ## The column recording whether each entity in an archetype actually has this
+                      ## accessory. Only meaningful when `isAccessory`
   isAccessory*: bool">ComponentDef</a></li>
 
     </ul>
@@ -83,6 +85,14 @@
   <li><a class="reference" href="#addSignature%2Cstring%2CComponentDef" title="addSignature(onto: var string; comp: ComponentDef)">addSignature(onto: var string; comp: ComponentDef)</a></li>
 
 </ul>
+<ul class="simple nested-toc-section">columnId
+  <li><a class="reference" href="#columnId%2CComponentDef" title="columnId(def: ComponentDef): NimNode">columnId(def: ComponentDef): NimNode</a></li>
+
+</ul>
+<ul class="simple nested-toc-section">componentIdCount
+  <li><a class="reference" href="#componentIdCount" title="componentIdCount(): int">componentIdCount(): int</a></li>
+
+</ul>
 <ul class="simple nested-toc-section">generateName
   <li><a class="reference" href="#generateName%2CopenArray%5BComponentDef%5D" title="generateName(components: openArray[ComponentDef]): string">generateName(components: openArray[ComponentDef]): string</a></li>
 
@@ -101,6 +111,10 @@
 </ul>
 <ul class="simple nested-toc-section">newComponentDef
   <li><a class="reference" href="#newComponentDef%2CNimNode" title="newComponentDef(node: NimNode): ComponentDef">newComponentDef(node: NimNode): ComponentDef</a></li>
+
+</ul>
+<ul class="simple nested-toc-section">presenceColumnId
+  <li><a class="reference" href="#presenceColumnId%2CComponentDef" title="presenceColumnId(def: ComponentDef): NimNode">presenceColumnId(def: ComponentDef): NimNode</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">readableName
@@ -134,6 +148,8 @@
   <span class="Identifier">node</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">NimNode</span>
   <span class="Identifier">name</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">string</span>
   <span class="Identifier">uniqueId</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">uint16</span>
+  <span class="Identifier">presenceId</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">uint16</span> <span class="Comment">## The column recording whether each entity in an archetype actually has this</span>
+                      <span class="Comment">## accessory. Only meaningful when `isAccessory`</span>
   <span class="Identifier">isAccessory</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">bool</span></pre></dt>
   <dd>
     
@@ -187,6 +203,28 @@
   <dd>
     
     Generate a unique ID for a component
+    
+  </dd>
+</div>
+
+</div>
+<div id="columnId-procs-all">
+  <div id="columnId,ComponentDef">
+  <dt><pre><span class="Keyword">proc</span> <a href="#columnId%2CComponentDef"><span class="Identifier">columnId</span></a><span class="Other">(</span><span class="Identifier">def</span><span class="Other">:</span> <a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    The literal this component is indexed by at runtime. Ids are global, so the same literal reaches this component's column in every archetype that has one
+    
+  </dd>
+</div>
+
+</div>
+<div id="componentIdCount-procs-all">
+  <div id="componentIdCount">
+  <dt><pre><span class="Keyword">proc</span> <a href="#componentIdCount"><span class="Identifier">componentIdCount</span></a><span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    The number of component ids handed out so far.
     
   </dd>
 </div>
@@ -249,6 +287,18 @@
 </div>
 
 </div>
+<div id="presenceColumnId-procs-all">
+  <div id="presenceColumnId,ComponentDef">
+  <dt><pre><span class="Keyword">proc</span> <a href="#presenceColumnId%2CComponentDef"><span class="Identifier">presenceColumnId</span></a><span class="Other">(</span><span class="Identifier">def</span><span class="Other">:</span> <a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    The literal naming the column that says which entities have this accessory
+    
+  </dd>
+</div>
+
+</div>
 <div id="readableName-procs-all">
   <div id="readableName,ComponentDef">
   <dt><pre><span class="Keyword">proc</span> <a href="#readableName%2CComponentDef"><span class="Identifier">readableName</span></a><span class="Other">(</span><span class="Identifier">comp</span><span class="Other">:</span> <a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
@@ -271,7 +321,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-08-01 15:14:06 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-10-09 02:29:20 UTC</small>
       </div>
     </div>
   </div>

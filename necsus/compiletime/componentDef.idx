@@ -1,12 +1,15 @@
 nimTitle	componentDef	necsus/compiletime/componentDef.html	module src/necsus/compiletime/componentDef		0
 nim	ComponentDef	necsus/compiletime/componentDef.html#ComponentDef	type ComponentDef		4
-nim	newComponentDef	necsus/compiletime/componentDef.html#newComponentDef,NimNode	proc newComponentDef(node: NimNode): ComponentDef		28
-nim	readableName	necsus/compiletime/componentDef.html#readableName,ComponentDef	proc readableName(comp: ComponentDef): string		38
-nim	`==`	necsus/compiletime/componentDef.html#==,ComponentDef,ComponentDef	proc `==`(a, b: ComponentDef): bool		42
-nim	`<`	necsus/compiletime/componentDef.html#<,ComponentDef,ComponentDef	proc `<`(a, b: ComponentDef): auto		46
-nim	`$`	necsus/compiletime/componentDef.html#$,ComponentDef	proc `$`(def: ComponentDef): string		49
-nim	generateName	necsus/compiletime/componentDef.html#generateName,openArray[ComponentDef]	proc generateName(components: openArray[ComponentDef]): string		53
-nim	ident	necsus/compiletime/componentDef.html#ident,ComponentDef	proc ident(def: ComponentDef): NimNode		57
-nim	hash	necsus/compiletime/componentDef.html#hash,ComponentDef	proc hash(def: ComponentDef): Hash		62
-nim	addSignature	necsus/compiletime/componentDef.html#addSignature,string,ComponentDef	proc addSignature(onto: var string; comp: ComponentDef)		65
-nim	maxCapacity	necsus/compiletime/componentDef.html#maxCapacity,NimNode,auto	proc maxCapacity(errorSite: NimNode; components: auto): Option[NimNode]		108
+nim	componentIdCount	necsus/compiletime/componentDef.html#componentIdCount	proc componentIdCount(): int		43
+nim	newComponentDef	necsus/compiletime/componentDef.html#newComponentDef,NimNode	proc newComponentDef(node: NimNode): ComponentDef		47
+nim	readableName	necsus/compiletime/componentDef.html#readableName,ComponentDef	proc readableName(comp: ComponentDef): string		66
+nim	`==`	necsus/compiletime/componentDef.html#==,ComponentDef,ComponentDef	proc `==`(a, b: ComponentDef): bool		70
+nim	`<`	necsus/compiletime/componentDef.html#<,ComponentDef,ComponentDef	proc `<`(a, b: ComponentDef): auto		74
+nim	`$`	necsus/compiletime/componentDef.html#$,ComponentDef	proc `$`(def: ComponentDef): string		77
+nim	generateName	necsus/compiletime/componentDef.html#generateName,openArray[ComponentDef]	proc generateName(components: openArray[ComponentDef]): string		81
+nim	ident	necsus/compiletime/componentDef.html#ident,ComponentDef	proc ident(def: ComponentDef): NimNode		85
+nim	hash	necsus/compiletime/componentDef.html#hash,ComponentDef	proc hash(def: ComponentDef): Hash		90
+nim	columnId	necsus/compiletime/componentDef.html#columnId,ComponentDef	proc columnId(def: ComponentDef): NimNode		93
+nim	presenceColumnId	necsus/compiletime/componentDef.html#presenceColumnId,ComponentDef	proc presenceColumnId(def: ComponentDef): NimNode		98
+nim	addSignature	necsus/compiletime/componentDef.html#addSignature,string,ComponentDef	proc addSignature(onto: var string; comp: ComponentDef)		103
+nim	maxCapacity	necsus/compiletime/componentDef.html#maxCapacity,NimNode,auto	proc maxCapacity(errorSite: NimNode; components: auto): Option[NimNode]		146

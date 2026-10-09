@@ -1,3 +1,3 @@
 nimTitle	deleteGen	necsus/compiletime/deleteGen.html	module src/necsus/compiletime/deleteGen		0
-nim	deleteGenerator	necsus/compiletime/deleteGen.html#deleteGenerator	let deleteGenerator		63
-nim	deleteAllGenerator	necsus/compiletime/deleteGen.html#deleteAllGenerator	let deleteAllGenerator		112
+nim	deleteGenerator	necsus/compiletime/deleteGen.html#deleteGenerator	let deleteGenerator		112
+nim	deleteAllGenerator	necsus/compiletime/deleteGen.html#deleteAllGenerator	let deleteAllGenerator		170

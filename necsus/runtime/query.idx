@@ -1,19 +1,32 @@
 nimTitle	query	necsus/runtime/query.html	module src/necsus/runtime/query		0
-nim	QueryItem	necsus/runtime/query.html#QueryItem	tuple QueryItem		4
-nim	QueryConvert	necsus/runtime/query.html#QueryConvert	type QueryConvert		8
-nim	QuerySpan	necsus/runtime/query.html#QuerySpan	object QuerySpan		14
-nim	QueryGetSpan	necsus/runtime/query.html#QueryGetSpan	type QueryGetSpan		21
-nim	RawQuery	necsus/runtime/query.html#RawQuery	type RawQuery		27
-nim	Query	necsus/runtime/query.html#Query	type Query		34
-nim	FullQuery	necsus/runtime/query.html#FullQuery	type FullQuery		38
-nim	AnyQuery	necsus/runtime/query.html#AnyQuery	type AnyQuery		42
-nim	Not	necsus/runtime/query.html#Not	type Not		44
-nim	asFullQuery	necsus/runtime/query.html#asFullQuery,RawQuery[Comps]	proc asFullQuery[Comps](rawQuery: RawQuery[Comps]): FullQuery[Comps]		48
-nim	asQuery	necsus/runtime/query.html#asQuery,RawQuery[Comps]	proc asQuery[Comps](rawQuery: RawQuery[Comps]): Query[Comps]		51
-nim	newQuery	necsus/runtime/query.html#newQuery,pointer,QueryGetLen,QueryGetSpan[Comps: tuple]	proc newQuery[Comps: tuple](appState: pointer; getLen: QueryGetLen;\n                       getSpan: QueryGetSpan[Comps]): RawQuery[Comps]		54
-nim	newQuerySpan	necsus/runtime/query.html#newQuerySpan,ArchRowSpan,QueryConvert[Comps: tuple]	proc newQuerySpan[Comps: tuple](archSpan: ArchRowSpan; convert: QueryConvert[Comps]): QuerySpan[\n    Comps]		59
-nim	rows	necsus/runtime/query.html#rows.i,QuerySpan[Comps: tuple],Comps	iterator rows[Comps: tuple](span: QuerySpan[Comps]; slot: var Comps): RawArchRow		65
-nim	pairs	necsus/runtime/query.html#pairs.i,FullQuery[Comps: tuple]	iterator pairs[Comps: tuple](query: FullQuery[Comps]): QueryItem[Comps]		73
-nim	items	necsus/runtime/query.html#items.i,AnyQuery[Comps: tuple]	iterator items[Comps: tuple](query: AnyQuery[Comps]): Comps		83
-nim	len	necsus/runtime/query.html#len,AnyQuery[Comps: tuple]	proc len[Comps: tuple](query: AnyQuery[Comps]): Natural		93
-nim	single	necsus/runtime/query.html#single,AnyQuery[Comps: tuple]	proc single[Comps: tuple](query: AnyQuery[Comps]): Option[Comps]		98
+nim	Not	necsus/runtime/query.html#Not	type Not		7
+nim	QueryItem	necsus/runtime/query.html#QueryItem	tuple QueryItem		11
+nim	QueryCols	necsus/runtime/query.html#QueryCols	object QueryCols		15
+nim	QueryGetCols	necsus/runtime/query.html#QueryGetCols	type QueryGetCols		37
+nim	RawQuery	necsus/runtime/query.html#RawQuery	type RawQuery		43
+nim	Query	necsus/runtime/query.html#Query	type Query		50
+nim	FullQuery	necsus/runtime/query.html#FullQuery	type FullQuery		54
+nim	AnyQuery	necsus/runtime/query.html#AnyQuery	type AnyQuery		58
+nim	asFullQuery	necsus/runtime/query.html#asFullQuery,RawQuery[Comps]	proc asFullQuery[Comps](rawQuery: RawQuery[Comps]): FullQuery[Comps]		60
+nim	asQuery	necsus/runtime/query.html#asQuery,RawQuery[Comps]	proc asQuery[Comps](rawQuery: RawQuery[Comps]): Query[Comps]		63
+nim	newQuery	necsus/runtime/query.html#newQuery,pointer,QueryGetLen,QueryGetCols[Comps: tuple]	proc newQuery[Comps: tuple](appState: pointer; getLen: QueryGetLen;\n                       getCols: QueryGetCols[Comps]): RawQuery[Comps]		66
+nim	NO_ACCESSORY	necsus/runtime/query.html#NO_ACCESSORY	const NO_ACCESSORY		71
+nim	newQueryCols	necsus/runtime/query.html#newQueryCols,ArchetypeStore,openArray[ComponentId],openArray[ComponentId]	proc newQueryCols[Comps: tuple](store: ArchetypeStore;\n                           components: openArray[ComponentId];\n                           accessories: openArray[ComponentId]): QueryCols[Comps]		75
+nim	readCol	necsus/runtime/query.html#readCol.t,Column,uint32,T	template readCol[T](column: Column; idx: uint32; slot: var T)		101
+nim	readCol	necsus/runtime/query.html#readCol.t,Column,uint32,ptr.T	template readCol[T](column: Column; idx: uint32; slot: var ptr T)		105
+nim	readCol	necsus/runtime/query.html#readCol.t,Column,uint32,Not[T]	template readCol[T](column: Column; idx: uint32; slot: var Not[T])		110
+nim	readCol	necsus/runtime/query.html#readCol.t,Column,uint32,Option[T]	template readCol[T](column: Column; idx: uint32; slot: var Option[T])		115
+nim	readCol	necsus/runtime/query.html#readCol.t,Column,uint32,Option[ptr.T]	template readCol[T](column: Column; idx: uint32; slot: var Option[ptr T])		124
+nim	readAccCol	necsus/runtime/query.html#readAccCol.t,Column,Column,uint32,T	template readAccCol[T](column: Column; presence: Column; idx: uint32; slot: var T): bool		139
+nim	readAccCol	necsus/runtime/query.html#readAccCol.t,Column,Column,uint32,ptr.T	template readAccCol[T](column: Column; presence: Column; idx: uint32; slot: var ptr T): bool		150
+nim	readAccCol	necsus/runtime/query.html#readAccCol.t,Column,Column,uint32,Not[T]	template readAccCol[T](column: Column; presence: Column; idx: uint32; slot: var Not[T]): bool		160
+nim	readAccCol	necsus/runtime/query.html#readAccCol.t,Column,Column,uint32,Option[T]	template readAccCol[T](column: Column; presence: Column; idx: uint32; slot: var Option[T]): bool		168
+nim	readAccCol	necsus/runtime/query.html#readAccCol.t,Column,Column,uint32,Option[ptr.T]	template readAccCol[T](column: Column; presence: Column; idx: uint32;\n              slot: var Option[ptr T]): bool		180
+nim	read	necsus/runtime/query.html#read.t,QueryCols[Comps: tuple],uint32,Comps	template read[Comps: tuple](cols: QueryCols[Comps]; idx: uint32; slot: var Comps): bool		224
+nim	declSlot	necsus/runtime/query.html#declSlot.t,untyped,typedesc	template declSlot(slot: untyped; Comps: typedesc)		231
+nim	pairs	necsus/runtime/query.html#pairs.i,FullQuery[Comps: tuple]	iterator pairs[Comps: tuple](query: FullQuery[Comps]): QueryItem[Comps]		326
+nim	items	necsus/runtime/query.html#items.i,AnyQuery[Comps: tuple]	iterator items[Comps: tuple](query: AnyQuery[Comps]): Comps		337
+nim	len	necsus/runtime/query.html#len,AnyQuery[Comps: tuple]	proc len[Comps: tuple](query: AnyQuery[Comps]): Natural		347
+nim	single	necsus/runtime/query.html#single,AnyQuery[Comps: tuple]	proc single[Comps: tuple](query: AnyQuery[Comps]): Option[Comps]		352
+nimgrp	readcol	necsus/runtime/query.html#readCol-templates-all	template		101
+nimgrp	readacccol	necsus/runtime/query.html#readAccCol-templates-all	template		139

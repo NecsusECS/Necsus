@@ -54,13 +54,25 @@
   <details open>
     <summary><a class="reference reference-toplevel" href="#7" id="57">Types</a></summary>
     <ul class="simple simple-toc-section">
-      <li><a class="reference" href="#ArchetypeStore" title="ArchetypeStore[Comps] = object">ArchetypeStore</a></li>
-<li><a class="reference" href="#ArchRow" title="ArchRow[Comps] = object
-  entityId*: EntityId
-  components*: Comps">ArchRow</a></li>
-<li><a class="reference" href="#ArchRowSpan" title="ArchRowSpan = object">ArchRowSpan</a></li>
-<li><a class="reference" href="#NewArchSlot" title="NewArchSlot[Comps] = distinct Entry[ArchRow[Comps]]">NewArchSlot</a></li>
-<li><a class="reference" href="#RawArchRow" title="RawArchRow = object">RawArchRow</a></li>
+      <li><a class="reference" href="#AccessoryFlag" title="AccessoryFlag = bool">AccessoryFlag</a></li>
+<li><a class="reference" href="#ArchetypeStore" title="ArchetypeStore[N] = object
+  ## How many rows there is room for right now, which is none until the memory to hold
+  ## them has been claimed. Reserving a row already has to check this, so leaving it at
+  ## zero is what lets an archetype notice its first entity without the hot path
+  ## growing a second test
+  ## How many rows there will be room for once the memory arrives">ArchetypeStore</a></li>
+<li><a class="reference" href="#Column" title="Column = distinct pointer">Column</a></li>
+<li><a class="reference" href="#ColumnDef" title="ColumnDef = object">ColumnDef</a></li>
+<li><a class="reference" href="#ComponentId" title="ComponentId = uint16">ComponentId</a></li>
+
+    </ul>
+  </details>
+</li>
+<li>
+  <details open>
+    <summary><a class="reference reference-toplevel" href="#10" id="60">Consts</a></summary>
+    <ul class="simple simple-toc-section">
+      <li><a class="reference" href="#NO_COLUMN" title="NO_COLUMN = nil">NO_COLUMN</a></li>
 
     </ul>
   </details>
@@ -70,88 +82,89 @@
     <summary><a class="reference reference-toplevel" href="#12" id="62">Procs</a></summary>
     <ul class="simple simple-toc-section">
       <ul class="simple nested-toc-section">=copy
-  <li><a class="reference" href="#%3Dcopy%2CArchetypeStore%5BComps%3A%20tuple%5D%2CArchetypeStore%5BComps%3A%20tuple%5D" title="`=copy`[Comps: tuple](target: var ArchetypeStore[Comps];
-                      source: ArchetypeStore[Comps])">`=copy`[Comps: tuple](target: var ArchetypeStore[Comps];
-                      source: ArchetypeStore[Comps])</a></li>
-<li><a class="reference" href="#%3Dcopy%2CArchRow%5BComps%3A%20tuple%5D%2CArchRow%5BComps%3A%20tuple%5D" title="`=copy`[Comps: tuple](target: var ArchRow[Comps]; source: ArchRow[Comps])">`=copy`[Comps: tuple](target: var ArchRow[Comps]; source: ArchRow[Comps])</a></li>
+  <li><a class="reference" href="#%3Dcopy%2CArchetypeStore%5BN%5D%2CArchetypeStore%5BN%5D" title="`=copy`[N: static int](target: var ArchetypeStore[N]; source: ArchetypeStore[N])">`=copy`[N: static int](target: var ArchetypeStore[N]; source: ArchetypeStore[N])</a></li>
+
+</ul>
+<ul class="simple nested-toc-section">=destroy
+  <li><a class="reference" href="#%3Ddestroy%2CArchetypeStore%5BN%5D" title="`=destroy`[N: static int](store: var ArchetypeStore[N])">`=destroy`[N: static int](store: var ArchetypeStore[N])</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">addLen
-  <li><a class="reference" href="#addLen%2CArchetypeStore%5BComps%3A%20tuple%5D%2CNatural" title="addLen[Comps: tuple](store: var ArchetypeStore[Comps]; len: var Natural)">addLen[Comps: tuple](store: var ArchetypeStore[Comps]; len: var Natural)</a></li>
-<li><a class="reference" href="#addLen%2CArchetypeStore%5BComps%3A%20tuple%5D%2CNatural%2Cproc%28Comps%29" title="addLen[Comps: tuple](store: var ArchetypeStore[Comps]; len: var Natural;
-    predicate: proc (row: var Comps): bool {.nimcall, gcsafe, raises: [].})">addLen[Comps: tuple](store: var ArchetypeStore[Comps]; len: var Natural;
-    predicate: proc (row: var Comps): bool {.nimcall, gcsafe, raises: [].})</a></li>
+  <li><a class="reference" href="#addLen%2CArchetypeStore%2CNatural" title="addLen(store: ArchetypeStore; len: var Natural)">addLen(store: ArchetypeStore; len: var Natural)</a></li>
 
 </ul>
-<ul class="simple nested-toc-section">components
-  <li><a class="reference" href="#components%2CRawArchRow" title="components(row: RawArchRow): pointer">components(row: RawArchRow): pointer</a></li>
+<ul class="simple nested-toc-section">clearColumn
+  <li><a class="reference" href="#clearColumn%2CArchetypeStore%2CComponentId%2Cuint32" title="clearColumn[T](store: var ArchetypeStore; component: ComponentId; index: uint32)">clearColumn[T](store: var ArchetypeStore; component: ComponentId; index: uint32)</a></li>
 
 </ul>
-<ul class="simple nested-toc-section">del
-  <li><a class="reference" href="#del%2CArchetypeStore%2Cuint" title="del(store: var ArchetypeStore; index: uint)">del(store: var ArchetypeStore; index: uint)</a></li>
+<ul class="simple nested-toc-section">column
+  <li><a class="reference" href="#column%2CArchetypeStore%2CComponentId" title="column(store: ArchetypeStore; component: ComponentId): Column">column(store: ArchetypeStore; component: ComponentId): Column</a></li>
+
+</ul>
+<ul class="simple nested-toc-section">columnDef
+  <li><a class="reference" href="#columnDef%2CComponentId" title="columnDef[T](id: ComponentId): ColumnDef">columnDef[T](id: ComponentId): ColumnDef</a></li>
+
+</ul>
+<ul class="simple nested-toc-section">destroyColumn
+  <li><a class="reference" href="#destroyColumn%2CArchetypeStore%2CComponentId" title="destroyColumn[T](store: var ArchetypeStore; component: ComponentId)">destroyColumn[T](store: var ArchetypeStore; component: ComponentId)</a></li>
+
+</ul>
+<ul class="simple nested-toc-section">dropColumn
+  <li><a class="reference" href="#dropColumn%2CArchetypeStore%2CComponentId%2Cuint32" title="dropColumn[T](store: var ArchetypeStore; component: ComponentId; index: uint32)">dropColumn[T](store: var ArchetypeStore; component: ComponentId; index: uint32)</a></li>
+
+</ul>
+<ul class="simple nested-toc-section">dropRow
+  <li><a class="reference" href="#dropRow%2CArchetypeStore%2Cuint32" title="dropRow(store: var ArchetypeStore; index: uint32): EntityId">dropRow(store: var ArchetypeStore; index: uint32): EntityId</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">ensureAlloced
-  <li><a class="reference" href="#ensureAlloced%2CArchetypeStore%5BComps%3A%20tuple%5D" title="ensureAlloced[Comps: tuple](store: var ArchetypeStore[Comps])">ensureAlloced[Comps: tuple](store: var ArchetypeStore[Comps])</a></li>
+  <li><a class="reference" href="#ensureAlloced%2CArchetypeStore%5BN%5D" title="ensureAlloced[N: static int](store: var ArchetypeStore[N])">ensureAlloced[N: static int](store: var ArchetypeStore[N])</a></li>
+
+</ul>
+<ul class="simple nested-toc-section">entities
+  <li><a class="reference" href="#entities%2CArchetypeStore" title="entities(store: ArchetypeStore): ptr UncheckedArray[EntityId]">entities(store: ArchetypeStore): ptr UncheckedArray[EntityId]</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">entityId
-  <li><a class="reference" href="#entityId%2CRawArchRow" title="entityId(row: RawArchRow): EntityId">entityId(row: RawArchRow): EntityId</a></li>
-<li><a class="reference" href="#entityId%2CNewArchSlot%5BComps%3A%20tuple%5D" title="entityId[Comps: tuple](entry: NewArchSlot[Comps]): EntityId">entityId[Comps: tuple](entry: NewArchSlot[Comps]): EntityId</a></li>
+  <li><a class="reference" href="#entityId%2CArchetypeStore%2Cuint32" title="entityId(store: ArchetypeStore; index: uint32): EntityId">entityId(store: ArchetypeStore; index: uint32): EntityId</a></li>
 
 </ul>
-<ul class="simple nested-toc-section">getComps
-  <li><a class="reference" href="#getComps%2CArchetypeStore%5BComps%3A%20tuple%5D%2Cuint" title="getComps[Comps: tuple](store: var ArchetypeStore[Comps]; index: uint): ptr Comps">getComps[Comps: tuple](store: var ArchetypeStore[Comps]; index: uint): ptr Comps</a></li>
+<ul class="simple nested-toc-section">getColumn
+  <li><a class="reference" href="#getColumn%2CArchetypeStore%2CComponentId" title="getColumn[T](store: ArchetypeStore; component: ComponentId): ptr UncheckedArray[
+    T]">getColumn[T](store: ArchetypeStore; component: ComponentId): ptr UncheckedArray[
+    T]</a></li>
 
 </ul>
-<ul class="simple nested-toc-section">index
-  <li><a class="reference" href="#index%2CNewArchSlot%5BComps%3A%20tuple%5D" title="index[Comps: tuple](entry: NewArchSlot[Comps]): uint">index[Comps: tuple](entry: NewArchSlot[Comps]): uint</a></li>
+<ul class="simple nested-toc-section">initArchetypeStore
+  <li><a class="reference" href="#initArchetypeStore%2CArchetypeStore%2CArchetypeId%2CNatural%2CstaticopenArray%5BColumnDef%5D" title="initArchetypeStore(store: var ArchetypeStore; archetype: ArchetypeId;
+                   capacity: Natural; columns: static openArray[ColumnDef])">initArchetypeStore(store: var ArchetypeStore; archetype: ArchetypeId;
+                   capacity: Natural; columns: static openArray[ColumnDef])</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">isEmpty
-  <li><a class="reference" href="#isEmpty%2CArchRowSpan" title="isEmpty(span: ArchRowSpan): bool">isEmpty(span: ArchRowSpan): bool</a></li>
+  <li><a class="reference" href="#isEmpty%2CColumn" title="isEmpty(column: Column): bool">isEmpty(column: Column): bool</a></li>
 
 </ul>
-<ul class="simple nested-toc-section">moveEntity
-  <li><a class="reference" href="#moveEntity%2CWorld%2Cptr.EntityIndex%2CArchetypeStore%5BFromArch%3A%20tuple%5D%2CArchetypeStore%5BToArch%3A%20tuple%5D%2CsinkNewComps%2Cproc%28sinkFromArch%2CsinkNewComps%2CToArch%29" title="moveEntity[FromArch: tuple; NewComps: tuple; ToArch: tuple](world: var World;
-    entityIndex: ptr EntityIndex; fromArch: var ArchetypeStore[FromArch];
-    toArch: var ArchetypeStore[ToArch]; newValues: sink NewComps; combine: proc (
-    existing: sink FromArch; newValues: sink NewComps; output: var ToArch): bool {.
-    gcsafe, raises: [], nimcall.})">moveEntity[FromArch: tuple; NewComps: tuple; ToArch: tuple](world: var World;
-    entityIndex: ptr EntityIndex; fromArch: var ArchetypeStore[FromArch];
-    toArch: var ArchetypeStore[ToArch]; newValues: sink NewComps; combine: proc (
-    existing: sink FromArch; newValues: sink NewComps; output: var ToArch): bool {.
-    gcsafe, raises: [], nimcall.})</a></li>
+<ul class="simple nested-toc-section">len
+  <li><a class="reference" href="#len%2CArchetypeStore" title="len(store: ArchetypeStore): Natural">len(store: ArchetypeStore): Natural</a></li>
 
 </ul>
-<ul class="simple nested-toc-section">newArchetypeStore
-  <li><a class="reference" href="#newArchetypeStore%2CArchetypeId%2CNatural" title="newArchetypeStore[Comps: tuple](archetype: ArchetypeId; initialSize: Natural): ArchetypeStore[
-    Comps]">newArchetypeStore[Comps: tuple](archetype: ArchetypeId; initialSize: Natural): ArchetypeStore[
-    Comps]</a></li>
+<ul class="simple nested-toc-section">reserve
+  <li><a class="reference" href="#reserve%2CArchetypeStore%2CEntityId" title="reserve(store: var ArchetypeStore; entityId: EntityId): uint32">reserve(store: var ArchetypeStore; entityId: EntityId): uint32</a></li>
 
 </ul>
-<ul class="simple nested-toc-section">newSlot
-  <li><a class="reference" href="#newSlot%2CArchetypeStore%5BComps%3A%20tuple%5D%2CEntityId" title="newSlot[Comps: tuple](store: var ArchetypeStore[Comps]; entityId: EntityId): NewArchSlot[
-    Comps]">newSlot[Comps: tuple](store: var ArchetypeStore[Comps]; entityId: EntityId): NewArchSlot[
-    Comps]</a></li>
+<ul class="simple nested-toc-section">rows
+  <li><a class="reference" href="#rows%2CArchetypeStore" title="rows(store: ArchetypeStore): uint32">rows(store: ArchetypeStore): uint32</a></li>
 
 </ul>
-<ul class="simple nested-toc-section">next
-  <li><a class="reference" href="#next%2CArchetypeStore%5BComps%3A%20tuple%5D%2CBlockIter%2CEntityId" title="next[Comps: tuple](store: var ArchetypeStore[Comps]; iter: var BlockIter;
-                   eid: var EntityId): ptr Comps">next[Comps: tuple](store: var ArchetypeStore[Comps]; iter: var BlockIter;
-                   eid: var EntityId): ptr Comps</a></li>
+<ul class="simple nested-toc-section">setComponent
+  <li><a class="reference" href="#setComponent%2CArchetypeStore%2CComponentId%2Cuint32%2CsinkT" title="setComponent[T](store: var ArchetypeStore; component: ComponentId;
+                index: uint32; value: sink T)">setComponent[T](store: var ArchetypeStore; component: ComponentId;
+                index: uint32; value: sink T)</a></li>
 
 </ul>
-<ul class="simple nested-toc-section">readArchetype
-  <li><a class="reference" href="#readArchetype%2CArchetypeStore" title="readArchetype(store: ArchetypeStore): ArchetypeId">readArchetype(store: ArchetypeStore): ArchetypeId</a></li>
-
-</ul>
-<ul class="simple nested-toc-section">setComp
-  <li><a class="reference" href="#setComp%2CNewArchSlot%5BComps%3A%20tuple%5D%2CsinkComps" title="setComp[Comps: tuple](slot: NewArchSlot[Comps]; comps: sink Comps): EntityId">setComp[Comps: tuple](slot: NewArchSlot[Comps]; comps: sink Comps): EntityId</a></li>
-
-</ul>
-<ul class="simple nested-toc-section">wholeSpan
-  <li><a class="reference" href="#wholeSpan%2CArchetypeStore%5BComps%3A%20tuple%5D" title="wholeSpan[Comps: tuple](store: var ArchetypeStore[Comps]): ArchRowSpan">wholeSpan[Comps: tuple](store: var ArchetypeStore[Comps]): ArchRowSpan</a></li>
+<ul class="simple nested-toc-section">takeColumn
+  <li><a class="reference" href="#takeColumn%2CArchetypeStore%2CComponentId%2Cuint32" title="takeColumn[T](store: var ArchetypeStore; component: ComponentId; index: uint32): T">takeColumn[T](store: var ArchetypeStore; component: ComponentId; index: uint32): T</a></li>
 
 </ul>
 
@@ -163,11 +176,23 @@
     <summary><a class="reference reference-toplevel" href="#15" id="65">Iterators</a></summary>
     <ul class="simple simple-toc-section">
       <ul class="simple nested-toc-section">entityIds
-  <li><a class="reference" href="#entityIds.i%2CArchetypeStore%5BComps%5D" title="entityIds[Comps](store: var ArchetypeStore[Comps]): EntityId">entityIds[Comps](store: var ArchetypeStore[Comps]): EntityId</a></li>
+  <li><a class="reference" href="#entityIds.i%2CArchetypeStore" title="entityIds(store: ArchetypeStore): EntityId">entityIds(store: ArchetypeStore): EntityId</a></li>
 
 </ul>
-<ul class="simple nested-toc-section">rows
-  <li><a class="reference" href="#rows.i%2CArchRowSpan" title="rows(span: ArchRowSpan): RawArchRow">rows(span: ArchRowSpan): RawArchRow</a></li>
+
+    </ul>
+  </details>
+</li>
+<li>
+  <details open>
+    <summary><a class="reference reference-toplevel" href="#18" id="68">Templates</a></summary>
+    <ul class="simple simple-toc-section">
+      <ul class="simple nested-toc-section">at
+  <li><a class="reference" href="#at.t%2CColumn%2Ctypedesc%2Cuint32" title="at(column: Column; T: typedesc; index: uint32): untyped">at(column: Column; T: typedesc; index: uint32): untyped</a></li>
+
+</ul>
+<ul class="simple nested-toc-section">read
+  <li><a class="reference" href="#read.t%2CColumn%2Ctypedesc%2Cuint32" title="read(column: Column; T: typedesc; index: uint32): untyped">read(column: Column; T: typedesc; index: uint32): untyped</a></li>
 
 </ul>
 
@@ -186,51 +211,72 @@
     <div class="section" id="6">
   <h1><a class="toc-backref" href="#6">Imports</a></h1>
   <dl class="item">
-    <a class="reference external" href="world.html">world</a>, <a class="reference external" href="entityId.html">entityId</a>, <a class="reference external" href="../util/blockstore.html">../util/blockstore</a>
+    <a class="reference external" href="world.html">world</a>, <a class="reference external" href="entityId.html">entityId</a>
   </dl>
 </div>
 <div class="section" id="7">
   <h1><a class="toc-backref" href="#7">Types</a></h1>
   <dl class="item">
-    <div id="ArchetypeStore">
-  <dt><pre><a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">object</span></pre></dt>
+    <div id="AccessoryFlag">
+  <dt><pre><a href="archetypeStore.html#AccessoryFlag"><span class="Identifier">AccessoryFlag</span></a> <span class="Other">=</span> <span class="Identifier">bool</span></pre></dt>
   <dd>
     
-    Stores a specific archetype shape
+    <p>What the presence column of an accessory holds, one per row.</p>
+<p>An accessory belongs to an entity rather than to an archetype, so an archetype that has one holds rows both with and without it. The value lives in an ordinary column and whether the row has it at all lives in a column of its own, which means a walk that only cares about presence never has to touch the values</p>
+
     
   </dd>
 </div>
-<div id="ArchRow">
-  <dt><pre><a href="archetypeStore.html#ArchRow"><span class="Identifier">ArchRow</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">object</span>
-  <span class="Identifier">entityId</span><span class="Operator">*</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a>
-  <span class="Identifier">components</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">Comps</span></pre></dt>
+<div id="ArchetypeStore">
+  <dt><pre><a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">N</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">object</span>
+  <span class="Comment">## How many rows there is room for right now, which is none until the memory to hold</span>
+  <span class="Comment">## them has been claimed. Reserving a row already has to check this, so leaving it at</span>
+  <span class="Comment">## zero is what lets an archetype notice its first entity without the hot path</span>
+  <span class="Comment">## growing a second test</span>
+  <span class="Comment">## How many rows there will be room for once the memory arrives</span></pre></dt>
   <dd>
     
-    A row of data stored about an entity that matches a specific archetype
+    <p>Stores the entities of one archetype, a column per component.</p>
+<p><tt class="docutils literal"><span class="pre"><span class="Identifier">N</span></span></tt> is the number of components in the whole app, so there is one instantiation of this per app rather than one per archetype shape. Holding the column table inline keeps reaching a column down to a single load at a constant offset, and everything claiming a row needs sits ahead of that table, so a spawn touches one cache line however many components the app has</p>
+
     
   </dd>
 </div>
-<div id="ArchRowSpan">
-  <dt><pre><a href="archetypeStore.html#ArchRowSpan"><span class="Identifier">ArchRowSpan</span></a> <span class="Other">=</span> <span class="Keyword">object</span></pre></dt>
+<div id="Column">
+  <dt><pre><a href="archetypeStore.html#Column"><span class="Identifier">Column</span></a> <span class="Other">=</span> <span class="Keyword">distinct</span> <span class="Identifier">pointer</span></pre></dt>
   <dd>
     
-    Every row an archetype had at the moment the span was taken, described without the shape of the components in it. That is what lets a single walk cover archetypes that do not share a shape
+    A column of some component. Nothing here knows which -- only the site that resolved the column does, and it reads the column as the type it knows about
     
   </dd>
 </div>
-<div id="NewArchSlot">
-  <dt><pre><a href="archetypeStore.html#NewArchSlot"><span class="Identifier">NewArchSlot</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">distinct</span> <a href="../util/blockstore.html#Entry"><span class="Identifier">Entry</span></a><span class="Other">[</span><a href="archetypeStore.html#ArchRow"><span class="Identifier">ArchRow</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">]</span></pre></dt>
+<div id="ColumnDef">
+  <dt><pre><a href="archetypeStore.html#ColumnDef"><span class="Identifier">ColumnDef</span></a> <span class="Other">=</span> <span class="Keyword">object</span></pre></dt>
   <dd>
     
-    
+    Describes one column an archetype needs room for. The sizes come from <tt class="docutils literal"><span class="pre"><span class="Identifier">sizeof</span></span></tt> and <tt class="docutils literal"><span class="pre"><span class="Identifier">alignof</span></span></tt> at the site that knows the component type, so nothing has to be carried around to describe a component at runtime
     
   </dd>
 </div>
-<div id="RawArchRow">
-  <dt><pre><a href="archetypeStore.html#RawArchRow"><span class="Identifier">RawArchRow</span></a> <span class="Other">=</span> <span class="Keyword">object</span></pre></dt>
+<div id="ComponentId">
+  <dt><pre><a href="archetypeStore.html#ComponentId"><span class="Identifier">ComponentId</span></a> <span class="Other">=</span> <span class="Identifier">uint16</span></pre></dt>
   <dd>
     
-    A single row, reached without knowing the shape of the components in it. Where each half of the row sits is worked out here, so a caller never has to know how a row is laid out
+    The global index of a component. Every archetype indexes its columns by the same ids, which is what lets a query resolve a column without knowing which archetype it came from
+    
+  </dd>
+</div>
+
+  </dl>
+</div>
+<div class="section" id="10">
+  <h1><a class="toc-backref" href="#10">Consts</a></h1>
+  <dl class="item">
+    <div id="NO_COLUMN">
+  <dt><pre><a href="archetypeStore.html#NO_COLUMN"><span class="Identifier">NO_COLUMN</span></a> <span class="Other">=</span> <span class="Keyword">nil</span></pre></dt>
+  <dd>
+    
+    What an archetype holds for a component it does not have
     
   </dd>
 </div>
@@ -241,92 +287,141 @@
   <h1><a class="toc-backref" href="#12">Procs</a></h1>
   <dl class="item">
     <div id="=copy-procs-all">
-  <div id="=copy,ArchetypeStore[Comps: tuple],ArchetypeStore[Comps: tuple]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#%3Dcopy%2CArchetypeStore%5BComps%3A%20tuple%5D%2CArchetypeStore%5BComps%3A%20tuple%5D"><span class="Identifier">`=copy`</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">target</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">;</span>
-                           <span class="Identifier">source</span><span class="Other">:</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">)</span> {.<span class="Identifier">error</span>.}</pre></dt>
+  <div id="=copy,ArchetypeStore[N],ArchetypeStore[N]">
+  <dt><pre><span class="Keyword">proc</span> <a href="#%3Dcopy%2CArchetypeStore%5BN%5D%2CArchetypeStore%5BN%5D"><span class="Identifier">`=copy`</span></a><span class="Other">[</span><span class="Identifier">N</span><span class="Other">:</span> <span class="Identifier">static</span> <span class="Identifier">int</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">target</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">N</span><span class="Other">]</span><span class="Other">;</span>
+                            <span class="Identifier">source</span><span class="Other">:</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">N</span><span class="Other">]</span><span class="Other">)</span> {.<span class="Identifier">error</span>.}</pre></dt>
   <dd>
     
     
     
   </dd>
 </div>
-<div id="=copy,ArchRow[Comps: tuple],ArchRow[Comps: tuple]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#%3Dcopy%2CArchRow%5BComps%3A%20tuple%5D%2CArchRow%5BComps%3A%20tuple%5D"><span class="Identifier">`=copy`</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">target</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchRow"><span class="Identifier">ArchRow</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">source</span><span class="Other">:</span> <a href="archetypeStore.html#ArchRow"><span class="Identifier">ArchRow</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">)</span> {.
-    <span class="Identifier">error</span>.}</pre></dt>
+
+</div>
+<div id="=destroy-procs-all">
+  <div id="=destroy,ArchetypeStore[N]">
+  <dt><pre><span class="Keyword">proc</span> <a href="#%3Ddestroy%2CArchetypeStore%5BN%5D"><span class="Identifier">`=destroy`</span></a><span class="Other">[</span><span class="Identifier">N</span><span class="Other">:</span> <span class="Identifier">static</span> <span class="Identifier">int</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">N</span><span class="Other">]</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
-    
+    Releases the memory backing an archetype. Every column has to have been destroyed before this runs, because afterwards there is nothing left to say what was in them
     
   </dd>
 </div>
 
 </div>
 <div id="addLen-procs-all">
-  <div id="addLen,ArchetypeStore[Comps: tuple],Natural">
-  <dt><pre><span class="Keyword">func</span> <a href="#addLen%2CArchetypeStore%5BComps%3A%20tuple%5D%2CNatural"><span class="Identifier">addLen</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">len</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">Natural</span><span class="Other">)</span></pre></dt>
+  <div id="addLen,ArchetypeStore,Natural">
+  <dt><pre><span class="Keyword">proc</span> <a href="#addLen%2CArchetypeStore%2CNatural"><span class="Identifier">addLen</span></a><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">;</span> <span class="Identifier">len</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">Natural</span><span class="Other">)</span> {.<span class="Identifier">inline</span>.}</pre></dt>
   <dd>
     
-    Accessor for the archetype of a store
-    
-  </dd>
-</div>
-<div id="addLen,ArchetypeStore[Comps: tuple],Natural,proc(Comps)">
-  <dt><pre><span class="Keyword">proc</span> <a href="#addLen%2CArchetypeStore%5BComps%3A%20tuple%5D%2CNatural%2Cproc%28Comps%29"><span class="Identifier">addLen</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">len</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">Natural</span><span class="Other">;</span>
-    <span class="Identifier">predicate</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">row</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">Comps</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span class="Identifier">nimcall</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}<span class="Other">)</span></pre></dt>
-  <dd>
-    
-    Reads the length of an archetype store, using a predicate to determine whether to count a row
+    Adds the number of entities in this archetype onto a running total
     
   </dd>
 </div>
 
 </div>
-<div id="components-procs-all">
-  <div id="components,RawArchRow">
-  <dt><pre><span class="Keyword">proc</span> <a href="#components%2CRawArchRow"><span class="Identifier">components</span></a><span class="Other">(</span><span class="Identifier">row</span><span class="Other">:</span> <a href="archetypeStore.html#RawArchRow"><span class="Identifier">RawArchRow</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">pointer</span> {.<span class="Identifier">inline</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<div id="clearColumn-procs-all">
+  <div id="clearColumn,ArchetypeStore,ComponentId,uint32">
+  <dt><pre><span class="Keyword">proc</span> <a href="#clearColumn%2CArchetypeStore%2CComponentId%2Cuint32"><span class="Identifier">clearColumn</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">;</span> <span class="Identifier">component</span><span class="Other">:</span> <a href="archetypeStore.html#ComponentId"><span class="Identifier">ComponentId</span></a><span class="Other">;</span>
+                    <span class="Identifier">index</span><span class="Other">:</span> <span class="Identifier">uint32</span><span class="Other">)</span></pre></dt>
   <dd>
     
-    The components in a row, untyped. Only code generated against this archetype knows the shape well enough to read them
+    Destroys one value in a column without disturbing any other row, leaving the slot reading as zero. This is how an accessory is taken off an entity that stays where it is: the row is still live, so nothing gets relocated into it
     
   </dd>
 </div>
 
 </div>
-<div id="del-procs-all">
-  <div id="del,ArchetypeStore,uint">
-  <dt><pre><span class="Keyword">proc</span> <a href="#del%2CArchetypeStore%2Cuint"><span class="Identifier">del</span></a><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">;</span> <span class="Identifier">index</span><span class="Other">:</span> <span class="Identifier">uint</span><span class="Other">)</span></pre></dt>
+<div id="column-procs-all">
+  <div id="column,ArchetypeStore,ComponentId">
+  <dt><pre><span class="Keyword">proc</span> <a href="#column%2CArchetypeStore%2CComponentId"><span class="Identifier">column</span></a><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">;</span> <span class="Identifier">component</span><span class="Other">:</span> <a href="archetypeStore.html#ComponentId"><span class="Identifier">ComponentId</span></a><span class="Other">)</span><span class="Other">:</span> <a href="archetypeStore.html#Column"><span class="Identifier">Column</span></a> {.<span class="Identifier">inline</span><span class="Other">,</span>
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
-    Return the components for an archetype
+    <p>The column holding a component, or <tt class="docutils literal"><span class="pre"><span class="Identifier">NO_COLUMN</span></span></tt> when this archetype does not have it.</p>
+<p>Component ids are global, so this is the same lookup in every archetype -- which is what lets a caller resolve a column without knowing which archetype it came from.</p>
+<p>Only worth reading once the archetype has rows in it: an archetype yet to be allocated is still carrying the offset each column is going to sit at rather than a pointer to it. Every caller already asks about rows first, because a column of an empty archetype has nothing in it to read</p>
+
+    
+  </dd>
+</div>
+
+</div>
+<div id="columnDef-procs-all">
+  <div id="columnDef,ComponentId">
+  <dt><pre><span class="Keyword">func</span> <a href="#columnDef%2CComponentId"><span class="Identifier">columnDef</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">id</span><span class="Other">:</span> <a href="archetypeStore.html#ComponentId"><span class="Identifier">ComponentId</span></a><span class="Other">)</span><span class="Other">:</span> <a href="archetypeStore.html#ColumnDef"><span class="Identifier">ColumnDef</span></a></pre></dt>
+  <dd>
+    
+    Describes the column a component needs. How much room a component takes is a property of the component rather than of any archetype, so this is meant to be worked out once and shared by every archetype that has that component
+    
+  </dd>
+</div>
+
+</div>
+<div id="destroyColumn-procs-all">
+  <div id="destroyColumn,ArchetypeStore,ComponentId">
+  <dt><pre><span class="Keyword">proc</span> <a href="#destroyColumn%2CArchetypeStore%2CComponentId"><span class="Identifier">destroyColumn</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">;</span> <span class="Identifier">component</span><span class="Other">:</span> <a href="archetypeStore.html#ComponentId"><span class="Identifier">ComponentId</span></a><span class="Other">)</span></pre></dt>
+  <dd>
+    
+    Destroys the live values in a single column. Columns hold raw memory, so nothing else is going to run a destructor over them
+    
+  </dd>
+</div>
+
+</div>
+<div id="dropColumn-procs-all">
+  <div id="dropColumn,ArchetypeStore,ComponentId,uint32">
+  <dt><pre><span class="Keyword">proc</span> <a href="#dropColumn%2CArchetypeStore%2CComponentId%2Cuint32"><span class="Identifier">dropColumn</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">;</span> <span class="Identifier">component</span><span class="Other">:</span> <a href="archetypeStore.html#ComponentId"><span class="Identifier">ComponentId</span></a><span class="Other">;</span>
+                   <span class="Identifier">index</span><span class="Other">:</span> <span class="Identifier">uint32</span><span class="Other">)</span></pre></dt>
+  <dd>
+    
+    Destroys one value in a column and relocates the last row into the hole it leaves
+    
+  </dd>
+</div>
+
+</div>
+<div id="dropRow-procs-all">
+  <div id="dropRow,ArchetypeStore,uint32">
+  <dt><pre><span class="Keyword">proc</span> <a href="#dropRow%2CArchetypeStore%2Cuint32"><span class="Identifier">dropRow</span></a><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">;</span> <span class="Identifier">index</span><span class="Other">:</span> <span class="Identifier">uint32</span><span class="Other">)</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a> {.<span class="Identifier">discardable</span>.}</pre></dt>
+  <dd>
+    
+    <p>Finishes a delete once every column has been dropped, moving the last entity id down to fill the hole.</p>
+<p>Returns the entity that moved, so the caller can correct the archetype index it has recorded for it. Returns the deleted entity when nothing had to move</p>
+
     
   </dd>
 </div>
 
 </div>
 <div id="ensureAlloced-procs-all">
-  <div id="ensureAlloced,ArchetypeStore[Comps: tuple]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#ensureAlloced%2CArchetypeStore%5BComps%3A%20tuple%5D"><span class="Identifier">ensureAlloced</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">)</span></pre></dt>
+  <div id="ensureAlloced,ArchetypeStore[N]">
+  <dt><pre><span class="Keyword">proc</span> <a href="#ensureAlloced%2CArchetypeStore%5BN%5D"><span class="Identifier">ensureAlloced</span></a><span class="Other">[</span><span class="Identifier">N</span><span class="Other">:</span> <span class="Identifier">static</span> <span class="Identifier">int</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">N</span><span class="Other">]</span><span class="Other">)</span> {.<span class="Identifier">noinline</span>.}</pre></dt>
   <dd>
     
-    Allocs the memory for this archetype if it hasn't been alloced already
+    <p>Claims the memory backing an archetype, if it doesn't have any yet.</p>
+<p>An app describes more archetypes than it tends to fill, and each one is sized for the whole app, so waiting until an entity actually arrives keeps the archetypes that never see one down to nothing at all. The column table holds offsets until this runs, which is what turns them into the pointers everything else reads</p>
+
+    
+  </dd>
+</div>
+
+</div>
+<div id="entities-procs-all">
+  <div id="entities,ArchetypeStore">
+  <dt><pre><span class="Keyword">proc</span> <a href="#entities%2CArchetypeStore"><span class="Identifier">entities</span></a><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Keyword">ptr</span> <span class="Identifier">UncheckedArray</span><span class="Other">[</span><a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">]</span> {.<span class="Identifier">inline</span><span class="Other">,</span>
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    The entity ids sitting alongside the columns, one per row and in the same order
     
   </dd>
 </div>
 
 </div>
 <div id="entityId-procs-all">
-  <div id="entityId,RawArchRow">
-  <dt><pre><span class="Keyword">proc</span> <a href="#entityId%2CRawArchRow"><span class="Identifier">entityId</span></a><span class="Other">(</span><span class="Identifier">row</span><span class="Other">:</span> <a href="archetypeStore.html#RawArchRow"><span class="Identifier">RawArchRow</span></a><span class="Other">)</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a> {.<span class="Identifier">inline</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
-  <dd>
-    
-    The entity a row belongs to. Only read if a caller actually asks for it
-    
-  </dd>
-</div>
-<div id="entityId,NewArchSlot[Comps: tuple]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#entityId%2CNewArchSlot%5BComps%3A%20tuple%5D"><span class="Identifier">entityId</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">entry</span><span class="Other">:</span> <a href="archetypeStore.html#NewArchSlot"><span class="Identifier">NewArchSlot</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a></pre></dt>
+  <div id="entityId,ArchetypeStore,uint32">
+  <dt><pre><span class="Keyword">proc</span> <a href="#entityId%2CArchetypeStore%2Cuint32"><span class="Identifier">entityId</span></a><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">;</span> <span class="Identifier">index</span><span class="Other">:</span> <span class="Identifier">uint32</span><span class="Other">)</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a> {.<span class="Identifier">inline</span>.}</pre></dt>
   <dd>
     
     
@@ -335,121 +430,93 @@
 </div>
 
 </div>
-<div id="getComps-procs-all">
-  <div id="getComps,ArchetypeStore[Comps: tuple],uint">
-  <dt><pre><span class="Keyword">proc</span> <a href="#getComps%2CArchetypeStore%5BComps%3A%20tuple%5D%2Cuint"><span class="Identifier">getComps</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">index</span><span class="Other">:</span> <span class="Identifier">uint</span><span class="Other">)</span><span class="Other">:</span> <span class="Keyword">ptr</span> <span class="Identifier">Comps</span></pre></dt>
+<div id="getColumn-procs-all">
+  <div id="getColumn,ArchetypeStore,ComponentId">
+  <dt><pre><span class="Keyword">proc</span> <a href="#getColumn%2CArchetypeStore%2CComponentId"><span class="Identifier">getColumn</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">;</span> <span class="Identifier">component</span><span class="Other">:</span> <a href="archetypeStore.html#ComponentId"><span class="Identifier">ComponentId</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Keyword">ptr</span> <span class="Identifier">UncheckedArray</span><span class="Other">[</span>
+    <span class="Identifier">T</span><span class="Other">]</span> {.<span class="Identifier">inline</span>.}</pre></dt>
   <dd>
     
-    Return the components for an archetype
+    Reads a column as the component it holds. The caller is the one that knows which component sits at an id, so it is the caller that names the type
     
   </dd>
 </div>
 
 </div>
-<div id="index-procs-all">
-  <div id="index,NewArchSlot[Comps: tuple]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#index%2CNewArchSlot%5BComps%3A%20tuple%5D"><span class="Identifier">index</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">entry</span><span class="Other">:</span> <a href="archetypeStore.html#NewArchSlot"><span class="Identifier">NewArchSlot</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">uint</span></pre></dt>
+<div id="initArchetypeStore-procs-all">
+  <div id="initArchetypeStore,ArchetypeStore,ArchetypeId,Natural,staticopenArray[ColumnDef]">
+  <dt><pre><span class="Keyword">proc</span> <a href="#initArchetypeStore%2CArchetypeStore%2CArchetypeId%2CNatural%2CstaticopenArray%5BColumnDef%5D"><span class="Identifier">initArchetypeStore</span></a><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">;</span> <span class="Identifier">archetype</span><span class="Other">:</span> <a href="world.html#ArchetypeId"><span class="Identifier">ArchetypeId</span></a><span class="Other">;</span>
+                        <span class="Identifier">capacity</span><span class="Other">:</span> <span class="Identifier">Natural</span><span class="Other">;</span> <span class="Identifier">columns</span><span class="Other">:</span> <span class="Identifier">static</span> <span class="Identifier">openArray</span><span class="Other">[</span><a href="archetypeStore.html#ColumnDef"><span class="Identifier">ColumnDef</span></a><span class="Other">]</span><span class="Other">)</span></pre></dt>
   <dd>
     
-    
+    Lays out the storage for a single archetype in place
     
   </dd>
 </div>
 
 </div>
 <div id="isEmpty-procs-all">
-  <div id="isEmpty,ArchRowSpan">
-  <dt><pre><span class="Keyword">proc</span> <a href="#isEmpty%2CArchRowSpan"><span class="Identifier">isEmpty</span></a><span class="Other">(</span><span class="Identifier">span</span><span class="Other">:</span> <a href="archetypeStore.html#ArchRowSpan"><span class="Identifier">ArchRowSpan</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span class="Identifier">inline</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
-                                        <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <div id="isEmpty,Column">
+  <dt><pre><span class="Keyword">proc</span> <a href="#isEmpty%2CColumn"><span class="Identifier">isEmpty</span></a><span class="Other">(</span><span class="Identifier">column</span><span class="Other">:</span> <a href="archetypeStore.html#Column"><span class="Identifier">Column</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span class="Identifier">inline</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
-    Whether this span covers any rows at all
+    Whether an archetype had this column at all. An archetype without a component leaves nothing behind for it, which is how an absent component is told apart from a present one
     
   </dd>
 </div>
 
 </div>
-<div id="moveEntity-procs-all">
-  <div id="moveEntity,World,ptr.EntityIndex,ArchetypeStore[FromArch: tuple],ArchetypeStore[ToArch: tuple],sinkNewComps,proc(sinkFromArch,sinkNewComps,ToArch)">
-  <dt><pre><span class="Keyword">proc</span> <a href="#moveEntity%2CWorld%2Cptr.EntityIndex%2CArchetypeStore%5BFromArch%3A%20tuple%5D%2CArchetypeStore%5BToArch%3A%20tuple%5D%2CsinkNewComps%2Cproc%28sinkFromArch%2CsinkNewComps%2CToArch%29"><span class="Identifier">moveEntity</span></a><span class="Other">[</span><span class="Identifier">FromArch</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">;</span> <span class="Identifier">NewComps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">;</span> <span class="Identifier">ToArch</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span>
-    <span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">entityIndex</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="world.html#EntityIndex"><span class="Identifier">EntityIndex</span></a><span class="Other">;</span>
-    <span class="Identifier">fromArch</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">FromArch</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">toArch</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">ToArch</span><span class="Other">]</span><span class="Other">;</span>
-    <span class="Identifier">newValues</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">NewComps</span><span class="Other">;</span> <span class="Identifier">combine</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">existing</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">FromArch</span><span class="Other">;</span>
-    <span class="Identifier">newValues</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">NewComps</span><span class="Other">;</span> <span class="Identifier">output</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">ToArch</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
-    </span><span class="Identifier">nimcall</span>.}<span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">]</span></span>.}</pre></dt>
+<div id="len-procs-all">
+  <div id="len,ArchetypeStore">
+  <dt><pre><span class="Keyword">proc</span> <a href="#len%2CArchetypeStore"><span class="Identifier">len</span></a><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Natural</span> {.<span class="Identifier">inline</span>.}</pre></dt>
   <dd>
     
-    Moves the components for an entity from one archetype to another
+    The number of entities currently stored
     
   </dd>
 </div>
 
 </div>
-<div id="newArchetypeStore-procs-all">
-  <div id="newArchetypeStore,ArchetypeId,Natural">
-  <dt><pre><span class="Keyword">proc</span> <a href="#newArchetypeStore%2CArchetypeId%2CNatural"><span class="Identifier">newArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <a href="world.html#ArchetypeId"><span class="Identifier">ArchetypeId</span></a><span class="Other">;</span>
-                                     <span class="Identifier">initialSize</span><span class="Other">:</span> <span class="Identifier">Natural</span><span class="Other">)</span><span class="Other">:</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span></pre></dt>
+<div id="reserve-procs-all">
+  <div id="reserve,ArchetypeStore,EntityId">
+  <dt><pre><span class="Keyword">proc</span> <a href="#reserve%2CArchetypeStore%2CEntityId"><span class="Identifier">reserve</span></a><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">;</span> <span class="Identifier">entityId</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">uint32</span></pre></dt>
   <dd>
     
-    Creates a new storage block for an archetype
+    Claims the next row for an entity and returns its index.
     
   </dd>
 </div>
 
 </div>
-<div id="newSlot-procs-all">
-  <div id="newSlot,ArchetypeStore[Comps: tuple],EntityId">
-  <dt><pre><span class="Keyword">proc</span> <a href="#newSlot%2CArchetypeStore%5BComps%3A%20tuple%5D%2CEntityId"><span class="Identifier">newSlot</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">entityId</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span><span class="Other">:</span> <a href="archetypeStore.html#NewArchSlot"><span class="Identifier">NewArchSlot</span></a><span class="Other">[</span>
-    <span class="Identifier">Comps</span><span class="Other">]</span></pre></dt>
+<div id="rows-procs-all">
+  <div id="rows,ArchetypeStore">
+  <dt><pre><span class="Keyword">proc</span> <a href="#rows%2CArchetypeStore"><span class="Identifier">rows</span></a><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">uint32</span> {.<span class="Identifier">inline</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
-    Reserves a slot for storing a new component
+    The number of rows every column in this archetype currently holds
     
   </dd>
 </div>
 
 </div>
-<div id="next-procs-all">
-  <div id="next,ArchetypeStore[Comps: tuple],BlockIter,EntityId">
-  <dt><pre><span class="Keyword">proc</span> <a href="#next%2CArchetypeStore%5BComps%3A%20tuple%5D%2CBlockIter%2CEntityId"><span class="Identifier">next</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">iter</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="../util/blockstore.html#BlockIter"><span class="Identifier">BlockIter</span></a><span class="Other">;</span>
-                        <span class="Identifier">eid</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Keyword">ptr</span> <span class="Identifier">Comps</span> {.<span class="Identifier">inline</span>.}</pre></dt>
+<div id="setComponent-procs-all">
+  <div id="setComponent,ArchetypeStore,ComponentId,uint32,sinkT">
+  <dt><pre><span class="Keyword">proc</span> <a href="#setComponent%2CArchetypeStore%2CComponentId%2Cuint32%2CsinkT"><span class="Identifier">setComponent</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">;</span> <span class="Identifier">component</span><span class="Other">:</span> <a href="archetypeStore.html#ComponentId"><span class="Identifier">ComponentId</span></a><span class="Other">;</span>
+                     <span class="Identifier">index</span><span class="Other">:</span> <span class="Identifier">uint32</span><span class="Other">;</span> <span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">T</span><span class="Other">)</span> {.<span class="Identifier">inline</span>.}</pre></dt>
   <dd>
     
-    Returns the next row of components in this archetype store
+    Stores a single component in a row. The row was zeroed when it was reserved, so the assignment has a valid value to sink over
     
   </dd>
 </div>
 
 </div>
-<div id="readArchetype-procs-all">
-  <div id="readArchetype,ArchetypeStore">
-  <dt><pre><span class="Keyword">proc</span> <a href="#readArchetype%2CArchetypeStore"><span class="Identifier">readArchetype</span></a><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">)</span><span class="Other">:</span> <a href="world.html#ArchetypeId"><span class="Identifier">ArchetypeId</span></a> {.<span class="Identifier">inline</span>.}</pre></dt>
+<div id="takeColumn-procs-all">
+  <div id="takeColumn,ArchetypeStore,ComponentId,uint32">
+  <dt><pre><span class="Keyword">proc</span> <a href="#takeColumn%2CArchetypeStore%2CComponentId%2Cuint32"><span class="Identifier">takeColumn</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">;</span> <span class="Identifier">component</span><span class="Other">:</span> <a href="archetypeStore.html#ComponentId"><span class="Identifier">ComponentId</span></a><span class="Other">;</span>
+                   <span class="Identifier">index</span><span class="Other">:</span> <span class="Identifier">uint32</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">T</span></pre></dt>
   <dd>
     
-    Accessor for the archetype of a store
-    
-  </dd>
-</div>
-
-</div>
-<div id="setComp-procs-all">
-  <div id="setComp,NewArchSlot[Comps: tuple],sinkComps">
-  <dt><pre><span class="Keyword">proc</span> <a href="#setComp%2CNewArchSlot%5BComps%3A%20tuple%5D%2CsinkComps"><span class="Identifier">setComp</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">slot</span><span class="Other">:</span> <a href="archetypeStore.html#NewArchSlot"><span class="Identifier">NewArchSlot</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">comps</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">Comps</span><span class="Other">)</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a></pre></dt>
-  <dd>
-    
-    Stores an entity and its components into this slot
-    
-  </dd>
-</div>
-
-</div>
-<div id="wholeSpan-procs-all">
-  <div id="wholeSpan,ArchetypeStore[Comps: tuple]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#wholeSpan%2CArchetypeStore%5BComps%3A%20tuple%5D"><span class="Identifier">wholeSpan</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="archetypeStore.html#ArchRowSpan"><span class="Identifier">ArchRowSpan</span></a> {.
-    <span class="Identifier">inline</span>.}</pre></dt>
-  <dd>
-    
-    Returns every row in this archetype. Callers walk the rows themselves, which keeps the archetype out of the per row path entirely
+    Moves one value out of a column and relocates the last row into the hole it leaves.
     
   </dd>
 </div>
@@ -462,22 +529,41 @@
   <h1><a class="toc-backref" href="#15">Iterators</a></h1>
   <dl class="item">
     <div id="entityIds-iterators-all">
-  <div id="entityIds.i,ArchetypeStore[Comps]">
-  <dt><pre><span class="Keyword">iterator</span> <a href="#entityIds.i%2CArchetypeStore%5BComps%5D"><span class="Identifier">entityIds</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">Comps</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a></pre></dt>
+  <div id="entityIds.i,ArchetypeStore">
+  <dt><pre><span class="Keyword">iterator</span> <a href="#entityIds.i%2CArchetypeStore"><span class="Identifier">entityIds</span></a><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">)</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a></pre></dt>
   <dd>
     
-    
+    Walks every entity in this archetype
     
   </dd>
 </div>
 
 </div>
-<div id="rows-iterators-all">
-  <div id="rows.i,ArchRowSpan">
-  <dt><pre><span class="Keyword">iterator</span> <a href="#rows.i%2CArchRowSpan"><span class="Identifier">rows</span></a><span class="Other">(</span><span class="Identifier">span</span><span class="Other">:</span> <a href="archetypeStore.html#ArchRowSpan"><span class="Identifier">ArchRowSpan</span></a><span class="Other">)</span><span class="Other">:</span> <a href="archetypeStore.html#RawArchRow"><span class="Identifier">RawArchRow</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+
+  </dl>
+</div>
+<div class="section" id="18">
+  <h1><a class="toc-backref" href="#18">Templates</a></h1>
+  <dl class="item">
+    <div id="at-templates-all">
+  <div id="at.t,Column,typedesc,uint32">
+  <dt><pre><span class="Keyword">template</span> <a href="#at.t%2CColumn%2Ctypedesc%2Cuint32"><span class="Identifier">at</span></a><span class="Other">(</span><span class="Identifier">column</span><span class="Other">:</span> <a href="archetypeStore.html#Column"><span class="Identifier">Column</span></a><span class="Other">;</span> <span class="Identifier">T</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">;</span> <span class="Identifier">index</span><span class="Other">:</span> <span class="Identifier">uint32</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
   <dd>
     
-    Walks the rows in a span, resolving where each half of a row sits as it goes
+    <p>Points at one value in a column. A column does not know what it holds, so the caller is the one that names the type.</p>
+<p>Handing back a pointer rather than a value is what keeps the caller in charge of whether anything gets copied. This is a template so that reading a column stays a plain indexed load at the site that asked for it, with no call to be seen through</p>
+
+    
+  </dd>
+</div>
+
+</div>
+<div id="read-templates-all">
+  <div id="read.t,Column,typedesc,uint32">
+  <dt><pre><span class="Keyword">template</span> <a href="#read.t%2CColumn%2Ctypedesc%2Cuint32"><span class="Identifier">read</span></a><span class="Other">(</span><span class="Identifier">column</span><span class="Other">:</span> <a href="archetypeStore.html#Column"><span class="Identifier">Column</span></a><span class="Other">;</span> <span class="Identifier">T</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">;</span> <span class="Identifier">index</span><span class="Other">:</span> <span class="Identifier">uint32</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
+  <dd>
+    
+    Reads one value out of a column
     
   </dd>
 </div>
@@ -493,7 +579,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-08-01 15:14:06 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-10-09 02:29:20 UTC</small>
       </div>
     </div>
   </div>

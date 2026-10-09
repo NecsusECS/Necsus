@@ -79,6 +79,10 @@
   <li><a class="reference" href="#resolveAlias%2CNimNode" title="resolveAlias(typeDef: NimNode): Option[NimNode]">resolveAlias(typeDef: NimNode): Option[NimNode]</a></li>
 
 </ul>
+<ul class="simple nested-toc-section">resolveAliasTo
+  <li><a class="reference" href="#resolveAliasTo%2CNimNode%2CopenArray%5Bstring%5D" title="resolveAliasTo(typeDef: NimNode; heads: openArray[string]): Option[NimNode]">resolveAliasTo(typeDef: NimNode; heads: openArray[string]): Option[NimNode]</a></li>
+
+</ul>
 <ul class="simple nested-toc-section">resolveBracketGeneric
   <li><a class="reference" href="#resolveBracketGeneric%2CNimNode" title="resolveBracketGeneric(typeDef: NimNode): NimNode">resolveBracketGeneric(typeDef: NimNode): NimNode</a></li>
 
@@ -183,6 +187,18 @@
 </div>
 
 </div>
+<div id="resolveAliasTo-procs-all">
+  <div id="resolveAliasTo,NimNode,openArray[string]">
+  <dt><pre><span class="Keyword">proc</span> <a href="#resolveAliasTo%2CNimNode%2CopenArray%5Bstring%5D"><span class="Identifier">resolveAliasTo</span></a><span class="Other">(</span><span class="Identifier">typeDef</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">;</span> <span class="Identifier">heads</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">string</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Option</span><span class="Other">[</span><span class="Identifier">NimNode</span><span class="Other">]</span> {.
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Follows a chain of aliases to an instantiation of one of the named generic types, if that is where it leads. Anything else the chain ends at, whether a concrete type or an instantiation of some other generic, is not a match
+    
+  </dd>
+</div>
+
+</div>
 <div id="resolveBracketGeneric-procs-all">
   <div id="resolveBracketGeneric,NimNode">
   <dt><pre><span class="Keyword">proc</span> <a href="#resolveBracketGeneric%2CNimNode"><span class="Identifier">resolveBracketGeneric</span></a><span class="Other">(</span><span class="Identifier">typeDef</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span>
@@ -217,7 +233,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-08-01 15:14:06 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-10-09 02:29:20 UTC</small>
       </div>
     </div>
   </div>

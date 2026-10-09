@@ -15,5 +15,4 @@ nim	`<`	necsus/compiletime/tupleDirective.html#<,TupleDirective,TupleDirective	p
 nim	filter	necsus/compiletime/tupleDirective.html#filter,TupleDirective	proc filter(dir: TupleDirective): BitsFilter		76
 nim	bits	necsus/compiletime/tupleDirective.html#bits,TupleDirective	proc bits(dir: TupleDirective): Bits		92
 nim	signature	necsus/compiletime/tupleDirective.html#signature,TupleDirective	proc signature(dir: TupleDirective): string		98
-nim	hasAccessories	necsus/compiletime/tupleDirective.html#hasAccessories,TupleDirective	proc hasAccessories(dir: TupleDirective): bool		103
 nimgrp	newtupledir	necsus/compiletime/tupleDirective.html#newTupleDir-procs-all	proc		8

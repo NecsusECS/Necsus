@@ -6,5 +6,6 @@ nim	findChildSyms	necsus/util/typeReader.html#findChildSyms,NimNode,seq[NimNode]
 nim	resolveBracketGeneric	necsus/util/typeReader.html#resolveBracketGeneric,NimNode	proc resolveBracketGeneric(typeDef: NimNode): NimNode		72
 nim	resolveTo	necsus/util/typeReader.html#resolveTo,NimNode,set[NimNodeKind]	proc resolveTo(typeDef: NimNode; expectKind: set[NimNodeKind]): Option[NimNode]		85
 nim	resolveAlias	necsus/util/typeReader.html#resolveAlias,NimNode	proc resolveAlias(typeDef: NimNode): Option[NimNode]		104
-nim	findSym	necsus/util/typeReader.html#findSym,NimNode	proc findSym(node: NimNode): NimNode		116
-nim	getTupleSubtypes	necsus/util/typeReader.html#getTupleSubtypes,NimNode	proc getTupleSubtypes(typ: NimNode): seq[NimNode]		126
+nim	resolveAliasTo	necsus/util/typeReader.html#resolveAliasTo,NimNode,openArray[string]	proc resolveAliasTo(typeDef: NimNode; heads: openArray[string]): Option[NimNode]		116
+nim	findSym	necsus/util/typeReader.html#findSym,NimNode	proc findSym(node: NimNode): NimNode		135
+nim	getTupleSubtypes	necsus/util/typeReader.html#getTupleSubtypes,NimNode	proc getTupleSubtypes(typ: NimNode): seq[NimNode]		145

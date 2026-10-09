@@ -81,14 +81,6 @@
   <li><a class="reference" href="#archetypeFor%2CArchetypeSet%5BT%5D%2CopenArray%5BT%5D" title="archetypeFor[T](archs: ArchetypeSet[T]; components: openArray[T]): Archetype[T]">archetypeFor[T](archs: ArchetypeSet[T]; components: openArray[T]): Archetype[T]</a></li>
 
 </ul>
-<ul class="simple nested-toc-section">asStorageTuple
-  <li><a class="reference" href="#asStorageTuple%2CArchetype%5BComponentDef%5D" title="asStorageTuple(archetype: Archetype[ComponentDef]): NimNode">asStorageTuple(archetype: Archetype[ComponentDef]): NimNode</a></li>
-
-</ul>
-<ul class="simple nested-toc-section">asTupleDir
-  <li><a class="reference" href="#asTupleDir%2CArchetype%5BComponentDef%5D" title="asTupleDir(arch: Archetype[ComponentDef]): TupleDirective">asTupleDir(arch: Archetype[ComponentDef]): TupleDirective</a></li>
-
-</ul>
 <ul class="simple nested-toc-section">calculateSize
   <li><a class="reference" href="#calculateSize%2CArchetype%5BComponentDef%5D" title="calculateSize(arch: Archetype[ComponentDef]): Option[NimNode]">calculateSize(arch: Archetype[ComponentDef]): Option[NimNode]</a></li>
 
@@ -110,10 +102,6 @@
   <li><a class="reference" href="#dumpAnalysis%2CArchetypeSet%5BT%5D" title="dumpAnalysis[T](archetypes: ArchetypeSet[T])">dumpAnalysis[T](archetypes: ArchetypeSet[T])</a></li>
 
 </ul>
-<ul class="simple nested-toc-section">hasAccessories
-  <li><a class="reference" href="#hasAccessories%2CArchetype" title="hasAccessories(arch: Archetype): bool">hasAccessories(arch: Archetype): bool</a></li>
-
-</ul>
 <ul class="simple nested-toc-section">hash
   <li><a class="reference" href="#hash%2CArchetype%5BT%5D" title="hash[T](archetype: Archetype[T]): Hash">hash[T](archetype: Archetype[T]): Hash</a></li>
 
@@ -128,10 +116,6 @@
 </ul>
 <ul class="simple nested-toc-section">indexOf
   <li><a class="reference" href="#indexOf%2CArchetype%5BT%5D%2CT" title="indexOf[T](archetype: Archetype[T]; value: T): int">indexOf[T](archetype: Archetype[T]; value: T): int</a></li>
-
-</ul>
-<ul class="simple nested-toc-section">isAccessory
-  <li><a class="reference" href="#isAccessory%2CArchetype%5BT%5D%2CT" title="isAccessory[T](arch: Archetype[T]; value: T): bool">isAccessory[T](arch: Archetype[T]; value: T): bool</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">len
@@ -198,7 +182,7 @@
     <div class="section" id="6">
   <h1><a class="toc-backref" href="#6">Imports</a></h1>
   <dl class="item">
-    <a class="reference external" href="componentDef.html">componentDef</a>, <a class="reference external" href="../util/bits.html">../util/bits</a>, <a class="reference external" href="../util/openAddr.html">../util/openAddr</a>, <a class="reference external" href="../runtime/world.html">../runtime/world</a>, <a class="reference external" href="directiveArg.html">directiveArg</a>, <a class="reference external" href="tupleDirective.html">tupleDirective</a>
+    <a class="reference external" href="componentDef.html">componentDef</a>, <a class="reference external" href="../util/bits.html">../util/bits</a>, <a class="reference external" href="../util/openAddr.html">../util/openAddr</a>, <a class="reference external" href="../runtime/world.html">../runtime/world</a>
   </dl>
 </div>
 <div class="section" id="7">
@@ -272,30 +256,6 @@
 </div>
 
 </div>
-<div id="asStorageTuple-procs-all">
-  <div id="asStorageTuple,Archetype[ComponentDef]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#asStorageTuple%2CArchetype%5BComponentDef%5D"><span class="Identifier">asStorageTuple</span></a><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">NimNode</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
-  <dd>
-    
-    Creates the tuple type for storing an archetype
-    
-  </dd>
-</div>
-
-</div>
-<div id="asTupleDir-procs-all">
-  <div id="asTupleDir,Archetype[ComponentDef]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#asTupleDir%2CArchetype%5BComponentDef%5D"><span class="Identifier">asTupleDir</span></a><span class="Other">(</span><span class="Identifier">arch</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="tupleDirective.html#TupleDirective"><span class="Identifier">TupleDirective</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
-  <dd>
-    
-    Convert an archetype to a TupleDirective
-    
-  </dd>
-</div>
-
-</div>
 <div id="calculateSize-procs-all">
   <div id="calculateSize,Archetype[ComponentDef]">
   <dt><pre><span class="Keyword">proc</span> <a href="#calculateSize%2CArchetype%5BComponentDef%5D"><span class="Identifier">calculateSize</span></a><span class="Other">(</span><span class="Identifier">arch</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><a href="componentDef.html#ComponentDef"><span class="Identifier">ComponentDef</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Option</span><span class="Other">[</span><span class="Identifier">NimNode</span><span class="Other">]</span> {.
@@ -360,17 +320,6 @@
 </div>
 
 </div>
-<div id="hasAccessories-procs-all">
-  <div id="hasAccessories,Archetype">
-  <dt><pre><span class="Keyword">proc</span> <a href="#hasAccessories%2CArchetype"><span class="Identifier">hasAccessories</span></a><span class="Other">(</span><span class="Identifier">arch</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span></pre></dt>
-  <dd>
-    
-    Returns whether there are any accessories in this archetype
-    
-  </dd>
-</div>
-
-</div>
 <div id="hash-procs-all">
   <div id="hash,Archetype[T]">
   <dt><pre><span class="Keyword">proc</span> <a href="#hash%2CArchetype%5BT%5D"><span class="Identifier">hash</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Hash</span></pre></dt>
@@ -411,17 +360,6 @@
   <dd>
     
     Whether an archetype contains all the given value
-    
-  </dd>
-</div>
-
-</div>
-<div id="isAccessory-procs-all">
-  <div id="isAccessory,Archetype[T],T">
-  <dt><pre><span class="Keyword">proc</span> <a href="#isAccessory%2CArchetype%5BT%5D%2CT"><span class="Identifier">isAccessory</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">arch</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span></pre></dt>
-  <dd>
-    
-    Whether a specific value is an accessory
     
   </dd>
 </div>
@@ -549,7 +487,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-08-01 15:14:06 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-10-09 02:29:20 UTC</small>
       </div>
     </div>
   </div>

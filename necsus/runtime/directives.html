@@ -74,7 +74,7 @@
 <li><a class="reference" href="#Save" title="Save = proc (): string {.raises: [IOError, OSError, ValueError, Exception],
                          closure.}">Save</a></li>
 <li><a class="reference" href="#SaveSystemInstance" title="SaveSystemInstance[T] = proc (): T {.closure.}">SaveSystemInstance</a></li>
-<li><a class="reference" href="#Swap" title="Swap[A; B] = proc (eid: EntityId; newComps: sink A) {.gcsafe, closure.}">Swap</a></li>
+<li><a class="reference" href="#Swap" title="Swap[A; B] = proc (eid: EntityId; newComps: A) {.gcsafe, closure.}">Swap</a></li>
 <li><a class="reference" href="#SystemInstance" title="SystemInstance = proc (): void {.closure.}">SystemInstance</a></li>
 <li><a class="reference" href="#TickId" title="TickId = proc (): BiggestUInt {.closure, gcsafe.}">TickId</a></li>
 <li><a class="reference" href="#TimeDelta" title="TimeDelta = proc (): BiggestFloat {.closure, gcsafe.}">TimeDelta</a></li>
@@ -241,7 +241,7 @@
   </dd>
 </div>
 <div id="Swap">
-  <dt><pre><a href="directives.html#Swap"><span class="Identifier">Swap</span></a><span class="Other">[</span><span class="Identifier">A</span><span class="Other">;</span> <span class="Identifier">B</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">eid</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">;</span> <span class="Identifier">newComps</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">A</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> </span><span class="Identifier">closure</span>.}</pre></dt>
+  <dt><pre><a href="directives.html#Swap"><span class="Identifier">Swap</span></a><span class="Other">[</span><span class="Identifier">A</span><span class="Other">;</span> <span class="Identifier">B</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">eid</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">;</span> <span class="Identifier">newComps</span><span class="Other">:</span> <span class="Identifier">A</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">gcsafe</span><span class="Other">,</span> </span><span class="Identifier">closure</span>.}</pre></dt>
   <dd>
     
     A directive that adds components in <tt class="docutils literal"><span class="pre"><span class="Identifier">A</span></span></tt> and removes components in <tt class="docutils literal"><span class="pre"><span class="Identifier">B</span></span></tt>
@@ -290,7 +290,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-08-01 15:14:06 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-10-09 02:29:20 UTC</small>
       </div>
     </div>
   </div>
