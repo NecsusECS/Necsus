@@ -144,29 +144,26 @@ proc rejectWrappedPointer(written, wrapper: NimNode) =
 proc parseDirectiveArg(
     symbol: NimNode, isPointer: bool = false, kind: DirectiveArgKind = Include
 ): DirectiveArg =
-  case symbol.kind
-  of nnkSym:
+  let isWrapper =
+    symbol.kind == nnkBracketExpr and symbol[0].strVal in ["Not", "Option"]
+  if symbol.kind in {nnkSym, nnkBracketExpr} and not isWrapper:
     let wrapper = symbol.expandWrapper
     if wrapper.isSome:
       if isPointer:
         rejectWrappedPointer(symbol, wrapper.get)
       return parseDirectiveArg(wrapper.get, isPointer, kind)
-    return newDirectiveArg(newComponentDef(symbol), isPointer, kind)
-  of nnkTupleTy:
+
+  case symbol.kind
+  of nnkSym, nnkTupleTy:
     return newDirectiveArg(newComponentDef(symbol), isPointer, kind)
   of nnkBracketExpr:
-    case symbol[0].strVal
-    of "Not", "Option":
+    if isWrapper:
       if isPointer:
         rejectWrappedPointer(symbol, symbol)
       return parseDirectiveArg(
         symbol[1], isPointer, if symbol[0].strVal == "Not": Exclude else: Optional
       )
-    else:
-      let wrapper = symbol.expandWrapper
-      if wrapper.isSome:
-        return parseDirectiveArg(wrapper.get, isPointer, kind)
-      return newDirectiveArg(newComponentDef(symbol), isPointer, kind)
+    return newDirectiveArg(newComponentDef(symbol), isPointer, kind)
   of nnkIdentDefs:
     return parseDirectiveArg(symbol[1], isPointer, kind)
   of nnkPtrTy:
