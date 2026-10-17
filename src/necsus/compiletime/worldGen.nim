@@ -45,7 +45,7 @@ proc rejectOptionComponents(genInfo: CodeGenInfo): NimNode =
       let typ = component.ident
       result.add quote do:
         when `typ` is Option:
-          {.error(message).}
+          {.error(`message`).}
 
 proc createAppStateType*(genInfo: CodeGenInfo): NimNode =
   ## Creates a type definition that captures the state of the app
