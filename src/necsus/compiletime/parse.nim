@@ -126,9 +126,14 @@ proc parseArgKind(symbol: NimNode): Option[DirectiveGen] =
   else:
     return none(DirectiveGen)
 
+const wrappers = ["Option", "Not"]
+
 proc expandWrapper(symbol: NimNode): Option[NimNode] =
   ## Follows a component's aliases to an `Option[...]` or `Not[...]`
-  symbol.resolveAliasTo(["Option", "Not"])
+  if symbol.kind == nnkBracketExpr and symbol[0].kind in {nnkSym, nnkIdent} and
+      symbol[0].strVal in wrappers:
+    return some(symbol)
+  symbol.resolveAliasTo(wrappers)
 
 proc rejectWrappedPointer(written, wrapper: NimNode) =
   ## Rejects a pointer to an `Option[...]` or `Not[...]`. `written` is what the system
@@ -144,25 +149,18 @@ proc rejectWrappedPointer(written, wrapper: NimNode) =
 proc parseDirectiveArg(
     symbol: NimNode, isPointer: bool = false, kind: DirectiveArgKind = Include
 ): DirectiveArg =
-  let isWrapper =
-    symbol.kind == nnkBracketExpr and symbol[0].strVal in ["Not", "Option"]
-  if symbol.kind in {nnkSym, nnkBracketExpr} and not isWrapper:
+  if symbol.kind in {nnkSym, nnkBracketExpr}:
     let wrapper = symbol.expandWrapper
     if wrapper.isSome:
+      let wrapper = wrapper.get
       if isPointer:
-        rejectWrappedPointer(symbol, wrapper.get)
-      return parseDirectiveArg(wrapper.get, isPointer, kind)
+        rejectWrappedPointer(symbol, wrapper)
+      return parseDirectiveArg(
+        wrapper[1], isPointer, if wrapper[0].strVal == "Not": Exclude else: Optional
+      )
 
   case symbol.kind
-  of nnkSym, nnkTupleTy:
-    return newDirectiveArg(newComponentDef(symbol), isPointer, kind)
-  of nnkBracketExpr:
-    if isWrapper:
-      if isPointer:
-        rejectWrappedPointer(symbol, symbol)
-      return parseDirectiveArg(
-        symbol[1], isPointer, if symbol[0].strVal == "Not": Exclude else: Optional
-      )
+  of nnkSym, nnkTupleTy, nnkBracketExpr:
     return newDirectiveArg(newComponentDef(symbol), isPointer, kind)
   of nnkIdentDefs:
     return parseDirectiveArg(symbol[1], isPointer, kind)
