@@ -143,6 +143,10 @@ proc getCapacity(node: NimNode): Option[NimNode] =
   else:
     return none(NimNode)
 
+proc isComponentPragma*(pragma: NimNode): bool =
+  ## Whether a pragma is one Necsus reads off a component's type
+  pragma.isPragma(bindSym("accessory")) or pragma.isPragma(bindSym("maxCapacity"))
+
 proc maxCapacity*(errorSite: NimNode, components: auto): Option[NimNode] =
   ## Calculates the storage size required to store a list of components
   for comp in components:

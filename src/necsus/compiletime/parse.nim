@@ -128,12 +128,34 @@ proc parseArgKind(symbol: NimNode): Option[DirectiveGen] =
 
 const wrappers = ["Option", "Not"]
 
+proc isWrapper(symbol: NimNode): bool =
+  ## Whether a node is an `Option[...]` or `Not[...]`
+  symbol.kind == nnkBracketExpr and symbol[0].kind in {nnkSym, nnkIdent} and
+    symbol[0].strVal in wrappers
+
 proc expandWrapper(symbol: NimNode): Option[NimNode] =
   ## Follows a component's aliases to an `Option[...]` or `Not[...]`
-  if symbol.kind == nnkBracketExpr and symbol[0].kind in {nnkSym, nnkIdent} and
-      symbol[0].strVal in wrappers:
+  if symbol.isWrapper:
     return some(symbol)
   symbol.resolveAliasTo(wrappers)
+
+proc rejectAliasPragmas(written, wrapper, current: NimNode) =
+  ## Rejects component pragmas on an alias that is read as the wrapper it names
+  if current.isWrapper:
+    return
+  let head = if current.kind == nnkBracketExpr: current[0] else: current
+  let pragmas = head.findPragma
+  if pragmas.kind == nnkPragma:
+    for pragma in pragmas:
+      if pragma.isComponentPragma:
+        error(
+          &"The `{pragma.repr}` pragma on `{head.repr}` would be ignored, as " &
+            &"`{written.repr}` is read as `{wrapper.repr}` and only " &
+            &"`{wrapper[1].repr}` is stored. Put the pragma on a type of its own " &
+            &"and wrap that instead, like `{wrapper[0].strVal}[MyType]`",
+          written,
+        )
+  rejectAliasPragmas(written, wrapper, current.resolveAlias.get)
 
 proc rejectWrappedPointer(written, wrapper: NimNode) =
   ## Rejects a pointer to an `Option[...]` or `Not[...]`. `written` is what the system
@@ -155,6 +177,7 @@ proc parseDirectiveArg(
       let wrapper = wrapper.get
       if isPointer:
         rejectWrappedPointer(symbol, wrapper)
+      rejectAliasPragmas(symbol, wrapper, symbol)
       return parseDirectiveArg(
         wrapper[1], isPointer, if wrapper[0].strVal == "Not": Exclude else: Optional
       )
