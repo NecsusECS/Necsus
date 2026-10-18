@@ -69,6 +69,16 @@ when NimMajor >= 2:
 else:
   var spawnProcs {.compileTime.} = initTable[string, NimNode]()
 
+proc flagWrite(component: ComponentDef, store, index, value: NimNode): NimNode =
+  ## Generates the write that records whether an accessory is there
+  newCall(
+    nnkBracketExpr.newTree(bindSym("setComponent"), bindSym("AccessoryFlag")),
+    store,
+    component.presenceColumnId,
+    index,
+    value,
+  )
+
 proc storeComponents(
     archetype: Archetype[ComponentDef],
     dir: TupleDirective,
@@ -86,15 +96,7 @@ proc storeComponents(
     # but the flag saying so does
     if not present:
       if component.isAccessory:
-        result.add(
-          newCall(
-            nnkBracketExpr.newTree(setComponent, bindSym("AccessoryFlag")),
-            store,
-            component.presenceColumnId,
-            index,
-            newLit(false),
-          )
-        )
+        result.add(component.flagWrite(store, index, newLit(false)))
       continue
 
     let arg = dir.args[dir.indexOf(component)]
@@ -114,28 +116,20 @@ proc storeComponents(
       # Whether an optional accessory is there is only known once the value is in hand.
       # The archetype is the same either way, so it is the flag that carries the answer
       let isSome = newCall(bindSym("isSome"), field)
-      let presenceId = component.presenceColumnId
-      let flagType = bindSym("AccessoryFlag")
+      let flagSome = component.flagWrite(store, index, newLit(true))
+      let flagNone = component.flagWrite(store, index, newLit(false))
       result.add quote do:
         if `isSome`:
           `write`
-          `setComponent`[`flagType`](`store`, `presenceId`, `index`, true)
+          `flagSome`
         else:
-          `setComponent`[`flagType`](`store`, `presenceId`, `index`, false)
+          `flagNone`
     else:
       # An optional component that is not an accessory only reaches this point in the
       # archetype that was picked because it was there
       result.add(write)
       if component.isAccessory:
-        result.add(
-          newCall(
-            nnkBracketExpr.newTree(setComponent, bindSym("AccessoryFlag")),
-            store,
-            component.presenceColumnId,
-            index,
-            newLit(true),
-          )
-        )
+        result.add(component.flagWrite(store, index, newLit(true)))
 
 proc spawnInto(
     details: GenerateContext,
