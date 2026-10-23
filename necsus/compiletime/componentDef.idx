@@ -12,4 +12,5 @@ nim	hash	necsus/compiletime/componentDef.html#hash,ComponentDef	proc hash(def: C
 nim	columnId	necsus/compiletime/componentDef.html#columnId,ComponentDef	proc columnId(def: ComponentDef): NimNode		93
 nim	presenceColumnId	necsus/compiletime/componentDef.html#presenceColumnId,ComponentDef	proc presenceColumnId(def: ComponentDef): NimNode		98
 nim	addSignature	necsus/compiletime/componentDef.html#addSignature,string,ComponentDef	proc addSignature(onto: var string; comp: ComponentDef)		103
-nim	maxCapacity	necsus/compiletime/componentDef.html#maxCapacity,NimNode,auto	proc maxCapacity(errorSite: NimNode; components: auto): Option[NimNode]		146
+nim	isComponentPragma	necsus/compiletime/componentDef.html#isComponentPragma,NimNode	proc isComponentPragma(pragma: NimNode): bool		146
+nim	maxCapacity	necsus/compiletime/componentDef.html#maxCapacity,NimNode,auto	proc maxCapacity(errorSite: NimNode; components: auto): Option[NimNode]		150

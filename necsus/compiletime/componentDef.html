@@ -105,6 +105,10 @@
   <li><a class="reference" href="#ident%2CComponentDef" title="ident(def: ComponentDef): NimNode">ident(def: ComponentDef): NimNode</a></li>
 
 </ul>
+<ul class="simple nested-toc-section">isComponentPragma
+  <li><a class="reference" href="#isComponentPragma%2CNimNode" title="isComponentPragma(pragma: NimNode): bool">isComponentPragma(pragma: NimNode): bool</a></li>
+
+</ul>
 <ul class="simple nested-toc-section">maxCapacity
   <li><a class="reference" href="#maxCapacity%2CNimNode%2Cauto" title="maxCapacity(errorSite: NimNode; components: auto): Option[NimNode]">maxCapacity(errorSite: NimNode; components: auto): Option[NimNode]</a></li>
 
@@ -264,6 +268,18 @@
 </div>
 
 </div>
+<div id="isComponentPragma-procs-all">
+  <div id="isComponentPragma,NimNode">
+  <dt><pre><span class="Keyword">proc</span> <a href="#isComponentPragma%2CNimNode"><span class="Identifier">isComponentPragma</span></a><span class="Other">(</span><span class="Identifier">pragma</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Whether a pragma is one Necsus reads off a component's type
+    
+  </dd>
+</div>
+
+</div>
 <div id="maxCapacity-procs-all">
   <div id="maxCapacity,NimNode,auto">
   <dt><pre><span class="Keyword">proc</span> <a href="#maxCapacity%2CNimNode%2Cauto"><span class="Identifier">maxCapacity</span></a><span class="Other">(</span><span class="Identifier">errorSite</span><span class="Other">:</span> <span class="Identifier">NimNode</span><span class="Other">;</span> <span class="Identifier">components</span><span class="Other">:</span> <span class="Identifier">auto</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Option</span><span class="Other">[</span><span class="Identifier">NimNode</span><span class="Other">]</span></pre></dt>
@@ -321,7 +337,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-10-18 00:06:17 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-10-23 03:13:21 UTC</small>
       </div>
     </div>
   </div>
