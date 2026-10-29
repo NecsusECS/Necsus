@@ -5,13 +5,16 @@ on:
       - main
 jobs:
   docs:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v3
       - uses: jiro4989/setup-nim-action@v2
         with:
           nim-version: 2.0.10
           repo-token: ${{ secrets.GITHUB_TOKEN }}
+      # nim-markdown is built on std/re, which loads PCRE1 at runtime. Ubuntu 26.04 dropped
+      # it, so this job stays on 24.04
+      - run: sudo apt-get update && sudo apt-get install -y libpcre3
       - run: nimble install -y markdown
       - run: nimble documentation
       - name: Deploy documents
