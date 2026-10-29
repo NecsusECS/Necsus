@@ -5,12 +5,12 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        nim: [2.0.10, 1.6.14, 2.2.2, devel]
+        nim: [2.0.10, 1.6.14, 2.2.2, 2.4.0]
     steps:
       - uses: actions/checkout@v1
       - uses: iffy/install-nim@v5
         with:
-          version: ${{ matrix.nim == 'devel' && 'nightly:https://github.com/nim-lang/nightlies/releases/latest-devel' || format('binary:{0}', matrix.nim) }}
+          version: binary:${{ matrix.nim }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: nim --version
@@ -20,12 +20,12 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        nim: [2.0.10, 1.6.14, 2.2.2, devel]
+        nim: [2.0.10, 1.6.14, 2.2.2, 2.4.0]
     steps:
       - uses: actions/checkout@v1
       - uses: iffy/install-nim@v5
         with:
-          version: ${{ matrix.nim == 'devel' && 'nightly:https://github.com/nim-lang/nightlies/releases/latest-devel' || format('binary:{0}', matrix.nim) }}
+          version: binary:${{ matrix.nim }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: nim --version
@@ -41,12 +41,12 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        nim: [2.0.10, 1.6.14, 2.2.2, devel]
+        nim: [2.0.10, 1.6.14, 2.2.2, 2.4.0]
     steps:
       - uses: actions/checkout@v1
       - uses: iffy/install-nim@v5
         with:
-          version: ${{ matrix.nim == 'devel' && 'nightly:https://github.com/nim-lang/nightlies/releases/latest-devel' || format('binary:{0}', matrix.nim) }}
+          version: binary:${{ matrix.nim }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: nim --version
@@ -56,12 +56,12 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        nim: [2.0.10, 1.6.14, 2.2.2, devel]
+        nim: [2.0.10, 1.6.14, 2.2.2, 2.4.0]
     steps:
       - uses: actions/checkout@v1
       - uses: iffy/install-nim@v5
         with:
-          version: ${{ matrix.nim == 'devel' && 'nightly:https://github.com/nim-lang/nightlies/releases/latest-devel' || format('binary:{0}', matrix.nim) }}
+          version: binary:${{ matrix.nim }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: nim --version
@@ -77,7 +77,7 @@ jobs:
       - uses: actions/checkout@v1
       - uses: iffy/install-nim@v5
         with:
-          version: ${{ matrix.nim == 'devel' && 'nightly:https://github.com/nim-lang/nightlies/releases/latest-devel' || format('binary:{0}', matrix.nim) }}
+          version: binary:${{ matrix.nim }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Local override
@@ -108,7 +108,7 @@ jobs:
       - uses: actions/checkout@v1
       - uses: iffy/install-nim@v5
         with:
-          version: ${{ matrix.nim == 'devel' && 'nightly:https://github.com/nim-lang/nightlies/releases/latest-devel' || format('binary:{0}', matrix.nim) }}
+          version: binary:${{ matrix.nim }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: nim --version
@@ -124,7 +124,7 @@ jobs:
       - uses: actions/checkout@v1
       - uses: iffy/install-nim@v5
         with:
-          version: ${{ matrix.nim == 'devel' && 'nightly:https://github.com/nim-lang/nightlies/releases/latest-devel' || format('binary:{0}', matrix.nim) }}
+          version: binary:${{ matrix.nim }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: nim --version
