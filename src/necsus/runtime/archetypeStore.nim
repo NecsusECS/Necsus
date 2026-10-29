@@ -250,7 +250,7 @@ proc dropRow*(store: var ArchetypeStore, index: uint32): EntityId {.discardable.
     result = store.eids[store.used]
     store.eids[index] = result
 
-proc `=destroy`*[N: static int](store: var ArchetypeStore[N]) =
+proc release*[N: static int](store: var ArchetypeStore[N]) =
   ## Releases the memory backing an archetype. Every column has to have been destroyed
   ## before this runs, because afterwards there is nothing left to say what was in them
   if store.blk != nil:
@@ -263,3 +263,6 @@ proc `=destroy`*[N: static int](store: var ArchetypeStore[N]) =
   store.capacity = 0
   store.rowLimit = 0
   store.blockSize = 0
+
+proc `=destroy`*[N: static int](store: var ArchetypeStore[N]) =
+  release(store)

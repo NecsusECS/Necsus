@@ -251,15 +251,13 @@ proc createAppStateDestructor*(genInfo: CodeGenInfo): NimNode =
     destroys.add(genInfo.callSystems({TeardownPhase}))
     destroys.add(genInfo.destroySystems())
 
-    # Columns hold raw memory, so nothing is going to run a destructor over the values in
-    # them. That has to happen before the archetype hands its block back, because
-    # afterwards there is nothing left to say what was in it.
-    #
-    # A row missing an accessory gets destroyed along with the rest. Its slot reads as
-    # zero, which every component has to survive being destroyed in anyway -- storing one
-    # sinks over whatever the row held before, and a freshly reserved row holds zeroes
+    var archetypeNames: seq[string]
+
     for archetype in genInfo.archetypes:
       let ident = archetype.ident
+      archetypeNames.add(ident.strVal)
+
+      # Columns hold raw memory, so nothing is going to run a destructor over the values in them.
       for component in archetype.values:
         let typ = component.ident
         let id = component.columnId
@@ -271,9 +269,14 @@ proc createAppStateDestructor*(genInfo: CodeGenInfo): NimNode =
           )
         )
 
+      # Nim 2.2 types the pointer it hands a generic `=destroy` over a static parameter as an
+      # int, which fails in newer C compilers. Calling a plain proc avoids that
+      destroys.add(newCall(bindSym("release"), newDotExpr(appStateIdent, archetype.ident)))
+
     for (name, _) in items(genInfo.fields):
-      destroys.add quote do:
-        `destroy`(`appStateIdent`.`name`)
+      if name.strVal notin archetypeNames:
+        destroys.add quote do:
+          `destroy`(`appStateIdent`.`name`)
 
   return quote:
     {.warning[Deprecated]: off, hint[XCannotRaiseY]: off.}
