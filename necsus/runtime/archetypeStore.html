@@ -149,6 +149,10 @@
   <li><a class="reference" href="#len%2CArchetypeStore" title="len(store: ArchetypeStore): Natural">len(store: ArchetypeStore): Natural</a></li>
 
 </ul>
+<ul class="simple nested-toc-section">release
+  <li><a class="reference" href="#release%2CArchetypeStore%5BN%5D" title="release[N: static int](store: var ArchetypeStore[N])">release[N: static int](store: var ArchetypeStore[N])</a></li>
+
+</ul>
 <ul class="simple nested-toc-section">reserve
   <li><a class="reference" href="#reserve%2CArchetypeStore%2CEntityId" title="reserve(store: var ArchetypeStore; entityId: EntityId): uint32">reserve(store: var ArchetypeStore; entityId: EntityId): uint32</a></li>
 
@@ -303,7 +307,7 @@
   <dt><pre><span class="Keyword">proc</span> <a href="#%3Ddestroy%2CArchetypeStore%5BN%5D"><span class="Identifier">`=destroy`</span></a><span class="Other">[</span><span class="Identifier">N</span><span class="Other">:</span> <span class="Identifier">static</span> <span class="Identifier">int</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">N</span><span class="Other">]</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
-    Releases the memory backing an archetype. Every column has to have been destroyed before this runs, because afterwards there is nothing left to say what was in them
+    
     
   </dd>
 </div>
@@ -476,6 +480,17 @@
 </div>
 
 </div>
+<div id="release-procs-all">
+  <div id="release,ArchetypeStore[N]">
+  <dt><pre><span class="Keyword">proc</span> <a href="#release%2CArchetypeStore%5BN%5D"><span class="Identifier">release</span></a><span class="Other">[</span><span class="Identifier">N</span><span class="Other">:</span> <span class="Identifier">static</span> <span class="Identifier">int</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">[</span><span class="Identifier">N</span><span class="Other">]</span><span class="Other">)</span></pre></dt>
+  <dd>
+    
+    Releases the memory backing an archetype. Every column has to have been destroyed before this runs, because afterwards there is nothing left to say what was in them
+    
+  </dd>
+</div>
+
+</div>
 <div id="reserve-procs-all">
   <div id="reserve,ArchetypeStore,EntityId">
   <dt><pre><span class="Keyword">proc</span> <a href="#reserve%2CArchetypeStore%2CEntityId"><span class="Identifier">reserve</span></a><span class="Other">(</span><span class="Identifier">store</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetypeStore.html#ArchetypeStore"><span class="Identifier">ArchetypeStore</span></a><span class="Other">;</span> <span class="Identifier">entityId</span><span class="Other">:</span> <a href="entityId.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">uint32</span></pre></dt>
@@ -579,7 +594,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-10-23 03:13:21 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-10-29 16:08:08 UTC</small>
       </div>
     </div>
   </div>

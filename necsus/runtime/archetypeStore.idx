@@ -29,4 +29,5 @@ nim	dropColumn	necsus/runtime/archetypeStore.html#dropColumn,ArchetypeStore,Comp
 nim	clearColumn	necsus/runtime/archetypeStore.html#clearColumn,ArchetypeStore,ComponentId,uint32	proc clearColumn[T](store: var ArchetypeStore; component: ComponentId; index: uint32)		225
 nim	takeColumn	necsus/runtime/archetypeStore.html#takeColumn,ArchetypeStore,ComponentId,uint32	proc takeColumn[T](store: var ArchetypeStore; component: ComponentId; index: uint32): T		233
 nim	dropRow	necsus/runtime/archetypeStore.html#dropRow,ArchetypeStore,uint32	proc dropRow(store: var ArchetypeStore; index: uint32): EntityId		241
-nim	`=destroy`	necsus/runtime/archetypeStore.html#=destroy,ArchetypeStore[N]	proc `=destroy`[N: static int](store: var ArchetypeStore[N])		253
+nim	release	necsus/runtime/archetypeStore.html#release,ArchetypeStore[N]	proc release[N: static int](store: var ArchetypeStore[N])		253
+nim	`=destroy`	necsus/runtime/archetypeStore.html#=destroy,ArchetypeStore[N]	proc `=destroy`[N: static int](store: var ArchetypeStore[N])		267
